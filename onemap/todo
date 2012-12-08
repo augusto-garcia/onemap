@@ -1,0 +1,9 @@
+Package: onemap
+TODO list
+- marker names MUST NOT begin with 'loc'
+- merge function (put two or more sequences together)
+- memory use (rf.2pts & group)
+- try.seq should allow more than one marker at a time
+- preliminary function
+- automator function
+- try some parallelization

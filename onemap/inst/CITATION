@@ -1,0 +1,18 @@
+citHeader("To cite OneMap in publications use:")
+
+citEntry(entry="Article",
+         title = "OneMap: software for genetic mapping in outcrossing species",
+         author = personList(person(first="Gabriel",middle="Rodrigues Alves", last="Margarido"), person(first="Anete",middle="Pereira", last="de Souza"),person(first="Antonio",middle="Augusto Franco", last="Garcia")),
+         journal = "Hereditas",
+         volume = "144",
+         pages = "78-79",
+         year    = 2007,
+    
+         
+         textVersion = 
+         paste("Margarido, G. R. A., Souza, A. P. and Garcia, A. A. F. (2007)",
+               " OneMap: software for genetic mapping in outcrossing species.",
+               " Hereditas 144: 78-79.",
+               sep="")
+         )
+

@@ -1,0 +1,15 @@
+This file contains a list of changes and updates for package OneMap, started since version 1.0-1, which corresponds to the inclusion of multipoint methods.
+
+Version 1.0-1
+
+* improvements for backcross and F2: reading data with MAPMAKER/EXP format; no redundant calculations regarding linkage phases; different criteria for initial framework (order.seq)
+
+* rf.2pts: new progress bar
+
+* the number of markers in a given sequence is now printed
+
+* rf.graph.table now displays LOD scores above the diagonal
+
+* rf.graph table now displays marker numbers, not names
+
+* less stringent convergence criteria (major speed upgrade with little difference on results)

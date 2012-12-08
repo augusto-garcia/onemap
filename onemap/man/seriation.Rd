@@ -1,0 +1,113 @@
+\name{seriation}
+\alias{seriation}
+\title{Seriation}
+\description{
+  Implements the marker ordering algorithm \emph{Seriation}
+  (\cite{Buetow & Chakravarti, 1987}).
+}
+\usage{
+seriation(input.seq, LOD = 0, max.rf = 0.5, tol=10E-5)
+}
+\arguments{
+  \item{input.seq}{an object of class \code{sequence}.}
+  \item{LOD}{minimum LOD-Score threshold used when constructing the
+    pairwise recombination fraction matrix.}
+  \item{max.rf}{maximum recombination fraction threshold used as the LOD
+    value above.}
+  \item{tol}{tolerance for the C routine, i.e., the value used to evaluate
+    convergence.}
+}
+\details{
+  \emph{Seriation} is an algorithm for marker ordering in linkage
+  groups. It is not an exhaustive search method and, therefore, is not
+  computationally intensive. However, it does not guarantee that the
+  best order is always found. The only requirement is a matrix with
+  recombination fractions between markers. Next is an adapted excerpt
+  from \cite{Mollinari et al (2009)} describing the \emph{Seriation}
+  algorithm:
+  
+  \emph{The map is initiated with each of the \eqn{m} markers and the
+  matrix \eqn{R}(recombination fraction matrix). Considering \eqn{M_{i}}{M_i} as the initial marker,
+  \eqn{M_{j}}{M_j} is positioned to the right if \eqn{M_{i}}{M_i} if the
+  recombination fraction between them is the smallest fraction between
+  \eqn{M_{i}}{M_i} and the other \eqn{m-1} markers. From the remaining
+  \eqn{m-1} markers, \eqn{M_{k}}{M_k} is chosen if it has the smallest
+  recombination fraction with \eqn{M_{i}}{M_i}. The recombination
+  fractions of \eqn{M_{k}}{M_k} and both external loci of the positioned
+  markers, \eqn{M_{left}}{M_left} (the most external marker to the left)
+  and \eqn{M_{right}}{M_right} (the most external marker to the right)
+  are compared. If \eqn{\hat{r}_{M_{k}M_{right}} >
+  \hat{r}_{M_{k}M_{left}}}{r_MkMright > r_MkMleft}, \eqn{M_{k}}{M_k} is
+  positioned to the left of the group of markers, and if the
+  relationship is inverse, to the right. In the case of ties, the
+  internal loci of the group already positioned are considered. The
+  procedure is repeated until all markers are positioned, therefore
+  providing \eqn{m} orders (one for each marker at the initial
+  position). For each order, the continuity index is calculated as
+  \eqn{CI = \sum_{i<j} \frac{\hat{r}_{M_{i}M_{j}}}{(i-j)^2}}{CI =
+  Sum_{i<j} r_MiMj / (i-j)^2}. The best order is considered the one that
+  gives the smallest \eqn{CI} value.}
+
+  NOTE: When there are to many pairs of markers with the same value in the
+  recombination fraction matrix, it can result in ties during
+  the ordination process and the \emph{Seriation} algorithm may not work
+  properly. This is particularly relevant for outcrossing populations with mixture of
+  markers of type \code{D1} and \code{D2}. When this occurs, the
+  function shows the following error message: \code{There are too many
+  ties in the ordination process - please, consider using another ordering algorithm}.
+  
+  After determining the order with \emph{Seriation}, the final map is
+  constructed using the multipoint approach (function
+  \code{\link[onemap]{map}}).
+}
+\value{
+  An object of class \code{sequence}, which is a list containing the
+  following components:
+  \item{seq.num}{a \code{vector} containing the (ordered) indices of
+    markers in the sequence, according to the input file.}
+  \item{seq.phases}{a \code{vector} with the linkage phases between markers
+    in the sequence, in corresponding positions. \code{-1} means that there are
+    no defined linkage phases.}
+  \item{seq.rf}{a \code{vector} with the recombination frequencies between
+    markers in the sequence. \code{-1} means that there are no estimated
+    recombination frequencies.}
+  \item{seq.like}{log-likelihood of the corresponding linkage map.}
+  \item{data.name}{name of the object of class \code{outcross} with the
+    raw data.}
+  \item{twopt}{name of the object of class \code{rf.2pts} with the 2-point
+    analyses.}
+}
+\references{
+  Buetow, K. H. and Chakravarti, A. (1987) Multipoint gene mapping using
+  seriation. I. General methods. \emph{American Journal of Human
+    Genetics} 41: 180-188.
+  
+  Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia,
+  A. A. F. (2009) Evaluation of algorithms used to order markers on
+  genetics maps. \emph{Heredity} 103: 494-502.
+}
+\author{Gabriel R A Margarido, \email{gramarga@gmail.com}}
+\seealso{
+  \code{\link[onemap]{make.seq}}, \code{\link[onemap]{map}}
+}
+\examples{
+\dontrun{
+  ##outcross example
+  data(example.out)
+  twopt <- rf.2pts(example.out)
+  all.mark <- make.seq(twopt,"all")
+  groups <- group(all.mark)
+  LG3 <- make.seq(groups,3)
+  LG3.ser <- seriation(LG3)
+
+  ##F2 example
+  data(fake.f2.onemap)
+  twopt <- rf.2pts(fake.f2.onemap)
+  all.mark <- make.seq(twopt,"all")
+  groups <- group(all.mark)
+  LG1 <- make.seq(groups,1)
+  LG1.ser <- seriation(LG1)
+  LG1.ser
+}
+}
+\keyword{utilities}

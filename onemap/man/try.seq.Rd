@@ -1,0 +1,136 @@
+\name{try.seq}
+\alias{try.seq}
+\alias{print.try}
+\title{Try to map a marker into every possible position between markers}
+\description{
+  For a given linkage map and an additional unpositioned marker, this function estimates
+  parameters for all possible maps including the new marker, while keeping the
+  original linkage map unaltered.
+}
+\usage{
+try.seq(input.seq, mrk, tol=10E-2, draw.try=FALSE, pos=NULL, verbose=FALSE)
+
+\method{print}{try}(x,j=NULL, \dots)
+}
+\arguments{
+  \item{input.seq}{an object of class \code{sequence} with a predefined order.}
+  \item{mrk}{the index of the marker to be tried, according to the input file.}
+  \item{tol}{tolerance for the C routine, i.e., the value used to evaluate
+    convergence.}
+  \item{draw.try}{if \code{TRUE}, a diagnostic graphic is displayed. See \code{Details} section.}
+  \item{pos}{defines in which position the new marker \code{mrk} should be
+    placed for the diagnostic graphic. If \code{NULL} (default), the marker is placed
+    on the best position i.e. the one which results LOD = 0.00}
+  \item{verbose}{if \code{FALSE} (default), simplified output is displayed. if
+    \code{TRUE}, detailed output is displayed.}
+
+  \item{x}{an object of class \code{try}.}
+  \item{j}{if \code{NULL} (default), output is a summary of the results for
+    all possible positions of the additional marker. Otherwise, an integer
+    makes detailed output to be printed for the corresponding position. This
+    integer must be less than or equal to the length of the original sequence plus
+    1.}
+  \item{\dots}{further arguments, passed to other methods. Currently
+    ignored.}
+}
+\details{
+  The diagnostic graphic is made of three figures: i) the top figure represents the new genetic map obtained with the
+  insertion of the new marker \code{mrk} on position \code{pos}. If
+  \code{pos = NULL} (default), the marker is placed on the best position
+  i.e. the one which results LOD = 0.00, which is indicated by a red
+  triangle; ii) the left bottom figure
+  represents the base map (contained in \code{input.seq}) on
+  x-axis and the LOD-Scores of the linkage maps obtained with the
+  new marker \code{mrk} tested at the beginning, between and at the end
+  of the base map. Actually, it is a
+  graphic representation of the \code{LOD} vector (see \code{Value}
+  section). The red triangle indicates the best position where the new
+  marker \code{mrk} should be placed; iii) the right
+  bottom figure is the non-interactive \code{\link[onemap]{rf.graph.table}}
+  function for the new genetic map. It plots a matrix of pairwise recombination
+  fractions (under the diagonal) and LOD  Scores (upper the diagonal)
+  using a color scale.  
+}
+\value{
+  An object of class \code{try}, which is a list containing the following
+  components:
+  \item{ord}{a \code{list} containing results for every linkage map estimated.
+    These results include linkage phases, recombination frequencies and
+    log-likelihoods.}
+  \item{LOD}{a \code{vector} with LOD-Scores for each position where the
+    additional marker is placed. This Score is based on the best combination of
+    linkage phases for each map.}
+  \item{try.ord}{a \code{matrix} with the orders of all linkage maps.}
+  \item{data.name}{name of the object of class \code{outcross} with the
+    raw data.}
+  \item{twopt}{name of the object of class \code{rf.2pts} with the 2-point
+    analyses.}
+}
+\references{ 
+  Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B. (2008)
+  \emph{qtl: Tools for analyzing QTL experiments} R package version 1.09-43
+  
+  Jiang, C. and Zeng, Z.-B. (1997). Mapping quantitative trait loci with
+  dominant and missing markers in various crosses from two inbred lines.
+  \emph{Genetica} 101: 47-58.
+
+  Lander, E. S., Green, P., Abrahamson, J., Barlow, A., Daly, M. J., Lincoln,
+  S. E. and Newburg, L. (1987) MAPMAKER: An interactive computer package for
+  constructing primary genetic linkage maps of experimental and natural
+  populations. \emph{Genomics} 1: 174-181.
+
+  Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia,
+  A. A. F. (2009) Evaluation of algorithms used to order markers on
+  genetic maps. \emph{Heredity} 103: 494-502
+  
+  Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002a) Simultaneous
+  maximum likelihood estimation of linkage and linkage phases in
+  outcrossing species. \emph{Theoretical Population Biology} 61:
+  349-363.
+  
+  Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage
+  mapping of sex-specific differences. \emph{Genetical Research}
+  79: 85-96
+}
+\author{Marcelo Mollinari, \email{mmollina@usp.br}}
+\seealso{
+  \code{\link[onemap]{make.seq}} and \code{\link[onemap]{compare}}.
+}
+\examples{
+\dontrun{
+  #outcrossing example
+  data(example.out)
+  twopt <- rf.2pts(example.out)
+  markers <- make.seq(twopt,c(2,3,12,14))
+  markers.comp <- compare(markers)
+  base.map <- make.seq(markers.comp,1)
+
+  extend.map <- try.seq(base.map,30)
+  extend.map
+  print(extend.map,5) # best position
+  print(extend.map,4) # second best position
+
+  #F2 example
+  data(fake.f2.onemap)
+  twopt <- rf.2pts(fake.f2.onemap)
+  all.mark <- make.seq(twopt,"all")
+  groups <- group(all.mark)
+  LG3 <- make.seq(groups,3)
+  LG3.ord <- order.seq(LG3, subset.search = "twopt", twopt.alg = "rcd", touchdown=TRUE)
+  LG3.ord
+  safe.map<-make.seq(LG3.ord,"safe") 
+  extend.map <- try.seq(safe.map,64)
+  extend.map
+  (new.map<-make.seq(extend.map,14)) # best position
+
+  #Display diagnostic graphics
+  try.seq(safe.map,64,draw.try=TRUE) #best position (default)
+  try.seq(safe.map,64,draw.try=TRUE,pos=13) #second best position
+  try.seq(safe.map,64,draw.try=TRUE,pos=4) #wrong position
+
+  #Trying to position an unliked marker
+  try.seq(safe.map,66,draw.try=TRUE) #note the inconsistencies in the graphic
+
+}
+}
+\keyword{utilities}

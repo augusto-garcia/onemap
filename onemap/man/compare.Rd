@@ -1,0 +1,99 @@
+\name{compare}
+\alias{compare}
+\title{Compare all possible orders (exhaustive search) for a given
+  sequence of markers}
+\description{
+  For a given sequence with \eqn{n}{n} markers, computes the multipoint likelihood of all
+  \eqn{\frac{n!}{2}}{n!/2} orders.
+}
+\usage{
+compare(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
+}
+\arguments{
+  \item{input.seq}{an object of class \code{sequence}.}
+  \item{n.best}{the number of best orders to store in object (defaults to 50).}
+  \item{tol}{tolerance for the C routine, i.e., the value used to evaluate
+    convergence.}
+  \item{verbose}{if \code{FALSE} (default), simplified output is displayed. if
+    \code{TRUE}, detailed output is displayed.}
+}
+\details{
+  Since the number \eqn{\frac{n!}{2}}{n!/2} is large even for moderate values
+  of \eqn{n}{n}, this function is to be used only for sequences with relatively
+  few markers. If markers of types D1, D2 and C (specially in repulsion phase)
+  are mixed in the sequence, this function can be used with up to 5 or 6 markers;
+  otherwise, up to 10 markers will not take a very long time. The
+  multipoint likelihood is calculated according to Wu et al. (2002b)
+  (Eqs. 7a to 11), assuming that the recombination fraction is the
+  same in both parents. Hidden Markov chain codes adapted from Broman et
+  al. (2008) were used.
+  For backcross, \eqn{F_2}{F_2} and RIL populations the linkage phases
+  are known \emph{a priori} and are not calculated.
+}
+\value{
+  An object of class \code{compare}, which is a list containing the
+  following components:
+  \item{best.ord}{a \code{matrix} containing the best orders.}
+  \item{best.ord.rf}{a \code{matrix} with recombination frequencies for the
+    corresponding best orders.}
+  \item{best.ord.phase}{a \code{matrix} with linkage phases for the best
+    orders.}
+  \item{best.ord.like}{a \code{vector} with log-likelihood values for the best
+    orders.}
+  \item{best.ord.LOD}{a \code{vector} with LOD Score values for the best
+    orders.}
+  \item{data.name}{name of the object of class \code{outcross} with the
+    raw data.}
+  \item{twopt}{name of the object of class \code{rf.2pts} with the 2-point
+    analyses.}
+}
+\references{ 
+  Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B. (2008)
+  \emph{qtl: Tools for analyzing QTL experiments} R package version 1.09-43
+  
+  Jiang, C. and Zeng, Z.-B. (1997). Mapping quantitative trait loci with
+  dominant and missing markers in various crosses from two inbred lines.
+  \emph{Genetica} 101: 47-58.
+
+  Lander, E. S., Green, P., Abrahamson, J., Barlow, A., Daly, M. J., Lincoln,
+  S. E. and Newburg, L. (1987) MAPMAKER: An interactive computer package for
+  constructing primary genetic linkage maps of experimental and natural
+  populations. \emph{Genomics} 1: 174-181.
+
+  Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia, A.
+  A. F. (2009) Evaluation of algorithms used to order markers on
+  genetics maps. _Heredity_ 103: 494-502.
+
+  Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002a) Simultaneous
+  maximum likelihood estimation of linkage and linkage phases in
+  outcrossing species. \emph{Theoretical Population Biology} 61:
+  349-363.
+  
+  Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage
+  mapping of sex-specific differences. \emph{Genetical Research}
+  79: 85-96
+}
+\author{Marcelo Mollinari, \email{mmollina@usp.br}}
+\seealso{
+  \code{\link[onemap]{marker.type}} for details about segregation types and
+  \code{\link[onemap]{make.seq}}.
+}
+\examples{
+\dontrun{
+  #outcrossing example
+  data(example.out)
+  twopt <- rf.2pts(example.out)
+  markers <- make.seq(twopt,c(12,14,15,26,28))
+  (markers.comp <- compare(markers))
+  (markers.comp <- compare(markers,verbose=TRUE))
+
+  #F2 example
+  data(fake.f2.onemap)
+  twopt <- rf.2pts(fake.f2.onemap)
+  markers <- make.seq(twopt,c(17,26,29,30,44,46,55)) 
+  (markers.comp <- compare(markers))
+  (markers.comp <- compare(markers,verbose=TRUE))
+
+}
+}
+\keyword{utilities}

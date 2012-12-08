@@ -1,0 +1,73 @@
+\name{write.map}
+\alias{write.map}
+\title{Write a genetic map to a file}
+\description{
+  Write a genetic map to a file, base on a given map, or a list of
+  maps. The output file can be used as an input to QTL mapping using the
+  R package R/qtl. It is also possible to create an output to be used
+  with QTLCartographer.
+}
+\usage{
+write.map(map.list, file.out)
+}
+\arguments{
+  \item{map.list}{a map, i.e. an object of class \code{sequence} with a
+    predefined order, linkage phases, recombination fraction and
+    likelihood or a list of maps.}
+  \item{file.out}{output map file.}
+}
+\details{
+  This function is avaliable only for backcross, F2 and RILs.
+}
+
+\references{
+  Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B. (2008)
+  \emph{qtl: Tools for analyzing QTL experiments} R package version
+  1.09-43
+
+  Wang S., Basten, C. J. and Zeng Z.-B. (2010) Windows QTL Cartographer 2.5.
+  Department of Statistics, North Carolina State University, Raleigh,
+  NC.
+}
+\author{Marcelo Mollinari, \email{mmollina@usp.br}}
+%\seealso{ }
+\examples{
+\dontrun{
+data(fake.f2.onemap)
+twopt<-rf.2pts(fake.f2.onemap)
+lg<-group(make.seq(twopt, "all"))
+
+##"pre-allocate" an empty list of length lg$n.groups (3, in this case)
+  maps.list<-vector("list", lg$n.groups)
+
+  for(i in 1:lg$n.groups){
+    ##create linkage group i  
+    LG.cur <- make.seq(lg,i)
+    ##ordering 
+    map.cur<-order.seq(LG.cur, subset.search = "sample")
+    ##assign the map of the i-th group to the maps.list 
+    maps.list[[i]]<-make.seq(map.cur, "force")      
+  }
+
+##write maps.list to "fake.f2.onemap.map" file
+write.map(map.list, "fake.f2.onemap.map")
+
+##Using R/qtl
+##you must install the package  'qtl'
+##install.packages("qtl")
+
+require(qtl)
+file<-paste(system.file("example",package="onemap"),"fake.f2.onemap.raw", sep="/")
+dat1 <- read.cross("mm", file=file, mapfile="fake.f2.onemap.map")
+newmap <- est.map(dat1, tol=1e-6, map.function="kosambi")
+
+(logliks <- sapply(newmap, attr, "loglik"))
+plot.map(dat1, newmap)
+
+##Using R/qtl to generate QTL Cartographer input files (.map and .cro)
+write.cross(dat1, format="qtlcart", filestem="fake.f2.onemap")
+
+}
+}
+
+\keyword{rqtl}
