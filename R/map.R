@@ -15,6 +15,71 @@
 #######################################################################
 
 # This function constructs the linkage map for a set of markers in a given order
+
+
+##' Construct the linkage map for a sequence of markers
+##' 
+##' Estimates the multipoint log-likelihood, linkage phases and recombination
+##' frequencies for a sequence of markers in a given order.
+##' 
+##' Markers are mapped in the order defined in the object \code{input.seq}. If
+##' this object also contains a user-defined combination of linkage phases,
+##' recombination frequencies and log-likelihood are estimated for that
+##' particular case. Otherwise, the best linkage phase combination is also
+##' estimated. The multipoint likelihood is calculated according to Wu et al.
+##' (2002b)(Eqs. 7a to 11), assuming that the recombination fraction is the
+##' same in both parents. Hidden Markov chain codes adapted from Broman et al.
+##' (2008) were used.
+##' 
+##' @param input.seq an object of class \code{sequence}.
+##' @param tol tolerance for the C routine, i.e., the value used to evaluate
+##' convergence.
+##' @return An object of class \code{sequence}, which is a list containing the
+##' following components: \item{seq.num}{a \code{vector} containing the
+##' (ordered) indices of markers in the sequence, according to the input file.}
+##' \item{seq.phases}{a \code{vector} with the linkage phases between markers
+##' in the sequence, in corresponding positions. \code{-1} means that there are
+##' no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
+##' recombination frequencies between markers in the sequence. \code{-1} means
+##' that there are no estimated recombination frequencies.}
+##' \item{seq.like}{log-likelihood of the corresponding linkage map.}
+##' \item{data.name}{name of the object of class \code{outcross} with the raw
+##' data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
+##' 2-point analyses.}
+##' @author Adapted from Karl Broman (package 'qtl') by Gabriel R A Margarido,
+##' \email{gramarga@@gmail.com} and Marcelo Mollinari, \email{mmollina@@usp.br}
+##' @seealso \code{\link[onemap]{make.seq}}
+##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
+##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
+##' 1.09-43
+##' 
+##' Jiang, C. and Zeng, Z.-B. (1997). Mapping quantitative trait loci with
+##' dominant and missing markers in various crosses from two inbred lines.
+##' \emph{Genetica} 101: 47-58.
+##' 
+##' Lander, E. S., Green, P., Abrahamson, J., Barlow, A., Daly, M. J., Lincoln,
+##' S. E. and Newburg, L. (1987) MAPMAKER: An interactive computer package for
+##' constructing primary genetic linkage maps of experimental and natural
+##' populations. \emph{Genomics} 1: 174-181.
+##' 
+##' Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002a) Simultaneous maximum
+##' likelihood estimation of linkage and linkage phases in outcrossing species.
+##' \emph{Theoretical Population Biology} 61: 349-363.
+##' 
+##' Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage mapping of
+##' sex-specific differences. \emph{Genetical Research} 79: 85-96
+##' @keywords utilities
+##' @examples
+##' 
+##'   data(example.out)
+##'   twopt <- rf.2pts(example.out)
+##' 
+##'   markers <- make.seq(twopt,c(30,12,3,14,2)) # correct phases
+##'   map(markers)
+##' 
+##'   markers <- make.seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
+##'   map(markers)
+##' 
 map <-
 function(input.seq,tol=10E-5) {
   # checking for correct object

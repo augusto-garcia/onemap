@@ -15,6 +15,56 @@
 #######################################################################
 
 # Function to assign markers to linkage groups
+
+
+##' Assign markers to linkage groups
+##' 
+##' Identifies linkage groups of markers, using results from two-point
+##' (pairwise) analysis and the \emph{transitive} property of linkage.
+##' 
+##' If the arguments specifying thresholds used to group markers, i.e., minimum
+##' LOD Score and maximum recombination fraction, are \code{NULL} (default),
+##' the values used are those contained in object \code{input.seq}. If not
+##' using \code{NULL}, the new values overridden the ones in object
+##' \code{input.seq}.
+##' 
+##' @aliases group print.group
+##' @param input.seq an object of class \code{sequence}.
+##' @param LOD a (positive) real number used as minimum LOD score (threshold)
+##' to declare linkage.
+##' @param max.rf a real number (usually smaller than 0.5) used as maximum
+##' recombination fraction to declare linkage.
+##' @param x an object of class \code{group}.
+##' @param detailed logical. If \code{FALSE}, only a small summary of the
+##' linkage groups is printed. If \code{TRUE} (default), the names of markers
+##' in each linkage group are also displayed.
+##' @param \dots further arguments, passed to other methods. Currently ignored.
+##' @return Returns an object of class \code{group}, which is a list containing
+##' the following components: \item{data.name}{name of the object of class
+##' \code{outcross} that contains the raw data.} \item{twopt}{name of the
+##' object of class \code{rf.2ts} used as input, i.e., containing information
+##' used to assign markers to linkage groups.} \item{marnames}{marker names,
+##' according to the input file.} \item{n.mar}{total number of markers.}
+##' \item{LOD}{minimum LOD Score to declare linkage.} \item{max.rf}{maximum
+##' recombination fraction to declare linkage.} \item{n.groups}{number of
+##' linkage groups found.} \item{groups}{number of the linkage group to which
+##' each marker is assigned.}
+##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com}
+##' @seealso \code{\link[onemap]{rf.2pts}} and \code{\link[onemap]{make.seq}}
+##' @references Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993)
+##' Constructing genetic linkage maps with MAPMAKER/EXP Version 3.0: a tutorial
+##' and reference manual. \emph{A Whitehead Institute for Biomedical Research
+##' Technical Report}.
+##' @keywords misc
+##' @examples
+##' 
+##'   data(example.out)
+##'   twopts <- rf.2pts(example.out)
+##'   
+##'   all.data <- make.seq(twopts,"all")
+##'   link_gr <- group(all.data)
+##'   link_gr
+##' 
 group <-
 function(input.seq, LOD=NULL, max.rf=NULL) {
   # checking for correct object

@@ -16,6 +16,67 @@
 
 # This function searches for alternative orders, by comparing all possible
 # orders of subsets of markers
+
+
+##' Compares and displays plausible alternative orders for a given linkage
+##' group
+##' 
+##' For a given sequence of ordered markers, computes the multipoint likelihood
+##' of alternative orders, by shuffling subsets (windows) of markers within the
+##' sequence. For each position of the window, all possible \eqn{(ws)!}{(ws)!}
+##' orders are compared.
+##' 
+##' Large values for the window size make computations very slow, specially if
+##' there are many partially informative markers.
+##' 
+##' @param input.seq an object of class \code{sequence} with a predefined
+##' order.
+##' @param ws an integer specifying the length of the window size (defaults to
+##' 4).
+##' @param LOD threshold for the LOD-Score, so that alternative orders with LOD
+##' less then or equal to this threshold will be displayed.
+##' @param tol tolerance for the C routine, i.e., the value used to evaluate
+##' convergence.
+##' @return This function does not return any value; it just produces text
+##' output to suggest alternative orders.
+##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com}
+##' @seealso \code{\link[onemap]{make.seq}}, \code{\link[onemap]{compare}},
+##' \code{\link[onemap]{try.seq}} and \code{\link[onemap]{order.seq}}.
+##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
+##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
+##' 1.09-43
+##' 
+##' Jiang, C. and Zeng, Z.-B. (1997). Mapping quantitative trait loci with
+##' dominant and missing markers in various crosses from two inbred lines.
+##' \emph{Genetica} 101: 47-58.
+##' 
+##' Lander, E. S., Green, P., Abrahamson, J., Barlow, A., Daly, M. J., Lincoln,
+##' S. E. and Newburg, L. (1987) MAPMAKER: An interactive computer package for
+##' constructing primary genetic linkage maps of experimental and natural
+##' populations. \emph{Genomics} 1: 174-181.
+##' 
+##' Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia, A. A. F.
+##' (2009) Evaluation of algorithms used to order markers on genetics maps.
+##' \emph{Heredity} 103: 494-502.
+##' 
+##' Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002a) Simultaneous maximum
+##' likelihood estimation of linkage and linkage phases in outcrossing species.
+##' \emph{Theoretical Population Biology} 61: 349-363.
+##' 
+##' Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage mapping of
+##' sex-specific differences. \emph{Genetical Research} 79: 85-96
+##' @keywords utilities
+##' @examples
+##' 
+##' \dontrun{
+##'   data(example.out)
+##'   twopt <- rf.2pts(example.out)
+##'   
+##'   markers <- make.seq(twopt,c(27,16,20,4,19,21,23,9,24,29))
+##'   markers.map <- map(markers)
+##'   ripple.seq(markers.map)
+##' }
+##' 
 ripple.seq <-
 function(input.seq,ws=4,LOD=3,tol=10E-2) {
   # checking for correct objects

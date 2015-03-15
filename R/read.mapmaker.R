@@ -17,6 +17,66 @@
 #######################################################################
 
 ## Function to read data in MAPMAKER style from input file
+
+
+##' Read data from a Mapmaker raw file
+##' 
+##' Imports data from a Mapmaker raw file.
+##' 
+##' For details about MAPMAKER files see \cite{Lincoln et al.} (1993). The
+##' current version supports backcross, \eqn{F_2} and RIL populations. The file
+##' can contain phenotypic data, but it will not be used in the analysis.
+##' 
+##' @param dir directory where the input file is located.
+##' @param file the name of the input file which contains the data to be read.
+##' @return An object of class \code{bc.onemap}, \code{f2.onemap},
+##' \code{riself.onemap} or \code{risib.onemap} i.e., a list with the following
+##' components: \item{geno}{a matrix with integers indicating the genotypes
+##' read for each marker in \code{onemap} fashion. Each column contains data
+##' for a marker and each row represents an individual.}
+##' 
+##' \item{geno.mmk}{a list containing the type of cross and a matrix with
+##' integers indicating the genotypes read for each marker in
+##' \code{MAPMAKER/EXP} fashion, i.e., 1, 2, 3: AA, AB, BB, respectively; 3, 4:
+##' BB, not BB, respectively; 1, 5: AA, not AA, respectively. Each column
+##' contains data for a marker and each row represents an individual.}
+##' 
+##' \item{n.ind}{number of individuals.} \item{n.mar}{number of markers.}
+##' \item{segr.type}{a vector with the segregation type of each marker, as
+##' \code{strings}. Segregation types were adapted from outcross segregation
+##' types, using the same notation. For details see \link{read.outcross}.}
+##' \item{segr.type.num}{a vector with the segregation type of each marker,
+##' represented in a simplified manner as integers. Segregation types were
+##' adapted from outcross segregation types. For details see
+##' \link{read.outcross}.} \item{phase}{a numeric vector containing the linkage
+##' phase information between markers, i.e., 1 for coupling and -1 for
+##' repulsion, which is trivial for backcrosses, \eqn{F_2} and RILs.}
+##' \item{input}{the name of the input file.} \item{n.phe}{number of
+##' phenotypes.} \item{pheno}{a matrix with phenotypic values.  Each column
+##' contains data for a trait and each row represents an individual. Currently
+##' ignored.}
+##' @author Adapted from Karl Broman (package \pkg{qtl}) by Marcelo Mollinari,
+##' \email{mmollina@@usp.br}
+##' @seealso \code{fake.bc.onemap} and \code{fake.f2.onemap} directory in the
+##' package source.
+##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
+##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
+##' 1.09-43
+##' 
+##' Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993) Constructing genetic
+##' linkage maps with MAPMAKER/EXP Version 3.0: a tutorial and reference
+##' manual. \emph{A Whitehead Institute for Biomedical Research Technical
+##' Report}.
+##' @keywords IO
+##' @examples
+##' 
+##'   \dontrun{
+##'     map_data <-read.mapmaker(dir="work_directory",file="data_file.txt")
+##'     #Checking 'fake.f2.onemap'
+##'     data(fake.f2.onemap)
+##'     names(fake.f2.onemap)
+##'   }
+##' 
 read.mapmaker<-function (dir, file) 
 {
   ## create file name

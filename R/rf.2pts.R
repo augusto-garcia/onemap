@@ -15,6 +15,54 @@
 #######################################################################
 
 ## Function to perform two-point analyses for all markers in a data set
+
+
+##' Two-point analysis between genetic markers
+##' 
+##' Performs the two-point (pairwise) analysis proposed by \cite{Wu et al.
+##' (2002)} between all pairs of markers.
+##' 
+##' For \code{n} markers, there are \deqn{\frac{n(n-1)}{2}}{n*(n-1)/2} pairs of
+##' markers to be analyzed. Therefore, completion of the two-point analyses can
+##' take a long time.
+##' 
+##' @aliases rf.2pts print.rf.2pts
+##' @param input.obj an object of class \code{outcross}, \code{bc.onemap},
+##' \code{f2.onemap}, \code{riself.onemap} or \code{risib.onemap}.
+##' @param LOD minimum LOD Score to declare linkage (defaults to \code{3}).
+##' @param max.rf maximum recombination fraction to declare linkage (defaults
+##' to \code{0.50}).
+##' @param verbose logical. If \code{TRUE}, current progress is shown; if
+##' \code{FALSE}, no output is produced.
+##' @param x an object of class \code{rf.2pts}.
+##' @param mrk1,mrk2 optionally, two markers can be specified. If so, detailed
+##' results of the two-point analysis will be printed for this pair. Both
+##' arguments can be numeric or character strings indicating the numbers/names
+##' corresponding to any markers in the input file.
+##' @param \dots further arguments, passed to other methods. Currently ignored.
+##' @return An object of class \code{rf.2pts}, which is a list containing the
+##' following components: \item{data.name}{name of the object with the raw
+##' data.} \item{n.mar}{total number of markers.} \item{marnames}{marker names,
+##' according to the input file.} \item{LOD}{minimum LOD Score to declare
+##' linkage.} \item{max.rf}{maximum recombination fraction to declare linkage.}
+##' \item{input}{the name of the input file.} \item{analysis}{an array with the
+##' complete results of the two-point analysis for each pair of markers.}
+##' @note The thresholds used for \code{LOD} and \code{max.rf} will be used in
+##' subsequent analyses, but can be overriden.
+##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com}
+##' @references Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002)
+##' Simultaneous maximum likelihood estimation of linkage and linkage phases in
+##' outcrossing species. \emph{Theoretical Population Biology} 61: 349-363.
+##' @keywords utilities
+##' @examples
+##' 
+##'   data(example.out)
+##' 
+##'   twopts <- rf.2pts(example.out,LOD=3,max.rf=0.5) # perform two-point analyses
+##'   twopts
+##' 
+##'   print(twopts,"M1","M2") # detailed results for markers 1 and 2
+##' 
 rf.2pts <- 
 function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE) {
   ## checking for correct object

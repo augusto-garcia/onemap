@@ -15,6 +15,89 @@
 #######################################################################
 
 # Function to create sequences based on other object types
+
+
+##' Create a sequence of markers
+##' 
+##' Makes a sequence of markers based on an object of another type.
+##' 
+##' 
+##' @param input.obj an object of class \code{rf.2pts}, \code{group},
+##' \code{compare}, \code{try} or \code{order}.
+##' @param arg its value depends on the type of object \code{input.obj}. For an
+##' object \code{rf.2pts}, \code{arg} can be the string "all", resulting in a
+##' sequence with all markers in the raw data (generally done for grouping
+##' markers); otherwise, it must be a \code{vector} of integers specifying
+##' which markers comprise the sequence. For an object of class \code{group},
+##' \code{arg} must be an integer specifying the group. For a \code{compare}
+##' object, \code{arg} is an integer indicating the corresponding order
+##' (arranged according to the likelihood); if \code{NULL} (default), the best
+##' order is taken. For an object of class \code{try}, \code{arg} must be an
+##' integer less than or equal to the length of the original sequence plus one;
+##' the sequence obtained will be that with the additional marker in the
+##' position indicated by \code{arg}.  Finally, for an \code{order} object,
+##' \code{arg} is a string: "safe" means the order that contains only markers
+##' mapped with the provided threshold; "force" means the order with all
+##' markers.
+##' @param phase its value is also dependent on the type of \code{input.obj}.
+##' For an \code{rf.2pts} object, \code{phase} can be a \code{vector} with
+##' user- defined linkage phases (its length is equal to the number of markers
+##' minus one); if \code{NULL} (default), other functions will try to find the
+##' best linkage phases. For example, if \code{phase} assumes the vector
+##' \code{c(1,2,3,4)}, the sequence of linkage phases will be couple/couple,
+##' couple/repulsion, repulsion/couple and repulsion/repulsion for a sequence
+##' of five markers. If \code{input.obj} is of class \code{compare} or
+##' \code{try}, this argument indicates which combination of linkage phases
+##' should be chosen, for the particular order given by argument \code{arg}.
+##' In both cases, \code{NULL} (default) makes the best combination to be
+##' taken. If \code{input.obj} is of class \code{group} or \code{order}, this
+##' argument has no effect.
+##' @param twopt a \code{string} indicating the name of the object which
+##' contains the two-point information. This does not have to be defined by the
+##' user: it is here for compatibility issues when calling \code{make.seq} from
+##' inside other functions.
+##' @return An object of class \code{sequence}, which is a list containing the
+##' following components: \item{seq.num}{a \code{vector} containing the
+##' (ordered) indices of markers in the sequence, according to the input file.}
+##' \item{seq.phases}{a \code{vector} with the linkage phases between markers
+##' in the sequence, in corresponding positions. \code{-1} means that there are
+##' no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
+##' recombination frequencies between markers in the sequence. \code{-1} means
+##' that there are no estimated recombination frequencies.}
+##' \item{seq.like}{log-likelihood of the corresponding linkage map.}
+##' \item{data.name}{name of the object of class \code{outcross} with the raw
+##' data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
+##' 2-point analyses.}
+##' @author Gabriel Margarido, \email{gramarga@@gmail.com}
+##' @seealso \code{\link[onemap]{compare}}, \code{\link[onemap]{try.seq}},
+##' \code{\link[onemap]{order.seq}} and \code{\link[onemap]{map}}.
+##' @references Lander, E. S., Green, P., Abrahamson, J., Barlow, A., Daly, M.
+##' J., Lincoln, S. E. and Newburg, L. (1987) MAPMAKER: An interactive computer
+##' package for constructing primary genetic linkage maps of experimental and
+##' natural populations. \emph{Genomics} 1: 174-181.
+##' @keywords utilities
+##' @examples
+##' 
+##' \dontrun{
+##'   data(example.out)
+##'   twopt <- rf.2pts(example.out)
+##' 
+##'   all.mark <- make.seq(twopt,"all")
+##'   all.mark <- make.seq(twopt,1:30) # same as above, for this data set
+##'   groups <- group(all.mark)
+##'   LG1 <- make.seq(groups,1)
+##'   LG1.ord <- order.seq(LG1)
+##'   (LG1.final <- make.seq(LG1.ord)) # safe order
+##'   (LG1.final.all <- make.seq(LG1.ord,"force")) # forced order
+##' 
+##'   markers <- make.seq(twopt,c(2,3,12,14))
+##'   markers.comp <- compare(markers)
+##'   (base.map <- make.seq(markers.comp))
+##'   base.map <- make.seq(markers.comp,1,1) # same as above
+##'   (extend.map <- try.seq(base.map,30))
+##'   (base.map <- make.seq(extend.map,5)) # fifth position is the best
+##' }
+##' 
 make.seq <- 
 function(input.obj, arg=NULL, phase=NULL, twopt=NULL) {
   # checking for correct object

@@ -14,6 +14,53 @@
 #                                                                     #
 #######################################################################
 
+
+
+##' Draw a genetic map
+##' 
+##' Provides a simple draw of a genetic map.
+##' 
+##' 
+##' @param map.list a map, i.e. an object of class \code{sequence} with a
+##' predefined order, linkage phases, recombination fraction and likelihood;
+##' also it could be a list of maps.
+##' @param horizontal if \code{TRUE}, indicates that the map should be plotted
+##' horizontally. Default is \code{FALSE}
+##' @param names if \code{TRUE}, displays the names of the markers. Default is
+##' \code{FALSE}
+##' @param grid if \code{TRUE}, displays a grid in the background. Default is
+##' \code{FALSE}
+##' @param cex.mrk the magnification to be used for markers.
+##' @param cex.grp the magnification to be used for group axis annotation.
+##' @author Marcelo Mollinari, \email{mmollina@@usp.br}
+##' @keywords rqtl
+##' @examples
+##' 
+##' \dontrun{
+##'  #outcross example
+##'   data(example.out)
+##'   twopt <- rf.2pts(example.out)
+##'   lg<-group(make.seq(twopt, "all"))
+##'   maps<-vector("list", lg$n.groups)
+##'   for(i in 1:lg$n.groups)
+##'      maps[[i]]<- make.seq(order.seq(input.seq= make.seq(lg,i),twopt.alg =
+##'    "rcd"), "force")
+##'   draw.map(maps, grid=TRUE)
+##'   draw.map(maps, grid=TRUE, horizontal=TRUE)
+##' 
+##'   #F2 example
+##'   data(fake.f2.onemap)
+##'   twopt<-rf.2pts(fake.f2.onemap)
+##'   lg<-group(make.seq(twopt, "all"))
+##'   maps<-vector("list", lg$n.groups)
+##'   for(i in 1:lg$n.groups)
+##'      maps[[i]]<- make.seq(order.seq(input.seq= make.seq(lg,i),twopt.alg =
+##'    "rcd"), "force")
+##'   draw.map(maps, grid=TRUE)
+##'   draw.map(maps, grid=TRUE, horizontal=TRUE)
+##' 
+##' }
+##' 
 draw.map<-function(map.list, horizontal=FALSE, names=FALSE, grid=FALSE, cex.mrk=1, cex.grp=.75){
   ## checking for correct object
   if(!any(class(map.list)=="list" | class(map.list)=="sequence")) stop(deparse(substitute(map.list))," is not an object of class 'list' or 'sequnece'")
