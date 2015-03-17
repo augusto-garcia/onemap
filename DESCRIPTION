@@ -1,8 +1,8 @@
 Package: onemap
 Title: Software for constructing genetic maps in experimental crosses:
         full-sib, RILs, F2 and backcrosses
-Version: 2.0-4
-Date: March 15, 2014
+Version: 2.0-5
+Date: March 17, 2014
 Authors@R: c(person("Gabriel", "Margarido", role = "aut", email =
         "gramarga@gmail.com"), person("Marcelo", "Mollinari", role =
         c("aut", "cre"), email = "mmollina@usp.br"), person("Karl",
