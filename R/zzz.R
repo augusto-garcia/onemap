@@ -3,7 +3,7 @@
 # Package: onemap                                                     #
 #                                                                     #
 # zzz.R                                                               #
-# Contains: .First.lib                                                #
+# Contains: .onemapEnv                                                #
 #                                                                     #
 # Written by Gabriel Rodrigues Alves Margarido and Marcelo Mollinari  #
 # copyright (c) 2007, Gabriel R A Margarido                           #
@@ -14,7 +14,6 @@
 #                                                                     #
 #######################################################################
 
-.First.lib <- function(lib, pkg) library.dynam("onemap", pkg, lib)
 .onemapEnv <- new.env()
 assign(".map.fun",  "kosambi", envir = .onemapEnv)
 # end of file
