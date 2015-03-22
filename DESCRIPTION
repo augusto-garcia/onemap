@@ -10,7 +10,9 @@ Authors@R: c(person("Gabriel", "Margarido", role = "aut", email =
         person("Augusto", "Garcia", role = c("aut", "ctb"), email =
         "augusto.garcia@usp.br"))
 Depends: tcltk, tkrplot, R (>= 2.12.0)
-Suggests: qtl
+Suggests: qtl, knitr
+VignetteBuilder: knitr
+Encoding: UTF-8
 Description: Analysis of molecular marker data from model (backcrosses,
         F2 and recombinant inbred lines) and non-model systems (i. e.
         outcrossing species). For the later, it allows statistical
