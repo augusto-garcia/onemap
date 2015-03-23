@@ -258,7 +258,7 @@ write.table(x=summary(dat), file="testsum.txt", quote=FALSE)
 The first argument is the output of the _summary_ function. Note that
 is possible to use a function as an argument of another one. The
 second argument is the name of the file in which the summary will be
-written. Notice that this will happen in the {\it working directory},
+written. Notice that this will happen in the _working directory_,
 previously set through RStudio menus. The third argument eliminates
 double quotes from the output file. After running the command, you can
 look for the file _testsum.txt_ in the working directory you defined
