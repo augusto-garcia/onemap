@@ -56,4 +56,11 @@ github. To install `OneMap` from this repo:
 install_github("augusto-garcia/onemap")
 ```
 
+# Tutorials
 
+You can read _OneMap_ tutorials going to the vignettes of the
+installed package, or clicking below. Please, start with the overview,
+that will guide you through another chapters.
+
+1. [Overview]()
+2. [Introduction to R]()
