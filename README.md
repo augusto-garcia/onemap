@@ -62,5 +62,5 @@ You can read _OneMap_ tutorials going to the vignettes of the
 installed package, or clicking below. Please, start with the overview,
 that will guide you through another chapters.
 
-1. [Overview](https://github.com/augusto-garcia/onemap/blob/master/vignettes_html/Overview.html)
+1. [Overview](http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/vignettes_html/Overview.html)
 2. [Introduction to R](https://github.com/augusto-garcia/onemap/blob/master/vignettes/Introduction_R.Rmd)
