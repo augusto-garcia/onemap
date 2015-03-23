@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Overview</title>
+<link rel="stylesheet" media="all" href="http://jashkenas.github.io/docco/resources/linear/public/stylesheets/normalize.css" />
+<link rel="stylesheet" media="all" href="http://jashkenas.github.io/docco/resources/linear/docco.css" />
+<link href='http://yihui.name/media/css/docco-linear.css' rel='stylesheet' type='text/css'>
+<style type="text/css">
+img{display:block;margin:auto;}
+.container{width:auto;max-width:920px;}
+.page{width:auto;max-width:800px;}
+.page pre{width:100%;max-width:768px;}
+pre, code{font-size:90%;}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="http://yihui.name/media/js/center-images.js"></script>
+<!-- MathJax scripts -->
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+</head>
+
+<body>
+  <div class="container">
+    <div class="page">
+<!--
+%\VignetteEngine{knitr::docco_linear}
+%\VignetteIndexEntry{Overview}
+-->
+
+<h1>Overview</h1>
+
+<p><em>OneMap</em> is an environment for constructing linkage maps in several
+experimental crosses, including outcrossing (full-sib families derived
+from two non-homozygous parents), RILs, F\(_2\) and backcrosses.</p>
+
+<p>It is implemented as a package to be used under the freely distributed
+R software, which is a language and environment for statistical
+computing (<a href="www.r-project.org">www.r-project.org</a>). It is designed to
+be fully integrated with R/qtl package (Broman and Sen, 2009) and
+Windows QTL Cartographer (Wang et al., 2010) in order to do QTL
+mapping for RILs, F\(_2\) and backcrosses. New functions for doing QTL
+mapping in outcrossing species (e. g. using models from Gazaffi et al.
+2014) are under development and will be included in a near future.</p>
+
+<p>Wu et al. (2002a) proposed a methodology to construct genetic maps in
+outcrossing species, which allows the analysis of a mixed set of
+different marker types containing various segregation patterns. Also,
+it allows the simultaneous estimation of linkage and linkage phases
+between markers. Combined with ideas from Wu et al. (2002b) for doing
+multipoint analysis based on hidden Markov models (HMMs), it provides
+an excellent framework for genetic mapping in outcrossing species, in
+a similar way as for inbred-based populations, commonly analyzed by
+packages such as MAPMAKER/EXP (Lander et al., 1987).</p>
+
+<p>This method was implemented in <em>OneMap</em> and was tested through
+extensive simulations. It was also successfully applied by author(s)
+of the packages and their collaborators in the construction of genetic
+maps of sugarcane (Garcia et al., 2006; Oliveira et al., 2007;
+Palhares et al. 2013), <em>Passiflora</em> (Oliveira et al., 2008; Pereira et
+al., 2013), rubber tree (Souza et al., 2013) and Acca sellowiana
+(Quezada et al., 2014). Actually, the analysis of these data sets
+motivated the implementation of the first release of <em>OneMap</em>
+(Margarido et al., 2007) and all its subsequent updates.</p>
+
+<p>In version 2.0-0, we included several major modifications to take
+advantage of the fact that some segregation patterns that occur in
+outcrossing populations can also occur in populations derived from
+inbred lines (i.e. RILs, F\(_2\) and backcrosses). For example, a marker
+that segregates in a 1:2:1 fashion in the outcrossing context can be
+viewed as a co-dominant marker in F\(_2\) populations. The main
+difference is that, for the later, there is no need to estimate
+linkage phases.</p>
+
+<p>Using these ideas, we adapted <em>OneMap</em> to also construct genetic maps
+for RILs, F\(_2\) and backcross populations, all incorporating the
+advantages of the HMMs. Moreover, we also implemented three new
+ordination algorithms. Version 1.0-0 had Rapid Chain Delineation - RCD
+(Doerge, 1996) and TRY (Lander et al., 1987); starting in version
+2.0-0, the new ones available are Seriation - SER (Buetow and
+Chakravarti, 1987), recombination counting and ordering - RECORD (Van
+Os et al., 2005) and unidirectional growth - UG (Tan and Fu, 2006).
+They can be used for all experimental crosses included in <em>OneMap</em>,
+and can be chosen to give the best result for any situation faced by
+the user (Mollinari et al., 2009).</p>
+
+<p><em>OneMap</em> is available as source code for Windows, Linux and Mac OS. It
+is released under the GNU General Public License, is open-source and
+the code can be changed freely. It comes with no warranty.</p>
+
+<p>No advanced knowledge in R is required to use <em>OneMap</em>. Several
+researchers around the world had contacted us to provide feedback and
+suggestions. If you do not know R, we wrote a short vignette with and
+introduction to R, where we address the basic knowledge required to
+start using <em>OneMap</em>. People with some knowledge of R could just skip
+this part.</p>
+
+<p>We also wrote a chapter with information about <em>OneMap</em> installation,
+as well as sections showing the usage of <em>OneMap</em> building linkage
+maps for outcrossing (non-inbred) populations, as well as F\(_2\)
+populations (which can also be applied to backcrosses and RILs).</p>
+
+<p>All sections could be read independently. So, you can just move to the
+part you are interested. So, good luck, and let us know if you have
+suggestions to improve the package!</p>
+
+<h1>How to Cite</h1>
+
+<p>Margarido G. R. A., Souza A. P., Garcia A. A. F., 2007. OneMap:
+software for genetic mapping in outcrossing species. <em>Hereditas</em>
+<strong>144</strong>: 78–79.</p>
+
+<h1>References</h1>
+
+<p>Broman K. W., Sen Ś., 2009. A Guide to QTL Mapping with R/qtl.
+Springer, New York.</p>
+
+<p>Wang S., Basten, C. J. and Zeng Z.-B. Windows QTL Cartographer 2.5.
+Department of Statistics, North Carolina State University, Raleigh,
+NC, 2010.
+<a href="http://statgen.ncsu.edu/qtlcart/WQTLCart.htm">http://statgen.ncsu.edu/qtlcart/WQTLCart.htm</a></p>
+
+<p>Wu, R., Ma, C.X., Painter, I. and Zeng, Z.-B. 2002a. Simultaneous
+maximum likelihood estimation of linkage and linkage phases in
+outcrossing species. <em>Theoretical Population Biology</em> <strong>61</strong>: 349-363.</p>
+
+<p>Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. 2002b. Linkage mapping of
+sex-specific differences. <em>Genetical Research</em> <strong>79</strong>: 85-96.</p>
+
+<p>Gazaffi R., Margarido G. R. A., Pastina M. M., Mollinari M., Garcia A.
+A. F., 2014. A model for quantitative trait loci mapping, linkage
+phase, and segregation pattern estimation for a full-sib progeny.
+<em>Tree Genet. Genomes</em> <strong>10</strong>: 791–801.</p>
+
+<p>Lander, E.S., Green, P., Abrahanson, J., Barlow, A., Daly, M.J.,
+Lincoln, S.E. and Newburg, L. 1987. MAPMAKER, An interactive computing
+package for constructing primary genetic linkage maps of experimental
+and natural populations. <em>Genomics</em> <strong>1</strong>: 174-181.</p>
+
+<p>Garcia A. A. F., Kido E. A., Meza A. N., Souza H. M. B., Pinto L. R.,
+Pastina M. M., Leite C. S., Silva J. A. G. da, Ulian E. C., Figueira
+A. V, Souza A. P., 2006. Development of an integrated genetic map of a
+sugarcane (<em>Saccharum spp.</em>) commercial cross, based on a
+maximum-likelihood approach for estimation of linkage and linkage
+phases. <em>Theor. Appl. Genet.</em> <strong>112</strong>: 298–314.</p>
+
+<p>Oliveira K. M., Pinto L. R., Marconi T. G., Margarido G. R. A.,
+Pastina M. M., Teixeira L. H. M., Figueira A. V, Ulian E. C., Garcia
+A. A. F., Souza A. P., 2007. Functional integrated genetic linkage map
+based on EST-markers for a sugarcane (Saccharum spp.) commercial
+cross. <em>Mol. Breed.</em> <strong>20</strong>: 189–208.</p>
+
+<p>Palhares A. C., Rodrigues-Morais T. B., Sluys M.-A. Van, Domingues D.
+S., Maccheroni W., Jordão H., Souza A. P., Marconi T. G., Mollinari
+M., Gazaffi R., Garcia A. A. F., Vieira M. L. C., 2012. A novel
+linkage map of sugarcane with evidence for clustering of
+retrotransposon-based markers. <em>BMC Genet.</em> <strong>13</strong>: 51.</p>
+
+<p>Oliveira E. J., Vieira M. L. C., Garcia A. A. F., Munhoz C. F.,
+Margarido G. R. A., Consoli L., Matta F. P., Moraes M. C., Zucchi M.
+I., Fungaro M. H. P., 2008. An Integrated Molecular Map of Yellow
+Passion Fruit Based on Simultaneous Maximum-Likehood Estimation of
+Linkage and Linkage Phases. <em>J. Am. Soc. Hortic. Sci.</em> <strong>133</strong>: 35–41.</p>
+
+<p>Pereira G. S., Nunes E. S., Laperuta L. D. C., Braga M. F., Penha H.
+a., Diniz A. L., Munhoz C. F., Gazaffi R., Garcia A. a. F., Vieira M.
+L. C., 2013. Molecular polymorphism and linkage analysis in sweet
+passion fruit, an outcrossing species. <em>Ann. Appl. Biol.</em> <strong>162</strong>:
+347–361.</p>
+
+<p>Souza L. M., Gazaffi R., Mantello C. C., Silva C. C., Garcia D., Guen
+V. Le, Cardoso S. E. A., Garcia A. A. F., Souza A. P., 2013. QTL
+Mapping of Growth-Related Traits in a Full-Sib Family of Rubber Tree
+(Hevea brasiliensis) Evaluated in a Sub-Tropical Climate. <em>PLoS One</em>
+<strong>8</strong>: e61238.</p>
+
+<p>Quezada M., Pastina M. M., Ravest G., Silva P., Vignale B., Cabrera
+D., Hinrichsen P., Garcia A. A. F., Pritsch C., 2014. A first genetic
+map of Acca sellowiana based on ISSR, AFLP and SSR markers. <em>Sci.
+Hortic.</em> <strong>169</strong>: 138–146.</p>
+
+<p>Doerge, R.W. 1996. Constructing genetic maps by rapid chain
+delineation. <em>Journal of Agricultural Genomics</em> <strong>2</strong>.</p>
+
+<p>Buetow, K. H., Chakravarti, A. 1987. Multipoint gene mapping using
+seriation. I. General methods. <em>American Journal of Human Genetics</em>
+<strong>41</strong>: 180-188.</p>
+
+<p>Van Os H, Stam P, Visser R.G.F., Van Eck H.J. 2005. RECORD: a novel
+method for ordering loci on a genetic linkage map. <em>Theor. Appl.
+Genet.</em> <strong>112</strong>: 30-40.</p>
+
+<p>Tan, Y., Fu, Y. 2006. A novel method for estimating linkage maps.
+<em>Genetics</em> <strong>173</strong>: 2383-2390.</p>
+
+<p>Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia, A. A.
+F. 2009. Evaluation of algorithms used to order markers on genetics
+maps. <em>Heredity</em> <strong>103</strong>: 494-502.</p>
+
+      <div class="fleur">h</div>
+    </div>
+  </div>
+</body>
+</html>
