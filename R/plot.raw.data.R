@@ -1,9 +1,50 @@
-#####
-plot.bc.onemap <- function(df) {
+#######################################################################
+#                                                                     #
+# Package: onemap                                                     #
+#                                                                     #
+# File: plot.raw.data.R                                               #
+# Contains: plot.bc.onemap, plot.riself.onemap, plot.risib.onemap,    #
+# plot.f2.onemap, create.dataframe.outcross.plot, plot.outcross       #
+#                                                                     #
+# Written by Antonio Augusto Franco Garcia                            #
+# copyright (c) 2015 Antonio Augusto Franco Garcia                    #
+#                                                                     #
+# First version: 2015/03/31                                           #
+# Last update: 2015/03/31                                             #
+# License: GNU General Public License version 3 or later              #
+#                                                                     #
+#######################################################################
+
+##' plot.bc.onemap
+##' 
+##' Draw a graphic of raw data for a backcross population, using ggplot2.
+##' Lines correspond to markers and columns for individuals.
+##' The graphic is a "heatmap", whose name in ggplot2 is "tile".
+##' The function receives a onemap object of class bc.onemap, reads information
+##' from genotypes from this object, convert it to a long dataframe format
+##' using function melt() from package reshape2(), converts numbers from the object
+##' to genetic notation (AA, AB, -), then plot the graphic.
+##' If there is more than 20 markers, removes y labels
+##'
+##' @param x an object of class bc.onemap, with data and additional information
+##'
+##' @return a ggplot graphic
+##'
+##' @examples
+##' data(fake.bc.onemap) # Loads a fake backcross dataset installed with onemap
+##' plot(fake.bc.onemap) # This will show you the graph
+##'
+##' # You can store the graphic in an object, then save it.
+##' # For details, see the help of ggplot2's function ggsave()
+##' g <- plot(fake.bc.onemap)
+##' ggsave("MyRawData.jpg", g, width=7, height=4, dpi=600)
+##'
+##' @export
+plot.bc.onemap <- function(x) {
     # Creating the data frame
-    df.BC <- data.frame(df$geno)
+    df.BC <- data.frame(x$geno)
     df.BC <- melt(df.BC) # function from package reshape
-    df.BC <- cbind(ind=1:df$n.ind, df.BC)
+    df.BC <- cbind(ind=1:x$n.ind, df.BC)
     df.BC$value <- factor(df.BC$value)
     # Defining the label for genotypes
     if (suppressWarnings(all(levels(df.BC$value)==c("0","1","2")))) labels.bc <- c("-","AA","AB")
@@ -12,18 +53,57 @@ plot.bc.onemap <- function(df) {
     g <- ggplot(data=df.BC, aes(x=ind, y=variable, fill=factor(value)))
     g <- g + geom_tile()
     g <- g + xlab("Individual") + ylab("Marker") +
-        scale_fill_manual(name="Genotype",labels=labels.bc, values=c("#F21A00","#3B9AB2","#EBCC2A")) 
-    if (df$n.mar>20) g <- g + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
-    g
+        scale_fill_manual(name="Genotype",labels=labels.bc,
+                          values=c("#F21A00","#3B9AB2","#EBCC2A")) 
+    if (x$n.mar>20) g <- g + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+    return(g)
 }
 ###
 
-#####
-plot.riself.onemap <- function(df) {
+
+library(onemap)
+library(reshape2)
+
+data(fake.bc.onemap)
+plot(fake.bc.onemap)
+g <- plot(fake.bc.onemap)
+ggsave("MyRawData.jpg",g,width=7, height=4, dpi=600)
+
+BC1 <- read.mapmaker(dir="~/Dropbox/Disciplinas/LGN\ 5830\ -\ Biometria\ de\ Marcadores\ Genéticos/Dados\ experimentais", file="mouse.raw")
+BC2 <- read.mapmaker(dir="~/Dropbox/Disciplinas/LGN\ 5830\ -\ Biometria\ de\ Marcadores\ Genéticos/Dados\ experimentais", file="mouse2.raw")
+BC3 <- read.mapmaker(dir="~/Dropbox/Disciplinas/LGN\ 5830\ -\ Biometria\ de\ Marcadores\ Genéticos/Dados\ experimentais", file="mouse3.raw")
+BC4 <- read.mapmaker(dir="~/Dropbox/Disciplinas/LGN\ 5830\ -\ Biometria\ de\ Marcadores\ Genéticos/Dados\ experimentais", file="mouse4.raw")
+
+plot(BC1)
+plot(BC2)
+plot(BC3)
+plot(BC4)
+
+
+##' plot.riself.onemap
+##' 
+##' Draw a graphic of raw data for a RIL population (made by selfing), using ggplot2.
+##' Lines correspond to markers and columns for individuals.
+##' The graphic is a "heatmap", whose name in ggplot2 is "tile".
+##' The function receives a onemap object of class riself.onemap, reads information
+##' from genotypes from this object, convert it to a long dataframe format
+##' using function melt() from package reshape2(), converts numbers from the object
+##' to genetic notation (AA, BB, -), then plot the graphic.
+##' If there is more than 20 markers, removes y labels
+##'
+##' @param x an object of class riself.onemap, with data and additional information
+##'
+##' @return a ggplot graphic
+##'
+##' @examples
+##' # Please, see examples for plot.bc.onemap; the only difference is the dataset
+##'
+##' @export
+plot.riself.onemap <- function(x) {
     # Creating the data frame
-    df.RIL <- data.frame(df$geno)
+    df.RIL <- data.frame(x$geno)
     df.RIL <- melt(df.RIL) # function from package reshape
-    df.RIL <- cbind(ind=1:df$n.ind, df.RIL)
+    df.RIL <- cbind(ind=1:x$n.ind, df.RIL)
     df.RIL$value <- factor(df.RIL$value)
     # Defining the label for genotypes
     if (suppressWarnings(all(levels(df.RIL$value)==c("0","1","2")))) labels.ril <- c("-","AA","BB")
@@ -33,31 +113,47 @@ plot.riself.onemap <- function(df) {
     g <- g + geom_tile()
     g <- g + xlab("Individual") + ylab("Marker") +
     scale_fill_manual(name="Genotype",labels=labels.ril, values=c("#F21A00","#3B9AB2","#EBCC2A")) 
-    if (df$n.mar>20) g <- g + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
-    g
+    if (x$n.mar>20) g <- g + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+    return(g)
 }
 ###
 
-#####
-plot.risib.onemap <- function(df) {
-    # Creating the data frame
-    df.RIL <- data.frame(df$geno)
-    df.RIL <- melt(df.RIL) # function from package reshape
-    df.RIL <- cbind(ind=1:df$n.ind, df.RIL)
-    df.RIL$value <- factor(df.RIL$value)
-    # Defining the label for genotypes
-    if (suppressWarnings(all(levels(df.RIL$value)==c("0","1","2")))) labels.ril <- c("-","AA","BB")
-    else if (all(levels(df.RIL$value)==c("1","2"))) labels.ril <- c("AA","BB")
-    # Plotting
-    g <- ggplot(data=df.RIL, aes(x=ind, y=variable, fill=factor(value)))
-    g <- g + geom_tile()
-    g <- g + xlab("Individual") + ylab("Marker") +
-    scale_fill_manual(name="Genotype",labels=labels.ril, values=c("#F21A00","#3B9AB2","#EBCC2A")) 
-    if (df$n.mar>20) g <- g + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
-    g
-}
-###
 
+RIL1 <- read.mapmaker(dir="~/Dropbox/Disciplinas/LGN\ 5830\ -\ Biometria\ de\ Marcadores\ Genéticos/Dados\ experimentais", file="feijao.raw")
+RIL2 <- read.mapmaker(dir="~/Dropbox/Disciplinas/LGN\ 5830\ -\ Biometria\ de\ Marcadores\ Genéticos/Dados\ experimentais", file="feijao2.raw")
+
+plot(RIL1)
+plot(RIL2)
+
+
+##' plot.risib.onemap
+##' 
+##' Draw a graphic of raw data for a RIL population (made by sibing), using ggplot2.
+##' In fact, the graphic for the raw data will have the same aspect of the ones
+##' for RILs made by selfing. Therefore, this function will only call
+##' plot.riself.onemap()
+##'
+##' @param x an object of class risib.onemap, with data and additional information
+##'
+##' @return a ggplot graphic
+##'
+##' @examples
+##' # Please, see examples for plot.bc.onemap; the only difference is the dataset
+##'
+##' @export
+plot.risib.onemap <- function(x) {
+    plot.riself.onemap(x)
+}
+
+
+RIL3 <- read.mapmaker(dir="~/Dropbox/Disciplinas/LGN\ 5830\ -\ Biometria\ de\ Marcadores\ Genéticos/Dados\ experimentais", file="feijaoSIB.raw")
+class(RIL3)
+plot(RIL3)
+
+
+
+
+## PRECISO AINDA CONSIDERAR OUTROS TIPOS DE DADOS. EX: SÓ DOMINANTES
 #####
 plot.f2.onemap <- function(df) {
     # Creating the data frame
@@ -80,12 +176,22 @@ plot.f2.onemap <- function(df) {
     g <- ggplot(data=df.F2, aes(x=ind, y=variable, fill=factor(value)))
     g <- g + geom_tile()
     g <- g + xlab("Individual") + ylab("Marker") +
-        scale_fill_manual(name="Genotype", labels=labels.f2, values=c("#000000", "#00A08A", "#5BBCD6", "#F2AD00", "#F98400", "#FF0000")) 
+        scale_fill_manual(name="Genotype", labels=labels.f2, values=c("#000000", "#ECCBAE", "#046C9A", "#D69C4E", "#85D4E3", "#74A089")) 
     if (df$n.mar>20) g <- g + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
-    g
+    return(g)
 }
 ###
+library(wesanderson)
+wes_palette("Darjeeling")[4]
+wes_palette("Royal2")[5]
 
+data(fake.f2.onemap)
+F2.1 <- read.mapmaker(dir="~/Dropbox/Disciplinas/LGN\ 5830\ -\ Biometria\ de\ Marcadores\ Genéticos/Dados\ experimentais", file="maize.raw")
+F2.2 <- read.mapmaker(dir="~/Dropbox/Disciplinas/LGN\ 5830\ -\ Biometria\ de\ Marcadores\ Genéticos/Dados\ experimentais", file="maize2.raw")
+
+plot(fake.f2.onemap)
+plot(F2.1)
+plot(F2.2)
 
 ###
 # FUNCIONANDO!
