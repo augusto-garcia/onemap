@@ -2,15 +2,23 @@ Package: onemap
 Title: Software for constructing genetic maps in experimental crosses:
         full-sib, RILs, F2 and backcrosses
 Version: 2.0-5
-Date: March, 2014
+Date: April, 2014
 Authors@R: c(person("Gabriel", "Margarido", role = "aut", email =
         "gramarga@gmail.com"), person("Marcelo", "Mollinari", role =
         c("aut", "cre"), email = "mmollina@usp.br"), person("Karl",
         "Broman", role = "ctb", email = "kbroman@biostat.wisc.edu"),
         person("Augusto", "Garcia", role = c("aut", "ctb"), email =
         "augusto.garcia@usp.br"))
-Depends: tcltk, tkrplot, R (>= 2.12.0)
-Suggests: qtl, knitr
+Depends: 
+        tcltk, 
+        tkrplot, 
+        R (>= 2.12.0)
+Imports:
+        ggplot2,
+        reshape2()
+Suggests: 
+        qtl, 
+        knitr
 VignetteBuilder: knitr
 Encoding: UTF-8
 Description: Analysis of molecular marker data from model (backcrosses,
