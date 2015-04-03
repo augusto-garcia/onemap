@@ -312,3 +312,61 @@ plot.outcross <- function(x, all=TRUE) {
     return(g)
 }
 ##
+
+
+##' plot.by.type
+##' 
+##' Draw a graphic showing the number of markers on each segregation pattern.
+##' The function receives a onemap object of class outcross, f2.onemap, bc.onemap,
+##' risib.onemap or riself.onemap.
+##' For outcrossing populations, it can show detailed information (all 18 possible categories)
+##' or a simplified version.
+##' 
+##' @param x an object of class outcross, f2.onemap, bc.onemap, risib.onemap or riself.onemap
+##' @param subcateg a TRUE/FALSE option to indicate if results will be plotted showing
+##' all possible categories (only for outcrossing populations)
+##'
+##' @return a ggplot graphic
+##'
+##' @import ggplot2
+##' 
+##' @examples
+##' data(example.out) #Outcrossing data
+##' plot.by.type(example.out)
+##' plot.by.type(example.out, subcateg=FALSE)
+##'
+##' data(fake.bc.onemap)
+##' plot.by.type(fake.bc.onemap)
+##'
+##' data(fake.f2.onemap)
+##' plot.by.type(fake.f2.onemap)
+##' 
+##' # You can store the graphic in an object, then save it.
+##' # For details, see the help of ggplot2's function ggsave()
+##' data(example.out) #Outcrossing data
+##' g <- plot.by.type(example.out)
+##' ggsave("SegregationTypes.jpg", g, width=7, height=4, dpi=600)
+##'
+##' @export
+plot.by.type <- function(x, subcateg=TRUE) {
+    # Create a dataframe, indicating the category and subcategory
+    df <- data.frame(segr.type=factor(x$segr.type),Type=999)
+    t <- c("A","B","C","D1","D2")
+    for (i in t){
+        if (length(grep(i, x$segr.type))>0)
+            df[grep(i, x$segr.type),]$Type <- i
+    }
+    # Plot the graphic, with option for subcategory for outcross
+    if (subcateg==TRUE & class(x)=="outcross"){
+        g <- ggplot(data=df, aes(x=Type, fill=segr.type))
+        g <- g + geom_bar()
+        g <- g + xlab("Segregation Type") + ylab("Count")
+    }
+    else {
+        g <- ggplot(data=df, aes(x=Type, fill="orange"))
+        g <- g + geom_bar()
+        g <- g + xlab("Segregation Type") + ylab("Count") + theme(legend.position="none")
+    }
+    return(g)
+}
+#####
