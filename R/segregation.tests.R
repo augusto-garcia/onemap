@@ -1,6 +1,9 @@
+library(devtools)
+install_github("augusto-garcia/onemap")
+library(onemap)
+
 fake.bc.onemap
 names(fake.bc.onemap)
-library(onemap)
 data(fake.bc.onemap)
 fake.bc.onemap$geno
 ht(fake.bc.onemap$geno)
@@ -55,8 +58,9 @@ pvalue.chisq.markers <- function(x, marker) {
     return(p.val)
 }
 
-##
-test.segreg <- function(x) {
+
+## Versão antiga, sem o sapply
+test.segreg1 <- function(x) {
     df <- data.frame(Marker=rep(0,x$n.mar), p.value=rep(0,x$n.mar))
     for (i in 1:x$n.mar) {
         df$Marker[i] <- dimnames(x$geno)[[2]][i]
@@ -67,10 +71,94 @@ test.segreg <- function(x) {
 #
 
 
+# Versão final!
+# x: onemap object with data
+# sapply will iterate from 1 to x$n.mar; x will be fixed (onemap object with data)
+test.segreg <- function(x) {
+    list(Marker=dimnames(x$geno)[[2]],
+                     p.value=sapply(1:x$n.mar, function(onemap.object, marker)
+                         pvalue.chisq.markers(onemap.object, marker), onemap.object=x))
+}
+#
+
+
+dimnames(BC$geno)[[2]]
+
+
+BC
+m <- matrix(data=cbind(rnorm(30, 0), rnorm(30, 2), rnorm(30, 5)), nrow=30, ncol=3)
+sapply(1:3, function(x, y) mean(y[,x]), y=m)
+
+sapply(1:14, function(x,marker) pvalue.chisq.markers(x,marker), x=BC)
+
+
 test.segreg(BC)
 test.segreg(example.out)
 test.segreg(fake.f2.onemap)
 test.segreg(RIL1)
+
+system.time(test.segreg1(BC))
+system.time(test.segreg(BC))
+system.time(test.segreg1(example.out))
+system.time(test.segreg(example.out))
+system.time(test.segreg1(fake.f2.onemap))
+system.time(test.segreg(fake.f2.onemap))
+system.time(test.segreg1(RIL1))
+system.time(test.segreg(RIL1))
+
+
+# Graphic
+data <- Z
+data$p.value <- -log10(as.numeric(data$p.value))
+data
+
+Z <- data.frame(test.segreg(BC))
+Z
+is.data.frame(Z)
+Z$signif <- factor(ifelse(Z$p.value<.05,1,2))
+Z
+Z$order <- 1:nrow(Z)
+Z    
+Z$Marker
+Z$Marker <- factor(Z$Marker, levels = Z$Marker[order(Z$order)])
+Z$Marker  # notice the changed order of factor levels
+
+g <- ggplot(data=Z, aes(x=Marker, y=p.value))
+g <- g + geom_point(aes(color=signif), stat="identity",size=2.5)
+g <- g + scale_colour_manual(name="With Bonferroni",
+                             values = c("red", "darkblue"),
+                             labels = c("sign.","non sign."))
+g <- g + geom_hline(yintercept = 0.05, colour="darkred", linetype = "longdash")
+#g <- g + coord_flip()
+g
+
+####
+plot.chisquare <- function(x) {
+    # Create a data frame
+    Z <- data.frame(test.segreg(x))
+    Z$signif <- factor(ifelse(Z$p.value<.05,1,2)) #Bonferroni's threshold'
+    Z$order <- 1:nrow(Z)
+    # Making sure that the order of factor levels are the original, not alphanumeric
+    Z$order <- 1:nrow(Z)
+    Z$Marker <- factor(Z$Marker, levels = Z$Marker[order(Z$order)])
+    # Plotting
+    g <- ggplot(data=Z, aes(x=Marker, y=p.value))
+    g <- g + geom_point(aes(color=signif), stat="identity",size=2.5)
+    g <- g + scale_colour_manual(name="With Bonferroni",
+                                 values = c("red", "darkblue"),
+                                 labels = c("sign.","non sign."))
+    g <- g + geom_hline(yintercept = 0.05, colour="darkred", linetype = "longdash")
+    g <- g + coord_flip()
+    g
+}
+
+plot.chisquare(BC)
+plot.chisquare(example.out)
+plot.chisquare(fake.f2.onemap)
+plot.chisquare(RIL1)
+
+
+
 
 
 library(doParallel)
