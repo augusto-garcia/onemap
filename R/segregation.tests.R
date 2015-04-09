@@ -1,4 +1,5 @@
 # x: onemap object with data, marker: marker to test
+# Not available in the namespace
 pvalue.chisq.markers <- function(x, marker) {
     # Segregation pattern for each marker type
     p.a <- rep(1/4, 4); p.b <- c(1/4, 1/2, 1/4); p.c <- c(3/4,1/4); p.d <- rep(1/2, 2)
@@ -18,16 +19,23 @@ pvalue.chisq.markers <- function(x, marker) {
 }
 #
 
-# Versão final!
+# Test the segregation
 # x: onemap object with data
 # sapply will iterate from 1 to x$n.mar; x will be fixed (onemap object with data)
 test.segreg <- function(x) {
-    list(Marker=dimnames(x$geno)[[2]],
+    y <- list(Marker=dimnames(x$geno)[[2]],
                      p.value=sapply(1:x$n.mar, function(onemap.object, marker)
                          pvalue.chisq.markers(onemap.object, marker), onemap.object=x))
+    class(y) <- c("onemap.segreg.test")
+    return(y)
 }
 #
 
+test.segreg(BC)
+Z <- test.segreg(BC)
+Z
+names(Z)
+class(Z)
 
 ####
 plot.chisquare <- function(x, order=TRUE) {
@@ -37,17 +45,20 @@ plot.chisquare <- function(x, order=TRUE) {
     Bonf <- -log10(.05/nrow(Z)) #Bonferroni's threshold'
     Z$signif <- factor(ifelse(-log10(Z$p.value)<Bonf,"non sign.","sign."))
     Z$order <- 1:nrow(Z)
+    # % of distorted
+    perc <- 100*(1-(table(Z$signif)[1]/nrow(Z)))
     # Keeping markers in their original order (not alphanumeric), or by p-values (default)
     if (order!=TRUE) Z$Marker <- factor(Z$Marker, levels = Z$Marker[order(Z$order)])
     else Z$Marker <- factor(Z$Marker, levels = Z$Marker[order(Z$p.value, decreasing=TRUE)])
     # Plotting
     g <- ggplot(data=Z, aes(x=Marker, y=-log10(p.value)))
+    g <- g + ylab(expression(-log[10](p-value)))
     g <- g + geom_point(aes(color=signif), stat="identity",size=2.5)
-    g <- g + scale_colour_manual(name="Bonferroni",
-                                 values = c("#B40F20", "#46ACC8"))
-#   ,labels = c("signific.","non sign."))
+    g <- g + scale_colour_manual(name=paste("Bonferroni\n","(",round(perc,0),"% distorted)",sep=""),
+                                 values = c("#46ACC8","#B40F20"))
     g <- g + geom_hline(yintercept = Bonf, colour="#E58601", linetype = "longdash")
     g <- g + coord_flip()
+    if (nrow(Z)>30) g <- g + theme(axis.text.y = element_blank())
     g
 }
 #
