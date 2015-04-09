@@ -7,24 +7,32 @@ pvalue.chisq.markers <- function(x, marker) {
     count <- table(x$geno[,marker], exclude=0)
     # Do the chisq test, using the appropriate expected segregation
     # grepl() allows finding the marker type (it has the letter in the argument)
-    if (grepl("A",x$segr.type[marker]))
-        p.val <- chisq.test(count, p=p.a, correct = FALSE)$p.value
-    else if (grepl("B",x$segr.type[marker]))
-        p.val <- chisq.test(count, p=p.b, correct = FALSE)$p.value
-    else if (grepl("C",x$segr.type[marker]))
-        p.val <- chisq.test(count, p=p.c, correct = FALSE)$p.value
-    else if (grepl("D",x$segr.type[marker]))
-        p.val <- chisq.test(count, p=p.d, correct = FALSE)$p.value
-    return(p.val)
+    if (grepl("A",x$segr.type[marker])) 
+        qui <- chisq.test(count, p=p.a, correct = FALSE)
+    else if (grepl("B",x$segr.type[marker])) 
+        qui <- chisq.test(count, p=p.b, correct = FALSE)
+    else if (grepl("C",x$segr.type[marker])) 
+        qui <- chisq.test(count, p=p.c, correct = FALSE)
+    else if (grepl("D",x$segr.type[marker])) 
+        qui <- chisq.test(count, p=p.d, correct = FALSE)
+    return(list(qui.quad=qui$statistic, p.val=qui$p.value))
 }
 #
+pvalue.chisq.markers(BC,1)
+
+?chisq.test
+x <- matrix(c(12, 5, 7, 7), ncol = 2)
+chisq.test(x)$p.value           # 0.4233
+chisq.test(x, simulate.p.value = TRUE, B = 10000)$p.value
+chisq.test(x)$statistic
+
 
 # Test the segregation
 # x: onemap object with data
 # sapply will iterate from 1 to x$n.mar; x will be fixed (onemap object with data)
 test.segreg <- function(x) {
     y <- list(Marker=dimnames(x$geno)[[2]],
-                     p.value=sapply(1:x$n.mar, function(onemap.object, marker)
+                     Values.of.X.and.p=sapply(1:x$n.mar, function(onemap.object, marker)
                          pvalue.chisq.markers(onemap.object, marker), onemap.object=x))
     class(y) <- c("onemap.segreg.test")
     return(y)
@@ -32,16 +40,31 @@ test.segreg <- function(x) {
 #
 
 test.segreg(BC)
-Z <- test.segreg(BC)
-Z
-names(Z)
-class(Z)
+Zz <- test.segreg(BC)
+Zz
+names(Zz)
+class(Zz)
+Zz$Marker
+Zz$Values.of.X.and.p[1,]
+Zz$Values.of.X.and.p[2,]
+Zz$Values.of.X.and.p[[1]][1]
 
+
+AA <- data.frame(Marker=test.segreg(BC)$Marker,
+                X.square=test.segreg(BC)$Values.of.X.and.p[[1]][1],
+                 p.value=test.segreg(BC)$Values.of.X.and.p[[2]][1])
+AA
+
+
+
+# Esta função deve ser usado em um objeto da classe onemap.segreg.test,
+# ou seja, após o teste de qui-quad já ter sido feito
 ####
-plot.chisquare <- function(x, order=TRUE) {
-    # Bonferroni's value
+plot.onemap.segreg.test <- function(x, order=TRUE) {
     # Create a data frame
-    Z <- data.frame(test.segreg(x))
+    Z <- data.frame(Marker=x$Marker,
+                    X.square=unlist(x$Values.of.X.and.p[1,]),
+                    p.value=unlist(x$Values.of.X.and.p[2,]))
     Bonf <- -log10(.05/nrow(Z)) #Bonferroni's threshold'
     Z$signif <- factor(ifelse(-log10(Z$p.value)<Bonf,"non sign.","sign."))
     Z$order <- 1:nrow(Z)
@@ -62,6 +85,89 @@ plot.chisquare <- function(x, order=TRUE) {
     g
 }
 #
+
+foo <- test.segreg(BC)
+plot.onemap.segreg.test(foo)
+plot(foo)
+
+foo <- test.segreg(F2)
+plot(foo)
+
+foo <- test.segreg(example.out)
+plot(foo)
+
+foo <- test.segreg(fake.f2.onemap)
+plot(foo)
+
+foo <- test.segreg(RIL1)
+plot(foo)
+
+
+
+plot.chisquare(F2)
+plot.chisquare(example.out)
+plot.chisquare(fake.f2.onemap)
+plot.chisquare(RIL1)
+
+
+
+
+
+x <- BC
+Z <- data.frame(Marker=test.segreg(x)$Marker,
+                X.square=unlist(test.segreg(x)$Values.of.X.and.p[1,]),
+                p.value=unlist(test.segreg(x)$Values.of.X.and.p[2,]))
+Z
+Bonf <- -log10(.05/nrow(Z)) #Bonferroni's threshold'
+Bonf
+Z$signif <- factor(ifelse(-log10(Z$p.value)<Bonf,"non sign.","sign."))
+Z$order <- 1:nrow(Z)
+Z
+perc <- 100*(1-(table(Z$signif)[1]/nrow(Z)))
+perc
+# Keeping markers in their original order (not alphanumeric), or by p-values (default)
+Z$Marker <- factor(Z$Marker, levels = Z$Marker[order(Z$order)])
+Z
+g <- ggplot(data=Z, aes(x=Marker, y=-log10(p.value)))
+g <- g + ylab(expression(-log[10](p-value)))
+g <- g + geom_point(aes(color=signif), stat="identity",size=2.5)
+g <- g + scale_colour_manual(name=paste("Bonferroni\n","(",round(perc,0),"% distorted)",sep=""),
+                             values = c("#46ACC8","#B40F20"))
+g <- g + geom_hline(yintercept = Bonf, colour="#E58601", linetype = "longdash")
+g <- g + coord_flip()
+if (nrow(Z)>30) g <- g + theme(axis.text.y = element_blank())
+g
+
+
+
+
+x <- test.segreg(BC)
+a <- x$Marker
+a
+b <- unlist(x$Values.of.X.and.p[1,])
+b
+c <- unlist(x$Values.of.X.and.p[2,])
+c
+AAA <- data.frame(M=a,X=b,p=c)
+AAA
+
+class(b)
+b$1
+
+
+
+
+
+BCseg <- test.segreg(BC)
+plot.onemap.segreg.test(BCseg)
+plot(AA)
+
+plot.chisquare(F2)
+plot.chisquare(example.out)
+plot.chisquare(fake.f2.onemap)
+plot.chisquare(RIL1)
+
+
 
 plot.chisquare(BC)
 plot.chisquare(F2)
