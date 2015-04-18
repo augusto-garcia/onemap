@@ -34,7 +34,7 @@ left is where you type the R commands you want.
 In the left window, you can see a _greater than_ sign (``>''), which
 means that R is waiting for a command. We call this a _prompt_. 
 
-Let us start with a simple example adding two numbers. Type 2+3 at the
+Let us start with a simple example adding two numbers. Type `2+3` at the
 prompt then type the _Enter_ key. You will see the result directly on
 the screen.
 

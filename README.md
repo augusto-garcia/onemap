@@ -16,6 +16,10 @@ different groups. Only for my convenience, I will try to add some new
 functions here (experimental work) and, once it is done, we will
 synchronize the repositories and add it to CRAN.
 
+`OneMap` is comprised by a set of functions that allows users to build
+a linkage map. Some functions are used internally by the package, and
+should not be used directly.
+
 # How to install
 
 ## From CRAN (stable version)
@@ -39,6 +43,19 @@ sudo apt-get install r-cran-tkrplot
 ```
 
 Then, go back to `R` and install `OneMap` as mentioned above.
+
+You also can use the console menus: _Packages_ $\rightarrow$ _Install
+package(s)_. After clicking, a box will pop-up asking you to choose
+the CRAN mirror. Choose the location nearest you. Then, another box
+will pop-up asking you to choose the package you want to install.
+Select _onemap_ then click _OK_. The package will be
+automatically installed on your computer.
+
+`OneMap` can also be installed by downloading the appropriate files
+directly at the CRAN web site and following the instructions given in
+the section `6.3 Installing Packages` of the
+[R Installation and Administration](http://cran.r-project.org/doc/manuals/R-admin.pdf)
+manual.
 
 ## From github (version under development)
 
