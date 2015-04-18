@@ -1,59 +1,44 @@
 # x: onemap object with data, marker: marker to test
 # Not available in the namespace
-pvalue.chisq.markers <- function(x, marker) {
+chisq.test.for.segregation.of.markers <- function(x, marker) {
     # Segregation pattern for each marker type
     p.a <- rep(1/4, 4); p.b <- c(1/4, 1/2, 1/4); p.c <- c(3/4,1/4); p.d <- rep(1/2, 2)
     # Counting each category
     count <- table(x$geno[,marker], exclude=0)
     # Do the chisq test, using the appropriate expected segregation
     # grepl() allows finding the marker type (it has the letter in the argument)
-    if (grepl("A",x$segr.type[marker])) 
+    if (grepl("A",x$segr.type[marker])) {
         qui <- chisq.test(count, p=p.a, correct = FALSE)
-    else if (grepl("B",x$segr.type[marker])) 
+        H0 <- "1:1:1:1" }
+    else if (grepl("B",x$segr.type[marker])) {
         qui <- chisq.test(count, p=p.b, correct = FALSE)
-    else if (grepl("C",x$segr.type[marker])) 
+        H0 <- "1:2:1" }
+    else if (grepl("C",x$segr.type[marker])) {
         qui <- chisq.test(count, p=p.c, correct = FALSE)
-    else if (grepl("D",x$segr.type[marker])) 
+        H0 <- "3:1" }
+    else if (grepl("D",x$segr.type[marker])) {
         qui <- chisq.test(count, p=p.d, correct = FALSE)
-    return(list(qui.quad=qui$statistic, p.val=qui$p.value))
+        H0 <- "1:1" }
+    return(list(Hypothesis=H0, qui.quad=qui$statistic, p.val=qui$p.value,
+                perc.genot=100*(sum(table(x$geno[,marker], exclude=0))/x$n.ind)))
 }
 #
-pvalue.chisq.markers(BC,1)
-
-?chisq.test
-x <- matrix(c(12, 5, 7, 7), ncol = 2)
-chisq.test(x)$p.value           # 0.4233
-chisq.test(x, simulate.p.value = TRUE, B = 10000)$p.value
-chisq.test(x)$statistic
-
 
 # Test the segregation
 # x: onemap object with data
 # sapply will iterate from 1 to x$n.mar; x will be fixed (onemap object with data)
-test.segreg <- function(x) {
-    y <- list(Marker=dimnames(x$geno)[[2]],
-                     Values.of.X.and.p=sapply(1:x$n.mar, function(onemap.object, marker)
-                         pvalue.chisq.markers(onemap.object, marker), onemap.object=x))
-    class(y) <- c("onemap.segreg.test")
-    return(y)
+test.segregation <- function(x) {
+    if (is(x,"bc.onemap")|is(x,"f2.onemap")|is(x,"riself.onemap")|
+        is(x,"risib.onemap")|is(x,"outcross")) {
+        y <- list(Marker=dimnames(x$geno)[[2]],
+                     Results.of.tests=sapply(1:x$n.mar, function(onemap.object, marker)
+                         chisq.test.for.segregation.of.markers(onemap.object, marker), onemap.object=x))
+        class(y) <- c("onemap.segreg.test")
+        invisible(y) #returns y without showing it
+    }
+    else stop("This is not a onemap object with raw data")
 }
 #
-
-test.segreg(BC)
-Zz <- test.segreg(BC)
-Zz
-names(Zz)
-class(Zz)
-Zz$Marker
-Zz$Values.of.X.and.p[1,]
-Zz$Values.of.X.and.p[2,]
-Zz$Values.of.X.and.p[[1]][1]
-
-
-AA <- data.frame(Marker=test.segreg(BC)$Marker,
-                X.square=test.segreg(BC)$Values.of.X.and.p[[1]][1],
-                 p.value=test.segreg(BC)$Values.of.X.and.p[[2]][1])
-AA
 
 
 
@@ -63,8 +48,8 @@ AA
 plot.onemap.segreg.test <- function(x, order=TRUE) {
     # Create a data frame
     Z <- data.frame(Marker=x$Marker,
-                    X.square=unlist(x$Values.of.X.and.p[1,]),
-                    p.value=unlist(x$Values.of.X.and.p[2,]))
+                    X.square=unlist(x$Results.of.tests[2,]),
+                    p.value=unlist(x$Results.of.tests[3,]))
     Bonf <- -log10(.05/nrow(Z)) #Bonferroni's threshold'
     Z$signif <- factor(ifelse(-log10(Z$p.value)<Bonf,"non sign.","sign."))
     Z$order <- 1:nrow(Z)
@@ -85,6 +70,100 @@ plot.onemap.segreg.test <- function(x, order=TRUE) {
     g
 }
 #
+
+# x: object of class onemap.segreg.test
+#
+print.onemap.segreg.test <- function(x) {
+    Z <- data.frame(Marker=x$Marker,
+                    H0=unlist(x$Results.of.tests[1,]),
+                    Chi.square=unlist(x$Results.of.tests[2,]),
+                    p.value=unlist(x$Results.of.tests[3,]),
+                    Perc.genot=round(unlist(x$Results.of.tests[4,]),2))
+    colnames(Z) <- c("Marker","H0","Chi-square","p-value","% genot.")
+    return(Z)
+}
+
+
+chisq.test.for.segregation.of.markers(BC,1)
+chisq.test.for.segregation.of.markers(F2,1)
+chisq.test.for.segregation.of.markers(example.out,1)
+chisq.test.for.segregation.of.markers(fake.bc.onemap,1)
+chisq.test.for.segregation.of.markers(fake.f2.onemap,1)
+chisq.test.for.segregation.of.markers(RIL1,1)
+
+test.segregation(BC)
+test.segregation(F2)
+test.segregation(example.out)
+test.segregation(fake.bc.onemap)
+test.segregation(fake.f2.onemap)
+test.segregation(RIL1)
+
+BC. <- test.segregation(BC)
+F2. <- test.segregation(F2)
+OUT. <- test.segregation(example.out)
+FAKE.BC. <- test.segregation(fake.bc.onemap)
+FAKE.F2. <- test.segregation(fake.f2.onemap)
+RIL. <- test.segregation(RIL1)
+
+plot(BC)
+
+plot(BC.)
+plot(F2.)
+plot(OUT.)
+plot(FAKE.BC.)
+plot(FAKE.F2.)
+plot(RIL.)
+
+print(BC.)
+print(F2.)
+print(OUT.)
+print(FAKE.BC.)
+print(FAKE.F2.)
+print(RIL.)
+
+
+BC.
+
+
+
+names(BC)
+BC
+x <- BC
+table(x$geno[,1], exclude=0)
+sum(table(x$geno[,1], exclude=0))
+BC$n.ind
+BC$n.ind/sum(table(x$geno[,1], exclude=0))
+
+
+
+pvalue.chisq.markers(BC,1)
+
+?chisq.test
+x <- matrix(c(12, 5, 7, 7), ncol = 2)
+chisq.test(x)$p.value           # 0.4233
+chisq.test(x, simulate.p.value = TRUE, B = 10000)$p.value
+chisq.test(x)$statistic
+
+
+
+test.segreg(BC)
+Zz <- test.segreg(BC)
+Zz
+names(Zz)
+class(Zz)
+Zz$Marker
+Zz$Values.of.X.and.p[1,]
+Zz$Values.of.X.and.p[2,]
+Zz$Values.of.X.and.p[[1]][1]
+
+
+AA <- data.frame(Marker=test.segreg(BC)$Marker,
+                X.square=test.segreg(BC)$Values.of.X.and.p[[1]][1],
+                 p.value=test.segreg(BC)$Values.of.X.and.p[[2]][1])
+AA
+
+
+
 
 foo <- test.segreg(BC)
 plot.onemap.segreg.test(foo)
@@ -360,7 +439,7 @@ p <- foreach(i = 1:x$n.mar, .combine = c) %dopar% pvalue.chisq.markers(x,i)
 p
 
 
-
+library(onemap)
 
 
 
