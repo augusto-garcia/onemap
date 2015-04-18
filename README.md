@@ -1,6 +1,6 @@
 # OneMap
 
-_OneMap_ is a software for constructing genetic maps in experimental
+`OneMap` is a software for constructing genetic maps in experimental
 crosses: full-sib, RILs, F2 and backcrosses. It was developed by
 Gabriel R A Margarido, Marcelo Mollinari and A Augusto F Garcia.
 
@@ -16,7 +16,7 @@ different groups. Only for my convenience, I will try to add some new
 functions here (experimental work) and, once it is done, we will
 synchronize the repositories and add it to CRAN.
 
-_OneMap_ comprises by a set of functions that allows users to build a
+`OneMap` comprises by a set of functions that allows users to build a
 linkage map. Some functions are used internally by the package, and
 should not be used directly.
 
