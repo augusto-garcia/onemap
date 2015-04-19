@@ -1,0 +1,990 @@
+<!--
+%\VignetteEngine{knitr::docco_linear}
+%\VignetteIndexEntry{Backcrosses, F2s and RILs}
+-->
+
+# Inbred-based populations (Backcrosses, F2s and RILs)
+
+Starting in version 2.0-0, `OneMap` can also deal with
+inbred-based populations (F2s, backcrosses and RILs).
+
+In this vignette we explain how to proceed the analysis in an F2
+population. The same procedure can be used for backcrosses and RILs as
+well and therefore users should not have any difficulty on analyze
+them. For outcrossing species, please read the vignette for this
+species (to be included).
+
+If you are not familiar with `R`, we recommend the reading of vignette
+[Introduction to R](http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/vignettes_html/Introduction_R.html).
+
+## Creating the data file
+
+For F2s, backcrosses and RILs we use exactly the same raw file used by
+``MAPMAKER/EXP`` (Lander et al., 1987). Therefore, one should have no
+difficult in using data sets already available for ``MAPMAKER/EXP``.
+
+This raw file can contain phenotypic information in the same way as a
+`MAPMAKER/EXP` file, but this will not be used during the map
+construction. This file, combined with the map file produced by
+`OneMap`, can be readily used for QTL mapping using `R/qtl` (Broman et
+al., 2008) or `QTL Cartographer` (Wang et al., 2010), among others.
+
+Here, we briefly present how to set up this data file. For more
+detailed information see the `MAPMAKER/EXP` manual (Lincon et al.,
+1993).
+
+The first line of your data file should be:
+
+```
+data type xxxx
+```
+
+where `xxxx` is one of the following data types:
+
+|:----------------|:-----------------------|
+| `f2 backcross`  | for backcrosses        |
+| `f2 intercross` | for F2s                |
+| `ri self`       | for RILs by selfing    |
+| `ri sib`        | for RILs by sib mating |
+ 
+The second line should contain the number of individuals on the
+progeny, the number of markers and the number of quantitative traits.
+Then, the genotype information is included for each marker. The
+character `*` indicates the beginning of information of a marker,
+followed by the marker name. The codification for genotypes is the
+following:
+
+|:------|:-----------------------------------------------|
+|  `A`: | homozygous for allele A (from parental 1 - AA) |
+|  `B`: | homozygous for allele B (from parental 2 - BB) |
+|  `H`: | heterozygous carrying both alleles (AB)        |
+|  `C`: | Not homozygous for allele A (Not AA)           |
+|  `D`: | Not homozygous for allele B (Not BB)           |
+|  `-`: | Missing data for the individual at this marker |
+
+The `symbols` option, used in `MAPMAKER/EXP` files, is also accepted
+(please, see its manual for details).
+
+The quantitative trait data should come after the genotypic data and
+has a similar format, except the trait values for each individual must
+be separate by at least one space, a tab or a line break. A dash (`-`)
+indicates missing data. Here is an example of such file for an F2
+population, 10 individuals, 5 markers and 2 quantitative traits:
+
+```
+data type f2 intercross
+10 5 2
+
+*M1 A B H H A - B A A B
+*M2 C - C C C - - C C A
+*M3 D B D D - - B D D B
+*M4 C C C - A C C A A C
+*M5 C C C C C C C C C C
+
+*weight 10.2 - 9.4 11.3 11.9 8.9 - 11.2 7.8 8.1 
+*length 1.7 2.1 - 1.8 2.0 1.0 - 1.7 1.0 1.1
+```
+
+This file must be saved in plain text format using a simple text
+editor such as {\it notepad}. Historically, `MAPMAKER/EXP` uses the
+`.raw` extension for this file, however, you can use other extensions,
+for example, `.txt`.
+
+If you want to see an example how this file should be, you can open
+`fake.bc.onemap.raw` and `fake.f2.onemap.raw`, both available with
+`OneMap` and saved in the directory you installed it (use
+`system.file(package="onemap")` to see where it is).
+
+Now, let us load `OneMap`:
+
+```{r}
+library(onemap)
+``` 
+
+To save your project anytime, type:
+```{r, eval=FALSE}
+save.image("C:/.../yourfile.RData")
+```
+if you are using Windows; otherwise, adapt the codes. Notice that you
+need to specify where to save and the name of the file. You can also
+use the toolbar, of course.
+
+## Importing data
+
+Once you created your data file, you can use the function
+`read.mapmaker` to import it to `OneMap`.
+  
+```{r, eval=FALSE}
+fake.f2.onemap <- read.mapmaker(dir="C:/workingdirectory", 
+                                file="your_data_file.raw")
+``` 
+
+The first argument is the directory where the input file is located,
+so modify it accordingly. The second one is the data file name. In
+this example, an object named `fake.f2.onemap` was created. Notice
+that if you leave the argument `dir` blank, the file will be read from
+your _working directory_. To set a working directory, see Section
+\ref{import}.
+
+\item For this example, we will use a simulated data set from an F$_2$ population which is distributed along with the `OneMap` package. Since this particular data set is distributed along with the package, you can load it typing
+  
+<< results=verbatim>>=
+data(fake.f2.onemap)
+fake.f2.onemap
+``` 
+
+The data consists in a sample of 200 individuals genotyped for 66 markers (36 co-dominant (AA, AB or BB), 15 dominant (Not AA or AA) and 15 dominant (Not BB or BB) with 15\% of missing data. You also can see that there is phenotypic information on the data set.
+
+\end{enumerate}
+
+\subsection{Estimating two-point recombination fractions}
+\begin{enumerate}
+\item Let us start the analysis estimating the recombination fraction between all pairs of markers using two-point tests:
+
+<<results=hide>>=
+twopts.f2 <- rf.2pts(fake.f2.onemap)
+``` 
+
+There are two optional arguments in function `rf.2pts`: `LOD` and `max.rf` which indicate the minimum LOD Score and the maximum recombination fraction to declare linkage (defaults to 3.0 and 0.5).
+
+\item If you want to see the results for any given markers, say `M12` and `M42`, use:
+<<results=verbatim>>=
+print(twopts.f2, "M12", "M42")
+``` 
+
+\end{enumerate}
+
+\subsection{Assigning markers to linkage groups}
+
+\begin{enumerate}
+  
+\item To assign markers to linkage groups, first use the function `make.seq` to create a sequence with all markers:
+```{r}
+mark.all.f2 <- make.seq(twopts.f2, "all")
+```
+The function `make.seq` is used to create sequences from objects of several kinds. Here, the first argument is of class `rf.2pts` and the second argument specifies which markers one wants to use (`"all"` indicates that all markers will be analyzed). To subset markers, say `M1`, `M3` and `M7`, use:
+
+```{r}
+mrk.subset<-make.seq(twopts.f2, c(1,3,7))
+@ 
+
+\item You can assign markers to linkage groups using the function `group`:
+```{r}
+(LGs.f2 <- group(mark.all.f2, LOD=3, max.rf=0.5))
+@ 
+The arguments `LOD` and `max.rf` define thresholds to be used when assigning markers to linkage groups. If none provided (default), criteria previously defined for the object `twopts` are used. We can see that the markers were assigned to three linkage groups with 27, 16 and 23 markers, with no unlinked markers.
+\end{enumerate}
+
+\subsection{Genetic mapping of linkage group 2}
+After the assignment of markers to linkage groups, the next step is to order the markers within each group. 
+
+\begin{enumerate}
+
+\item First, let us choose the mapping function used to display the genetic map. We can choose between Kosambi or Haldane mapping functions. To use Haldane, type
+```{r, eval=FALSE}
+set.map.fun(type="haldane")
+@
+
+To use Kosambi
+```{r, eval=FALSE}
+set.map.fun(type="kosambi")
+@
+
+\item To define which linkage group will be mapped, we must ``extract'' it from the object of class `group`. Let us extract the group 2 using:
+
+```{r}
+LG2.f2 <- make.seq(LGs.f2, 2)
+@ 
+
+The first argument is an object of class `group` and the second is a number indicating which linkage group will be extracted. In this case, the object `LGs.f2`, generated by function `group`, is of class `group`, showing this function can handle different classes of objects.
+
+\item If you type
+<<results=hide>>=
+LG2.f2
+@ 
+you will see which markers are comprised in the sequence, and also that no parameters have been estimated.
+<<echo=FALSE, results=verbatim>>=
+LG2.f2
+@ 
+
+\item To order these markers, one can use a two-point based algorithm such as Seriation (Buetow and Chakravarti, 1987), Rapid Chain Delineation (Doerge, 1996), Recombination Counting and Ordering (Van Os et al., 2005) and Unidirectional Growth (Tan and Fu, 2006):
+  
+<< results=hide>>=
+LG2.ser.f2 <- seriation(LG2.f2)
+LG2.rcd.f2 <- rcd(LG2.f2)
+LG2.rec.f2 <- record(LG2.f2)
+LG2.ug.f2 <- ug(LG2.f2)
+@ 
+
+For this particular data set, the algorithms provided different results (results not show here). For an evaluation and comparison of these methods, see Mollinari et al. (2009).
+
+Now, let us use a multipoint approach to order markers within group 2. We could use the following: for each possible order of this group, we calculate the multipoint likelihood, and then compare all of them, choosing the most likely one (high likelihood). For a moderate number of markers (up to 10 or 11), this is feasible. This procedure is implemented in the function `compare`. Although feasible, with up to 7 markers the function `compare` could take a very long time, depending on the data set and computational resources used.  A detailed use of this function can be seen in Section \ref{group3outcrossing`. It is important to say that for F$_2$ populations, we do not need to estimate the linkage phases, therefore, we can use a slightly large number of markers in function `compare`. However, for 16 markers, which is the number of markers in group 2, the use of function `compare` is unfeasible, and we should use another approach.
+
+Thus we will apply the same procedure used in Section \ref{group2outcrossing}. We will choose a moderate number of markers, say 6, to create a framework using the function `compare` and then positioning the remaining markers using the function `try.seq`. The way we choose these markers in inbred-based populations (F$_2$, backcrosses and RILs) is somewhat different from outcrossing populations. 
+
+We recommend two methods: i) randomly choose a number of markers and calculate the multipoint likelihood of all possible orders (using the function `compare`). If the LOD Score of the second best order is greater than a threshold, say 3, then take the best order to proceed with the next step. If not, repeat the procedure. ii) use some two-point based algorithm to construct a map; then, take equally spaced markers from this map. Then, create a framework of ordered markers using the function `compare`. Next, try to map the remaining markers, one at a time, beginning with co-dominants (most informative ones), then add the dominants.  You can do this procedure manually, like shown in Section \ref{group2outcrossing}; this procedure is also automated in function `order.seq` which we will use here for the latter procedure:
+
+<< results=verbatim>>=
+LG2.f2.ord <- order.seq(input.seq=LG2.f2, n.init = 5, 
+                        subset.search = "twopt", 
+                        twopt.alg = "rcd", THRES = 3, 
+                        draw.try = TRUE, wait = 1)
+                        
+@   
+
+The first argument is an object of class sequence. `n.init = 5` means that five markers will be used in the `compare` step. The argument `subset.search = "twopt"` indicates that these five markers should be chosen by using a two point method, which will be Rapid Chain Delineation, as indicated by the argument `twopt.alg = "rcd"`. `THRES = 3` indicates that the `try.seq` step will only add markers to the sequence which can be mapped with LOD Score greater than 3. `draw.try=TRUE` will display a diagnostic graphic for each `try.seq` step (see Section \ref{group2outcrossing`). `wait=1` indicates the minimum time interval in seconds to display the diagnostic graphic. 
+NOTE: Although very useful, this function can be misleading, specially if there are a considerable amount of missing data and dominant markers, use it carefully. 
+
+\item Check the final order:
+```{r}
+LG2.f2.ord
+@ 
+Note that markers `11` and `45` could not be safely mapped to a single position (`LOD Score > THRES` in absolute value). The output displays the ``safe'' order and the most likely positions for markers not mapped, where ``***'' indicates the most likely position and ``*'' corresponds to other plausible positions.
+
+\item To get the ``safe'' order, use
+<<results=hide>>=
+LG2.f2.safe <- make.seq(LG2.f2.ord,"safe")
+@ 
+and to get the order with all markers (i.e. including the ones not mapped to a single position), use: 
+```{r}
+(LG2.f2.all <- make.seq(LG2.f2.ord,"force"))
+@
+
+Which places markers `11` and `45` into their most likely positions (between markers `2` and `43` and `32` and `54`, respectively). 
+
+\item The `order.seq` function can perform two rounds of the `try.seq` step, first using `THRES` and then `THRES - 1` as threshold. This generally results in safe orders with more markers mapped, but takes longer to run. To do this,type:
+<<results=hide>>=
+LG2.f2.ord <- order.seq(input.seq=LG2.f2, n.init = 5, 
+                        subset.search = "twopt", 
+                        twopt.alg = "rcd", THRES = 3, 
+                        draw.try = TRUE, wait = 1,
+                        touchdown=TRUE)
+@ 
+
+The output is too big to be included here, so please try to see what happened. In short, for this particular sequence, the `touchdown` step could not map any additional marker, but this depends on the dataset. Since there is no other reason to change position of markers `11` and `45` (e.g. biological information), let us use the order with all markers as suggested by the function `order.seq`:
+
+<<results=verbatim>>=
+(LG2.f2.final<-make.seq(LG2.f2.ord, "force"))
+@ 
+
+\item Finally, to check for alternative orders, use the `ripple.seq` function:
+```{r}
+ripple.seq(LG2.f2.final, ws=5, LOD=3)
+@ 
+The second argument, `ws = 5`, means that subsets (windows) of five markers will be permutated sequentially (`$5!$` orders for each window), to search for other plausible orders. The `LOD` argument means that only orders with LOD Score smaller than 3 will be printed.
+
+The output shows sequences of four numbers, since `ws = 5`.  They can be followed by an `OK`, if there is no alternative orders with LOD Scores smaller than `LOD = 3` in absolute value, or by a list of alternative orders.
+
+On the example, the six first sequences showed alternative orders with LOD smaller than `LOD=3`. However, the best order was that obtained with the `order.seq` function (LOD=0.00). If there was an alternative order most likely than the original, one should check the difference between these orders and if necessary change it using, for example, the function `drop.marker` (see Section \ref{arbitraryf2}) and `seq.try`, or simple typing the new order.Use `LG2.f2.final\$seq.num` to obtain the original order; then make the necessary changes (by copying and paste) and use the function `map` (see Section \ref{arbitraryf2}) to reestimate the genetic map for the new order.
+
+\item The `ripple.seq` command showed that the final order obtained is indeed the best for this linkage group. The map can then be printed using
+    
+<<results=verbatim>>=
+LG2.f2.final
+@
+
+\end{enumerate}
+
+\subsection{Genetic mapping of linkage group 1}
+
+\begin{enumerate}
+\item Let us analyze linkage group 1. Extract markers from object `LGs`:
+```{r}
+LG1.f2 <- make.seq(LGs.f2, 1)
+@ 
+
+\item Construct the linkage map, by automatic usage of `try` algorithm:
+<<results=hide>>=
+LG1.f2.ord <- order.seq(input.seq=LG1.f2, n.init = 5, 
+                        subset.search = "twopt", 
+                        twopt.alg = "rcd", THRES = 3, 
+                        draw.try = TRUE, wait = 1,
+                        touchdown=TRUE)
+@ 
+The second round of `try.seq` added markers `M9`, `M44` and `M48` (try it; results not shown).
+
+\item Get the order with all markers:
+```{r}
+(LG1.f2.final <- make.seq(LG1.f2.ord,"force"))
+@ 
+
+\item Check the final map (results not shown):
+<<results=hide>>=
+ripple.seq(ws=5, LG1.f2.final)
+@ 
+
+No better order was observed (please, try it to see).
+
+\item Print it
+<<results=verbatim>>=
+LG1.f2.final
+@
+
+\end{enumerate}
+
+
+\subsection{Genetic mapping of linkage group 3}
+
+\begin{enumerate}
+\item Extract markers from object `LGs.f2`:
+```{r}
+LG3.f2 <- make.seq(LGs.f2, 3)
+@ 
+
+\item Construct the linkage map, by automatic usage of try algorithm and drawing some useful graphics (not shown):
+<<results=hide>>=
+LG3.f2.ord <- order.seq(input.seq=LG3.f2, n.init = 5, 
+                        subset.search = "twopt", 
+                        twopt.alg = "rcd", THRES = 3, 
+                        draw.try = TRUE, wait = 1,
+                        touchdown=TRUE)
+@ 
+We can see that in the second round of `try.seq` marker `M56` was added (please, try it). A careful examination of the graphics can be a good source of information about how markers where placed. For more details about how to interpret it, see Section \ref{group2outcrossing} 
+
+\item Now, get the order with all markers:
+```{r}
+(LG3.f2.final <- make.seq(LG3.f2.ord,"force"))
+@ 
+
+\item Check the final map:
+<<results=hide>>=
+ripple.seq(ws=5, LG3.f2.final)
+@ 
+
+No better alternative order was observed.
+
+\item Print it
+<<results=verbatim>>=
+LG3.f2.final
+@
+\end{enumerate}
+
+
+
+\subsection{Map estimation for an arbitrary order}
+\label{arbitraryf2}
+\begin{enumerate}
+\item  If you have some information about the order of the markers, for example, from a previous published paper, you can define a sequence of those markers (using the function `make.seq`) and then use the function `map` to estimate the genetic map. For example, for markers `M47`, `M38`, `M59`,  `M16`, `M62`,  `M21`, `M20`,  `M48` and  `M22`, in this order, use:  
+    
+```{r}
+LG3seq.f2 <- make.seq(twopts.f2,c(47,38,59,16,62,21,20,48,22))
+(LG3seq.f2.map <- map(LG3seq.f2))
+@ 
+
+To see relation between marker names and numbers, use
+
+```{r}
+ marker.type(LG3seq.f2.map)
+@ 
+
+\item If one needs to add or drop markers from a predefined sequence, functions `add.marker` and `drop.marker` can be used. For example, to add markers `M18`, `M56` and `50` in the end of `LG3seq.f2.map`
+```{r}
+(LG3seq.f2.map <- add.marker(LG3seq.f2.map, c(18,56,50)))
+@
+
+Removing markers `M59` and `21` from `LG3seq.f2.map`: 
+```{r}
+(LG3seq.f2.map <- drop.marker(LG3seq.f2.map, c(59,21)))
+@
+\end{enumerate}
+
+\subsection{Plotting the recombination fraction matrix}
+\label{recmat2}
+It is possible to plot the recombination fraction matrix and LOD Scores based on a color scale using the function `rf.graph.table`. This matrix can be useful to make some diagnostics about the map. 
+  
+\begin{enumerate}
+\item Let us place `M38` in the end of linkage group 3 (wrong position):
+
+<<results=hide>>=
+temp.seq<-drop.marker(LG3.f2.final, 38)
+@ 
+
+```{r}
+(temp.seq<-add.marker(temp.seq, 38))
+(LG3.f2.wrong<-map(temp.seq))
+@ 
+
+Examining the results, we can see there is a big gap in the end of linkage group 3 (between markers `M50` and `M38` as expected. 
+
+\item Now let us plot the recombination fraction matrix:
+
+<<eval=FALSE, echo=TRUE>>=
+rf.graph.table(LG3.f2.wrong)
+@
+
+<<echo=FALSE,fig=TRUE>>=
+rf.graph.table(LG3.f2.wrong, inter=FALSE)
+@ 
+
+The recombination fractions are plotted under the diagonal and the LOD Scores are plotted upper the diagonal. The color scale varies from red (small distances  big LODs) to dark blue. Clicking on the cell corresponding to two markers, you can see some information about them. For example, clicking on the cell corresponding to markers `M47` and `M19` you can see their names, types (co-dominant and dominant), recombination fraction (rf = 0.07323) and LOD Score (LOD = 23). Clicking in a cell on the diagonal, some information about the corresponding marker is shown, including percentage of missing data. 
+
+We clearly see a different pattern for marker `M38`. The blue cell, corresponding to markers `M50` and `M38`, indicates a big recombination fraction between these markers as seen before (by clicking, rf = 0.4049). Moreover, we can see a group of red cells corresponding to marker `M38` and markers `M59`, `M49`, `M39` and `M19`. This pattern indicates small recombination fractions between marker `M38` and other markers. Thus `M38` is suppose to be close to them on the map. 
+
+\item Since we have enough evidence that marker `M38` is misplaced, let us drop this marker and try to position it using the function `try.seq`:
+  
+<<echo=TRUE, fig=TRUE , width=9, height=9>>=
+temp.seq <- drop.marker(LG3.f2.wrong,38)
+temp.map <- map(temp.seq)
+temp.try <- try.seq(temp.map, 38, draw.try=TRUE)
+@  
+
+We can see that the most likely position for marker `M38` is between markers `M39` and `M49` (position 4). The patterns on the color matrix are better now. Therefore:
+
+```{r}
+(LG3.f2.final<-make.seq(temp.try, 4))
+@ 
+  
+\item For another example of using function `rf.graph.table`, see Section \ref{recmat}. 
+
+\end{enumerate}
+
+
+\subsection{Drawing the genetic map}
+\begin{enumerate}
+
+\item We can draw a genetic map for all linkage groups using the function `draw.map`. First we have to create a list of ordered linkage groups:
+  
+```{r}
+maps.list<-list(LG1.f2.final, LG2.f2.final, LG3.f2.final)
+@
+
+Then use it in function `draw.map`:
+
+<< echo=TRUE, fig=TRUE>>=
+draw.map(maps.list, names= TRUE, grid=TRUE, cex.mrk=0.7)
+@ 
+
+\item We also can draw a map for a specific linkage group:
+
+<< echo=TRUE, fig=TRUE>>=
+draw.map(LG1.f2.final, names= TRUE, grid=TRUE, cex.mrk=0.7)
+@ 
+
+Function `draw.map` draws a very simple graphic representation of the genetic map. But, once the distances and the linkage phases are estimated, better map figures can be drawn by the user using any appropriate software. Also, there are several free softwares that can be used, such as MapChart (Voorrips, 2002).
+
+\end{enumerate}
+
+\subsection{Exporting data to R/qtl and QTL Cartographer}
+
+  
+Possibly one of the most important applications for a genetic map is its use in QTL mapping studies. In populations such as RILs, F$_2$ and backcrosses, there are a lot of softwares for doing this analysis. Here, we illustrate how to export the genetic map from `OneMap` to the widely used and excellent packages {\sl R/qtl} (Broman et al., 2008) and to {\sl QTL Cartographer} (Wang et al., 2010). 
+
+
+\begin{enumerate}
+
+\item  Using the function `write.map`, let us export the list `maps.list`, defined in previous section, to a file named `"fake.f2.onemap.map"`:
+
+```{r}
+write.map(maps.list, "fake.f2.onemap.map")
+@
+
+Notice that the file will be written on the {\it working directory}, unless specified by the second argument. To set a working directory, see Section \ref{import}. 
+
+\item Now, let us install the {\sl R/qtl} package:
+
+```{r, eval=FALSE}
+install.packages("qtl")
+@ 
+
+Choose the nearest server location and proceed with the installation. Then, load {\sl R/qtl}:
+
+```{r}
+library("qtl")
+@ 
+
+\item To read the data in {\sl R/qtl} we will use the `MAPMAKER/EXP` format. Two files are needed: the first one is the map file (`"fake.f2.onemap.map"` in our case); the second one is the raw file written  in `MAPMAKER/EXP` style, which was used in the beginning of this example. This file {\it must} contain phenotypic information. The simulated data `fake.f2.onemap` contains that information. The location of the raw file can be obtained using:
+
+```{r}
+raw.file<-paste(system.file("example",package="onemap"),
+                "fake.f2.onemap.raw", sep="/")
+@
+
+\item Now we can read the data using the {\sl R/qtl} function `read.cross}:
+```{r}
+fake.f2.qtl <- read.cross("mm", file=raw.file, mapfile="fake.f2.onemap.map")
+@ 
+
+The first argument specifies the format of the data. In our case we used ```mm`'' which stands for MAPMAKER. The second argument (`file`) indicates the raw file in `MAPMAKER/EXP` style and the third argument `mapfile` indicates the map file produced by `OneMap`
+
+\item Then we can proceed with the analysis. {\sl R/qtl} has several function to check the map. For example, re-estimating the genetic map within {\sl R/qtl}: 
+<< echo=TRUE>>=
+newmap <- est.map(fake.f2.qtl, tol=1e-6, map.function="kosambi")
+@ 
+
+A comparison of the output of both software can be done with: 
+
+<< echo=TRUE, fig=TRUE>>=
+plot.map(fake.f2.qtl, newmap)
+@
+
+For each one of the three chromosomes, the left vertical line represents the map estimated by `OneMap` and the right vertical line represents the map estimated by {\sl R/qtl}. The lines linking these two maps indicates the position of the markers. Thus, we can see that the two maps are almost identical.
+
+\item Finally, we can run an interval mapping analysis for these data using the {R/qtl} function called `scanone` (for details, see {\sl R/qtl} tutorial):
+
+<< echo=TRUE, fig=TRUE>>=
+fake.f2.qtl <- calc.genoprob(fake.f2.qtl, step=2)
+out.em <- scanone(fake.f2.qtl, method="em")
+out.hk <- scanone(fake.f2.qtl, method="hk")
+plot(out.em, out.hk, col=c("blue","red"))
+@ 
+
+Here we performed an interval mapping using two methods: mixture models with EM algorithm and Haley-Knott regression. The blue lines indicate the first one and the red lines indicate the second. 
+
+\item We can use {\sl R/qtl} to generate {\sl QTL Cartographer} input files.
+  
+```{r}
+write.cross(fake.f2.qtl, format="qtlcart", filestem="fake.f2.onemap")
+@
+
+Again, the file will be written on the {\it working directory}, unless you specify differently in argument `filestem`. The files produced this way are ready to be used in {\sl QTL Cartographer}.
+
+\end{enumerate}
+
+\section{Final comments}
+At this point it should be clear that any potential `OneMap` user must have some knowledge about genetic mapping and also the R language, since the analysis is not done with {\sl only one mouse click}. In the future, perhaps a graphical interface will be made available to make this software a lot easier to use. 
+
+We do hope that `OneMap` should be useful to any researcher interested in genetic mapping in outcrossing or inbred-based populations. Any suggestions and critics are welcome.
+
+
+\section{References}
+\setlength{\parindent}{0cm}
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Adler, J. {\bf {\it R in a Nutshell}} A Desktop Quick Reference, 2009. 
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B. {\bf {\it qtl: Tools for analyzing QTL experiments}} R package version 1.09-43, 2008. (\url{http://www.rqtl.org/})
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Buetow, K. H., Chakravarti, A. Multipoint gene mapping using seriation. I. General methods. {\bf {\it American Journal of  Human Genetics}} 41, 180-188, 1987. 
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Doerge, R.W. Constructing genetic maps by rapid chain delineation. {\bf {\it Journal of Agricultural Genomics}} 2, 1996.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Garcia, A.A.F., Kido, E.A., Meza, A.N., Souza, H.M.B., Pinto, L.R., Pastina, M.M., Leite, C.S., Silva, J.A.G., Ulian, E.C., Figueira, A. and Souza, A.P. Development of an integrated genetic map of a sugarcane ({\it Saccharum spp.}) commercial cross, based on a maximum-likelihood approach for estimation of linkage and linkage phases. {\bf {\it Theoretical and Applied Genetics}} 112, 298-314, 2006.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Haldane, J. B. S. The combination of linkage values and the calculation of distance between the loci of linked factors. {\bf {\it Journal of Genetics}} 8, 299-309, 1919.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Jiang, C. and Zeng, Z.-B. Mapping quantitative trait loci with dominant and missing markers in various crosses from two inbred lines. {\bf {\it Genetica}} 101, 47-58, 1997.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Kosambi, D. D. The estimation of map distance from recombination values. {\bf {\it Annuaire of Eugenetics}} 12, 172-175, 1944.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Lander, E. S. and Green, P. Construction of multilocus genetic linkage maps in humans. {\bf {\it Proc. Natl. Acad. Sci. USA}} 84, 2363-2367, 1987.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Lander, E.S., Green, P., Abrahanson, J., Barlow, A., Daly, M.J., Lincoln, S.E. and Newburg, L. MAPMAKER, An interactive computing package for constructing primary genetic linkage maps of experimental and natural populations. {\bf {\it Genomics}} 1, 174-181, 1987.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Lincoln, S. E., Daly, M. J. and Lander, E. S. Constructing genetic linkage maps with MAPMAKER/EXP Version 3.0: a tutorial and reference manual. {\bf {\it A Whitehead Institute for Biomedical Research Technical Report}} 1993.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Margarido, G. R. A., Souza, A.P. and Garcia, A. A. F. OneMap: software for genetic mapping in outcrossing species. {\bf {\it Hereditas}} 144, 78-79, 2007.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia, A. A. F. Evaluation of algorithms used to order markers on genetics maps. {\bf {\it Heredity}} 103, 494-502, 2009.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Oliveira, K.M., Pinto, L.R., Marconi, T.G., Margarido, G.R.A., Pastina, M.M., Teixeira, L.H.M., Figueira, A.M., Ulian, E.C., Garcia, A.A.F., Souza, A.P. Functional genetic linkage map on EST-markers for a sugarcane ({\it Saccharum} spp.) commercial cross. {\bf {\it Molecular Breeding}} 20, 189-208, 2007.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Oliveira, E. J., Vieira, M. L. C., Garcia, A. A. F., Munhoz, C. F.,Margarido, G. R.A., Consoli, L., Matta, F. P., Moraes, M. C., Zucchi, M. I., and Fungaro,M. H. P. An Integrated Molecular Map of Yellow Passion Fruit Based on Simultaneous Maximum-likelihood Estimation of Linkage and Linkage Phases {\bf {\it J. Amer. Soc. Hort. Sci.}} 133, 35-41, 2008. 
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Tan, Y., Fu, Y. A novel method for estimating linkage maps. {\bf {\it Genetics}} 173, 2383-2390, 2006.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+ Van Os H, Stam P, Visser R.G.F., Van Eck H.J. RECORD: a novel method for ordering loci on a genetic linkage map. {\bf {\it Theor Appl Genet}} 112, 30-40, 2005.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Voorrips, R.E. MapChart: software for the graphical presentation of linkage maps and QTLs. {\bf {\it Journal of Heredity}} 93, 77-78, 2002.
+
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Wang S., Basten, C. J. and Zeng Z.-B. Windows QTL Cartographer 2.5. Department of Statistics, North Carolina State University, Raleigh, NC, 2010. (\url{http://statgen.ncsu.edu/qtlcart/WQTLCart.htm})
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Wu, R., Ma, C.X., Painter, I. and Zeng, Z.-B. Simultaneous maximum likelihood estimation of linkage and linkage phases in outcrossing species. {\bf {\it Theoretical Population Biology}} 61, 349-363, 2002a.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. Linkage mapping of sex-specific differences. {\bf {\it Genetical Research}} 79, 85-96, 2002b.
+
+
+
+# Introduction to R
+
+R is a language and environment for statistical computing and
+graphics. To download R, please visit the [Comprehensive R Archive
+Network](http://cran.r-project.org). You do not need to be an expert
+on it to be able to build you linkage map using _OneMap_.
+
+Although we prefer and recommend the Linux version, in this tutorial
+it is assumed that the user is running Windows. Users of R under Linux
+or Mac OS should have no difficult in following this tutorial.
+
+We would like to recommend that new users, instead of using plain R,
+use it through the fantastic software
+[RStudio](http://www.rstudio.com/). With this package, there is no
+noticeable difference between the operation system you are using.
+
+As advertised on the website, ``_RStudio is an integrated development
+environment (IDE) for R. It includes a console, syntax-highlighting
+editor that supports direct code execution, as well as tools for
+plotting, history, debugging and workspace management._'' In another
+words, it offers a number of facilities for your convenience that will
+make your live easier, specially if you never use R before.
+
+So, go ahead and download and install R and RStudio. The window on the
+left is where you type the R commands you want.
+
+## Getting started
+
+In the left window, you can see a _greater than_ sign (``>''), which
+means that R is waiting for a command. We call this a _prompt_. 
+
+Let us start with a simple example adding two numbers. Type `2+3` at the
+prompt then type the _Enter_ key. You will see the result directly on
+the screen.
+
+```{r }
+2+3
+```
+
+You can store this result into a variable for future use, applying the
+assignment operator _ <- _ (_less than_ sign and _ minus_ altogether):
+
+```{r }
+x <- 2+3
+```
+
+The result of the calculation was stored into the variable _x_. You
+can access this result typing _x_ at the prompt:
+
+```{r }
+x
+```
+
+You can also use the variable _x_ into another calculations. For
+example:
+
+```{r } 
+x+4 
+```
+
+So, play a little just to start understanding what is going on.
+
+## Functions
+
+Another fundamental aspect in R is the usage of _functions_. A
+function is a predefined routine used to do specific calculations. For
+example, to calculate the natural logarithm of $6.7$, we can use the
+function _log_:
+
+```{r }
+log(6.7)
+```
+ 
+The function _log_ contains a group of internal procedures to
+calculate the natural logarithm of a positive real number. The input
+values of a function are called _arguments_. 
+
+In the previous example, we provided only one argument ($6.7$) to the
+function. Sometimes a function has more than one argument. For
+example, to obtain the logarithm of $6.7$ on base $4$, you can use:
+
+```{r }
+log(6.7, base=4)
+```
+
+It is possible to calculate the natural logarithm of a set of numbers
+by defining a vector and using it as the first argument of the
+function _log_. To do so we use the function _c()_, that _combines_ a
+set of values into a vector. Thus, to calculate the logarithm of the
+numbers 6.7, 3.2, 5.4, 8.1, 4.9, 9.7 and 2.5, one can use:
+
+```{r }
+y <- c(6.7, 3.2, 5.4, 8.1, 4.9, 9.7, 2.5)
+log(y)
+```
+
+Notice that _y_ is a vector, that is the argument to the function
+_log()_.
+
+## Getting help
+
+Every R function has a help page which can be accessed using a
+question mark before the name of the function. For example, to get
+help on function _log_, you would type:
+
+```{r, eval=FALSE}
+?log
+``` 
+
+This command will open a help page in the default web browser of your
+system. The help page contains some important information about the
+function such its syntax, its arguments and some usage examples.
+
+There are many other ways of getting help, of course. For example, from RStudio,
+click _Help_ on the menu. For doing searches on the internet, it is
+better first go to [http://rseek.org/](http://rseek.org/), since R
+is a very common letter to include in searches.  
+
+## Packages
+
+Although R has a huge amount of internal functions, for doing very
+specific computations (like constructing genetic linkage maps), it is
+necessary to add extra functionalities. These can be done by
+installing a _package_ (that, loosely speaking, will include a number
+of new functions for helping you to achieve what you are trying to
+do). A package is a collection of related functions, help files and
+example data files that have been bundled together (Adler, 2010).
+
+For example, let us assume that you need to convert a set of
+recombination fractions into centimorgan distance using the Kosambi
+mapping function. One possible way to do this is by using the basic R
+to write a function to calculate the distances. Another way is use the
+_OneMap_ package. To install it you can type:
+
+```{r, eval=FALSE}
+install.packages("onemap")
+``` 
+
+You also can use the console menus on RStudio. On the bottom window on
+right, select **Packages**, then **Install** and finally select
+_OneMap_ (select CRAN as your repository). Yes, it is that easy!
+
+Returning to the console, you need to load _OneMap_ by typing:
+
+```{r }
+library(onemap)
+``` 
+
+Some Linux users reported the error message below:
+
+```{r, eval=FALSE}
+ERROR: dependency ‘tkrplot’ is not available for package ‘onemap’
+```
+
+To fix it, in a terminal (outside R), install `r-cran-tkrplot`:
+
+```{r, eval=FALSE}
+sudo apt-get install r-cran-tkrplot
+```
+
+To finish our example, let us enter some recombination fractions, for
+example, 0.01, 0.12, 0.05, 0.11, 0.21, 0.07, and save it into a
+variable named _rf_:
+
+```{r }
+rf <- c(0.01, 0.12, 0.05, 0.11, 0.21, 0.07)
+``` 
+
+Now, let us use _OneMap_'s function _kosambi_ to do the calculation:
+
+```{r }
+kosambi(rf)
+```
+
+You can also obtain help on the function _kosambi_ using the
+question mark in the same way it was done before:
+
+```{r, eval=FALSE}
+?kosambi
+```
+
+## Importing and exporting data
+
+So far, we entered the variables in R by typing them directly into the
+console. However, in real situations we usually **read these values
+from a file** or a data bank (including files on the internet). 
+
+To learn this procedure, copy and paste the following table into a
+text editor (for example, _notepad_) and save it to a file called
+_test.txt_ into any directory in your computer (such as _My
+Documents_).
+
+        x       y
+     2.13    4.50
+     4.48    1.98
+    10.95    9.29
+    10.03   16.25
+    12.72   27.38
+    24.63   22.60
+    22.57   36.87
+    29.78   31.73
+    19.54   10.42
+     7.86   14.68
+    11.75    8.68
+    23.71   37.39
+
+
+To read these data set into R, first, you have to set the working
+directory. Go to _Session_, then _Set Working Directory_, and _Choose
+Directory_, pointing to where you saved the file _test.txt_.
+
+Now let us read the file _test.txt_ into R and store it in a variable
+named _dat_. To do this, we can use using the R function _read.table_.
+The first argument is the name of the file; the second one indicates
+if the file contains a header, i. e. if the first line of the file
+contains the names of the variables (which is true for our example):
+
+```{r }
+dat <- read.table(file="test.txt", header=TRUE)
+dat
+``` 
+
+The second line, with _dat_, is necessary to ask R to return the
+results of the object _dat_ (i. e., the data itself). Inspecting the
+object _dat_ you can see a table with 12 rows and two columns. The
+names of the columns are _x_ and _y_. We can access the
+variables in columns using the dollar sign followed by the column
+name:
+
+```{r }
+dat$x
+dat$y 
+``` 
+
+It is also possible to use the function _summary_ to extract some
+information about the object _dat_, or about each one of the columns
+separately:
+
+```{r }
+summary(dat)
+summary(dat$x)
+summary(dat$y)
+``` 
+
+The function _summary_ provides some descriptive statistics about the
+variables in the dataset. If you want to export these information to a
+file you can use the function _write.table_:
+
+```{r, eval=FALSE}
+write.table(x=summary(dat), file="testsum.txt", quote=FALSE)
+``` 
+
+The first argument is the output of the _summary_ function. Note that
+is possible to use a function as an argument of another one. The
+second argument is the name of the file in which the summary will be
+written. Notice that this will happen in the _working directory_,
+previously set through RStudio menus. The third argument eliminates
+double quotes from the output file. After running the command, you can
+look for the file _testsum.txt_ in the working directory you defined
+before.
+
+## Classes and methods
+
+In R, every object belongs to a **_class_**. This is a simple concept
+that you must remember. For example, the object mentioned above _dat_
+belongs to class _data.frame_. We can obtain this information using
+the function _class_:
+
+```{r }
+class(dat)
+``` 
+
+When we used the function _summary_, it automatically recognized the
+class of the object _dat_ and applied a specific procedure developed
+for class _data.frame_, which in this case involves the computation of
+some descriptive statistics.
+
+This procedure is named _method_. However, another classes of objects
+can be used as arguments to function _summary_ and the result will be
+different!
+
+For example, let us adjust a linear (regression) model using column _y_ as the
+response variable, and column _x_ as the independent one. This can be done
+with the function _lm()_:
+
+```{r }
+ft.mod <- lm(dat$y~dat$x)
+ft.mod
+``` 
+
+This function  is used to fit linear models and, by default, returns
+just a formula and the coefficients of the linear regression. Object
+_ft.mod_ have class _lm_:
+
+```{r }
+class(ft.mod)
+``` 
+
+So, if we use function _summary_ to obtain more information about the
+fitted model, the result will be:
+
+```{r }
+summary(ft.mod)
+``` 
+
+In this case, function _summary_ recognizes _ft.mod_ as an object of
+class _lm_ and applies a method which shows information about the
+fitted model, such as the distribution of the residuals, regression
+coefficients, t-tests, and the coefficient of determination ($r^2$),
+etc.
+
+Thus, it is possible to use the same function in different classes of
+object to obtain different results. This concept is very important in
+_OneMap_ and you must remember it to use the package. For example, in
+other vignettes, it will be showed that depending on the class of the
+dataset, which can be _outcross_, _f2.onemap_, _bc.onemap_,
+_riself.onemap_ and _risib.onemap_, a certain set of procedures will
+be applied. Not by coincidence, these classes correspond to all types
+of populations that can be analyzed. The advantage of this approach is
+that you do not need to change the function to do a specific analysis;
+it will recognize the object type and will adapt accordingly.
+
+
+## Saving your work
+
+Finally, you need how to save your work to come back to it in another
+working session. But before we explain how to do that, let us explain
+a few other concepts.
+
+We can save your **_R Script_**, which is the file that has all R
+instructions you typed so far. So, you load the them and run all
+instructions again to have the same results. This is easy, just click
+_File_, _Save As_, and choose a directory and a name (usually with the
+extension .R, such as Example1.R, etc).
+
+A different thing is to save your **R Session**, with all objects you
+created so far (called _R Workspace_). This is not the same, since
+once you load the workspace, you will have all the objects already
+loaded, not requiring you to do everything again, i. e, running your
+script. This will help you to save a lot of time, since some of the
+analysis required to build linkage maps are time demanding.
+
+To do so, click _Session_, then _Save Workspace As_ and choose a
+directory and name. In your next session, open RStudio and then go to
+_Session_, _Load Workspace_.
+
+Alternatively, you can do that using the R function _save.image_, For
+example, if you want to save your analysis in a file named
+_myworkspace.RData_, you should use:
+
+```{r, eval=FALSE}
+save.image("myworkspace.RData")
+``` 
+
+To load:
+
+```{r, eval=FALSE}
+load("myworkspace.RData")
+``` 
+
+# References
+
+N. Matloff, The Art of R Programming. 2011. 1st ed. San Francisco, CA:
+No Starch Press, Inc., 404 pages.
+
+Adler, J. R. 2009. R in a Nutshell. A Desktop Quick Reference.
+O'Reilly Media.
+
+A tutorial by two OneMap authors: [Introduction to
+R](http://augusto-garcia.github.io/R-Introduction/)
+
+
+
