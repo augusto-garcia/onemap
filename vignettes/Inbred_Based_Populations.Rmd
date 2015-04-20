@@ -28,21 +28,25 @@ some concepts are necessary and will help you through the process.
 
 ## Creating the data file
 
-For F2s, backcrosses and RILs we use exactly the same raw file used by
+For F2s, backcrosses and RILs, we use exactly the same raw file used by
 ``MAPMAKER/EXP`` (Lander et al., 1987). Therefore, one should have no
-difficult in using data sets already available for ``MAPMAKER/EXP``.
+difficult in using data sets already available for ``MAPMAKER/EXP`` if
+deciding to try `OneMap`.
 
 This raw file can contain phenotypic information in the same way as a
-`MAPMAKER/EXP` file, but this will not be used during the map
-construction. This file, combined with the map file produced by
-`OneMap`, can be readily used for QTL mapping using `R/qtl` (Broman et
-al., 2008) or `QTL Cartographer` (Wang et al., 2010), among others.
+`MAPMAKER/EXP` file. However, this information will not be used during
+the map construction, that requires only genotypic information (made
+available by molecular markers).
+
+This raw file, combined with the map file produced by `OneMap`, can be
+readily used for QTL mapping using `R/qtl` (Broman et al., 2008) or
+`QTL Cartographer` (Wang et al., 2010), among others.
 
 Here, we briefly present how to set up this data file. For more
 detailed information see the `MAPMAKER/EXP` manual (Lincon et al.,
-1993).
+1993), available [here](http://home.cc.umanitoba.ca/~psgendb/birchhomedir/doc/mapmaker/mapmaker.tutorial.pdf).
 
-The first line of your data file should be:
+The first line of your raw data file should be:
 
 ```
 data type xxxx
@@ -52,36 +56,27 @@ where `xxxx` is one of the following data types:
 
 | `xxxx`          | Population type             |
 |-----------------|-----------------------------|
-| `f2 backcross`  | Backcrosses                 |
-| `f2 intercross` | F2s                         |
-| `ri self`       | RILs produced by selfing    |
-| `ri sib`        | RILs produced by sib mating |
- 
-The second line should contain the number of individuals on the
+| `f2 backcross`  | Backcross                   |
+| `f2 intercross` | F2                          |
+| `ri self`       | RIL, produced by selfing    |
+| `ri sib`        | RIL, produced by sib mating |
+
+The second line should contain the number of individuals in the
 progeny, the number of markers and the number of quantitative traits.
-Then, the genotype information is included for each marker. The
+So, for example, a valid line would be
+
+```
+10 5 2
+```
+
+for a data set with 10 individuals (yes, very small, but this is just
+an example), 5 markers and 2 traits evaluated.
+
+Then, the file must have genotypic information for each marker. The
 character `*` indicates the beginning of information of a marker,
-followed by the marker name.
-
-The codification for genotypes is the following:
-
-| Code  | Meaning                                        |
-|-------|------------------------------------------------|
-|  `A`  | homozygous for allele A (from parental 1 - AA) |
-|  `B`  | homozygous for allele B (from parental 2 - BB) |
-|  `H`  | heterozygous carrying both alleles (AB)        |
-|  `C`  | Not homozygous for allele A (Not AA)           |
-|  `D`  | Not homozygous for allele B (Not BB)           |
-|  `-`  | Missing data for the individual at this marker |
-
-The `symbols` option, used in `MAPMAKER/EXP` files, is also accepted
-(please, see its manual for details).
-
-The quantitative trait data should come after the genotypic data and
-has a similar format, except the trait values for each individual must
-be separate by at least one space, a tab or a line break. A dash (`-`)
-indicates missing data. Here is an example of such file for an F2
-population, 10 individuals, 5 markers and 2 quantitative traits:
+followed by the marker name. For example, here is an example of such
+file for an F2 population with 10 individuals, 5 markers and 2
+quantitative traits:
 
 ```
 data type f2 intercross
@@ -97,15 +92,37 @@ data type f2 intercross
 *length 1.7 2.1 - 1.8 2.0 1.0 - 1.7 1.0 1.1
 ```
 
-This file must be saved in plain text format using a simple text
-editor such as {\it notepad}. Historically, `MAPMAKER/EXP` uses the
-`.raw` extension for this file, however, you can use other extensions,
-for example, `.txt`.
+The codification for genotypes is the following:
 
-If you want to see an example how this file should be, you can open
+| Code  | Meaning                                        |
+|-------|------------------------------------------------|
+|  `A`  | homozygous for allele A (from parental 1 - AA) |
+|  `B`  | homozygous for allele B (from parental 2 - BB) |
+|  `H`  | heterozygous carrying both alleles (AB)        |
+|  `C`  | Not homozygous for allele A (Not AA)           |
+|  `D`  | Not homozygous for allele B (Not BB)           |
+|  `-`  | Missing data for the individual at this marker |
+
+The `symbols` option (not included in this example), used in
+`MAPMAKER/EXP` files, is also accepted (please, see its manual for
+details).
+
+The quantitative trait data should come after the genotypic data and
+has a similar format, except the trait values for each individual must
+be separate by at least one space, a tab or a line break. A dash (`-`)
+indicates missing data.
+
+This file must be saved in plain text format using a simple text
+editor such as _notepad_ on _Microsoft Windows_. Historically,
+`MAPMAKER/EXP` uses the `.raw` extension for this file; however, you
+can use any other extension, such as `.txt`.
+
+If you want to see more examples about this file type, open
 `fake.bc.onemap.raw` and `fake.f2.onemap.raw`, both available with
-`OneMap` and saved in the directory you installed it (use
-`system.file(package="onemap")` to see where it is).
+`OneMap` and saved in the directory `example` on your computer, in the
+folder where you installed `OneMap` (use
+`system.file(package="onemap")` to see where it is located on your
+computer).
 
 Now, let us load `OneMap`:
 
@@ -114,60 +131,183 @@ library(onemap)
 ``` 
 
 To save your project anytime, type:
+
 ```{r, eval=FALSE}
 save.image("C:/.../yourfile.RData")
 ```
+
 if you are using Windows; otherwise, adapt the codes. Notice that you
 need to specify where to save and the name of the file. You can also
 use the toolbar, of course.
 
 ## Importing data
 
-Once you created your data file, you can use the function
-`read.mapmaker` to import it to `OneMap`.
-  
+Once you created your data file with raw data, you can use `OneMap`
+function `read.mapmaker` to import it to `OneMap`:
+
 ```{r, eval=FALSE}
 fake.f2.onemap <- read.mapmaker(dir="C:/workingdirectory", 
                                 file="your_data_file.raw")
 ``` 
 
 The first argument is the directory where the input file is located,
-so modify it accordingly. The second one is the data file name. In
-this example, an object named `fake.f2.onemap` was created. Notice
+so modify it accordingly. The second one is the data file name.
+
+In this example, an object named `fake.f2.onemap` was created. Notice
 that if you leave the argument `dir` blank, the file will be read from
-your _working directory_. To set a working directory, see [Introduction to R](http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/vignettes_html/Introduction_R.html).
+your _working directory_. To set a working directory, see
+[Introduction to R (Importing and Exporting Data)](http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/vignettes_html/Introduction_R.html).
 
 For this example, we will use a simulated data set from an F2
-population which is distributed along with `OneMap` package. Since
-this particular data set is distributed along with the package, you
-can load it typing
+population which is distributed along with `OneMap`. Since this
+particular data set is distributed along with the package, you can
+load it typing
 
 ```{r}
 data(fake.f2.onemap)
 ``` 
 
-To see what this data set is about:
+To see what this data set is about, type
 
 ```{r}
 fake.f2.onemap
 ``` 
 
-The data consists in a sample of 200 individuals genotyped for 66
-markers (36 co-dominant (AA, AB or BB), 15 dominant in one parent
-(Not AA or AA) and 15 dominant in the other parent (Not BB or BB) with
-15% of missing data. You also can see that there is phenotypic
-information on the data set, that can be used for QTL mapping.
+As you can see, the data consists in a sample of 200 individuals
+genotyped for 66 markers (36 co-dominant (`AA`, `AB` or `BB`), 15
+dominant in one parent (`Not AA` or `AA`) and 15 dominant in the other
+parent (`Not BB` or `BB`) with 15% of missing data. You also can see
+that there is also phenotypic information on the data set, that can be
+used for QTL mapping.
 
-## Segregation Tests
+## Visualization of raw data
 
-(to be included)
+Before building you linkage map, you should take a quick look on your
+data set. First, notice that by reading the raw data into `OneMap`, an
+object of class `f2.onemap` was produced:
+
+```{r, class_of_object,}
+class(fake.f2.onemap)
+```
+
+In fact, function `read.mapmaker` will produce objects of classes
+`bc.onemap`, `riself.onemap`, `risib.onemap` or `f2.onemap`, following
+the information in the data file for inbred-based populations.
+Therefore, you can use function `OneMap`'s version of function `plot`
+to produce a graphic with information about raw data. It will
+automatically recognize the class of the object and will produce the
+graphic. To see it in action, try:
+
+```{r, plot_raw_data}
+plot(fake.f2.onemap)
+```
+
+The graphic is self-explanatory. If you want to save it, see the help
+for `plot.f2.onemap` function (if you have a different populations,
+try `plot.bc.onemap`, etc):
+
+```{r, eval=FALSE}
+?plot.f2.onemap
+```
+
+This graphic shows that missing data is somehow randomly distributed;
+also, the proportion of dominant markers is relatively high for this
+data set. In Onemap's notation, co-dominant markers are classified as
+of B type; dominant ones, by C type (for details about this notation,
+see the vignette for outcrossing species). You can see the number of
+loci within each type using funcion `plot.by.type`:
+
+```{r, plot_by_type}
+plot.by.type(fake.f2.onemap)
+```
+
+So, as showed before, there is 36 co-dominant loci, and 30 dominant
+ones.
+
+## Segregation tests
+
+Now, it should be interesting to see if markers are segregating
+following what is expected by Mendel's law. You first need to use
+function `test.segregation` using as argument `OneMap` object of class
+`f2.onemap` (or `bc.onemap`, etc, for other population types).
+
+```{r, chi_square}
+f2.test <- test.segregation(fake.f2.onemap)
+```
+
+This will produce an object of class `onemap.segreg.test`:
+
+```{r, class_of_chisquare_test}
+class(f2.test)
+```
+
+You cannot see the results if you type the object name; use Onemap's
+version of `print` function for objects of classes `f2.onemap`, etc.
+
+```{r, print_chi1}
+f2.test
+```
+
+(Nothing is showed!)
+
+```{r, print_chi2}
+print(f2.test)
+```
+
+This shows the results of the Chi-square test for the expected
+Mendelian segregation pattern of each marker loci. This depends of
+course on marker type, since co-dominant markers can show heterozygous
+genotypes. The appropriate null hypothesis is selected by the
+function. The proportion of individuals genotyped is also showed.
+
+To declare statistical significance, remember that you should consider
+that multiple tests are being performed. To guide you in the analysis,
+function `Bonferroni.alpha` shows the alpha value that should be considered
+for this number of loci if applying Bonferroni's correction with
+global alpha of 0.05:
+
+```{r, Bonferroni}
+Bonferroni.alpha <- function(x, global.alpha=0.05) {
+    alpha.Bonf <- global.alpha/length(x$Marker)
+    return(alpha.Bonf)
+}
+
+Bonferroni.alpha(f2.test)
+```
+
+It is easy to see the proportion of markers that will be discard if
+this criteria is applied by drawing a graphic using function OneMap's
+version of the function `plot` for objects of class
+`onemap.segreg.test`:
+
+```{r, plot_chisq}
+plot(f2.test)
+```
+
+Graphic is self-explanatory: p-values were transformed by using
+-log10(p-values) for better visualization. A vertical line shows the
+threshold for tests if Bonferroni's correction is applied. Significant
+and non-significant tests are identified. In this particular example,
+no one was statistically significant, and so will not be discard.
+
+Please, remember that Bonferroni's correction is **conservative**, and
+also that discarding marker data could not be a good approach to your
+analysis. This graphic is just to suggest a criteria, so use it with
+carefully.
+
+
+(I need to write a function to show which markers are distorted, and
+to select them).
+
 
 ## Estimating two-point recombination fractions
 
-Let us start the analysis estimating the recombination fraction
-between all pairs of markers using two-point tests:
+After evaluating raw data and checking for segregation distortion, let
+us now estimate recombination fractions between all pairs of markers
+(two-point tests). This is necessary to allows us to tests which
+markers are linked.
 
-```{r, results="hide"}
+```{r, two_point_tests, results="hide"}
 twopts.f2 <- rf.2pts(fake.f2.onemap)
 ``` 
 
@@ -175,12 +315,37 @@ There are two optional arguments in function `rf.2pts`: `LOD` and
 `max.rf` which indicate the minimum LOD Score and the maximum
 recombination fraction to declare linkage (defaults to 3.0 and 0.5).
 
-If you want to see the results for any given markers, say `M12` and
+```{r, Suggest_LOD}
+suggest.lod <- function(x) {
+    num.tests <- choose(x$n.mar, 2) #Number of pairwise tests
+    LOD <- 0.2172 * qchisq(1-0.05/num.tests, 1) #Corresponding LOD
+    return(LOD)
+}
+
+suggest.lod(fake.f2.onemap)
+
+```
+
+If you want to see the results for a single pair of markers, say `M12` and
 `M42`, use:
 
-```{r}
+```{r, print_2Mks_two_points}
 print(twopts.f2, "M12", "M42")
 ``` 
+
+This was possible because `OneMap` has a version of `plot` function
+that can be applied to objects of class `rf.2pts`:
+
+```{r, class_of_twopoint}
+class(twopts.f2)
+```
+
+However, objects of this type are too complex to print if you do not
+specify a pair of markers:
+
+```{r, print_all_two_points}
+print(twopts.f2)
+```
 
 ## Assigning markers to linkage groups
 
