@@ -5,7 +5,7 @@
 # File: segregations.tests.R                                          #
 # Contains: chisq.test.for.segregation.of.markers,                    #
 # test.segregation, plot.onemap.segreg.test,                          #
-# print.onemap.segreg.test, Bonferroni.alpha                          #
+# print.onemap.segreg.test, Bonferroni.alpha, subset.chisq            #
 #                                                                     #
 # Written by Antonio Augusto Franco Garcia                            #
 # copyright (c) 2015 Antonio Augusto Franco Garcia                    #
@@ -218,4 +218,30 @@ Bonferroni.alpha <- function(x, global.alpha=0.05) {
 }
 ##'
 
+##' subset.chisq
+##'
+##' A function to shows which marker have segregation distortion if Bonferroni's correction is
+##' applied for the Chi-square tests of mendelian segregation.
+##'
+##' @param x an object of class onemap.segreg.test
+##' @param distorted a TRUE/VALUE variable to show distorted or non-distorted markers
+##' 
+##' @return a vector with marker names, according to the option for "distorted"
+##' 
+##' @examples
+##' data(fake.bc.onemap) # Loads a fake backcross dataset installed with onemap
+##' Chi <- test.segregation(fake.bc.onemap) # Performs the chi-square test for all markers
+##' subset.chisq(Chi) # To show non-distorted markers
+##' subset.chisq(Chi, distorted=TRUE) # With segregation distortion
+##'
+##' @export
+subset.chisq <- function(x, distorted=FALSE) {
+    if (!is(x,"onemap.segreg.test")) stop("This is not an object of class onemap.segreg.test")
+    Z <- data.frame(Marker=x$Marker,
+                    p.value=unlist(x$Results.of.tests[3,]))
+    if (distorted==FALSE) Z <- subset(Z, p.value>=Bonferroni.alpha(x))
+    else Z <- subset(Z, p.value<Bonferroni.alpha(x))
+    return(as.vector(Z[,1]))
+}
+##'
 
