@@ -319,7 +319,7 @@ function `subset.chisq`:
 
 For having a list of distorted ones (none in this example):
 
-```{r, select_nondistorted}
+```{r, select_distorted}
 (distorted <- subset.chisq(f2.test, distorted=TRUE))
 ```
 
