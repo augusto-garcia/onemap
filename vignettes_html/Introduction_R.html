@@ -214,7 +214,7 @@ hr {
 <p>R is a language and environment for statistical computing and
 graphics. To download R, please visit the <a href="http://cran.r-project.org">Comprehensive R Archive
 Network</a>. You do not need to be an expert
-on it to be able to build you linkage map using <em>OneMap</em>.</p>
+on it to be able to build you linkage map using <code>OneMap</code>.</p>
 
 <p>Although we prefer and recommend the Linux version, in this tutorial
 it is assumed that the user is running Windows. Users of R under Linux
@@ -225,10 +225,10 @@ use it through the fantastic software
 <a href="http://www.rstudio.com/">RStudio</a>. With this package, there is no
 noticeable difference between the operation system you are using.</p>
 
-<p>As advertised on the website, &ldquo;<em>RStudio is an integrated development
+<p>As advertised on the website, <code>_RStudio is an integrated development
 environment (IDE) for R. It includes a console, syntax-highlighting
 editor that supports direct code execution, as well as tools for
-plotting, history, debugging and workspace management.</em>&#39;&#39; In another
+plotting, history, debugging and workspace management_</code>. In another
 words, it offers a number of facilities for your convenience that will
 make your live easier, specially if you never use R before.</p>
 
@@ -237,7 +237,7 @@ left is where you type the R commands you want.</p>
 
 <h2>Getting started</h2>
 
-<p>In the left window, you can see a <em>greater than</em> sign (&rdquo;&gt;&#39;&#39;), which
+<p>In the left window, you can see a <em>greater than</em> sign (&ldquo;&gt;&#39;&#39;), which
 means that R is waiting for a command. We call this a <em>prompt</em>. </p>
 
 <p>Let us start with a simple example adding two numbers. Type <code>2+3</code> at the
@@ -363,6 +363,10 @@ right, select <strong>Packages</strong>, then <strong>Install</strong> and final
 <p>Returning to the console, you need to load <em>OneMap</em> by typing:</p>
 
 <pre><code class="r">library(onemap)
+</code></pre>
+
+<pre><code>## Loading required package: tcltk
+## Loading required package: tkrplot
 </code></pre>
 
 <p>Some Linux users reported the error message below:</p>
