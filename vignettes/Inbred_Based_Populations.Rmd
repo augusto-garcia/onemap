@@ -180,13 +180,6 @@ parent (`Not BB` or `BB`) with 15% of missing data. You also can see
 that there is also phenotypic information on the data set, that can be
 used for QTL mapping.
 
-```{r, lixao}
-names(fake.f2.onemap)
-fake.f2.onemap$geno
-RIL1 <- read.mapmaker(dir="~/Dropbox/Disciplinas/LGN\ 5830\ -\ Biometria\ de\ Marcadores\ Genéticos/Dados\ experimentais", file="feijao.raw")
-ht(RIL1$geno)
-``` 
-
 
 
 ## Visualization of raw data
