@@ -8,7 +8,7 @@
 R is a language and environment for statistical computing and
 graphics. To download R, please visit the [Comprehensive R Archive
 Network](http://cran.r-project.org). You do not need to be an expert
-on it to be able to build you linkage map using _OneMap_.
+on it to be able to build you linkage map using `OneMap`.
 
 Although we prefer and recommend the Linux version, in this tutorial
 it is assumed that the user is running Windows. Users of R under Linux
@@ -19,10 +19,10 @@ use it through the fantastic software
 [RStudio](http://www.rstudio.com/). With this package, there is no
 noticeable difference between the operation system you are using.
 
-As advertised on the website, ``_RStudio is an integrated development
+As advertised on the website, `_RStudio is an integrated development
 environment (IDE) for R. It includes a console, syntax-highlighting
 editor that supports direct code execution, as well as tools for
-plotting, history, debugging and workspace management._'' In another
+plotting, history, debugging and workspace management_`. In another
 words, it offers a number of facilities for your convenience that will
 make your live easier, specially if you never use R before.
 

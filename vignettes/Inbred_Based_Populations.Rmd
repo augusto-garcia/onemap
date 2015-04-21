@@ -6,7 +6,7 @@
 # Inbred-based populations (Backcrosses, F2s and RILs)
 
 ```{r, globalsetup, echo=FALSE, results=FALSE, cache=FALSE}
-opts_chunk$set(cache=TRUE, autodep=TRUE)
+#opts_chunk$set(cache=TRUE, autodep=TRUE)
 ```
 
 Starting in version 2.0-0, `OneMap` can also deal with inbred-based
