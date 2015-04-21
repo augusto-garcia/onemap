@@ -227,15 +227,6 @@ So, as showed before, there is 36 co-dominant loci, and 30 dominant
 ones.
 
 
-```{r, lixo}
-?marker.type
-data(example.out)
-twopts <- rf.2pts(example.out)
-markers.ex <- make.seq(twopts,c(3,6,8,12,16,25))
-marker.type(markers.ex) # segregation type for some markers
-```
-
-
 
 ## Segregation tests
 
