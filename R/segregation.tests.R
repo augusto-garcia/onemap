@@ -196,10 +196,11 @@ plot.onemap.segreg.test <- function(x, order=TRUE) {
 
 ##' Bonferroni.alpha
 ##'
-##' It shows the alpha value to control type I error for chi-square tests for
-##' segregation of all markers if Bonferroni's criteria is applied.
+##' It shows the alpha value to be used in each test to control global type I error
+##' for chi-square tests for segregation of all markers if Bonferroni's criteria is applied.
 ##' 
 ##' @param x an object of class onemap.segreg.test
+##' @param global.alpha the global alpha that is target
 ##' 
 ##' @return the alpha value (numeric)
 ##' 
