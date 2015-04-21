@@ -29,8 +29,8 @@ some concepts are necessary and will help you through the process.
 ## Creating the data file
 
 For F2s, backcrosses and RILs, we use exactly the same raw file used by
-``MAPMAKER/EXP`` (Lander et al., 1987). Therefore, one should have no
-difficult in using data sets already available for ``MAPMAKER/EXP`` if
+`MAPMAKER/EXP` (Lander et al., 1987). Therefore, one should have no
+difficult in using data sets already available for `MAPMAKER/EXP` if
 deciding to try `OneMap`.
 
 This raw file can contain phenotypic information in the same way as a
@@ -163,7 +163,7 @@ population which is distributed along with `OneMap`. Since this
 particular data set is distributed along with the package, you can
 load it typing
 
-```{r}
+```{r, load_data}
 data(fake.f2.onemap)
 ``` 
 
@@ -644,19 +644,23 @@ fractions, using hidden Markov models.
 ### Linkage group 1
 
 Let us analyze linkage group 1. Extract markers from object `LGs`:
+
 ```{r}
 LG1.f2 <- make.seq(LGs.f2, 1)
 ``` 
 
 Construct the linkage map, by automatic usage of `try` algorithm:
 
-```{r, results="hide"}
+```{r}
 LG1.f2.ord <- order.seq(input.seq=LG1.f2, n.init = 5, 
                         subset.search = "twopt", 
                         twopt.alg = "rcd", THRES = 3, 
-                        draw.try = TRUE, wait = 1,
+                        draw.try = FALSE, wait = 1,
                         touchdown=TRUE)
 ``` 
+
+We use here option `draw.try=FALSE` just to shortening the vignette,
+but recommend that you change it for `TRUE`.
 
 The second round of `try.seq` added markers `M9`, `M44` and `M48` (try
 it; results not shown).
@@ -673,12 +677,15 @@ Check the final map (results not shown):
 ripple.seq(ws=5, LG1.f2.final)
 ``` 
 
-No better order was observed (please, try it to see).
+No alternative order was found (please, try it).
 
-Print it
+Print it:
 ```{r}
 LG1.f2.final
 ```
+
+So, this is the final version of the map for this linkage group.
+
 
 ### Linkage group 3
 
@@ -689,27 +696,30 @@ LG3.f2 <- make.seq(LGs.f2, 3)
 ``` 
 
 Construct the linkage map, by automatic usage of try algorithm and
-drawing some useful graphics (not shown):
+drawing some useful graphics (not shown; please change `draw.try` to
+`TRUE`):
 
-```{r, results="hide"}
+```{r, order_LG3}
 LG3.f2.ord <- order.seq(input.seq=LG3.f2, n.init = 5, 
                         subset.search = "twopt", 
                         twopt.alg = "rcd", THRES = 3, 
-                        draw.try = TRUE, wait = 1,
+                        draw.try = FALSE, wait = 1,
                         touchdown=TRUE)
 ``` 
 
-We can see that in the second round of `try.seq` marker `M56` was added (please, try it). A careful examination of the graphics can be a good source of information about how markers where placed. For more details about how to interpret it, see Section group2outcrossing.
+We can see that in the second round of `try.seq` marker `M56` was
+added (please, try it). A careful examination of the graphics can be a
+good source of information about how markers where placed.
 
 Now, get the order with all markers:
 
-```{r}
+```{r, LG3_force}
 (LG3.f2.final <- make.seq(LG3.f2.ord,"force"))
 ``` 
 
-Check the final map:
+Check the final map (results not showed):
 
-```{r, results="hide"}
+```{r, ripple_LG3, results="hide"}
 ripple.seq(ws=5, LG3.f2.final)
 ``` 
 
@@ -717,28 +727,31 @@ No better alternative order was observed.
 
 Print it:
 
-```{r}
+```{r, LG3_final}
 LG3.f2.final
 ```
 
+
 ## Map estimation for an arbitrary order
 
-
 If you have some information about the order of the markers, for
-example, from a previous published paper, you can define a sequence of
-those markers (using the function `make.seq`) and then use the
-function `map` to estimate the genetic map. For example, for markers
-`M47`, `M38`, `M59`, `M16`, `M62`, `M21`, `M20`, `M48` and `M22`, in
-this order, use:
-    
-```{r}
+example, from a reference genome or previous published paper, you can
+define a sequence of those markers (using the function `make.seq`) and
+then use the function `map` to estimate the final genetic map (based
+on multipoint analysis). For example, let us assume that we know that
+the following markers are ordered in this sequence: `M47`, `M38`, `M59`,
+`M16`, `M62`, `M21`, `M20`, `M48` and `M22`. In this case, select them
+from the two point analysis, and use function `map`:
+
+```{r, subset_twopoint}
 LG3seq.f2 <- make.seq(twopts.f2,c(47,38,59,16,62,21,20,48,22))
 (LG3seq.f2.map <- map(LG3seq.f2))
 ```
 
-To see relation between marker names and numbers, use
+To see the correspondence between marker names and numbers, use
+function `marker.type`:
 
-```{r}
+```{r, markers_names_and_numbers}
 marker.type(LG3seq.f2.map)
 ``` 
 
@@ -746,13 +759,13 @@ If one needs to add or drop markers from a predefined sequence,
 functions `add.marker` and `drop.marker` can be used. For example, to
 add markers `M18`, `M56` and `50` in the end of `LG3seq.f2.map`:
 
-```{r}
+```{r, add_marker}
 (LG3seq.f2.map <- add.marker(LG3seq.f2.map, c(18,56,50)))
 ```
 
 Removing markers `M59` and `21` from `LG3seq.f2.map`:
 
-```{r}
+```{r, drop_marker}
 (LG3seq.f2.map <- drop.marker(LG3seq.f2.map, c(59,21)))
 ```
 
@@ -762,44 +775,56 @@ It is possible to plot the recombination fraction matrix and LOD
 Scores based on a color scale using the function `rf.graph.table`.
 This matrix can be useful to make some diagnostics about the map.
   
-Let us place `M38` in the end of linkage group 3 (wrong position):
+Just as an example, let us place `M38` in the end of linkage group 3
+(wrong position) to see can we can see that in the graphic. First, let
+us to remove it from the linkage group:
 
-```{r, results="hide"}
+```{r, remove_M38, results="hide"}
 temp.seq<-drop.marker(LG3.f2.final, 38)
 ``` 
 
-```{r}
+Now, we will force it to be positioned in the end of the linkage
+group:
+
+```{r, add_M38_end_LG}
 (temp.seq<-add.marker(temp.seq, 38))
 (LG3.f2.wrong<-map(temp.seq))
 ``` 
 
 Examining the results, we can see there is a big gap in the end of
-linkage group 3 (between markers `M50` and `M38` as expected.
+linkage group 3 (between markers `M50` and `M38`, as expected.
 
 Now let us plot the recombination fraction matrix:
 
-```{r, eval=FALSE, echo=TRUE}
-rf.graph.table(LG3.f2.wrong)
-```
-
-```{r, echo=FALSE,fig=TRUE}
+```{r, rec_matrix}
 rf.graph.table(LG3.f2.wrong, inter=FALSE)
 ```
 
-The recombination fractions are plotted under the diagonal and the LOD
-Scores are plotted upper the diagonal. The color scale varies from red
-(small distances big LODs) to dark blue. Clicking on the cell
-corresponding to two markers, you can see some information about them.
-For example, clicking on the cell corresponding to markers `M47` and
-`M19` you can see their names, types (co-dominant and dominant),
-recombination fraction (rf = 0.07323) and LOD Score (LOD = 23).
-Clicking in a cell on the diagonal, some information about the
-corresponding marker is shown, including percentage of missing data.
+The recombination fractions are plotted below the diagonal and the LOD
+Scores are plotted above the diagonal. The color scale varies from red
+(small distances big LODs) to dark blue.
+
+You can also plot an interactive version of this graphic, changing
+option `inter` to `TRUE` (the default):
+
+```{r, rec_matrix_inter, eval=FALSE}
+rf.graph.table(LG3.f2.wrong)
+```
+
+An interactive version of the graphic will pop up (not showed here).
+Clicking on the cell corresponding to two markers, you can see some
+useful information about them. For example, clicking on the cell
+corresponding to markers `M47` and `M19` you can see their names,
+types (co-dominant and dominant), recombination fraction (`rf =
+0.07323`) and LOD Score (`LOD = 23`). Clicking in a cell on the
+diagonal, some information about the corresponding marker is shown,
+including percentage of missing data. We found this to be very useful
+when evaluating the results of the ordering algorithms.
 
 We clearly see a different pattern for marker `M38`. The blue cell,
 corresponding to markers `M50` and `M38`, indicates a big
 recombination fraction between these markers as seen before (by
-clicking, rf = 0.4049). Moreover, we can see a group of red cells
+clicking, `rf = 0.4049`). Moreover, we can see a group of red cells
 corresponding to marker `M38` and markers `M59`, `M49`, `M39` and
 `M19`. This pattern indicates small recombination fractions between
 marker `M38` and other markers. Thus `M38` is suppose to be close to
@@ -808,7 +833,7 @@ them on the map.
 Since we have enough evidence that marker `M38` is misplaced, let us
 drop this marker and try to position it using the function `try.seq`:
   
-```{r, echo=TRUE, fig=TRUE , width=9, height}
+```{r, try_M38, width=9, height=9}
 temp.seq <- drop.marker(LG3.f2.wrong,38)
 temp.map <- map(temp.seq)
 temp.try <- try.seq(temp.map, 38, draw.try=TRUE)
@@ -816,14 +841,12 @@ temp.try <- try.seq(temp.map, 38, draw.try=TRUE)
 
 We can see that the most likely position for marker `M38` is between
 markers `M39` and `M49` (position 4). The patterns on the color matrix
-are better now. Therefore:
+show that now things are better. Therefore, you should do
 
 ```{r}
 (LG3.f2.final<-make.seq(temp.try, 4))
 ``` 
   
-For another example of using function `rf.graph.table`, see Section recmat. 
-
 ## Drawing the genetic map
 
 We can draw a genetic map for all linkage groups using the function
@@ -833,7 +856,7 @@ We can draw a genetic map for all linkage groups using the function
 maps.list<-list(LG1.f2.final, LG2.f2.final, LG3.f2.final)
 ```
 
-Then use it in function `draw.map`:
+Then use function `draw.map` for this list:
 
 ```{r}
 draw.map(maps.list, names= TRUE, grid=TRUE, cex.mrk=0.7)
@@ -846,10 +869,11 @@ draw.map(LG1.f2.final, names= TRUE, grid=TRUE, cex.mrk=0.7)
 ``` 
 
 Function `draw.map` draws a very simple graphic representation of the
-genetic map. But, once the distances and the linkage phases are
-estimated, better map figures can be drawn by the user using any
-appropriate software. Also, there are several free softwares that can
-be used, such as MapChart (Voorrips, 2002).
+genetic map. But, once the distances are estimated, better map figures
+can be drawn by the user using any appropriate software. There are
+several free softwares that can be used, such as
+[MapChart](https://www.wageningenur.nl/en/show/Mapchart.htm)
+(Voorrips, 2002).
 
 
 ## Exporting data to R/qtl and QTL Cartographer
@@ -858,67 +882,68 @@ Possibly one of the most important applications for a genetic map is
 its use in QTL mapping studies. In populations such as RILs, F2s and
 backcrosses, there are a lot of softwares for doing this analysis.
 Here, we illustrate how to export the genetic map from `OneMap` to the
-widely used and excellent packages `R/qtl` (Broman et al., 2008)
-and to `QTL Cartographer` (Wang et al., 2010).
+widely used and excellent packages [`R/qtl`](http://www.rqtl.org/)
+(Broman et al., 2008) and
+[`Windows QTL Cartographer`](http://statgen.ncsu.edu/qtlcart/WQTLCart.htm)
+(Wang et al., 2010).
 
 Using the function `write.map`, let us export the list `maps.list`,
-defined in previous section, to a file named `"fake.f2.onemap.map"`:
+defined in previous section, to a file named `fake.f2.onemap.map`:
 
-```{r}
+```{r, write_map}
 write.map(maps.list, "fake.f2.onemap.map")
 ```
 
 Notice that the file will be written on the `working directory`,
-unless specified by the second argument. To set a working directory,
-see Section import.
+unless specified by the second argument.
 
 Now, let us install the `R/qtl` package:
 
-```{r, eval=FALSE}
+```{r, install_qtl, eval=FALSE}
 install.packages("qtl")
 ``` 
 
 Choose the nearest server location and proceed with the installation.
 Then, load `R/qtl`:
 
-```{r}
-library("qtl")
+```{r, load_qtl}
+library(qtl)
 ``` 
 
 To read the data in `R/qtl` we will use the `MAPMAKER/EXP` format. Two
-files are needed: the first one is the map file (`fake.f2.onemap.map`
-in our case); the second one is the raw file written in `MAPMAKER/EXP`
-style, which was used in the beginning of this example. This file
-**must** contain phenotypic information. The simulated data
-`fake.f2.onemap` contains that information. The location of the raw
-file can be obtained using:
+files are needed: the first one is a file with information about the
+estimated map (`fake.f2.onemap.map` in our case); the second one is
+the raw file written in `MAPMAKER/EXP` style, which was used in the
+beginning of this example and has marker and phenotypic information
+for the QTL analysis. The simulated data `fake.f2.onemap` contains
+that information. The location of the raw file can be obtained using:
 
-```{r}
+```{r, where_is_raw}
 raw.file<-paste(system.file("example",package="onemap"),
                 "fake.f2.onemap.raw", sep="/")
 ```
 
 Now we can read the data using the `R/qtl` function `read.cross}:
-```{r}
+```{r, read_data_in_qtl}
 fake.f2.qtl <- read.cross("mm", file=raw.file, mapfile="fake.f2.onemap.map")
 ``` 
 
 The first argument specifies the format of the data. In our case we
 used `mm` which stands for MAPMAKER. The second argument (`file`)
 indicates the raw file in `MAPMAKER/EXP` style and the third argument
-`mapfile` indicates the map file produced by `OneMap`.
+`mapfile` indicates the map file that was produced by `OneMap`.
 
 Then we can proceed with the analysis. `R/qtl` has several
 function to check the map. For example, re-estimating the genetic map
 within `R/qtl`:
 
-```{r}
+```{r, map_in_qtl}
 newmap <- est.map(fake.f2.qtl, tol=1e-6, map.function="kosambi")
 ``` 
 
-A comparison of the output of both software can be done with: 
+A comparison of the output of `R/qtl` and `OneMap` can be obtained with: 
 
-```{r}
+```{r, compare_qtl_onemap}
 plot.map(fake.f2.qtl, newmap)
 ```
 
@@ -926,13 +951,14 @@ For each one of the three chromosomes, the left vertical line
 represents the map estimated by `OneMap` and the right vertical line
 represents the map estimated by `R/qtl`. The lines linking these two
 maps indicates the position of the markers. Thus, we can see that the
-two maps are almost identical.
+two maps are almost identical, with slightly differences in only one
+or two distances between markers.
 
 Finally, we can run an interval mapping analysis for these data using
-the `R/qtl` function called `scanone` (for details, see `R/qtl`
-tutorial):
+the `R/qtl` function called `scanone` (for details, see [`R/qtl`
+Manual](http://cran.r-project.org/web/packages/qtl/qtl.pdf):
 
-```{r}
+```{r, IM_qtl}
 fake.f2.qtl <- calc.genoprob(fake.f2.qtl, step=2)
 out.em <- scanone(fake.f2.qtl, method="em")
 out.hk <- scanone(fake.f2.qtl, method="hk")
@@ -949,7 +975,10 @@ We can use `R/qtl` to generate `QTL Cartographer` input files.
 write.cross(fake.f2.qtl, format="qtlcart", filestem="fake.f2.onemap")
 ```
 
-Again, the file will be written on the {\it working directory}, unless you specify differently in argument `filestem`. The files produced this way are ready to be used in `QTL Cartographer`.
+Again, the file will be written in the _working directory_, unless you
+specify differently in argument `filestem`. The files produced this
+way are ready to be used in `Windows QTL Cartographer` for mapping QTL
+using a number of different models.
 
 
 ## Final remarks
