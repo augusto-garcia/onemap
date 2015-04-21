@@ -19,10 +19,10 @@ use it through the fantastic software
 [RStudio](http://www.rstudio.com/). With this package, there is no
 noticeable difference between the operation system you are using.
 
-As advertised on the website, `_RStudio is an integrated development
+As advertised on the website, _RStudio is an integrated development
 environment (IDE) for R. It includes a console, syntax-highlighting
 editor that supports direct code execution, as well as tools for
-plotting, history, debugging and workspace management_`. In another
+plotting, history, debugging and workspace management_. In another
 words, it offers a number of facilities for your convenience that will
 make your live easier, specially if you never use R before.
 
