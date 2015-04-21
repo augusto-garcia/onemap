@@ -180,6 +180,15 @@ parent (`Not BB` or `BB`) with 15% of missing data. You also can see
 that there is also phenotypic information on the data set, that can be
 used for QTL mapping.
 
+```{r, lixao}
+names(fake.f2.onemap)
+fake.f2.onemap$geno
+RIL1 <- read.mapmaker(dir="~/Dropbox/Disciplinas/LGN\ 5830\ -\ Biometria\ de\ Marcadores\ Genéticos/Dados\ experimentais", file="feijao.raw")
+ht(RIL1$geno)
+``` 
+
+
+
 ## Visualization of raw data
 
 Before building you linkage map, you should take a quick look on your
@@ -224,6 +233,17 @@ plot.by.type(fake.f2.onemap)
 So, as showed before, there is 36 co-dominant loci, and 30 dominant
 ones.
 
+
+```{r, lixo}
+?marker.type
+data(example.out)
+twopts <- rf.2pts(example.out)
+markers.ex <- make.seq(twopts,c(3,6,8,12,16,25))
+marker.type(markers.ex) # segregation type for some markers
+```
+
+
+
 ## Segregation tests
 
 Now, it should be interesting to see if markers are segregating
@@ -267,18 +287,13 @@ for this number of loci if applying Bonferroni's correction with
 global alpha of 0.05:
 
 ```{r, Bonferroni}
-Bonferroni.alpha <- function(x, global.alpha=0.05) {
-    alpha.Bonf <- global.alpha/length(x$Marker)
-    return(alpha.Bonf)
-}
-
 Bonferroni.alpha(f2.test)
 ```
 
-It is easy to see the proportion of markers that will be discard if
-this criteria is applied by drawing a graphic using function OneMap's
-version of the function `plot` for objects of class
-`onemap.segreg.test`:
+You can subset object `f2.test` to see which markers are distorted
+under Bonferroni's argument, but it is easier to see the proportion of
+markers that are distorted by drawing a graphic using OneMap's version
+of the function `plot` for objects of class `onemap.segreg.test`:
 
 ```{r, plot_chisq}
 plot(f2.test)
@@ -295,9 +310,20 @@ also that discarding marker data could not be a good approach to your
 analysis. This graphic is just to suggest a criteria, so use it with
 carefully.
 
+You can see a list of markers with non-distorted segregation using
+function `subset.chisq`:
 
-(I need to write a function to show which markers are distorted, and
-to select them).
+```{r, select_nondistorted}
+(non.dist <- subset.chisq(f2.test))
+```
+
+For having a list of distorted ones (none in this example):
+
+```{r, select_nondistorted}
+(distorted <- subset.chisq(f2.test, distorted=TRUE))
+```
+
+This can be used in other steps of the analysis, as will be show.
 
 
 ## Estimating two-point recombination fractions
@@ -305,7 +331,9 @@ to select them).
 After evaluating raw data and checking for segregation distortion, let
 us now estimate recombination fractions between all pairs of markers
 (two-point tests). This is necessary to allows us to tests which
-markers are linked.
+markers are linked. At this point, you should pay no attention if
+markers have segregation distortion or not, i. e., simply use all of
+them.
 
 ```{r, two_point_tests, results="hide"}
 twopts.f2 <- rf.2pts(fake.f2.onemap)
@@ -315,16 +343,23 @@ There are two optional arguments in function `rf.2pts`: `LOD` and
 `max.rf` which indicate the minimum LOD Score and the maximum
 recombination fraction to declare linkage (defaults to 3.0 and 0.5).
 
+The default for the recombination fraction is easy to understand,
+since if `max.rf<0.5` we could state that markers are linked. The LOD
+Score is the statistic used to evaluate the significance of the test
+for `max.rf=0.50`. This needs to take into consideration the number of
+tests performed, that of course depends on the number of markers.
+Function `suggest.lod` can help users to find an initial value to use
+for their linkage test. For this example:
+
 ```{r, Suggest_LOD}
-suggest.lod <- function(x) {
-    num.tests <- choose(x$n.mar, 2) #Number of pairwise tests
-    LOD <- 0.2172 * qchisq(1-0.05/num.tests, 1) #Corresponding LOD
-    return(LOD)
-}
-
 suggest.lod(fake.f2.onemap)
-
 ```
+
+So, one should consider using `LOD=4` for the tests. Please, notice
+that this is just a guide, not a value to take without any further
+consideration. For now, we will keep the default values, but later
+will show that results will not change in our example by using `LOD=3`
+or `LOD=4`.
 
 If you want to see the results for a single pair of markers, say `M12` and
 `M42`, use:
@@ -349,24 +384,47 @@ print(twopts.f2)
 
 ## Assigning markers to linkage groups
 
+### Defining a sequence of markers
+
 To assign markers to linkage groups, first use the function `make.seq`
-to create a sequence with all markers:
+to create a (un-ordered) sequence with all markers:
 
 ```{r, subset_all}
 mark.all.f2 <- make.seq(twopts.f2, "all")
 ```
 
 Function `make.seq` is used to create sequences from objects of
-several kinds. Here, the first argument is of class `rf.2pts` and the
-second argument specifies which markers one wants to use (`"all"`
-indicates that all markers will be analyzed). To subset markers, say
-`M1`, `M3` and `M7`, use:
+several different classes. Here, the first argument is of class
+`rf.2pts` and the second argument specifies which markers one wants to
+use (`"all"` indicates that all markers will be analyzed). The object
+`mark.all.f2` has class `sequence`:
+
+```{r, class_subset_all}
+class(mark.all.f2)
+```
+
+If you want to form groups with a subset of markers, say `M1`, `M3`
+and `M7`, use:
 
 ```{r, subset_3mks}
 mrk.subset<-make.seq(twopts.f2, c(1,3,7))
 ``` 
 
-You can then assign markers to linkage groups using the function
+In this case, it was easy because marker names and order in the
+objects (indicated in vector `c(1,3,7)`) are closed related, i. e.,
+you can easily know the position of markers in the object once you
+know its name. However, this is not true for real data sets, where
+markers do not have simple names such as `M1` or `M2`.
+
+A good example is to use the vector of markers without segregation
+distortion that we selected when applying the Chi-square tests. 
+
+(To be included)
+
+
+### Forming the groups
+
+You can assign markers to linkage groups using the function
 `group`:
 
 ```{r, group1}
@@ -388,7 +446,8 @@ suggested by `suggest.lod` (rounded up):
 ``` 
 
 No difference was obtained in this example. (The parenthesis above is
-just to avoiding type the object `LGs.f2` to have it printed).
+just to avoiding type the object `LGs.f2` in another row to have it
+printed).
 
 We can see that the markers were assigned to three linkage groups with
 27, 16 and 23 markers; no markers were kept un-linked.
