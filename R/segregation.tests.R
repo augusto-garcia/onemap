@@ -5,13 +5,13 @@
 # File: segregations.tests.R                                          #
 # Contains: chisq.test.for.segregation.of.markers,                    #
 # test.segregation, plot.onemap.segreg.test,                          #
-# print.onemap.segreg.test                                            #
+# print.onemap.segreg.test, Bonferroni.alpha                          #
 #                                                                     #
 # Written by Antonio Augusto Franco Garcia                            #
 # copyright (c) 2015 Antonio Augusto Franco Garcia                    #
 #                                                                     #
 # First version: 2015/04/18                                           #
-# Last update: 2015/04/18                                             #
+# Last update: 2015/04/21                                             #
 # License: GNU General Public License version 3 or later              #
 #                                                                     #
 #######################################################################
@@ -192,3 +192,29 @@ plot.onemap.segreg.test <- function(x, order=TRUE) {
     g
 }
 ##'
+
+
+##' Bonferroni.alpha
+##'
+##' It shows the alpha value to control type I error for chi-square tests for
+##' segregation of all markers if Bonferroni's criteria is applied.
+##' 
+##' @param x an object of class onemap.segreg.test
+##' 
+##' @return the alpha value (numeric)
+##' 
+##' @examples
+##' data(fake.bc.onemap) # Loads a fake backcross dataset installed with onemap
+##' Chi <- test.segregation(fake.bc.onemap) # Performs the chi-square test for all markers
+##' print(Chi) # Shows the results of the Chi-square tests
+##' Bonferroni.alpha (Chi) # Shows the global alpha level using Bonferroni's criteria
+##'
+##' @export
+Bonferroni.alpha <- function(x, global.alpha=0.05) {
+    if (!is(x,"onemap.segreg.test")) stop("This is not an object of class onemap.segreg.test")
+    alpha.Bonf <- global.alpha/length(x$Marker)
+    return(alpha.Bonf)
+}
+##'
+
+
