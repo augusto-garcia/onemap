@@ -79,8 +79,8 @@ You can read _OneMap_ tutorials going to the vignettes of the
 installed package, or clicking below. Please, start with the overview,
 that will guide you through another chapters.
 
-1. [Overview](http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/vignettes_html/Overview.html)
+1. [Overview](http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Overview.html)
 
-2. [Introduction to R](http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/vignettes_html/Introduction_R.html)
+2. [Introduction to R](http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Introduction_R.html)
 
-3. [Build a linkage map for inbred-bases populations (F2, RIL and BC)](http://htmlpreview.github.com/?https://raw.githubusercontent.com/augusto-garcia/onemap/master/vignettes_html/Inbred_Based_Populations.html)
+3. [Build a linkage map for inbred-bases populations (F2, RIL and BC)](http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Inbred_Based_Populations.html)
