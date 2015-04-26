@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/augusto-garcia/onemap.svg?branch=master)](https://travis-ci.org/augusto-garcia/onemap)
+
 # OneMap
 
 `OneMap` is a software for constructing genetic maps in experimental
