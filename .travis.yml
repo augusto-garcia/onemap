@@ -3,4 +3,5 @@ apt_packages:
  - r-cran-tkrplot
  - tk-dev
 language: r
+install: travis_wait mvn install
 
