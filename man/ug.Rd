@@ -44,7 +44,7 @@ that the best order is always found. The only requirement is a matrix with
 recombination fractions between markers. Next is an adapted excerpt from
 \cite{Mollinari et al (2009)} describing the \emph{UG} algorithm:
 
-\emph{Based on the \eqn{R} (recombination fraction) matrix, the distance
+Based on the \eqn{R} (recombination fraction) matrix, the distance
 between all \eqn{m} loci is calculated by \eqn{d_{ij} = }{d_ij = r_ij +
 (2/n_ij) Sum_k r_ik r_jk}\eqn{ \hat{r}_{ij} + (\frac{2}{n_{ij}}) \sum_{k}
 \hat{r}_{ik} }{d_ij = r_ij + (2/n_ij) Sum_k r_ik r_jk}\eqn{
@@ -74,7 +74,7 @@ distance of the map with the remaining markers is updated: \eqn{d_{i m+k} =
 d_ik}\eqn{ m+k} - \sum_{k \neq i} d_{ik}}{W_im+k = (m-k-1) d_im+k - Sum_{k
 != i} d_ik} is calculated and the locus that minimizes \eqn{W} is added to
 the map. The last two steps are repeated, taking \eqn{k = 3, }{k = 3, ...,
-m-1}\eqn{ \ldots, m - 1}{k = 3, ..., m-1} to obtain the complete map.}
+m-1}\eqn{ \ldots, m - 1}{k = 3, ..., m-1} to obtain the complete map.
 
 After determining the order with \emph{UG}, the final map is constructed
 using the multipoint approach (function \code{\link[onemap]{map}}).
