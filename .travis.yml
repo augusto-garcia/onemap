@@ -3,4 +3,5 @@ apt_packages:
  - r-cran-tkrplot
  - tk-dev
 language: r
-
+r_build_args: --no-build-vignettes
+r_check_args: --no-vignettes
