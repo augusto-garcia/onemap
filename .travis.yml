@@ -3,5 +3,4 @@ sudo: required
 apt_packages:
  - r-cran-tkrplot
  - libcurl4-openssl-dev
-cran:
- - http://brieger.esalq.usp.br/CRAN/
+
