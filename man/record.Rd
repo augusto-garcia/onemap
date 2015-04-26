@@ -47,27 +47,7 @@ a matrix with recombination fractions between markers. Next is an adapted
 excerpt from \cite{Mollinari et al (2009)} describing the \emph{RECORD}
 algorithm:
 
-Based on the expected number of recombination events, an \eqn{S}
-matrix is constructed, \eqn{S = [S_{M_{i}M_{j}}]_{m \times }{S =
-[S_MiMj]_(m x m)}\eqn{ m}}{S = [S_MiMj]_(m x m)} (for \eqn{M_{i} =
-M_{j}}{M_i = M_j}, \eqn{S_{M_{i}M_{j}} = 0}{S_MiMj = 0}), where \eqn{m} is
-the number of markers. The procedure to obtain \eqn{S} is based on the
-expected number of crossovers between marker pairs, conditioned by the
-observation of the markers' phenotype. The optimization criterion
-\emph{COUNT} for a sequence of \eqn{m} markers may be calculated by
-\eqn{COUNT = \sum_{i=1}^{m-1} S_{M_{i}M_{i+1}}}{COUNT = Sum_{i=1}^{m-1}
-S_MiMi+1}, where smaller \emph{COUNT} values correspond to better orders.
-Map building is carried out by randomly taking two markers and positioning
-a third one at the beginning, at the end and between them. The marker is
-fixed at the position that gives a smaller value of \emph{COUNT}.
-Similarly, the remaining markers are positioned at pre-established orders
-until completion of the map. Subsequently, a search for smaller values of
-\emph{COUNT} is performed, inverting the position on the map of
-subsequences of size \eqn{m' = 2, \ldots, 20}{m' = 2, ..., 20}. If the map
-resulting from the inverted positions presents a \emph{COUNT} value smaller
-than the previous one, it is kept. The procedure is repeated \code{times}
-times and the sequence presenting the smallest \emph{COUNT} value is
-chosen.
+FIXME: need to add this back! Is not working because of equations.
 
 After determining the order with \emph{RECORD}, the final map is
 constructed using the multipoint approach (function

@@ -27,38 +27,9 @@
 ##' that the best order is always found. The only requirement is a matrix with
 ##' recombination fractions between markers. Next is an adapted excerpt from
 ##' \cite{Mollinari et al (2009)} describing the \emph{UG} algorithm:
+##'
+##' FIXME: need to add this back; removed because of problems to build the manual
 ##' 
-##' Based on the \eqn{R} (recombination fraction) matrix, the distance
-##' between all \eqn{m} loci is calculated by \eqn{d_{ij} = }{d_ij = r_ij +
-##' (2/n_ij) Sum_k r_ik r_jk}\eqn{ \hat{r}_{ij} + (\frac{2}{n_{ij}}) \sum_{k}
-##' \hat{r}_{ik} }{d_ij = r_ij + (2/n_ij) Sum_k r_ik r_jk}\eqn{
-##' \hat{r}_{jk}}{d_ij = r_ij + (2/n_ij) Sum_k r_ik r_jk}, for every \eqn{k},
-##' with \eqn{\hat{r}_{ij} > \hat{r}_{ik}, \hat{r}_{ij} > }{r_ij > r_ik, r_ij >
-##' r_jk}\eqn{ \hat{r}_{jk}}{r_ij > r_ik, r_ij > r_jk}, and \eqn{n_{ij}}{n_ij}
-##' individuals. The value \eqn{T_{ij} = 2 d_{ij} - (\sum_{k \neq i} }{T_ij = 2
-##' d_ij - (Sum_{k != i} d_ik + Sum_{k != j} d_jk)}\eqn{ d_{ik} + \sum_{k \neq
-##' j} d_{jk})}{T_ij = 2 d_ij - (Sum_{k != i} d_ik + Sum_{k != j} d_jk)} is
-##' calculated for every \eqn{i < j}. The terminal end of the map is defined by
-##' taking the pair of markers \eqn{(f, g)} that presents the smallest value of
-##' \eqn{T}. The pair \eqn{(f, g)} is then denoted locus \eqn{m + 1} and its
-##' distance to the remaining markers is determined by \eqn{d_{i m+1} =
-##' \frac{1}{2}(d_{if} + }{d_im+1 = (1/2)(d_if + d_ig - d_fg)}\eqn{ d_{ig} -
-##' d_{fg})}{d_im+1 = (1/2)(d_if + d_ig - d_fg)} if \eqn{(d_{if} + }{(d_if +
-##' d_ig) > d_fg}\eqn{ d_{ig}) > d_{fg}}{(d_if + d_ig) > d_fg}, if not,
-##' \eqn{d_{i m+1} = }{d_im+1 = 0}\eqn{ 0}{d_im+1 = 0}. The calculation
-##' \eqn{W_{i m+1} = (m - 2) d_{i m+1} - }{W_im+1 = (m-2) d_im+1 - Sum_{k != i}
-##' d_ik}\eqn{ \sum_{k \neq i} d_{ik}}{W_im+1 = (m-2) d_im+1 - Sum_{k != i}
-##' d_ik} is also performed and the locus that minimizes the value \eqn{W_{i
-##' }{W_im+1}\eqn{ m+1}}{W_im+1} (called locus \eqn{h}) is placed on the map.
-##' The partial resultant map is \emph{f-g-h} if \eqn{d_{fh} > d_{gh}}{d_fh >
-##' d_gh} or \emph{h-f-g} otherwise. Considering \eqn{k = 2}, the partial
-##' distance of the map with the remaining markers is updated: \eqn{d_{i m+k} =
-##' \mbox{min}(d_{i m+k-1}, d_{ij})}{d_im+k = min(d_im+k-1, d_ij)}. The value
-##' \eqn{W_{i m+k} = (m - k - 1) d_{i }{W_im+k = (m-k-1) d_im+k - Sum_{k != i}
-##' d_ik}\eqn{ m+k} - \sum_{k \neq i} d_{ik}}{W_im+k = (m-k-1) d_im+k - Sum_{k
-##' != i} d_ik} is calculated and the locus that minimizes \eqn{W} is added to
-##' the map. The last two steps are repeated, taking \eqn{k = 3, }{k = 3, ...,
-##' m-1}\eqn{ \ldots, m - 1}{k = 3, ..., m-1} to obtain the complete map.
 ##' 
 ##' After determining the order with \emph{UG}, the final map is constructed
 ##' using the multipoint approach (function \code{\link[onemap]{map}}).
