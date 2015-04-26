@@ -1,6 +1,6 @@
 sudo: required
 apt_packages:
  - r-cran-tkrplot
- - r-cran-rgl
+ - tk-dev
 language: r
 
