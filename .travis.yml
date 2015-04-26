@@ -1,6 +1,6 @@
-language: r
 sudo: required
 apt_packages:
  - r-cran-tkrplot
  - libcurl4-openssl-dev
+language: r
 
