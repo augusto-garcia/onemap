@@ -29,7 +29,7 @@
 ##' excerpt from \cite{Mollinari et al (2009)} describing the \emph{RECORD}
 ##' algorithm:
 ##' 
-##' \emph{Based on the expected number of recombination events, an \eqn{S}
+##' Based on the expected number of recombination events, an \eqn{S}
 ##' matrix is constructed, \eqn{S = [S_{M_{i}M_{j}}]_{m \times }{S =
 ##' [S_MiMj]_(m x m)}\eqn{ m}}{S = [S_MiMj]_(m x m)} (for \eqn{M_{i} =
 ##' M_{j}}{M_i = M_j}, \eqn{S_{M_{i}M_{j}} = 0}{S_MiMj = 0}), where \eqn{m} is
@@ -49,7 +49,7 @@
 ##' resulting from the inverted positions presents a \emph{COUNT} value smaller
 ##' than the previous one, it is kept. The procedure is repeated \code{times}
 ##' times and the sequence presenting the smallest \emph{COUNT} value is
-##' chosen.}
+##' chosen.
 ##' 
 ##' After determining the order with \emph{RECORD}, the final map is
 ##' constructed using the multipoint approach (function
