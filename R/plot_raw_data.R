@@ -4,7 +4,8 @@
 #                                                                     #
 # File: plot_raw_data.R                                               #
 # Contains: plot.bc.onemap, plot.riself.onemap, plot.risib.onemap,    #
-# plot.f2.onemap, create.dataframe.outcross.plot, plot.outcross       #
+# plot.f2.onemap, create_dataframe_for_plot_outcross, plot.outcross,  #
+# plot_by_segreg_type                                                 # 
 #                                                                     #
 # Written by Antonio Augusto Franco Garcia                            #
 # copyright (c) 2015 Antonio Augusto Franco Garcia                    #
@@ -61,7 +62,7 @@ plot.bc.onemap <- function(x) {
     if (x$n.mar>20) g <- g + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
     return(g)
 }
-###
+##'
 
 ##' plot.riself.onemap
 ##' 
@@ -102,7 +103,8 @@ plot.riself.onemap <- function(x) {
     if (x$n.mar>20) g <- g + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
     return(g)
 }
-###
+##'
+
 
 ##' plot.risib.onemap
 ##' 
@@ -122,6 +124,7 @@ plot.riself.onemap <- function(x) {
 plot.risib.onemap <- function(x) {
     plot.riself.onemap(x)
 }
+##'
 
 
 ##' plot.f2.onemap
@@ -181,9 +184,9 @@ plot.f2.onemap <- function(x) {
     if (x$n.mar>20) g <- g + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
     return(g)
 }
-###
+##'
 
-##' create.dataframe.outcross.plot
+##' create_dataframe_for_plot_outcross
 ##' 
 ##' An internal function that prepares a dataframe suitable for
 ##' drawing a graphic of raw data using ggplot2, i. e., a data frame
@@ -193,7 +196,7 @@ plot.f2.onemap <- function(x) {
 ##'
 ##' @return a dataframe
 ##'
-create.dataframe.outcross.plot <- function(x) {
+create_dataframe_for_plot_outcross <- function(x) {
     # Markers of A type
     for (i in 1:4) {
     if (length(which(x$segr.type==paste("A.",i,sep=""))!=0)) {
@@ -263,6 +266,7 @@ create.dataframe.outcross.plot <- function(x) {
     class(F1.D2.) <- "data.frame"
     return(rbind(F1.A.,F1.B.,F1.C.,F1.D1.,F1.D2.))
 }
+##' 
 
 
 ##' plot.outcross
@@ -273,7 +277,7 @@ create.dataframe.outcross.plot <- function(x) {
 ##' The graphic is a "heatmap", whose name in ggplot2 is "tile".
 ##' The function receives a onemap object of class outcross, reads information
 ##' from genotypes from this object, convert it to a long dataframe format
-##' using onemap internal function create.dataframe.outcross.plot(),
+##' using onemap internal function create_dataframe_for_plot_outcross(),
 ##' then plot the graphic.
 ##' If there is more than 20 markers, removes y labels
 ##' It can show all markers together, or it can split them according the segregation
@@ -299,7 +303,7 @@ create.dataframe.outcross.plot <- function(x) {
 ##'
 ##' @export
 plot.outcross <- function(x, all=TRUE) {
-    df <- create.dataframe.outcross.plot(x)
+    df <- create_dataframe_for_plot_outcross(x)
     g <- ggplot(data=df, aes(x=ind, y=variable, fill=factor(value)))
     g <- g + geom_tile()
     g <- g + xlab("Individual") + ylab("Marker") +
@@ -314,7 +318,7 @@ plot.outcross <- function(x, all=TRUE) {
 ##
 
 
-##' plot.by.type
+##' plot_by_segreg_type
 ##' 
 ##' Draw a graphic showing the number of markers on each segregation pattern.
 ##' The function receives a onemap object of class outcross, f2.onemap, bc.onemap,
@@ -332,23 +336,23 @@ plot.outcross <- function(x, all=TRUE) {
 ##' 
 ##' @examples
 ##' data(example.out) #Outcrossing data
-##' plot.by.type(example.out)
-##' plot.by.type(example.out, subcateg=FALSE)
+##' plot_by_segreg_type(example.out)
+##' plot_by_segreg_type(example.out, subcateg=FALSE)
 ##'
 ##' data(fake.bc.onemap)
-##' plot.by.type(fake.bc.onemap)
+##' plot_by_segreg_type(fake.bc.onemap)
 ##'
 ##' data(fake.f2.onemap)
-##' plot.by.type(fake.f2.onemap)
+##' plot_by_segreg_type(fake.f2.onemap)
 ##' 
 ##' # You can store the graphic in an object, then save it.
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' data(example.out) #Outcrossing data
-##' g <- plot.by.type(example.out)
+##' g <- plot_by_segreg_type(example.out)
 ##' ggsave("SegregationTypes.jpg", g, width=7, height=4, dpi=600)
 ##'
 ##' @export
-plot.by.type <- function(x, subcateg=TRUE) {
+plot_by_segreg_type <- function(x, subcateg=TRUE) {
     # Create a dataframe, indicating the category and subcategory
     df <- data.frame(segr.type=factor(x$segr.type),Type=999)
     t <- c("A","B","C","D1","D2")
