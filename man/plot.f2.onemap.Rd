@@ -2,7 +2,8 @@
 % Please edit documentation in R/plot_raw_data.R
 \name{plot.f2.onemap}
 \alias{plot.f2.onemap}
-\title{plot.f2.onemap}
+\title{Draw a graphic of raw data for an F2 population
+plot.f2.onemap}
 \usage{
 \method{plot}{f2.onemap}(x)
 }

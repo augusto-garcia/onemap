@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_raw_data.R
 \name{create_dataframe_for_plot_outcross}
 \alias{create_dataframe_for_plot_outcross}
-\title{create_dataframe_for_plot_outcross}
+\title{Create a dataframe suitable for a ggplot2 graphic}
 \usage{
 create_dataframe_for_plot_outcross(x)
 }

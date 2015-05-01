@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_raw_data.R
 \name{plot.riself.onemap}
 \alias{plot.riself.onemap}
-\title{plot.riself.onemap}
+\title{Draw a graphic of raw data for a RIL population (made by selfing)}
 \usage{
 \method{plot}{riself.onemap}(x)
 }

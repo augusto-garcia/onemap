@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_raw_data.R
 \name{plot.outcross}
 \alias{plot.outcross}
-\title{plot.outcross}
+\title{Draw a graphic (heatmap like) for an outcross population}
 \usage{
 \method{plot}{outcross}(x, all = TRUE)
 }

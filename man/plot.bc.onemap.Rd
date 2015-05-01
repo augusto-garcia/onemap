@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_raw_data.R
 \name{plot.bc.onemap}
 \alias{plot.bc.onemap}
-\title{plot.bc.onemap}
+\title{Draw a graphic of raw data for a backcross population}
 \usage{
 \method{plot}{bc.onemap}(x)
 }
@@ -13,9 +13,8 @@
 a ggplot graphic
 }
 \description{
-Draw a graphic of raw data for a backcross population, using ggplot2.
+Shows a heatmap like graphic (in ggplot2, a "tile") for raw data.
 Lines correspond to markers and columns for individuals.
-The graphic is a "heatmap", whose name in ggplot2 is "tile".
 The function receives a onemap object of class bc.onemap, reads information
 from genotypes from this object, convert it to a long dataframe format
 using function melt() from package reshape2(), converts numbers from the object
