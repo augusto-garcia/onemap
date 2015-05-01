@@ -9,7 +9,7 @@
 # copyright (c) 2015 Antonio Augusto Franco Garcia                    #
 #                                                                     #
 # First version: 2015/04/21                                           #
-# Last update: 2015/04/21                                             #
+# Last update: 2015/05/01                                             #
 # License: GNU General Public License version 3 or later              #
 #                                                                     #
 #######################################################################
