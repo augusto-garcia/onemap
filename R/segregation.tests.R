@@ -41,25 +41,29 @@
 ##' chisq.test.for.segregation.of.markers(example.out,1)
 chisq.test.for.segregation.of.markers <- function(x, marker) {
     # Segregation pattern for each marker type
-    p.a <- rep(1/4, 4); p.b <- c(1/4, 1/2, 1/4); p.c <- c(3/4,1/4); p.d <- rep(1/2, 2)
+    p.a <- rep(1/4, 4)
+    p.b <- c(1/4, 1/2, 1/4)
+    p.c <- c(3/4, 1/4)
+    p.d <- rep(1/2, 2)
     # Counting each category
-    count <- table(x$geno[,marker], exclude=0)
-    # Do the chisq test, using the appropriate expected segregation
-    # grepl() allows finding the marker type (it has the letter in the argument)
-    if (grepl("A",x$segr.type[marker])) {
-        qui <- chisq.test(count, p=p.a, correct = FALSE)
-        H0 <- "1:1:1:1" }
-    else if (grepl("B",x$segr.type[marker])) {
-        qui <- chisq.test(count, p=p.b, correct = FALSE)
-        H0 <- "1:2:1" }
-    else if (grepl("C",x$segr.type[marker])) {
-        qui <- chisq.test(count, p=p.c, correct = FALSE)
-        H0 <- "3:1" }
-    else if (grepl("D",x$segr.type[marker])) {
-        qui <- chisq.test(count, p=p.d, correct = FALSE)
-        H0 <- "1:1" }
-    return(list(Hypothesis=H0, qui.quad=qui$statistic, p.val=qui$p.value,
-                perc.genot=100*(sum(table(x$geno[,marker], exclude=0))/x$n.ind)))
+    count <- table(x$geno[, marker], exclude = 0)
+    # Do the chisq test, using the appropriate expected segregation grepl()
+    # allows finding the marker type (it has the letter in the argument)
+    if (grepl("A", x$segr.type[marker])) {
+        qui <- chisq.test(count, p = p.a, correct = FALSE)
+        H0 <- "1:1:1:1"
+    } else if (grepl("B", x$segr.type[marker])) {
+        qui <- chisq.test(count, p = p.b, correct = FALSE)
+        H0 <- "1:2:1"
+    } else if (grepl("C", x$segr.type[marker])) {
+        qui <- chisq.test(count, p = p.c, correct = FALSE)
+        H0 <- "3:1"
+    } else if (grepl("D", x$segr.type[marker])) {
+        qui <- chisq.test(count, p = p.d, correct = FALSE)
+        H0 <- "1:1"
+    }
+    return(list(Hypothesis = H0, qui.quad = qui$statistic, p.val = qui$p.value, 
+        perc.genot = 100 * (sum(table(x$geno[, marker], exclude = 0))/x$n.ind)))
 }
 ##'
 
@@ -88,17 +92,16 @@ chisq.test.for.segregation.of.markers <- function(x, marker) {
 ##'
 ##' @export
 test.segregation <- function(x) {
-    if (is(x,"bc.onemap")|is(x,"f2.onemap")|is(x,"riself.onemap")|
-        is(x,"risib.onemap")|is(x,"outcross")) {
-        y <- list(Marker=dimnames(x$geno)[[2]],
-                     Results.of.tests=sapply(1:x$n.mar, function(onemap.object, marker)
-                         chisq.test.for.segregation.of.markers(onemap.object, marker),
-                         onemap.object=x))
-        # sapply iterates from 1 to x$n.mar; x is fixed (onemap object with data)
+    if (is(x, "bc.onemap") | is(x, "f2.onemap") | is(x, "riself.onemap") | 
+        is(x, "risib.onemap") | is(x, "outcross")) {
+        y <- list(Marker = dimnames(x$geno)[[2]], Results.of.tests = sapply(1:x$n.mar, 
+            function(onemap.object, marker) chisq.test.for.segregation.of.markers(onemap.object, 
+                marker), onemap.object = x))
+        # sapply iterates from 1 to x$n.mar; x is fixed (onemap object with
+        # data)
         class(y) <- c("onemap.segreg.test")
-        invisible(y) #returns y without showing it
-    }
-    else stop("This is not a onemap object with raw data")
+        invisible(y)  #returns y without showing it
+    } else stop("This is not a onemap object with raw data")
 }
 ##'
 
@@ -119,12 +122,10 @@ test.segregation <- function(x) {
 ##'
 ##' @export
 print.onemap.segreg.test <- function(x) {
-    Z <- data.frame(Marker=x$Marker,
-                    H0=unlist(x$Results.of.tests[1,]),
-                    Chi.square=unlist(x$Results.of.tests[2,]),
-                    p.value=unlist(x$Results.of.tests[3,]),
-                    Perc.genot=round(unlist(x$Results.of.tests[4,]),2))
-    colnames(Z) <- c("Marker","H0","Chi-square","p-value","% genot.")
+    Z <- data.frame(Marker = x$Marker, H0 = unlist(x$Results.of.tests[1, 
+        ]), Chi.square = unlist(x$Results.of.tests[2, ]), p.value = unlist(x$Results.of.tests[3, 
+        ]), Perc.genot = round(unlist(x$Results.of.tests[4, ]), 2))
+    colnames(Z) <- c("Marker", "H0", "Chi-square", "p-value", "% genot.")
     return(Z)
 }
 ##'
@@ -154,7 +155,7 @@ print.onemap.segreg.test <- function(x) {
 ##' # You can store the graphic in an object, then save it.
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' g <- plot(BC.seg)
-##' ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
+##' ggsave('SegregationTests.jpg', g, width=7, height=5, dpi=600)
 ##'
 ##' data(example.out) # load OneMap's fake dataset for an outcrossing population
 ##' Out.seg <- test.segregation(example.out) # Applies chi-square tests
@@ -164,31 +165,33 @@ print.onemap.segreg.test <- function(x) {
 ##' # You can store the graphic in an object, then save it.
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' g <- plot(Out.seg)
-##' ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
+##' ggsave('SegregationTests.jpg', g, width=7, height=5, dpi=600)
 ##' 
 ##' @export
-plot.onemap.segreg.test <- function(x, order=TRUE) {
+plot.onemap.segreg.test <- function(x, order = TRUE) {
     # Create a data frame
-    Z <- data.frame(Marker=x$Marker,
-                    X.square=unlist(x$Results.of.tests[2,]),
-                    p.value=unlist(x$Results.of.tests[3,]))
-    Bonf <- -log10(.05/nrow(Z)) #Bonferroni's threshold'
-    Z$signif <- factor(ifelse(-log10(Z$p.value)<Bonf,"non sign.","sign."))
+    Z <- data.frame(Marker = x$Marker, X.square = unlist(x$Results.of.tests[2, 
+        ]), p.value = unlist(x$Results.of.tests[3, ]))
+    Bonf <- -log10(0.05/nrow(Z))  #Bonferroni's threshold'
+    Z$signif <- factor(ifelse(-log10(Z$p.value) < Bonf, "non sign.", "sign."))
     Z$order <- 1:nrow(Z)
     # % of distorted
-    perc <- 100*(1-(table(Z$signif)[1]/nrow(Z)))
-    # Keeping markers in their original order (not alphanumeric), or by p-values (default)
-    if (order!=TRUE) Z$Marker <- factor(Z$Marker, levels = Z$Marker[order(Z$order)])
-    else Z$Marker <- factor(Z$Marker, levels = Z$Marker[order(Z$p.value, decreasing=TRUE)])
+    perc <- 100 * (1 - (table(Z$signif)[1]/nrow(Z)))
+    # Keeping markers in their original order (not alphanumeric), or by
+    # p-values (default)
+    if (order != TRUE) 
+        Z$Marker <- factor(Z$Marker, levels = Z$Marker[order(Z$order)]) else Z$Marker <- factor(Z$Marker, levels = Z$Marker[order(Z$p.value, 
+        decreasing = TRUE)])
     # Plotting
-    g <- ggplot(data=Z, aes(x=Marker, y=-log10(p.value)))
-    g <- g + ylab(expression(-log[10](p-value)))
-    g <- g + geom_point(aes(color=signif), stat="identity",size=2.5)
-    g <- g + scale_colour_manual(name=paste("Bonferroni\n","(",round(perc,0),"% distorted)",sep=""),
-                                 values = c("#46ACC8","#B40F20"))
-    g <- g + geom_hline(yintercept = Bonf, colour="#E58601", linetype = "longdash")
+    g <- ggplot(data = Z, aes(x = Marker, y = -log10(p.value)))
+    g <- g + ylab(expression(-log[10](p - value)))
+    g <- g + geom_point(aes(color = signif), stat = "identity", size = 2.5)
+    g <- g + scale_colour_manual(name = paste("Bonferroni\n", "(", round(perc, 
+        0), "% distorted)", sep = ""), values = c("#46ACC8", "#B40F20"))
+    g <- g + geom_hline(yintercept = Bonf, colour = "#E58601", linetype = "longdash")
     g <- g + coord_flip()
-    if (nrow(Z)>30) g <- g + theme(axis.text.y = element_blank())
+    if (nrow(Z) > 30) 
+        g <- g + theme(axis.text.y = element_blank())
     g
 }
 ##'
@@ -211,8 +214,9 @@ plot.onemap.segreg.test <- function(x, order=TRUE) {
 ##' Bonferroni.alpha (Chi) # Shows the global alpha level using Bonferroni's criteria
 ##'
 ##' @export
-Bonferroni.alpha <- function(x, global.alpha=0.05) {
-    if (!is(x,"onemap.segreg.test")) stop("This is not an object of class onemap.segreg.test")
+Bonferroni.alpha <- function(x, global.alpha = 0.05) {
+    if (!is(x, "onemap.segreg.test")) 
+        stop("This is not an object of class onemap.segreg.test")
     alpha.Bonf <- global.alpha/length(x$Marker)
     return(alpha.Bonf)
 }
@@ -226,7 +230,7 @@ Bonferroni.alpha <- function(x, global.alpha=0.05) {
 ##' @param x an object of class onemap.segreg.test
 ##' @param distorted a TRUE/VALUE variable to show distorted or non-distorted markers
 ##' 
-##' @return a vector with marker names, according to the option for "distorted"
+##' @return a vector with marker names, according to the option for 'distorted'
 ##' 
 ##' @examples
 ##' data(fake.bc.onemap) # Loads a fake backcross dataset installed with onemap
@@ -235,13 +239,14 @@ Bonferroni.alpha <- function(x, global.alpha=0.05) {
 ##' subset.chisq(Chi, distorted=TRUE) # With segregation distortion
 ##'
 ##' @export
-subset.chisq <- function(x, distorted=FALSE) {
-    if (!is(x,"onemap.segreg.test")) stop("This is not an object of class onemap.segreg.test")
-    Z <- data.frame(Marker=x$Marker,
-                    p.value=unlist(x$Results.of.tests[3,]))
-    if (distorted==FALSE) Z <- subset(Z, p.value>=Bonferroni.alpha(x))
-    else Z <- subset(Z, p.value<Bonferroni.alpha(x))
-    return(as.vector(Z[,1]))
+subset.chisq <- function(x, distorted = FALSE) {
+    if (!is(x, "onemap.segreg.test")) 
+        stop("This is not an object of class onemap.segreg.test")
+    Z <- data.frame(Marker = x$Marker, p.value = unlist(x$Results.of.tests[3, 
+        ]))
+    if (distorted == FALSE) 
+        Z <- subset(Z, p.value >= Bonferroni.alpha(x)) else Z <- subset(Z, p.value < Bonferroni.alpha(x))
+    return(as.vector(Z[, 1]))
 }
 ##'
 
