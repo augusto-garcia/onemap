@@ -2,6 +2,12 @@ Package: onemap
 Title: Software for constructing genetic maps in experimental crosses:
         full-sib, RILs, F2 and backcrosses
 Version: 2.0-5
+Description: Analysis of molecular marker data from model (backcrosses,
+        F2 and recombinant inbred lines) and non-model systems (i. e.
+        outcrossing species). For the later, it allows statistical
+        analysis by simultaneously estimating linkage and linkage
+        phases (genetic map construction). All analysis are based on
+        multipoint approaches using hidden Markov models.
 Date: May, 2015
 Authors@R: c(person("Gabriel", "Margarido", role = "aut", email =
         "gramarga@gmail.com"), person("Marcelo", "Mollinari", role =
@@ -21,12 +27,6 @@ Suggests:
         knitr (>= 1.10)
 VignetteBuilder: knitr
 Encoding: UTF-8
-Description: Analysis of molecular marker data from model (backcrosses,
-        F2 and recombinant inbred lines) and non-model systems (i. e.
-        outcrossing species). For the later, it allows statistical
-        analysis by simultaneously estimating linkage and linkage
-        phases (genetic map construction). All analysis are based on
-        multipoint approaches using hidden Markov models.
 License: GPL-3
 Maintainer: Marcelo Mollinari <mmollina@usp.br>
 Repository: CRAN
