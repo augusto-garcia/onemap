@@ -5,7 +5,7 @@
 # File: plot_raw_data.R                                               #
 # Contains: plot.bc.onemap, plot.riself.onemap, plot.risib.onemap,    #
 # plot.f2.onemap, create_dataframe_for_plot_outcross, plot.outcross,  #
-# plot_by_segreg_type                                                 # 
+# plot_by_segreg_type                                                 #
 #                                                                     #
 # Written by Antonio Augusto Franco Garcia                            #
 # copyright (c) 2015 Antonio Augusto Franco Garcia                    #
@@ -16,11 +16,10 @@
 #                                                                     #
 #######################################################################
 
-##' plot.bc.onemap
-##' 
-##' Draw a graphic of raw data for a backcross population, using ggplot2.
+##' Draw a graphic of raw data for a backcross population
+##'
+##' Shows a heatmap like graphic (in ggplot2, a tile) for raw data.
 ##' Lines correspond to markers and columns for individuals.
-##' The graphic is a "heatmap", whose name in ggplot2 is "tile".
 ##' The function receives a onemap object of class bc.onemap, reads information
 ##' from genotypes from this object, convert it to a long dataframe format
 ##' using function melt() from package reshape2(), converts numbers from the object
@@ -32,7 +31,7 @@
 ##' @return a ggplot graphic
 ##'
 ##' @import ggplot2
-##' 
+##'
 ##' @examples
 ##' data(fake.bc.onemap) # Loads a fake backcross dataset installed with onemap
 ##' plot(fake.bc.onemap) # This will show you the graph
@@ -58,14 +57,14 @@ plot.bc.onemap <- function(x) {
     g <- g + geom_tile()
     g <- g + xlab("Individual") + ylab("Marker") +
         scale_fill_manual(name="Genotype",labels=labels.bc,
-                          values=c("#F21A00","#3B9AB2","#EBCC2A")) 
+                          values=c("#F21A00","#3B9AB2","#EBCC2A"))
     if (x$n.mar>20) g <- g + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
     return(g)
 }
 ##'
 
 ##' plot.riself.onemap
-##' 
+##'
 ##' Draw a graphic of raw data for a RIL population (made by selfing), using ggplot2.
 ##' Lines correspond to markers and columns for individuals.
 ##' The graphic is a "heatmap", whose name in ggplot2 is "tile".
@@ -99,7 +98,7 @@ plot.riself.onemap <- function(x) {
     g <- ggplot(data=df.RIL, aes(x=ind, y=variable, fill=factor(value)))
     g <- g + geom_tile()
     g <- g + xlab("Individual") + ylab("Marker") +
-    scale_fill_manual(name="Genotype",labels=labels.ril, values=c("#F21A00","#3B9AB2","#EBCC2A")) 
+    scale_fill_manual(name="Genotype",labels=labels.ril, values=c("#F21A00","#3B9AB2","#EBCC2A"))
     if (x$n.mar>20) g <- g + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
     return(g)
 }
@@ -107,7 +106,7 @@ plot.riself.onemap <- function(x) {
 
 
 ##' plot.risib.onemap
-##' 
+##'
 ##' Draw a graphic of raw data for a RIL population (made by sibing), using ggplot2.
 ##' In fact, the graphic for the raw data will have the same aspect of the ones
 ##' for RILs made by selfing. Therefore, this function will only call
@@ -128,7 +127,7 @@ plot.risib.onemap <- function(x) {
 
 
 ##' plot.f2.onemap
-##' 
+##'
 ##' Draw a graphic of raw data for a f2 population, using ggplot2.
 ##' Lines correspond to markers and columns for individuals.
 ##' The function can plot graph for dominant/codominant markers, in all combinations.
@@ -144,7 +143,7 @@ plot.risib.onemap <- function(x) {
 ##' @return a ggplot graphic
 ##'
 ##' @import ggplot2
-##' 
+##'
 ##' @examples
 ##' data(fake.f2.onemap) # Loads a fake backcross dataset installed with onemap
 ##' plot(fake.f2.onemap) # This will show you the graph
@@ -180,14 +179,14 @@ plot.f2.onemap <- function(x) {
     g <- ggplot(data=df.F2, aes(x=ind, y=variable, fill=factor(value)))
     g <- g + geom_tile()
     g <- g + xlab("Individual") + ylab("Marker") +
-        scale_fill_manual(name="Genotype", labels=labels.f2, values=c("#000000", "#ECCBAE", "#046C9A", "#D69C4E", "#85D4E3", "#74A089")) 
+        scale_fill_manual(name="Genotype", labels=labels.f2, values=c("#000000", "#ECCBAE", "#046C9A", "#D69C4E", "#85D4E3", "#74A089"))
     if (x$n.mar>20) g <- g + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
     return(g)
 }
 ##'
 
 ##' create_dataframe_for_plot_outcross
-##' 
+##'
 ##' An internal function that prepares a dataframe suitable for
 ##' drawing a graphic of raw data using ggplot2, i. e., a data frame
 ##' with long format
@@ -243,7 +242,7 @@ create_dataframe_for_plot_outcross <- function(x) {
         F1.D1 <- cbind(ind=1:x$n.ind, F1.D1, Mk.type=paste("D1.",i,sep=""))
         F1.D1$value <- factor(F1.D1$value)
         if (!exists("F1.D1.")) F1.D1. <- data.frame(F1.D1)
-        else F1.D1. <- rbind(F1.D1.,F1.D1) 
+        else F1.D1. <- rbind(F1.D1.,F1.D1)
         }
     }
     # Markers of D2 type
@@ -255,7 +254,7 @@ create_dataframe_for_plot_outcross <- function(x) {
         F1.D2 <- cbind(ind=1:x$n.ind, F1.D2, Mk.type=paste("D2.",i,sep=""))
         F1.D2$value <- factor(F1.D2$value)
         if (!exists("F1.D2.")) F1.D2. <- data.frame(F1.D2)
-        else F1.D2. <- rbind(F1.D2.,F1.D2) 
+        else F1.D2. <- rbind(F1.D2.,F1.D2)
         }
     }
     # Defining classes and combining
@@ -266,11 +265,11 @@ create_dataframe_for_plot_outcross <- function(x) {
     class(F1.D2.) <- "data.frame"
     return(rbind(F1.A.,F1.B.,F1.C.,F1.D1.,F1.D2.))
 }
-##' 
+##'
 
 
 ##' plot.outcross
-##' 
+##'
 ##' Draw a graphic of raw data for an outcross  population, using ggplot2.
 ##' Lines correspond to markers and columns for individuals.
 ##' The function can plot a graph for all types of markers.
@@ -290,7 +289,7 @@ create_dataframe_for_plot_outcross <- function(x) {
 ##' @return a ggplot graphic
 ##'
 ##' @import ggplot2
-##' 
+##'
 ##' @examples
 ##' data(example.out) # Loads a fake backcross dataset installed with onemap
 ##' plot(example.out) # This will show you the graph for all markers
@@ -319,13 +318,13 @@ plot.outcross <- function(x, all=TRUE) {
 
 
 ##' plot_by_segreg_type
-##' 
+##'
 ##' Draw a graphic showing the number of markers on each segregation pattern.
 ##' The function receives a onemap object of class outcross, f2.onemap, bc.onemap,
 ##' risib.onemap or riself.onemap.
 ##' For outcrossing populations, it can show detailed information (all 18 possible categories)
 ##' or a simplified version.
-##' 
+##'
 ##' @param x an object of class outcross, f2.onemap, bc.onemap, risib.onemap or riself.onemap
 ##' @param subcateg a TRUE/FALSE option to indicate if results will be plotted showing
 ##' all possible categories (only for outcrossing populations)
@@ -333,7 +332,7 @@ plot.outcross <- function(x, all=TRUE) {
 ##' @return a ggplot graphic
 ##'
 ##' @import ggplot2
-##' 
+##'
 ##' @examples
 ##' data(example.out) #Outcrossing data
 ##' plot_by_segreg_type(example.out)
@@ -344,7 +343,7 @@ plot.outcross <- function(x, all=TRUE) {
 ##'
 ##' data(fake.f2.onemap)
 ##' plot_by_segreg_type(fake.f2.onemap)
-##' 
+##'
 ##' # You can store the graphic in an object, then save it.
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' data(example.out) #Outcrossing data
