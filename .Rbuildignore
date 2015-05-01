@@ -2,5 +2,5 @@ todo
 copying
 ^\.travis.yml$
 ^.*\.Rproj$
-
+^NEWS\.md$
 
