@@ -4,3 +4,4 @@ copying
 ^.*\.Rproj$
 ^NEWS\.md$
 
+^\.Rproj\.user$
