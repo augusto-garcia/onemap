@@ -3,20 +3,20 @@
 # Package: onemap                                                     #
 #                                                                     #
 # File: segregations.tests.R                                          #
-# Contains: chisq.test.for.segregation.of.markers,                    #
-# test.segregation, plot.onemap.segreg.test,                          #
-# print.onemap.segreg.test, Bonferroni.alpha, subset.chisq            #
+# Contains: test_segregation_of_a_marker,                             #
+# test_segregation, plot.onemap.segreg.test,                          #
+# print.onemap.segreg.test, Bonferroni_alpha, select_segreg           #
 #                                                                     #
 # Written by Antonio Augusto Franco Garcia                            #
 # copyright (c) 2015 Antonio Augusto Franco Garcia                    #
 #                                                                     #
 # First version: 2015/04/18                                           #
-# Last update: 2015/04/21                                             #
+# Last update: 2015/05/01                                             #
 # License: GNU General Public License version 3 or later              #
 #                                                                     #
 #######################################################################
 
-##' chisq.test.for.segregation.of.markers
+##' test_segregation_of_a_marker
 ##'
 ##' Applies the chi-square test to check if markers are following the
 ##' expected segregation pattern, i. e., 1:1:1:1 (A), 1:2:1 (B), 3:1 (C) and 1:1 (D)
@@ -35,11 +35,11 @@
 ##'
 ##' @examples
 ##' data(fake.bc.onemap) # Loads a fake backcross dataset installed with onemap
-##' chisq.test.for.segregation.of.markers(fake.bc.onemap,1)
+##' test_segregation_of_a_marker(fake.bc.onemap,1)
 ##'
 ##' data(example.out) # Loads a fake outcross dataset installed with onemap
-##' chisq.test.for.segregation.of.markers(example.out,1)
-chisq.test.for.segregation.of.markers <- function(x, marker) {
+##' test_segregation_of_a_marker(example.out,1)
+test_segregation_of_a_marker <- function(x, marker) {
     # Segregation pattern for each marker type
     p.a <- rep(1/4, 4); p.b <- c(1/4, 1/2, 1/4); p.c <- c(3/4,1/4); p.d <- rep(1/2, 2)
     # Counting each category
@@ -63,9 +63,9 @@ chisq.test.for.segregation.of.markers <- function(x, marker) {
 }
 ##'
 
-##' test.segregation
+##' test_segregation
 ##'
-##' Using the OneMap function chisq.test.for.segregation.of.markers,
+##' Using the OneMap function test_segregation_of_a_marker,
 ##' performs the Chi-square test to check if all markers in a dataset are following
 ##' the expected segregation pattern, i. e., 1:1:1:1 (A), 1:2:1 (B), 3:1 (C) and 1:1 (D)
 ##' according to OneMap's notation.
@@ -83,16 +83,16 @@ chisq.test.for.segregation.of.markers <- function(x, marker) {
 ##' 
 ##' @examples
 ##' data(example.out) # Loads a fake outcross dataset installed with onemap
-##' Chi <- test.segregation(example.out) # Performs the chi-square test for all markers
+##' Chi <- test_segregation(example.out) # Performs the chi-square test for all markers
 ##' print(Chi) # Shows the results
 ##'
 ##' @export
-test.segregation <- function(x) {
+test_segregation <- function(x) {
     if (is(x,"bc.onemap")|is(x,"f2.onemap")|is(x,"riself.onemap")|
         is(x,"risib.onemap")|is(x,"outcross")) {
         y <- list(Marker=dimnames(x$geno)[[2]],
                      Results.of.tests=sapply(1:x$n.mar, function(onemap.object, marker)
-                         chisq.test.for.segregation.of.markers(onemap.object, marker),
+                         test_segregation_of_a_marker(onemap.object, marker),
                          onemap.object=x))
         # sapply iterates from 1 to x$n.mar; x is fixed (onemap object with data)
         class(y) <- c("onemap.segreg.test")
@@ -114,7 +114,7 @@ test.segregation <- function(x) {
 ##' 
 ##' @examples
 ##' data(example.out) # Loads a fake outcross dataset installed with onemap
-##' Chi <- test.segregation(example.out) # Performs the chi-square test for all markers
+##' Chi <- test_segregation(example.out) # Performs the chi-square test for all markers
 ##' print(Chi) # Shows the results
 ##'
 ##' @export
@@ -138,7 +138,7 @@ print.onemap.segreg.test <- function(x) {
 ##' will be discarded if this criteria is used.
 ##'
 ##' @param x an object of class onemap.segreg.test (produced by onemap's function
-##' test.segregation()), i. e., after performing segregation tests
+##' test_segregation()), i. e., after performing segregation tests
 ##' @param order a variable to define if p-values will be ordered in the plot
 ##'
 ##' @return a ggplot graphic
@@ -147,7 +147,7 @@ print.onemap.segreg.test <- function(x) {
 ##' 
 ##' @examples
 ##' data(fake.bc.onemap) # load OneMap's fake dataset for a backcross population
-##' BC.seg <- test.segregation(fake.bc.onemap) # Applies chi-square tests
+##' BC.seg <- test_segregation(fake.bc.onemap) # Applies chi-square tests
 ##' print(BC.seg) # Shows the results
 ##' plot(BC.seg) # Plot the graph, ordering the p-values
 ##' plot(BC.seg, order=FALSE) # Plot the graph showing the results keeping the order in the dataset
@@ -157,7 +157,7 @@ print.onemap.segreg.test <- function(x) {
 ##' ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
 ##'
 ##' data(example.out) # load OneMap's fake dataset for an outcrossing population
-##' Out.seg <- test.segregation(example.out) # Applies chi-square tests
+##' Out.seg <- test_segregation(example.out) # Applies chi-square tests
 ##' print(Out.seg) # Shows the results
 ##' plot(Out.seg) # Plot the graph, ordering the p-values
 ##' plot(Out.seg, order=FALSE) # Plot the graph showing the results keeping the order in the dataset
@@ -194,7 +194,7 @@ plot.onemap.segreg.test <- function(x, order=TRUE) {
 ##'
 
 
-##' Bonferroni.alpha
+##' Bonferroni_alpha
 ##'
 ##' It shows the alpha value to be used in each test to control global type I error
 ##' for chi-square tests for segregation of all markers if Bonferroni's criteria is applied.
@@ -206,19 +206,19 @@ plot.onemap.segreg.test <- function(x, order=TRUE) {
 ##' 
 ##' @examples
 ##' data(fake.bc.onemap) # Loads a fake backcross dataset installed with onemap
-##' Chi <- test.segregation(fake.bc.onemap) # Performs the chi-square test for all markers
+##' Chi <- test_segregation(fake.bc.onemap) # Performs the chi-square test for all markers
 ##' print(Chi) # Shows the results of the Chi-square tests
-##' Bonferroni.alpha (Chi) # Shows the global alpha level using Bonferroni's criteria
+##' Bonferroni_alpha (Chi) # Shows the global alpha level using Bonferroni's criteria
 ##'
 ##' @export
-Bonferroni.alpha <- function(x, global.alpha=0.05) {
+Bonferroni_alpha <- function(x, global.alpha=0.05) {
     if (!is(x,"onemap.segreg.test")) stop("This is not an object of class onemap.segreg.test")
     alpha.Bonf <- global.alpha/length(x$Marker)
     return(alpha.Bonf)
 }
 ##'
 
-##' subset.chisq
+##' select_segreg
 ##'
 ##' A function to shows which marker have segregation distortion if Bonferroni's correction is
 ##' applied for the Chi-square tests of mendelian segregation.
@@ -230,17 +230,17 @@ Bonferroni.alpha <- function(x, global.alpha=0.05) {
 ##' 
 ##' @examples
 ##' data(fake.bc.onemap) # Loads a fake backcross dataset installed with onemap
-##' Chi <- test.segregation(fake.bc.onemap) # Performs the chi-square test for all markers
-##' subset.chisq(Chi) # To show non-distorted markers
-##' subset.chisq(Chi, distorted=TRUE) # With segregation distortion
+##' Chi <- test_segregation(fake.bc.onemap) # Performs the chi-square test for all markers
+##' select_segreg(Chi) # To show non-distorted markers
+##' select_segreg(Chi, distorted=TRUE) # With segregation distortion
 ##'
 ##' @export
-subset.chisq <- function(x, distorted=FALSE) {
+select_segreg <- function(x, distorted=FALSE) {
     if (!is(x,"onemap.segreg.test")) stop("This is not an object of class onemap.segreg.test")
     Z <- data.frame(Marker=x$Marker,
                     p.value=unlist(x$Results.of.tests[3,]))
-    if (distorted==FALSE) Z <- subset(Z, p.value>=Bonferroni.alpha(x))
-    else Z <- subset(Z, p.value<Bonferroni.alpha(x))
+    if (distorted==FALSE) Z <- subset(Z, p.value>=Bonferroni_alpha(x))
+    else Z <- subset(Z, p.value<Bonferroni_alpha(x))
     return(as.vector(Z[,1]))
 }
 ##'
