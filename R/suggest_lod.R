@@ -2,8 +2,8 @@
 #                                                                     #
 # Package: onemap                                                     #
 #                                                                     #
-# File: suggest.lod                                                   #
-# Contains: suggest.lod                                               #
+# File: suggest_lod                                                   #
+# Contains: suggest_lod                                               #
 #                                                                     #
 # Written by Antonio Augusto Franco Garcia                            #
 # copyright (c) 2015 Antonio Augusto Franco Garcia                    #
@@ -14,7 +14,7 @@
 #                                                                     #
 #######################################################################
 
-##' suggest.lod
+##' suggest_lod
 ##'
 ##' It suggests a LOD Score for declaring statistical significance for two-point tests
 ##' for linkage between all pairs of markers, considering that multiple tests are being performed.
@@ -35,10 +35,10 @@
 ##' 
 ##' @examples
 ##' data(fake.bc.onemap) # Loads a fake backcross dataset installed with onemap
-##' suggest.lod(fake.bc.onemap) # An value that should be used to start the analysis
+##' suggest_lod(fake.bc.onemap) # An value that should be used to start the analysis
 ##'
 ##' @export
-suggest.lod <- function(x) {
+suggest_lod <- function(x) {
     if (is(x,"bc.onemap")|is(x,"f2.onemap")|is(x,"riself.onemap")|
         is(x,"risib.onemap")|is(x,"outcross")) {
         num.tests <- choose(x$n.mar, 2) #Number of pairwise tests
