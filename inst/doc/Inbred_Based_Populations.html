@@ -188,10 +188,6 @@ computer).</p>
 <pre><code class="r">library(onemap)
 </code></pre>
 
-<pre><code>## Loading required package: tcltk
-## Loading required package: tkrplot
-</code></pre>
-
 <p>To save your project anytime, type:</p>
 
 <pre><code class="r">save.image(&quot;C:/.../yourfile.RData&quot;)
@@ -291,9 +287,9 @@ also, the proportion of dominant markers is relatively high for this
 data set. In Onemap&#39;s notation, co-dominant markers are classified as
 of B type; dominant ones, by C type (for details about this notation,
 see the vignette for outcrossing species). You can see the number of
-loci within each type using funcion <code>plot.by.type</code>:</p>
+loci within each type using funcion <code>plot_by_segreg_type</code>:</p>
 
-<pre><code class="r">plot.by.type(fake.f2.onemap)
+<pre><code class="r">plot_by_segreg_type(fake.f2.onemap)
 </code></pre>
 
 <p><img src="data:image/png;base64,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" alt="plot of chunk plot_by_type"/> </p>
@@ -305,10 +301,10 @@ ones.</p>
 
 <p>Now, it should be interesting to see if markers are segregating
 following what is expected by Mendel&#39;s law. You first need to use
-function <code>test.segregation</code> using as argument <code>OneMap</code> object of class
+function <code>test_segregation</code> using as argument <code>OneMap</code> object of class
 <code>f2.onemap</code> (or <code>bc.onemap</code>, etc, for other population types).</p>
 
-<pre><code class="r">f2.test &lt;- test.segregation(fake.f2.onemap)
+<pre><code class="r">f2.test &lt;- test_segregation(fake.f2.onemap)
 </code></pre>
 
 <p>This will produce an object of class <code>onemap.segreg.test</code>:</p>
@@ -407,11 +403,11 @@ function. The proportion of individuals genotyped is also showed.</p>
 
 <p>To declare statistical significance, remember that you should consider
 that multiple tests are being performed. To guide you in the analysis,
-function <code>Bonferroni.alpha</code> shows the alpha value that should be considered
+function <code>Bonferroni_alpha</code> shows the alpha value that should be considered
 for this number of loci if applying Bonferroni&#39;s correction with
 global alpha of 0.05:</p>
 
-<pre><code class="r">Bonferroni.alpha(f2.test)
+<pre><code class="r">Bonferroni_alpha(f2.test)
 </code></pre>
 
 <pre><code>## [1] 0.0007575758
@@ -439,9 +435,9 @@ analysis. This graphic is just to suggest a criteria, so use it with
 carefully.</p>
 
 <p>You can see a list of markers with non-distorted segregation using
-function <code>subset.chisq</code>:</p>
+function <code>select_segreg</code>:</p>
 
-<pre><code class="r">(non.dist &lt;- subset.chisq(f2.test))
+<pre><code class="r">(non.dist &lt;- select_segreg(f2.test))
 </code></pre>
 
 <pre><code>##  [1] &quot;M1&quot;  &quot;M2&quot;  &quot;M3&quot;  &quot;M4&quot;  &quot;M5&quot;  &quot;M6&quot;  &quot;M7&quot;  &quot;M8&quot;  &quot;M9&quot;  &quot;M10&quot; &quot;M11&quot;
@@ -454,7 +450,7 @@ function <code>subset.chisq</code>:</p>
 
 <p>For having a list of distorted ones (none in this example):</p>
 
-<pre><code class="r">(distorted &lt;- subset.chisq(f2.test, distorted=TRUE))
+<pre><code class="r">(distorted &lt;- select_segreg(f2.test, distorted=TRUE))
 </code></pre>
 
 <pre><code>## character(0)
@@ -483,10 +479,10 @@ since if <code>max.rf&lt;0.5</code> we could state that markers are linked. The 
 Score is the statistic used to evaluate the significance of the test
 for <code>max.rf=0.50</code>. This needs to take into consideration the number of
 tests performed, that of course depends on the number of markers.
-Function <code>suggest.lod</code> can help users to find an initial value to use
+Function <code>suggest_lod</code> can help users to find an initial value to use
 for their linkage test. For this example:</p>
 
-<pre><code class="r">suggest.lod(fake.f2.onemap)
+<pre><code class="r">suggest_lod(fake.f2.onemap)
 </code></pre>
 
 <pre><code>## [1] 3.887385
@@ -612,7 +608,7 @@ same values used for the object <code>twopts</code> (from two-point analysis)
 will be maintained (so, <code>LOD=3.0</code> and <code>max.rf=0.5</code> in this example).</p>
 
 <p>Users can easily change the default values. For example, using LOD
-suggested by <code>suggest.lod</code> (rounded up):</p>
+suggested by <code>suggest_lod</code> (rounded up):</p>
 
 <pre><code class="r">(LGs.f2 &lt;- group(mark.all.f2, LOD=4, max.rf=0.5))
 </code></pre>
@@ -2355,6 +2351,10 @@ indicate the first one and the red lines indicate the second.</p>
 <p>We can use <code>R/qtl</code> to generate <code>QTL Cartographer</code> input files.</p>
 
 <pre><code class="r">write.cross(fake.f2.qtl, format=&quot;qtlcart&quot;, filestem=&quot;fake.f2.onemap&quot;)
+</code></pre>
+
+<pre><code>## Warning in write.cross.qtlcart(cross, filestem): previous file
+## fake.f2.onemap.cro moved to *.bak
 </code></pre>
 
 <pre><code>## Warning in write.cross.qtlcart(cross, filestem): previous file

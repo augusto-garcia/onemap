@@ -217,10 +217,10 @@ also, the proportion of dominant markers is relatively high for this
 data set. In Onemap's notation, co-dominant markers are classified as
 of B type; dominant ones, by C type (for details about this notation,
 see the vignette for outcrossing species). You can see the number of
-loci within each type using funcion `plot.by.type`:
+loci within each type using funcion `plot_by_segreg_type`:
 
 ```{r, plot_by_type}
-plot.by.type(fake.f2.onemap)
+plot_by_segreg_type(fake.f2.onemap)
 ```
 
 So, as showed before, there is 36 co-dominant loci, and 30 dominant
@@ -232,11 +232,11 @@ ones.
 
 Now, it should be interesting to see if markers are segregating
 following what is expected by Mendel's law. You first need to use
-function `test.segregation` using as argument `OneMap` object of class
+function `test_segregation` using as argument `OneMap` object of class
 `f2.onemap` (or `bc.onemap`, etc, for other population types).
 
 ```{r, chi_square}
-f2.test <- test.segregation(fake.f2.onemap)
+f2.test <- test_segregation(fake.f2.onemap)
 ```
 
 This will produce an object of class `onemap.segreg.test`:
@@ -266,12 +266,12 @@ function. The proportion of individuals genotyped is also showed.
 
 To declare statistical significance, remember that you should consider
 that multiple tests are being performed. To guide you in the analysis,
-function `Bonferroni.alpha` shows the alpha value that should be considered
+function `Bonferroni_alpha` shows the alpha value that should be considered
 for this number of loci if applying Bonferroni's correction with
 global alpha of 0.05:
 
 ```{r, Bonferroni}
-Bonferroni.alpha(f2.test)
+Bonferroni_alpha(f2.test)
 ```
 
 You can subset object `f2.test` to see which markers are distorted
@@ -295,16 +295,16 @@ analysis. This graphic is just to suggest a criteria, so use it with
 carefully.
 
 You can see a list of markers with non-distorted segregation using
-function `subset.chisq`:
+function `select_segreg`:
 
 ```{r, select_nondistorted}
-(non.dist <- subset.chisq(f2.test))
+(non.dist <- select_segreg(f2.test))
 ```
 
 For having a list of distorted ones (none in this example):
 
 ```{r, select_distorted}
-(distorted <- subset.chisq(f2.test, distorted=TRUE))
+(distorted <- select_segreg(f2.test, distorted=TRUE))
 ```
 
 This can be used in other steps of the analysis, as will be show.
@@ -332,11 +332,11 @@ since if `max.rf<0.5` we could state that markers are linked. The LOD
 Score is the statistic used to evaluate the significance of the test
 for `max.rf=0.50`. This needs to take into consideration the number of
 tests performed, that of course depends on the number of markers.
-Function `suggest.lod` can help users to find an initial value to use
+Function `suggest_lod` can help users to find an initial value to use
 for their linkage test. For this example:
 
-```{r, Suggest_LOD}
-suggest.lod(fake.f2.onemap)
+```{r, Suggest_a_LOD}
+suggest_lod(fake.f2.onemap)
 ```
 
 So, one should consider using `LOD=4` for the tests. Please, notice
@@ -423,7 +423,7 @@ same values used for the object `twopts` (from two-point analysis)
 will be maintained (so, `LOD=3.0` and `max.rf=0.5` in this example).
 
 Users can easily change the default values. For example, using LOD
-suggested by `suggest.lod` (rounded up):
+suggested by `suggest_lod` (rounded up):
 
 ```{r, group2}
 (LGs.f2 <- group(mark.all.f2, LOD=4, max.rf=0.5))
