@@ -18,7 +18,7 @@
 
 ##' Draw a graphic of raw data for a backcross population
 ##'
-##' Shows a heatmap like graphic (in ggplot2, a tile) for raw data.
+##' Shows a heatmap like graphic (in ggplot2, a "tile") for raw data.
 ##' Lines correspond to markers and columns for individuals.
 ##' The function receives a onemap object of class bc.onemap, reads information
 ##' from genotypes from this object, convert it to a long dataframe format
@@ -63,7 +63,7 @@ plot.bc.onemap <- function(x) {
 }
 ##'
 
-##' plot.riself.onemap
+##' Draw a graphic of raw data for a RIL population (made by selfing)
 ##'
 ##' Draw a graphic of raw data for a RIL population (made by selfing), using ggplot2.
 ##' Lines correspond to markers and columns for individuals.
@@ -104,8 +104,7 @@ plot.riself.onemap <- function(x) {
 }
 ##'
 
-
-##' plot.risib.onemap
+##' Draw a graphic of raw data for a RIL population (made by sibing)
 ##'
 ##' Draw a graphic of raw data for a RIL population (made by sibing), using ggplot2.
 ##' In fact, the graphic for the raw data will have the same aspect of the ones
@@ -125,7 +124,7 @@ plot.risib.onemap <- function(x) {
 }
 ##'
 
-
+##' Draw a graphic of raw data for an F2 population
 ##' plot.f2.onemap
 ##'
 ##' Draw a graphic of raw data for a f2 population, using ggplot2.
@@ -185,7 +184,8 @@ plot.f2.onemap <- function(x) {
 }
 ##'
 
-##' create_dataframe_for_plot_outcross
+
+##' Create a dataframe suitable for a ggplot2 graphic
 ##'
 ##' An internal function that prepares a dataframe suitable for
 ##' drawing a graphic of raw data using ggplot2, i. e., a data frame
@@ -268,7 +268,7 @@ create_dataframe_for_plot_outcross <- function(x) {
 ##'
 
 
-##' plot.outcross
+##' Draw a graphic (heatmap like) for an outcross population
 ##'
 ##' Draw a graphic of raw data for an outcross  population, using ggplot2.
 ##' Lines correspond to markers and columns for individuals.
@@ -317,9 +317,8 @@ plot.outcross <- function(x, all=TRUE) {
 ##
 
 
-##' plot_by_segreg_type
-##'
 ##' Draw a graphic showing the number of markers on each segregation pattern.
+##' 
 ##' The function receives a onemap object of class outcross, f2.onemap, bc.onemap,
 ##' risib.onemap or riself.onemap.
 ##' For outcrossing populations, it can show detailed information (all 18 possible categories)
