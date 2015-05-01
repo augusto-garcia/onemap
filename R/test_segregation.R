@@ -2,7 +2,7 @@
 #                                                                     #
 # Package: onemap                                                     #
 #                                                                     #
-# File: segregations.tests.R                                          #
+# File: test_segregation.R                                            #
 # Contains: test_segregation_of_a_marker,                             #
 # test_segregation, plot.onemap.segreg.test,                          #
 # print.onemap.segreg.test, Bonferroni_alpha, select_segreg           #
