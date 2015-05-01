@@ -2,7 +2,7 @@
 #                                                                     #
 # Package: onemap                                                     #
 #                                                                     #
-# File: plot.raw.data.R                                               #
+# File: plot_raw_data.R                                               #
 # Contains: plot.bc.onemap, plot.riself.onemap, plot.risib.onemap,    #
 # plot.f2.onemap, create.dataframe.outcross.plot, plot.outcross       #
 #                                                                     #
@@ -10,7 +10,7 @@
 # copyright (c) 2015 Antonio Augusto Franco Garcia                    #
 #                                                                     #
 # First version: 2015/03/31                                           #
-# Last update: 2015/03/31                                             #
+# Last update: 2015/05/01                                             #
 # License: GNU General Public License version 3 or later              #
 #                                                                     #
 #######################################################################
