@@ -28,8 +28,6 @@ Description: Analysis of molecular marker data from model (backcrosses,
         phases (genetic map construction). All analysis are based on
         multipoint approaches using hidden Markov models.
 License: GPL-3
-Author: Gabriel Margarido [aut], Marcelo Mollinari [aut, cre], Karl
-        Broman [ctb], Augusto Garcia [aut, ctb]
 Maintainer: Marcelo Mollinari <mmollina@usp.br>
 Repository: CRAN
 Packaged: 2013-09-09 16:55:07 UTC; mmollina
