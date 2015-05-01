@@ -28,6 +28,8 @@ Suggests:
 VignetteBuilder: knitr
 Encoding: UTF-8
 License: GPL-3
+URL: https://github.com/augusto-garcia/onemap
+BugReports: https://github.com/augusto-garcia/onemap/wiki
 Maintainer: Marcelo Mollinari <mmollina@usp.br>
 Repository: CRAN
 Packaged: 2013-09-09 16:55:07 UTC; mmollina
