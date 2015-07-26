@@ -2,8 +2,7 @@
 % Please edit documentation in R/plot_raw_data.R
 \name{plot.f2.onemap}
 \alias{plot.f2.onemap}
-\title{Draw a graphic of raw data for an F2 population
-plot.f2.onemap}
+\title{Draw a graphic of raw data for an F2 population}
 \usage{
 \method{plot}{f2.onemap}(x)
 }
@@ -17,7 +16,7 @@ a ggplot graphic
 Draw a graphic of raw data for a f2 population, using ggplot2.
 Lines correspond to markers and columns for individuals.
 The function can plot graph for dominant/codominant markers, in all combinations.
-The graphic is a "heatmap", whose name in ggplot2 is "tile".
+The graphic is a "heatmap", whose geom in ggplot2 is "tile".
 The function receives a onemap object of class f2.onemap, reads information
 from genotypes from this object, convert it to a long dataframe format
 using function melt() from package reshape2(), converts numbers from the object
@@ -28,7 +27,7 @@ If there is more than 20 markers, removes y labels
 data(fake.f2.onemap) # Loads a fake backcross dataset installed with onemap
 plot(fake.f2.onemap) # This will show you the graph
 
-# You can store the graphic in an object, then save it.
+# You can store the graphic in an object, then save it with a number of properties
 # For details, see the help of ggplot2's function ggsave()
 g <- plot(fake.f2.onemap)
 ggsave("MyRawData.jpg", g, width=7, height=4, dpi=600)

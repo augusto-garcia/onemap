@@ -43,11 +43,7 @@ Ordering} (\cite{Van Os et al., 2005}).
 for marker ordering in linkage groups. It is not an exhaustive search
 method and, therefore, is not computationally intensive. However, it does
 not guarantee that the best order is always found. The only requirement is
-a matrix with recombination fractions between markers. Next is an adapted
-excerpt from \cite{Mollinari et al (2009)} describing the \emph{RECORD}
-algorithm:
-
-FIXME: need to add this back! Is not working because of equations.
+a matrix with recombination fractions between markers.
 
 After determining the order with \emph{RECORD}, the final map is
 constructed using the multipoint approach (function

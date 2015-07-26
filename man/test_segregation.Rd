@@ -13,11 +13,11 @@ risib.onemap or outcross, with data and additional information.}
 \value{
 an object of class onemap.segreg.test, which is a list with marker name,
 H0 hypothesis being tested, the chi-square statistics,  the associated p-values,
-and the % of individuals genotyped. To see the object, it is necessary to print
+and the \% of individuals genotyped. To see the object, it is necessary to print
 it.
 }
 \description{
-Using the OneMap function test_segregation_of_a_marker,
+Using OneMap internal function test_segregation_of_a_marker(),
 performs the Chi-square test to check if all markers in a dataset are following
 the expected segregation pattern, i. e., 1:1:1:1 (A), 1:2:1 (B), 3:1 (C) and 1:1 (D)
 according to OneMap's notation.

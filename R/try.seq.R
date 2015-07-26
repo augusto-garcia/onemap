@@ -10,19 +10,18 @@
 #                                                                     #
 # First version: 02/27/2009                                           #
 # Last update: 11/29/2010                                             #
+# Description of the function was modified by augusto.garcia@usp.br   #
+# on 2015/07/25
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
 
-# This function tries to position a marker in a given linkage map
-## CHECK IF THE ord$rf MATRIX HAS SOME NaN VALUE AND ISSUE WARNING (CHANGE FOR 'BAD' VALUE)
 
-
-##' Try to map a marker into every possible position between markers
+##' Try to map a marker into every possible position between markers in a given map
 ##' 
-##' For a given linkage map and an additional unpositioned marker, this
-##' function estimates parameters for all possible maps including the new
-##' marker, while keeping the original linkage map unaltered.
+##' For a given linkage map, tries do add an additional unpositioned marker.
+##' This function estimates parameters for all possible maps including the new
+##' marker in all posible positions, while keeping the original linkage map unaltered.
 ##' 
 ##' The diagnostic graphic is made of three figures: i) the top figure
 ##' represents the new genetic map obtained with the insertion of the new

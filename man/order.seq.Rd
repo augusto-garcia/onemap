@@ -77,7 +77,7 @@ remaining markers will be used in the \code{try.seq} step is given by the
 degree of informativeness of markers (i.e markers of type A, B, C and D, in
 this order).
 
-For backcrosses, \eqn{F_2}{F_2} or RILs, two methods can be used for
+For backcrosses, F2s or RILs, two methods can be used for
 choosing the initial subset: i) \code{"sample"} randomly chooses a number
 of markers, indicated by \code{n.init}, and calculates the multipoint
 log-likelihood of the \eqn{\frac{n.init!}{2}}{n.init!/2} possible orders.
@@ -139,8 +139,8 @@ resulting in a map with all markers positioned.
 }
 }
 \author{
-Gabriel R A Margarido, \email{gramarga@gmail.com} and Marcelo
-Mollinari, \email{mmollina@usp.br}
+Gabriel R A Margarido, \email{gramarga@usp.br} and Marcelo
+Mollinari, \email{mmollina@gmail.com}
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.

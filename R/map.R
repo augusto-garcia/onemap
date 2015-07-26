@@ -47,7 +47,7 @@
 ##' data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
 ##' 2-point analyses.}
 ##' @author Adapted from Karl Broman (package 'qtl') by Gabriel R A Margarido,
-##' \email{gramarga@@gmail.com} and Marcelo Mollinari, \email{mmollina@@usp.br}
+##' \email{gramarga@@usp.br} and Marcelo Mollinari, \email{mmollina@@gmail.com}
 ##' @seealso \code{\link[onemap]{make.seq}}
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version

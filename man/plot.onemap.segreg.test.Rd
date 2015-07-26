@@ -2,7 +2,7 @@
 % Please edit documentation in R/test_segregation.R
 \name{plot.onemap.segreg.test}
 \alias{plot.onemap.segreg.test}
-\title{plot.onemap.segreg.test}
+\title{Plot p-values for chi-square tests of expected segregation}
 \usage{
 \method{plot}{onemap.segreg.test}(x, order = TRUE)
 }

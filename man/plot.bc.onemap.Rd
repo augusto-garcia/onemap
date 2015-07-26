@@ -13,7 +13,7 @@
 a ggplot graphic
 }
 \description{
-Shows a heatmap like graphic (in ggplot2, a "tile") for raw data.
+Shows a heatmap (in ggplot2, a graphic of geom "tile") for raw data.
 Lines correspond to markers and columns for individuals.
 The function receives a onemap object of class bc.onemap, reads information
 from genotypes from this object, convert it to a long dataframe format
@@ -25,7 +25,7 @@ If there is more than 20 markers, removes y labels
 data(fake.bc.onemap) # Loads a fake backcross dataset installed with onemap
 plot(fake.bc.onemap) # This will show you the graph
 
-# You can store the graphic in an object, then save it.
+# You can store the graphic in an object, then save it with a number of properties
 # For details, see the help of ggplot2's function ggsave()
 g <- plot(fake.bc.onemap)
 ggsave("MyRawData.jpg", g, width=7, height=4, dpi=600)

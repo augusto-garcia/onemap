@@ -52,7 +52,7 @@ data(example.out)
 }
 \author{
 Adapted from Karl Broman (package 'qtl') by Gabriel R A Margarido,
-\email{gramarga@gmail.com} and Marcelo Mollinari, \email{mmollina@usp.br}
+\email{gramarga@usp.br} and Marcelo Mollinari, \email{mmollina@gmail.com}
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.

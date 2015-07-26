@@ -41,29 +41,7 @@ Chakravarti, 1987}).
 is not an exhaustive search method and, therefore, is not computationally
 intensive. However, it does not guarantee that the best order is always
 found. The only requirement is a matrix with recombination fractions
-between markers. Next is an adapted excerpt from \cite{Mollinari et al
-(2009)} describing the \emph{Seriation} algorithm:
-
-\emph{The map is initiated with each of the \eqn{m} markers and the matrix
-\eqn{R}(recombination fraction matrix). Considering \eqn{M_{i}}{M_i} as the
-initial marker, \eqn{M_{j}}{M_j} is positioned to the right if
-\eqn{M_{i}}{M_i} if the recombination fraction between them is the smallest
-fraction between \eqn{M_{i}}{M_i} and the other \eqn{m-1} markers. From the
-remaining \eqn{m-1} markers, \eqn{M_{k}}{M_k} is chosen if it has the
-smallest recombination fraction with \eqn{M_{i}}{M_i}. The recombination
-fractions of \eqn{M_{k}}{M_k} and both external loci of the positioned
-markers, \eqn{M_{left}}{M_left} (the most external marker to the left) and
-\eqn{M_{right}}{M_right} (the most external marker to the right) are
-compared. If \eqn{\hat{r}_{M_{k}M_{right}} > }{r_MkMright > r_MkMleft}\eqn{
-\hat{r}_{M_{k}M_{left}}}{r_MkMright > r_MkMleft}, \eqn{M_{k}}{M_k} is
-positioned to the left of the group of markers, and if the relationship is
-inverse, to the right. In the case of ties, the internal loci of the group
-already positioned are considered. The procedure is repeated until all
-markers are positioned, therefore providing \eqn{m} orders (one for each
-marker at the initial position). For each order, the continuity index is
-calculated as \eqn{CI = \sum_{i<j} \frac{\hat{r}_{M_{i}M_{j}}}{(i-j)^2}}{CI
-= Sum_{i<j} r_MiMj / (i-j)^2}. The best order is considered the one that
-gives the smallest \eqn{CI} value.}
+between markers.
 
 NOTE: When there are to many pairs of markers with the same value in the
 recombination fraction matrix, it can result in ties during the ordination

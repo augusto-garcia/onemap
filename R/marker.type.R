@@ -20,7 +20,7 @@
 ##' 
 ##' Informs the type of segregation of all markers from an object of class
 ##' \code{sequence}. For outcross populations it uses the notation by \cite{Wu
-##' et al., 2002}. For backcrosses, \eqn{F_2}{F_2} and RILs, it uses the
+##' et al., 2002}. For backcrosses, F2s and RILs, it uses the
 ##' traditional notation from MAPMAKER i.e. AA, AB, BB, not AA and not BB.
 ##' 
 ##' The segregation types are (\cite{Wu et al., 2002}): \tabular{lcc}{ Type

@@ -15,9 +15,9 @@ a list of maps.}
 }
 \description{
 Write a genetic map to a file, base on a given map, or a list of maps. The
-output file can be used as an input to QTL mapping using the R package
+output file can be used as an input to perform QTL mapping using the package
 R/qtl. It is also possible to create an output to be used with
-QTLCartographer.
+QTLCartographer program.
 }
 \details{
 This function is avaliable only for backcross, F2 and RILs.

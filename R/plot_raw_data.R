@@ -11,14 +11,14 @@
 # copyright (c) 2015 Antonio Augusto Franco Garcia                    #
 #                                                                     #
 # First version: 2015/03/31                                           #
-# Last update: 2015/05/01                                             #
+# Last update: 2015/07/25                                             #
 # License: GNU General Public License version 3 or later              #
 #                                                                     #
 #######################################################################
 
 ##' Draw a graphic of raw data for a backcross population
 ##'
-##' Shows a heatmap like graphic (in ggplot2, a "tile") for raw data.
+##' Shows a heatmap (in ggplot2, a graphic of geom "tile") for raw data.
 ##' Lines correspond to markers and columns for individuals.
 ##' The function receives a onemap object of class bc.onemap, reads information
 ##' from genotypes from this object, convert it to a long dataframe format
@@ -36,7 +36,7 @@
 ##' data(fake.bc.onemap) # Loads a fake backcross dataset installed with onemap
 ##' plot(fake.bc.onemap) # This will show you the graph
 ##'
-##' # You can store the graphic in an object, then save it.
+##' # You can store the graphic in an object, then save it with a number of properties
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' g <- plot(fake.bc.onemap)
 ##' ggsave("MyRawData.jpg", g, width=7, height=4, dpi=600)
@@ -63,11 +63,11 @@ plot.bc.onemap <- function(x) {
 }
 ##'
 
-##' Draw a graphic of raw data for a RIL population (made by selfing)
+##' Draw a heatmap graphic of raw data for a RIL population (made by selfing)
 ##'
 ##' Draw a graphic of raw data for a RIL population (made by selfing), using ggplot2.
 ##' Lines correspond to markers and columns for individuals.
-##' The graphic is a "heatmap", whose name in ggplot2 is "tile".
+##' The graphic is a "heatmap", whose geom in ggplot2 is "tile".
 ##' The function receives a onemap object of class riself.onemap, reads information
 ##' from genotypes from this object, convert it to a long dataframe format
 ##' using function melt() from package reshape2(), converts numbers from the object
@@ -104,7 +104,7 @@ plot.riself.onemap <- function(x) {
 }
 ##'
 
-##' Draw a graphic of raw data for a RIL population (made by sibing)
+##' Draw a heatmap graphic of raw data for a RIL population (made by sibing)
 ##'
 ##' Draw a graphic of raw data for a RIL population (made by sibing), using ggplot2.
 ##' In fact, the graphic for the raw data will have the same aspect of the ones
@@ -125,12 +125,11 @@ plot.risib.onemap <- function(x) {
 ##'
 
 ##' Draw a graphic of raw data for an F2 population
-##' plot.f2.onemap
 ##'
 ##' Draw a graphic of raw data for a f2 population, using ggplot2.
 ##' Lines correspond to markers and columns for individuals.
 ##' The function can plot graph for dominant/codominant markers, in all combinations.
-##' The graphic is a "heatmap", whose name in ggplot2 is "tile".
+##' The graphic is a "heatmap", whose geom in ggplot2 is "tile".
 ##' The function receives a onemap object of class f2.onemap, reads information
 ##' from genotypes from this object, convert it to a long dataframe format
 ##' using function melt() from package reshape2(), converts numbers from the object
@@ -147,7 +146,7 @@ plot.risib.onemap <- function(x) {
 ##' data(fake.f2.onemap) # Loads a fake backcross dataset installed with onemap
 ##' plot(fake.f2.onemap) # This will show you the graph
 ##'
-##' # You can store the graphic in an object, then save it.
+##' # You can store the graphic in an object, then save it with a number of properties
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' g <- plot(fake.f2.onemap)
 ##' ggsave("MyRawData.jpg", g, width=7, height=4, dpi=600)
@@ -268,12 +267,12 @@ create_dataframe_for_plot_outcross <- function(x) {
 ##'
 
 
-##' Draw a graphic (heatmap like) for an outcross population
+##' Draw a heatmap graphic for raw data in an outcross population
 ##'
-##' Draw a graphic of raw data for an outcross  population, using ggplot2.
+##' Draw a graphic of raw data for an outcross population, using ggplot2.
 ##' Lines correspond to markers and columns for individuals.
 ##' The function can plot a graph for all types of markers.
-##' The graphic is a "heatmap", whose name in ggplot2 is "tile".
+##' The graphic is a "heatmap", whose geom in ggplot2 is "tile".
 ##' The function receives a onemap object of class outcross, reads information
 ##' from genotypes from this object, convert it to a long dataframe format
 ##' using onemap internal function create_dataframe_for_plot_outcross(),
@@ -317,11 +316,11 @@ plot.outcross <- function(x, all=TRUE) {
 ##
 
 
-##' Draw a graphic showing the number of markers on each segregation pattern.
+##' Draw a graphic showing the number of markers of each segregation pattern.
 ##' 
 ##' The function receives a onemap object of class outcross, f2.onemap, bc.onemap,
 ##' risib.onemap or riself.onemap.
-##' For outcrossing populations, it can show detailed information (all 18 possible categories)
+##' For outcrossing populations, it can show detailed information (all 18 possible categories),
 ##' or a simplified version.
 ##'
 ##' @param x an object of class outcross, f2.onemap, bc.onemap, risib.onemap or riself.onemap

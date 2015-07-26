@@ -2,7 +2,7 @@
 % Please edit documentation in R/test_segregation.R
 \name{print.onemap.segreg.test}
 \alias{print.onemap.segreg.test}
-\title{print.onemap.segreg.test}
+\title{Show the results of segregation tests}
 \usage{
 \method{print}{onemap.segreg.test}(x)
 }

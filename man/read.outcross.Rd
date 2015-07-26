@@ -2,7 +2,7 @@
 % Please edit documentation in R/read.outcross.R
 \name{read.outcross}
 \alias{read.outcross}
-\title{Read data from a segregating full-sib population}
+\title{Read data from a full-sib progeny (outcrossing populations)}
 \usage{
 read.outcross(dir, file)
 }

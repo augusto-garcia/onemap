@@ -2,7 +2,7 @@
 % Please edit documentation in R/rf.graph.table.R
 \name{rf.graph.table}
 \alias{rf.graph.table}
-\title{Plots pairwise recombination fractions and LOD Scores using a color scale.}
+\title{Plots pairwise recombination fractions and LOD Scores in a heatmap}
 \usage{
 rf.graph.table(input.seq, scale = 1, axis.cex = 1, main = NULL,
   inter = TRUE)
@@ -26,13 +26,13 @@ Otherwise, a default graphic device is used.}
 Plots a matrix of pairwise recombination fractions (under the diagonal) and
 LOD Scores (upper the diagonal) using a color scale. Any value of the
 matrix can be easily accessed using an interactive Tcl-Tk interface,
-helping the user to check for possible problems.
+helping users to check for possible problems.
 }
 \details{
 The color scale varies from red (small distances or big LODs) to dark blue.
 When clicking on a cell, a dialog box is displayed with some information
-about corresponding markers for that cell (line \eqn{\times} column). The
-informations are: \eqn{i}) the name of the markers; \eqn{ii}) the number of
+about corresponding markers for that cell (line \eqn{\times} column). They are:
+\eqn{i}) the name of the markers; \eqn{ii}) the number of
 the markers on the data set; \eqn{iii}) the segregation types; \eqn{iv})
 the recombination fraction between the markers and \eqn{v}) the LOD-Score
 for each possible linkage phase calculated via two-point analysis. For
@@ -82,7 +82,7 @@ data for that marker.
 }
 }
 \author{
-Marcelo Mollinari, \email{mmollina@usp.br}
+Marcelo Mollinari, \email{mmollina@gmail.com}
 }
 \keyword{utilities}
 

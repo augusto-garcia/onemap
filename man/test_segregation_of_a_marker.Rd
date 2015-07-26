@@ -14,7 +14,10 @@ risib.onemap or outcross, with data and additional information.}
 }
 \value{
 a list with the H0 hypothesis being tested, the chi-square statistics,
-the associated p-values, and the % of individuals genotyped.
+the associated p-values, and the \% of individuals genotyped.
+
+
+##'
 }
 \description{
 Applies the chi-square test to check if markers are following the

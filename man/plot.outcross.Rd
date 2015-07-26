@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_raw_data.R
 \name{plot.outcross}
 \alias{plot.outcross}
-\title{Draw a graphic (heatmap like) for an outcross population}
+\title{Draw a heatmap graphic for raw data in an outcross population}
 \usage{
 \method{plot}{outcross}(x, all = TRUE)
 }
@@ -16,10 +16,10 @@ or splitted based on their segregation pattern}
 a ggplot graphic
 }
 \description{
-Draw a graphic of raw data for an outcross  population, using ggplot2.
+Draw a graphic of raw data for an outcross population, using ggplot2.
 Lines correspond to markers and columns for individuals.
 The function can plot a graph for all types of markers.
-The graphic is a "heatmap", whose name in ggplot2 is "tile".
+The graphic is a "heatmap", whose geom in ggplot2 is "tile".
 The function receives a onemap object of class outcross, reads information
 from genotypes from this object, convert it to a long dataframe format
 using onemap internal function create_dataframe_for_plot_outcross(),

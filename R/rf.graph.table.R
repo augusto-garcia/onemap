@@ -10,23 +10,24 @@
 #                                                                     #
 # First version: 03/05/2009                                           #
 # Last update: 09/25/2009                                             #
+# Description was modified by Augusto Garcia on 2015/07/25            #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
 
 
 
-##' Plots pairwise recombination fractions and LOD Scores using a color scale.
+##' Plots pairwise recombination fractions and LOD Scores in a heatmap
 ##' 
 ##' Plots a matrix of pairwise recombination fractions (under the diagonal) and
 ##' LOD Scores (upper the diagonal) using a color scale. Any value of the
 ##' matrix can be easily accessed using an interactive Tcl-Tk interface,
-##' helping the user to check for possible problems.
+##' helping users to check for possible problems.
 ##' 
 ##' The color scale varies from red (small distances or big LODs) to dark blue.
 ##' When clicking on a cell, a dialog box is displayed with some information
-##' about corresponding markers for that cell (line \eqn{\times} column). The
-##' informations are: \eqn{i}) the name of the markers; \eqn{ii}) the number of
+##' about corresponding markers for that cell (line \eqn{\times} column). They are:
+##' \eqn{i}) the name of the markers; \eqn{ii}) the number of
 ##' the markers on the data set; \eqn{iii}) the segregation types; \eqn{iv})
 ##' the recombination fraction between the markers and \eqn{v}) the LOD-Score
 ##' for each possible linkage phase calculated via two-point analysis. For
@@ -47,7 +48,7 @@
 ##' \code{inter == FALSE}.
 ##' @param inter logical. If \code{TRUE}, an interactive graphic is plotted.
 ##' Otherwise, a default graphic device is used.
-##' @author Marcelo Mollinari, \email{mmollina@@usp.br}
+##' @author Marcelo Mollinari, \email{mmollina@@gmail.com}
 ##' @keywords utilities
 ##' @examples
 ##' 

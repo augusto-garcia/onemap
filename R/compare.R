@@ -9,30 +9,30 @@
 # copyright (c) 2009, Gabriel R A Margarido & Marcelo Mollinari       #
 #                                                                     #
 # First version: 02/27/2009                                           #
-# Last update: 09/25/2009                                             #
+# Last update: 07/25/2015 (only documentation, by Augusto Garcia)     #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
-
-## This function evaluates all n!/2 possible orders for n markers
-
 
 ##' Compare all possible orders (exhaustive search) for a given sequence of
 ##' markers
 ##' 
 ##' For a given sequence with \eqn{n}{n} markers, computes the multipoint
-##' likelihood of all \eqn{\frac{n!}{2}}{n!/2} orders.
+##' likelihood of all \eqn{\frac{n!}{2}}{n!/2} possible orders.
 ##' 
 ##' Since the number \eqn{\frac{n!}{2}}{n!/2} is large even for moderate values
 ##' of \eqn{n}{n}, this function is to be used only for sequences with
-##' relatively few markers. If markers of types D1, D2 and C (specially in
-##' repulsion phase) are mixed in the sequence, this function can be used with
-##' up to 5 or 6 markers; otherwise, up to 10 markers will not take a very long
-##' time. The multipoint likelihood is calculated according to Wu et al.
+##' relatively few markers. If markers were genotyped in an outcross population,
+##' linkage phases need to be estimated and therefore more states need to be
+##' visited in the Markov chain; when segregation types are D1, D2 and C,
+##' computation can required a very long time (specially when markers linked in
+##' repulsion are involved), so we recomend to use this function up to 6 or 7 markers.
+##' For inbred-based populations, up to 10 or 11 markers can be ordered with this function,
+##' since linkage phase are known.
+##' The multipoint likelihood is calculated according to Wu et al.
 ##' (2002b) (Eqs. 7a to 11), assuming that the recombination fraction is the
 ##' same in both parents. Hidden Markov chain codes adapted from Broman et al.
-##' (2008) were used.  For backcross, \eqn{F_2}{F_2} and RIL populations the
-##' linkage phases are known \emph{a priori} and are not calculated.
+##' (2008) were used.
 ##' 
 ##' @param input.seq an object of class \code{sequence}.
 ##' @param n.best the number of best orders to store in object (defaults to

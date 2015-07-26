@@ -3,7 +3,7 @@
 \name{try.seq}
 \alias{print.try}
 \alias{try.seq}
-\title{Try to map a marker into every possible position between markers}
+\title{Try to map a marker into every possible position between markers in a given map}
 \usage{
 try.seq(input.seq, mrk, tol = 0.1, draw.try = FALSE, pos = NULL,
   verbose = FALSE)
@@ -51,9 +51,9 @@ data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
 2-point analyses.}
 }
 \description{
-For a given linkage map and an additional unpositioned marker, this
-function estimates parameters for all possible maps including the new
-marker, while keeping the original linkage map unaltered.
+For a given linkage map, tries do add an additional unpositioned marker.
+This function estimates parameters for all possible maps including the new
+marker in all posible positions, while keeping the original linkage map unaltered.
 }
 \details{
 The diagnostic graphic is made of three figures: i) the top figure

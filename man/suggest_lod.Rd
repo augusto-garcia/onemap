@@ -2,7 +2,7 @@
 % Please edit documentation in R/suggest_lod.R
 \name{suggest_lod}
 \alias{suggest_lod}
-\title{suggest_lod}
+\title{Suggests a LOD Score for two point tests}
 \usage{
 suggest_lod(x)
 }

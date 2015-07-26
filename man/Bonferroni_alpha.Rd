@@ -2,26 +2,26 @@
 % Please edit documentation in R/test_segregation.R
 \name{Bonferroni_alpha}
 \alias{Bonferroni_alpha}
-\title{Bonferroni_alpha}
+\title{Calculates individual significance level to be used to achieve a global alpha (with Bonferroni)}
 \usage{
 Bonferroni_alpha(x, global.alpha = 0.05)
 }
 \arguments{
 \item{x}{an object of class onemap.segreg.test}
 
-\item{global.alpha}{the global alpha that is target}
+\item{global.alpha}{the global alpha that}
 }
 \value{
-the alpha value (numeric)
+the alpha value for each test (numeric)
 }
 \description{
-It shows the alpha value to be used in each test to control global type I error
-for chi-square tests for segregation of all markers if Bonferroni's criteria is applied.
+It shows the alpha value to be used in each chi-square segregation test, in order to achieve
+a given global type I error. To do so, it uses Bonferroni's criteria.
 }
 \examples{
 data(fake.bc.onemap) # Loads a fake backcross dataset installed with onemap
 Chi <- test_segregation(fake.bc.onemap) # Performs the chi-square test for all markers
 print(Chi) # Shows the results of the Chi-square tests
-Bonferroni_alpha (Chi) # Shows the global alpha level using Bonferroni's criteria
+Bonferroni_alpha (Chi) # Shows the individual alpha level to be used
 }
 

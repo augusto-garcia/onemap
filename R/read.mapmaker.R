@@ -24,7 +24,7 @@
 ##' Imports data from a Mapmaker raw file.
 ##' 
 ##' For details about MAPMAKER files see \cite{Lincoln et al.} (1993). The
-##' current version supports backcross, \eqn{F_2} and RIL populations. The file
+##' current version supports backcross, F2s and RIL populations. The file
 ##' can contain phenotypic data, but it will not be used in the analysis.
 ##' 
 ##' @param dir directory where the input file is located.

@@ -15,10 +15,8 @@
 #                                                                     #
 #######################################################################
 
-# Function to read data from input file
 
-
-##' Read data from a segregating full-sib population
+##' Read data from a full-sib progeny (outcrossing populations)
 ##' 
 ##' Imports data from a full-sib family derived from the cross of two outbred
 ##' parents and creates an object of class \code{outcross}.

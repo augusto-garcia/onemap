@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_raw_data.R
 \name{plot.riself.onemap}
 \alias{plot.riself.onemap}
-\title{Draw a graphic of raw data for a RIL population (made by selfing)}
+\title{Draw a heatmap graphic of raw data for a RIL population (made by selfing)}
 \usage{
 \method{plot}{riself.onemap}(x)
 }
@@ -15,7 +15,7 @@ a ggplot graphic
 \description{
 Draw a graphic of raw data for a RIL population (made by selfing), using ggplot2.
 Lines correspond to markers and columns for individuals.
-The graphic is a "heatmap", whose name in ggplot2 is "tile".
+The graphic is a "heatmap", whose geom in ggplot2 is "tile".
 The function receives a onemap object of class riself.onemap, reads information
 from genotypes from this object, convert it to a long dataframe format
 using function melt() from package reshape2(), converts numbers from the object

@@ -9,12 +9,12 @@
 # copyright (c) 2015 Antonio Augusto Franco Garcia                    #
 #                                                                     #
 # First version: 2015/04/21                                           #
-# Last update: 2015/05/01                                             #
+# Last update: 2015/07/25                                             #
 # License: GNU General Public License version 3 or later              #
 #                                                                     #
 #######################################################################
 
-##' suggest_lod
+##' Suggests a LOD Score for two point tests
 ##'
 ##' It suggests a LOD Score for declaring statistical significance for two-point tests
 ##' for linkage between all pairs of markers, considering that multiple tests are being performed.

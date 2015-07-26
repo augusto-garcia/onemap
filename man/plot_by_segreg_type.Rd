@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_raw_data.R
 \name{plot_by_segreg_type}
 \alias{plot_by_segreg_type}
-\title{Draw a graphic showing the number of markers on each segregation pattern.}
+\title{Draw a graphic showing the number of markers of each segregation pattern.}
 \usage{
 plot_by_segreg_type(x, subcateg = TRUE)
 }
@@ -18,7 +18,7 @@ a ggplot graphic
 \description{
 The function receives a onemap object of class outcross, f2.onemap, bc.onemap,
 risib.onemap or riself.onemap.
-For outcrossing populations, it can show detailed information (all 18 possible categories)
+For outcrossing populations, it can show detailed information (all 18 possible categories),
 or a simplified version.
 }
 \examples{

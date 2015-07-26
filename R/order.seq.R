@@ -32,7 +32,7 @@
 ##' degree of informativeness of markers (i.e markers of type A, B, C and D, in
 ##' this order).
 ##' 
-##' For backcrosses, \eqn{F_2}{F_2} or RILs, two methods can be used for
+##' For backcrosses, F2s or RILs, two methods can be used for
 ##' choosing the initial subset: i) \code{"sample"} randomly chooses a number
 ##' of markers, indicated by \code{n.init}, and calculates the multipoint
 ##' log-likelihood of the \eqn{\frac{n.init!}{2}}{n.init!/2} possible orders.
@@ -96,8 +96,8 @@
 ##' \item{data.name}{name of the object of class \code{outcross} with the raw
 ##' data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
 ##' 2-point analyses.}
-##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com} and Marcelo
-##' Mollinari, \email{mmollina@@usp.br}
+##' @author Gabriel R A Margarido, \email{gramarga@@usp.br} and Marcelo
+##' Mollinari, \email{mmollina@@gmail.com}
 ##' @seealso \code{\link[onemap]{make.seq}}, \code{\link[onemap]{compare}} and
 ##' \code{\link[onemap]{try.seq}}.
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
