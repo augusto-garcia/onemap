@@ -35,20 +35,23 @@ pre, code{font-size:90%;}
 <h1>Outcrossing  populations</h1>
 
 <p>The following example is intended to show the usage of <code>OneMap</code>
-functions for linkage mapping in outcrossing (non-inbred)
-species. With basic knowledge of R syntax, one should have no big
-problems using it. If you are not familiar with R software, we
-recommend reading the vignette <a href="http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/vignettes_html/Introduction_R.html">Introduction to R</a>..</p>
+functions for linkage mapping in outcrossing (non-inbred) species.
+With basic knowledge of R syntax, one should have no problems using
+it. If you are not familiar with R, we recommend reading the vignette
+<a href="http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/vignettes_html/Introduction_R.html">Introduction to R</a>..</p>
 
 <p>Hopefully these examples will be clear enough to help any user to
-understand its functionality and start using it.</p>
-
-<p>You do not need to be an expert in R to build your linkage map, but
-some concepts are necessary and will help you through the process.</p>
+understand its functionality and start using it. You do not need to be
+an expert in R to build your linkage map, but some concepts are
+necessary and will help you through the process.</p>
 
 <h2>Creating the data file</h2>
 
-<p>This step might be quite difficult, since the data file is not very simple and many errors can occur while reading it. The input file format is similar to that used by MAPMAKER/EXP (Lander et al., 1987), so experienced users of genetic analysis software should be already familiar with it.</p>
+<p>This step might be quite difficult, since the data file is not very
+simple and many errors can occur while reading it. The input file
+format is similar to that used by MAPMAKER/EXP (Lander et al., 1987),
+so experienced users of genetic analysis software should be already
+familiar with this scenario.</p>
 
 <p>Basically, the input file is a text file, where the first line
 indicates the number of individuals and the number of markers. Then,
@@ -56,15 +59,21 @@ the genotype information is included separately for each marker. The
 character <code>*</code> indicates the beginning of information input for a new
 marker, followed by the marker name. Next, there is a table withe
 codes indicating the marker type, according to Wu&#39;s et al. (2002a)
-notation.</p>
+notation. Actually, it is recommended to check Wu&#39;s et al. (2002a)
+paper before using <code>OneMap</code>.</p>
+
+<p>Marker types must be one of the following: <code>A.1</code>, <code>A.2</code>, <code>A.3</code>, <code>A.4</code>,
+<code>B1.5</code>, <code>B2.6</code>, <code>B3.7</code>, <code>C.8</code>, <code>D1.9</code>, <code>D1.10</code>, <code>D1.11</code>, <code>D1.12</code>,
+<code>D1.13</code>, <code>D2.14</code>, <code>D2.15</code>, <code>D2.16</code>, <code>D2.17</code> or <code>D2.18</code>, each one
+corresponding to a row of the following table:</p>
 
 <table><thead>
 <tr>
 <th></th>
 <th></th>
-<th align="right"></th>
-<th>Parent</th>
-<th></th>
+<th align="center"></th>
+<th align="center">Parent</th>
+<th align="center"></th>
 <th align="center">Offspring</th>
 <th align="center"></th>
 </tr>
@@ -72,187 +81,209 @@ notation.</p>
 <tr>
 <td></td>
 <td></td>
-<td align="right">Crosstype</td>
-<td>Cross</td>
-<td>Observed bands</td>
+<td align="center">Crosstype</td>
+<td align="center">Cross</td>
+<td align="center">Observed bands</td>
 <td align="center">Observed bands</td>
 <td align="center">Segregation</td>
 </tr>
 <tr>
-<td>A</td>
+<td>\(A\)</td>
 <td></td>
-<td align="right">1</td>
-<td>\(ab \times cd\)</td>
-<td>\(ab \times cd\)</td>
-<td align="center">ac, ad, bc, bd</td>
+<td align="center">1</td>
+<td align="center">\(ab \times cd\)</td>
+<td align="center">\(ab \times cd\)</td>
+<td align="center">\(ac, ad, bc, bd\)</td>
 <td align="center">\(1:1:1:1\)</td>
 </tr>
 <tr>
 <td></td>
 <td></td>
-<td align="right">2</td>
-<td>\(ab \times ac\)</td>
-<td></td>
-<td align="center"></td>
-<td align="center"></td>
+<td align="center">2</td>
+<td align="center">\(ab \times ac\)</td>
+<td align="center">\(ab \times ac\)</td>
+<td align="center">\(a, ac, ba, bc\)</td>
+<td align="center">\(1:1:1:1\)</td>
 </tr>
 <tr>
 <td></td>
 <td></td>
-<td align="right">3</td>
-<td>\(ab \times co\)</td>
-<td></td>
-<td align="center"></td>
-<td align="center"></td>
+<td align="center">3</td>
+<td align="center">\(ab \times co\)</td>
+<td align="center">\(ab \times c\)</td>
+<td align="center">\(ac, a, bc,b\)</td>
+<td align="center">\(1:1:1:1\)</td>
 </tr>
 <tr>
 <td></td>
 <td></td>
-<td align="right">4</td>
-<td>\(ao \times bo\)</td>
+<td align="center">4</td>
+<td align="center">\(ao \times bo\)</td>
+<td align="center">\(a  \times  b\)</td>
+<td align="center">\(ab, a, b, o\)</td>
+<td align="center">\(1:1:1:1\)</td>
+</tr>
+<tr>
 <td></td>
+<td></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
 </tr>
 <tr>
-<td>B</td>
-<td>\(B1\)</td>
-<td align="right">5</td>
-<td>\(ab \times ao\)</td>
-<td></td>
-<td align="center"></td>
+<td>\(B\)</td>
+<td>\(B_1\)</td>
+<td align="center">5</td>
+<td align="center">\(ab \times ao\)</td>
+<td align="center">\(ab \times a\)</td>
+<td align="center">\(ab, 2a,b\)</td>
 <td align="center">\(1:2:1\)</td>
 </tr>
 <tr>
 <td></td>
-<td>\(B2\)</td>
-<td align="right">6</td>
-<td>\(ao \times ab\)</td>
-<td></td>
-<td align="center"></td>
-<td align="center"></td>
+<td>\(B_2\)</td>
+<td align="center">6</td>
+<td align="center">\(ao \times ab\)</td>
+<td align="center">\(a \times ab\)</td>
+<td align="center">\(ab,2a,b\)</td>
+<td align="center">\(1:2:1\)</td>
 </tr>
 <tr>
 <td></td>
-<td>\(B3\)</td>
-<td align="right">7</td>
-<td>\(ab \times ab\)</td>
-<td></td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-<tr>
-<td>C</td>
-<td></td>
-<td align="right">8</td>
-<td>\(ao \times ao\)</td>
-<td></td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-<tr>
-<td>D</td>
-<td>\(D1\)</td>
-<td align="right">9</td>
-<td>\(ab \times cc\)</td>
-<td></td>
-<td align="center"></td>
-<td align="center"></td>
+<td>\(B_3\)</td>
+<td align="center">7</td>
+<td align="center">\(ab \times ab\)</td>
+<td align="center">\(ab \times ab\)</td>
+<td align="center">\(a, 2ab,b\)</td>
+<td align="center">\(1:2:1\)</td>
 </tr>
 <tr>
 <td></td>
 <td></td>
-<td align="right">10</td>
-<td>\(ab \times aa\)</td>
-<td></td>
 <td align="center"></td>
 <td align="center"></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td align="right">11</td>
-<td>\(ab \times oo\)</td>
-<td></td>
+<td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
 </tr>
 <tr>
+<td>\(C\)</td>
 <td></td>
-<td></td>
-<td align="right">12</td>
-<td>\(bo \times aa\)</td>
-<td></td>
-<td align="center"></td>
-<td align="center"></td>
+<td align="center">8</td>
+<td align="center">\(ao \times ao\)</td>
+<td align="center">\(a \times a\)</td>
+<td align="center">\(3a, o\)</td>
+<td align="center">\(3:1\)</td>
 </tr>
 <tr>
 <td></td>
 <td></td>
-<td align="right">13</td>
-<td>\(ao \times oo\)</td>
-<td></td>
 <td align="center"></td>
 <td align="center"></td>
-</tr>
-<tr>
-<td></td>
-<td>\(D2\)</td>
-<td align="right">14</td>
-<td>\(cc \times ab\)</td>
-<td></td>
+<td align="center"></td>
 <td align="center"></td>
 <td align="center"></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
-<td align="right">15</td>
-<td>\(aa \times ab\)</td>
-<td></td>
-<td align="center"></td>
-<td align="center"></td>
+<td>\(D\)</td>
+<td>\(D_1\)</td>
+<td align="center">9</td>
+<td align="center">\(ab \times cc\)</td>
+<td align="center">\(ab \times c\)</td>
+<td align="center">\(ac, bc\)</td>
+<td align="center">\(1:1\)</td>
 </tr>
 <tr>
 <td></td>
 <td></td>
-<td align="right">16</td>
-<td>\(oo \times ab\)</td>
-<td></td>
-<td align="center"></td>
-<td align="center"></td>
+<td align="center">10</td>
+<td align="center">\(ab \times aa\)</td>
+<td align="center">\(ab \times a\)</td>
+<td align="center">\(a, ab\)</td>
+<td align="center">\(1:1\)</td>
 </tr>
 <tr>
 <td></td>
 <td></td>
-<td align="right">17</td>
-<td>\(aa \times bo\)</td>
-<td></td>
-<td align="center"></td>
-<td align="center"></td>
+<td align="center">11</td>
+<td align="center">\(ab \times oo\)</td>
+<td align="center">\(ab \times o\)</td>
+<td align="center">\(a, b\)</td>
+<td align="center">\(1:1\)</td>
 </tr>
 <tr>
 <td></td>
 <td></td>
-<td align="right">18</td>
-<td>\(oo \times ao\)</td>
+<td align="center">12</td>
+<td align="center">\(bo \times aa\)</td>
+<td align="center">\(b \times a\)</td>
+<td align="center">\(ab, a\)</td>
+<td align="center">\(1:1\)</td>
+</tr>
+<tr>
 <td></td>
-<td align="center"></td>
-<td align="center"></td>
+<td></td>
+<td align="center">13</td>
+<td align="center">\(ao \times oo\)</td>
+<td align="center">\(a \times o\)</td>
+<td align="center">\(a, o\)</td>
+<td align="center">\(1:1\)</td>
+</tr>
+<tr>
+<td></td>
+<td>\(D_2\)</td>
+<td align="center">14</td>
+<td align="center">\(cc \times ab\)</td>
+<td align="center">\(c \times ab\)</td>
+<td align="center">\(ac, bc\)</td>
+<td align="center">\(1:1\)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td align="center">15</td>
+<td align="center">\(aa \times ab\)</td>
+<td align="center">\(a \times ab\)</td>
+<td align="center">\(a, ab\)</td>
+<td align="center">\(1:1\)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td align="center">16</td>
+<td align="center">\(oo \times ab\)</td>
+<td align="center">\(o \times ab\)</td>
+<td align="center">\(a, b\)</td>
+<td align="center">\(1:1\)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td align="center">17</td>
+<td align="center">\(aa \times bo\)</td>
+<td align="center">\(a \times b\)</td>
+<td align="center">\(ab, a\)</td>
+<td align="center">\(1:1\)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td align="center">18</td>
+<td align="center">\(oo \times ao\)</td>
+<td align="center">\(o \times a\)</td>
+<td align="center">\(a, o\)</td>
+<td align="center">\(1:1\)</td>
 </tr>
 </tbody></table>
 
-<p>Actually, it is recommended to check Wu&#39;s et al. (2002a) paper before
-using <code>OneMap</code>. Marker types must be one of the following: <code>A.1</code>,
-<code>A.2</code>, <code>A.3</code>, <code>A.4</code>, <code>B1.5</code>, <code>B2.6</code>, <code>B3.7</code>, <code>C.8</code>, <code>D1.9</code>, <code>D1.10</code>,
-<code>D1.11</code>, <code>D1.12</code>, <code>D1.13</code>, <code>D2.14</code>, <code>D2.15</code>, <code>D2.16</code>, <code>D2.17</code>} or
-<code>D2.18</code>, each one corresponding to a row of the table. The letter and
-the number before the dot indicate the segregation type (i.e.,
-<code>1:1:1:1</code>, <code>1:2:1</code>, <code>3:1</code> or <code>1:1</code>), while the number after the dot
-indicates the observed bands in the offspring. The paper cited above
-gives details with respect to marker types; we will not discuss them
-here, but it is easy to see that each marker is classified based on
-the band patterns on parents and progeny.</p>
+<p>The letter and the number before the dot indicate the segregation type
+(i.e., <code>1:1:1:1</code>, <code>1:2:1</code>, <code>3:1</code> or <code>1:1</code>), while the number after the
+dot indicates the observed bands in the offspring. The paper cited
+above gives details with respect to marker types; we will not discuss
+them here, but it is easy to see that each marker is classified based
+on the band patterns on parents and progeny.</p>
 
 <p>Finally, after each marker name, comes the genotype data for the
 segregating population. The coding for marker genotypes used by
