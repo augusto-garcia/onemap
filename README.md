@@ -85,4 +85,6 @@ that will guide you through another chapters.
 
 2. [Introduction to R](http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Introduction_R.html)
 
-3. [Build a linkage map for inbred-bases populations (F2, RIL and BC)](http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Inbred_Based_Populations.html)
+3. [How to build a linkage map for inbred-bases populations (F2, RIL and BC)](http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Inbred_Based_Populations.html)
+
+4. [How to build a linkage map for outcrossing populations](http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Outcrossing_Populations.html)
