@@ -5,7 +5,7 @@
 
 # Outcrossing  populations
 
-```{r, globalsetup, echo=FALSE, results=FALSE, cache=FALSE}
+```{r, globalsetup, echo=FALSE, results='hide', cache=FALSE}
 #opts_chunk$set(cache=TRUE, autodep=TRUE)
 ```
 
@@ -13,7 +13,7 @@ The following example is intended to show the usage of `OneMap`
 functions for linkage mapping in outcrossing (non-inbred) species.
 With basic knowledge of R syntax, one should have no problems using
 it. If you are not familiar with R, we recommend reading the vignette
-[Introduction to R](http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/vignettes_html/Introduction_R.html)..
+[Introduction to R](http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/vignettes_html/Introduction_R.html).
 
 Hopefully these examples will be clear enough to help any user to
 understand its functionality and start using it. You do not need to be
@@ -483,10 +483,10 @@ marker.type(LG2)
 ``` 
 
 Based on their segregation types and distribution on the preliminary
-map, markers M4, M23, M19, M20 and M24 are the most informative ones
-(type A is the better, followed by type B). So, let us create a
-framework of ordered markers using `compare` for the most informative
-ones:
+map, markers `M4`, `M23`, `M19`, `M20` and `M24` are the most
+informative ones (type `A` is the better, followed by type `B`). So,
+let us create a framework of ordered markers using `compare` for the
+most informative ones:
 
 ```{r, results='hide'}
 LG2.init <- make.seq(twopts,c(4,23,19,20,24))

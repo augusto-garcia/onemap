@@ -1,4 +1,4 @@
-## ---- globalsetup, echo=FALSE, results=FALSE, cache=FALSE----------------
+## ---- globalsetup, echo=FALSE, results='hide', cache=FALSE---------------
 #opts_chunk$set(cache=TRUE, autodep=TRUE)
 
 ## ---- eval=FALSE---------------------------------------------------------

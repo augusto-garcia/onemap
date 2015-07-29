@@ -38,7 +38,7 @@ pre, code{font-size:90%;}
 functions for linkage mapping in outcrossing (non-inbred) species.
 With basic knowledge of R syntax, one should have no problems using
 it. If you are not familiar with R, we recommend reading the vignette
-<a href="http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/vignettes_html/Introduction_R.html">Introduction to R</a>..</p>
+<a href="http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/vignettes_html/Introduction_R.html">Introduction to R</a>.</p>
 
 <p>Hopefully these examples will be clear enough to help any user to
 understand its functionality and start using it. You do not need to be
@@ -931,7 +931,7 @@ long time to proceed.</p>
 <pre><code>## 
 ## order obtained using RCD algorithm:
 ## 
-##  27 16 20 4 19 23 21 9 24 29 
+##  29 24 9 16 20 4 19 23 21 27 
 ## 
 ## calculating multipoint map using tol =  1e-04 .
 </code></pre>
@@ -944,18 +944,18 @@ long time to proceed.</p>
 ## 
 ## Markers           Position           Parent 1       Parent 2
 ## 
-## 27 M27                0.00           b |  | o       a |  | a 
-## 16 M16               11.76           a |  | a       b |  | o 
-## 20 M20               22.94           a |  | b       c |  | d 
-##  4 M4                35.71           a |  | o       o |  | b 
-## 19 M19               37.99           b |  | a       a |  | o 
-## 23 M23               50.82           a |  | o       a |  | o 
-## 21 M21               54.11           o |  | o       a |  | b 
-##  9 M9                71.37           a |  | b       a |  | a 
-## 24 M24               99.83           a |  | b       b |  | a 
-## 29 M29              121.88           o |  | a       o |  | o 
+## 29 M29                0.00           a |  | o       o |  | o 
+## 24 M24               20.61           b |  | a       a |  | b 
+##  9 M9                53.21           b |  | a       a |  | a 
+## 16 M16               78.59           a |  | a       o |  | b 
+## 20 M20               89.05           b |  | a       d |  | c 
+##  4 M4               101.82           o |  | a       b |  | o 
+## 19 M19              104.05           a |  | b       o |  | a 
+## 23 M23              117.25           o |  | a       o |  | a 
+## 21 M21              120.64           o |  | o       b |  | a 
+## 27 M27              157.67           o |  | b       a |  | a 
 ## 
-## 10 markers            log-likelihood: -588.005
+## 10 markers            log-likelihood: -611.9559
 </code></pre>
 
 <p>Use the <code>marker.type</code> function to check the segregation types of all
@@ -977,10 +977,10 @@ markers in this group:</p>
 </code></pre>
 
 <p>Based on their segregation types and distribution on the preliminary
-map, markers M4, M23, M19, M20 and M24 are the most informative ones
-(type A is the better, followed by type B). So, let us create a
-framework of ordered markers using <code>compare</code> for the most informative
-ones:</p>
+map, markers <code>M4</code>, <code>M23</code>, <code>M19</code>, <code>M20</code> and <code>M24</code> are the most
+informative ones (type <code>A</code> is the better, followed by type <code>B</code>). So,
+let us create a framework of ordered markers using <code>compare</code> for the
+most informative ones:</p>
 
 <pre><code class="r">LG2.init &lt;- make.seq(twopts,c(4,23,19,20,24))
 LG2.comp &lt;- compare(LG2.init)
