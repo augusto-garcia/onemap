@@ -803,7 +803,7 @@ placed together.
 Ordering markers (results not shown):
 
 ```{r, results='hide'}
-LG.err < -make.seq(LGs, 2)
+LG.err <- make.seq(LGs, 2)
 LG.err.ord <- order.seq(LG.err)
 ```
 
