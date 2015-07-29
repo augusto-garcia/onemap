@@ -820,7 +820,7 @@ LG.err.map
 
 A careful examination of the results shows that there are problems on the map. This can be done by plotting the recombination fraction matrix:
 
-```{r, eval=FALSE}
+```{r}
 rf.graph.table(LG.err.map)
 ```
 
