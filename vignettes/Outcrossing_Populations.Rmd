@@ -884,3 +884,32 @@ user using any appropriate software. There are several free softwares
 that can be used, such as `MapChart` (Voorrips, 2002).
 
 
+## References
+
+Buetow, K. H., Chakravarti, A. Multipoint gene mapping using
+seriation. I. General methods. **_American Journal of Human
+Genetics_** 41, 180-188, 1987.
+
+Doerge, R.W. Constructing genetic maps by rapid chain delineation.
+**_Journal of Agricultural Genomics_** 2, 1996.
+
+Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia, A. A. F.
+Evaluation of algorithms used to order markers on genetics maps.
+**_Heredity_** 103, 494-502, 2009.
+
+Tan, Y., Fu, Y. A novel method for estimating linkage maps.
+**_Genetics_** 173, 2383-2390, 2006.
+
+Van Os H, Stam P, Visser R.G.F., Van Eck H.J. RECORD: a novel method
+for ordering loci on a genetic linkage map. **_Theor Appl Genet_**
+112, 30-40, 2005.
+
+Voorrips, R.E. MapChart: software for the graphical presentation of
+linkage maps and QTLs. **_Journal of Heredity_** 93, 77-78, 2002.
+
+Wu, R., Ma, C.X., Painter, I. and Zeng, Z.-B. Simultaneous maximum
+likelihood estimation of linkage and linkage phases in outcrossing
+species. **_Theoretical Population Biology_** 61, 349-363, 2002a.
+
+Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. Linkage mapping of
+sex-specific differences. **_Genetical Research_** 79, 85-96, 2002b.
