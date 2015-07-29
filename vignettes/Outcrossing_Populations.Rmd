@@ -67,12 +67,13 @@ corresponding to a row of the following table:
 |     |       |        17 | $aa \times bo$ | $a \times b$   | $ab, a$        |  $1:1$      |
 |     |       |        18 | $oo \times ao$ | $o \times a$   | $a, o$         |  $1:1$      |
 
-The letter and the number before the dot indicate the segregation type
-(i.e., `1:1:1:1`, `1:2:1`, `3:1` or `1:1`), while the number after the
-dot indicates the observed bands in the offspring. The paper cited
-above gives details with respect to marker types; we will not discuss
-them here, but it is easy to see that each marker is classified based
-on the band patterns on parents and progeny.
+Letters `A`, `B`, `C` and `D` indicate the segregation type (i.e.,
+`1:1:1:1`, `1:2:1`, `3:1` or `1:1`, respectively), while the number
+after the dot (e. g., `A.1`) indicates the observed bands in the
+offspring. The paper cited above gives details with respect to marker
+types; we will not discuss them here, but it is easy to see that each
+marker is classified based on the band patterns on parents and
+progeny.
 
 Finally, after each marker name, comes the genotype data for the
 segregating population. The coding for marker genotypes used by
@@ -81,7 +82,9 @@ possible values vary according to the specific marker type. Missing
 data are indicated with the character `-` (minus sign) and a comma
 separates the information for each individual.
 
-Here is an example of such file for 10 individuals and 5 markers:
+Here is an example of such file for 10 individuals and 5 markers. It
+is very similar to a MAPMAKER/EXP file, but has additional information
+about the crosstype.
 
 ```
 10 5
@@ -93,15 +96,15 @@ Here is an example of such file for 10 individuals and 5 markers:
 ```
 
 Notice that once the marker type is identified, no variations of
-symbols presented on the table for the `observed bands` is allowed.
+symbols presented on the table for the **observed bands** is allowed.
 For example, for `A.1`, only `ac`, `ad`, `bc` and `bd` genotypes are
-expected (plus missing values). *We notice that this is a common
-mistake made by users, so please be careful**.
+expected (plus missing values). **We notice in FAQs that this is a
+common mistake made by users, so please be careful**.
 
 The input file must be saved in text format, with extensions like
 `.txt`. It is a good idea to open the text file called
 `example.out.txt` (available with `OneMap` and saved in the directory
-you installed it to see how this file should be. You can see where
+you installed it) to see how this file should be. You can see where
 `OneMap` is installed using the command
 
 ```{r, eval=FALSE}
@@ -125,7 +128,7 @@ example.out<- read.outcross(system.file("example",package="onemap"),"example.out
 The first argument is the directory where the input file is located,
 so modify it accordingly. The second one is the data file name. In
 this example, an object named `example.out` was created. If you leave
-the argument `dir` blank, the file will be read from your `working
+the argument `dir` blank, the file will be loaded from your `working
 directory`.
 
 You can change the working directory in R using function `setwd()` or
@@ -159,15 +162,18 @@ objects of this class. Thus, if you type
 example.out
 ```
 
-you will see some information about the object.
+you will see some information about the object:
 
+```{r, echo=FALSE}
+example.out
+```
 
 ## Estimating two-point recombination fractions
 
 To start the analysis, the first step is estimating the recombination
 fraction between all pairs of markers, using two-point tests:
 
-```{r, echo=FALSE}
+```{r, twopoint, results=FALSE}
 twopts <- rf.2pts(example.out)
 ``` 
 
@@ -176,7 +182,7 @@ maximum recombination fraction `0.50`.
 
 Different values for the criteria can be chosen using:
 
-```{r, echo=FALSE}
+```{r, linkcriteria, results=FALSE}
 twopts <- rf.2pts(example.out, LOD=3, max.rf=0.4)
 ``` 
 
@@ -203,8 +209,8 @@ other information:
 twopts
 ``` 
 
-If you want to see the results for given markers, say `M1` and
-`M3`, the command is:
+If you want to see the results for some arbitrary markers, say `M1`
+and `M3`, the command is:
 
 ```{r}
 print(twopts, "M1", "M3")
@@ -214,8 +220,8 @@ Each line corresponds to a possible linkage phase. 1 denotes coupling
 phase in both parents (CC), 2 and 3 denote coupling phase in parent 1
 and 2, respectively, and repulsion in the other (CR and RC), and 4
 denotes repulsion phase in both parents (RR). Theta is the maximum
-likelihood estimate of the recombination fraction, with its LOD
-Scores.
+likelihood estimate of the recombination fraction, with its associated
+LOD Scores.
 
 ## Assigning markers to linkage groups
 
@@ -243,28 +249,44 @@ the function `marker type` to see their numbers, names and types:
 marker.type(mark.all)
 ``` 
 
-The grouping step is very simple and can be done by using the function `group}:
+The grouping step is very simple and can be done by using the function
+`group`:
+
 ```{r}
 LGs <- group(mark.all)
-``` 
-For this function, optional arguments are `LOD` and `max.rf}, which define thresholds to be used when assigning markers to linkage groups. If none provided (default), criteria previously defined for the object `twopts` are used.
+```
 
-The previous command generates an object of class `group` and the command `print` for such object has two options. If you type:
+For this function, optional arguments are `LOD` and `max.rf`, which
+define thresholds to be used when assigning markers to linkage groups.
+If none provided (default), criteria previously defined for the object
+`twopts` are used.
+
+The previous command generates an object of class `group` and the
+command `print` for such object has two options. If you type:
+
+```{r, eval=FALSE}
+LGs
+``` 
+
+you will get detailed information about the groups, i.e., all linkage
+groups will be printed, displaying the names of markers in each one of
+them.
+
 ```{r, echo=FALSE}
 LGs
 ``` 
 
-you will get detailed information about the groups, i.e., all linkage groups will be printed, displaying the names of markers in each one of them.
-```{r, echo=FALSE}
-LGs
-``` 
+However, in case you just want to see some basic information (such as
+the number of groups, number of linked markers, etc), use
 
-However, in case you just want to see some basic information (such as the number of groups, number of linked markers, etc):
 ```{r}
 print(LGs, detailed=FALSE)
 ``` 
 
-You can notice that all markers are linked to some linkage group. If the LOD Score threshold is changed to a higher value, some markers are kept unassigned:
+You can notice that all markers are linked to some linkage group. If
+the LOD Score threshold is changed to a higher value, some markers are
+kept unassigned:
+
 ```{r}
 LGs <- group(mark.all, LOD=6)
 LGs
@@ -277,36 +299,59 @@ LGs
 ``` 
 
 ## Genetic mapping of linkage group 3
-\label{group3outcrossing}
-\begin{enumerate}
-Once marker assignment to linkage groups is finished, the mapping step can take place. First of all, you must set the mapping function that should be used to display the genetic map through the analysis. You can choose between Kosambi or Haldane mapping functions. To use Haldane, type
+
+
+Once marker assignment to linkage groups is finished, the mapping step
+can take place. First of all, you must set the mapping function that
+should be used to display the genetic map through the analysis. You
+can choose between `Kosambi` or `Haldane` mapping functions. To use
+Haldane, type
+
 ```{r, eval=FALSE}
 set.map.fun(type="haldane")
 ```
 
 To use Kosambi
+
 ```{r, eval=FALSE}
 set.map.fun(type="kosambi")
 ```
 
-Now, you must define which linkage group will be mapped. In other words, a linkage group must be `extracted` from the object of class `group}, in order to be mapped. For simplicity, we will start here with the smallest one, which is linkage group 3. This can be easily done using the following code:
+Now, you must define which linkage group will be mapped. In another
+words, a linkage group must be `extracted` from the object of class
+`group`, in order to be mapped. For simplicity, we will start here
+with the smallest one, which is linkage group 3. This can be easily
+done using the following code:
+
 ```{r}
 LG3 <- make.seq(LGs, 3)
-``` 
-The first argument (`LGs}) is an object of class `group` and the second is a number indicating which linkage group will be extracted, according to the results stored in object `LGs}. The object `LG3}, generated by function `make.seq}, is of class `sequence}, showing that this function can be used with several types of objects.
+```
+
+The first argument (`LGs`) is an object of class `group` and the
+second is a number indicating which linkage group will be extracted,
+according to the results stored in object `LGs`. The object `LG3`,
+generated by function `make.seq`, is of class `sequence`, showing that
+this function can be used with several types of objects.
 
 If you type
-```{r, echo=FALSE}
+
+```{r, eval=FALSE}
 LG3
 ``` 
-you will see which markers are comprised in the sequence, and also that no parameters have been estimated.
+
+you will see which markers are comprised in the sequence, and also
+that no parameters have been estimated so far.
+
 ```{r, echo=FALSE}
 LG3
 ``` 
 
-To order these markers, one can use a two-point based algorithm such as Seriation (Buetow and Chakravarti, 1987), Rapid Chain Delineation (Doerge, 1996), Recombination Counting and Ordering (Van Os et al., 2005) and Unidirectional Growth (Tan and Fu, 2006):
+To order these markers, one can use a two-point based algorithm such
+as Seriation (Buetow and Chakravarti, 1987), Rapid Chain Delineation
+(Doerge, 1996), Recombination Counting and Ordering (Van Os et al.,
+2005) and Unidirectional Growth (Tan and Fu, 2006):
   
-```{r,  echo=FALSE}
+```{r,  results=FALSE}
 LG3.ser <- seriation(LG3)
 LG3.rcd <- rcd(LG3)
 LG3.rec <- record(LG3)
@@ -315,21 +360,42 @@ LG3.ug  <- ug(LG3)
 
 In this case, all algorithms provided the same results (results not showed).
 
-To order by comparing all possible orders (exhaustive search), the function `compare` can be used:
-```{r,  echo=FALSE}
+To order by comparing all possible orders (exhaustive search), the
+function `compare` can be used:
+
+```{r,  results=FALSE}
 LG3.comp <- compare(LG3)
 ``` 
 
-This order step can take some time, depending on marker types in the linkage group. In the example, `LG3` contains one marker of type D1 and one of type D2, besides one marker segregating in 3:1 fashion (type C). Thus, although the number of possible orders is relatively small (60), for each order there are various possible combinations of linkage phases. Also, the convergence of the EM algorithm takes considerably more time, since markers of type C are not very informative. 
+This algorithm can take some time to run, depending on marker types in
+the linkage group. In the example, `LG3` contains one marker of type
+D1 and one of type D2, besides one marker segregating in 3:1 fashion
+(type C). Thus, although the number of possible orders is relatively
+small (60), for each order there are various possible combinations of
+linkage phases. Also, the convergence of the EM algorithm takes
+considerably more time, since markers of type C are not very
+informative.
 
-The first argument to `compare` function is an object of class `sequence` (the extracted group `LG3}), and the object generated by this function is of class `compare}.
+The first argument to `compare` function is an object of class
+`sequence` (the extracted group `LG3`), and the object generated by
+this function is of class `compare`.
 
 To see the results of the previous step, type
+
 ```{r}
 LG3.comp
 ``` 
 
-Remember that for outcrossing populations, one needs to estimate marker order and also linkage phases between markers for a given order. However, since two point analysis also provided information about linkage phases, this information was taken into consideration in the `compare` function, reducing the number of combinations to be evaluated. If at least one linkage phase has LOD equals to 0.005 in the two point analysis, we assumed that this phase is very unlikely and so do not need to be evaluated in the multipoint procedure used by compare. We did extensive simulations that showed that this is a good procedure. 
+Remember that for outcrossing populations, one needs to estimate
+marker order and also linkage phases between markers for a given
+order. However, since two point analysis also provided information
+about linkage phases, this information was taken into consideration in
+the `compare` function, reducing the number of combinations to be
+evaluated. If at least one linkage phase has LOD equals to 0.005 in
+the two point analysis, we assumed that this phase is very unlikely
+and so do not need to be evaluated in the multipoint procedure used by
+compare. We did extensive simulations that showed that this is a good
+procedure.
 
 By default, `OneMap` stores 50 orders, which may or may not be unique.
 The value of `LOD` refers to the overall LOD Score, considering all
@@ -340,109 +406,154 @@ marker order.
 For example, order 1 has the largest value of log-likelihood and,
 therefore, its LOD Score is zero for a given combination of linkage
 phases (CC, CC, RR, RR). For this same order and other linkage phases,
-LOD Score is -2.43. Analyzing the results for order 2, notice that its
-highest LOD Score is very close to zero, indicating that this order is
-also quite plausible. Notice also that `Nested LOD` will always
-contain at least one zero value, corresponding to the best combination
-of phases for markers in a given order. Due to the information
-provided by two-point analysis, not all combinations are tested and
-that is the reason why the number of Nested LOD is different for each
-order.
+LOD Score is `-2.43`. Analyzing the results for order 2, notice that
+its highest LOD Score is very close to zero, indicating that this
+order is also quite plausible. Notice also that `Nested LOD` will
+always contain at least one zero value, corresponding to the best
+combination of phases for markers in a given order. Due to the
+information provided by two-point analysis, not all combinations are
+tested and that is the reason why the number of Nested LOD is
+different for each order.
 
-Unless one has some biological information, it is a good idea to choose the order with the highest likelihood. The final map can then be obtained with the command
+Unless one has some biological information, it is a good idea to
+choose the order with the highest likelihood. The final map can then
+be obtained with the command
+
 ```{r}
 LG3.final <- make.seq(LG3.comp,1,1)
 ``` 
 
-The first argument is the object of class `compare}. The second argument indicates which order is chosen: 1 is for the order with highest likelihood, 2 is for the second best, and so on. The third argument indicates which combination of phases is chosen for a given order: 1 also means the combination with highest likelihood among all combinations of phases (based on Nested LOD).
+The first argument is the object of class `compare`. The second
+argument indicates which order is chosen: 1 is for the order with
+highest likelihood, 2 is for the second best, and so on. The third
+argument indicates which combination of phases is chosen for a given
+order: 1 also means the combination with highest likelihood among all
+combinations of phases (based on Nested LOD).
 
 For simplicity, these values are defaults, so typing
+
 ```{r}
 LG3.final <- make.seq(LG3.comp)
 ``` 
+
 will have the same effect.
 
-To see the final map type
+To see the final map, type
+
 ```{r}
 LG3.final
 ``` 
 
-At the leftmost position, marker names are displayed. `Position` shows the cumulative distance using the Kosambi mapping function. Finally, `Parent 1` and `Parent 2` show the diplotypes of both parents, that is, the manner in which alleles are arranged in the chromosomes, given the estimated linkage phase. Notation is the same as that used by Wu et al. (2002a). Details about how ordering algorithms can be chosen and used are presented by Mollinari et al. (2009). 
-\end{enumerate}
+At the leftmost position, marker names are displayed. `Position` shows
+the cumulative distance using the Kosambi mapping function. Finally,
+`Parent 1` and `Parent 2` show the diplotypes of both parents, that
+is, the manner in which alleles are arranged in the chromosomes, given
+the estimated linkage phase. Notation is the same as that used by Wu
+et al. (2002a). Details about how ordering algorithms are presented by
+Mollinari et al. (2009).
+
 
 ## Genetic mapping of linkage group 2
-\label{group2outcrossing}
- Now let us map the markers in linkage group number 2.
+
+Now let us map the markers in linkage group number 2.
  
-\begin{enumerate}
-Again, `extract` that group from the object `LGs}:
+ Again, `extract` that group from the object `LGs`:
+ 
 ```{r}
 LG2 <- make.seq(LGs, 2)
 LG2
 ``` 
-Note that there are 10 markers in this group, so it is unfeasible to use the `compare` function with all of them since it will take a very long time to proceed.
+
+Note that there are 10 markers in this group, so it is unfeasible to
+use the `compare` function with all of them since it will take a very
+long time to proceed.
 
 First, use `rcd` to get a preliminary order estimate:
+
 ```{r}
 LG2.rcd <- rcd(LG2)
 LG2.rcd
 ```
 
-Use the `marker.type` function to check the segregation types of all markers in this group:
+Use the `marker.type` function to check the segregation types of all
+markers in this group:
+
 ```{r, , echo=TRUE}
 marker.type(LG2)
 ``` 
 
-Based on their segregation types and distribution on the preliminary map, markers M4, M23, M19, M20 and M24 are the most informative ones (type A is the better, followed by type B). So, let us create a framework of ordered markers using `compare` for the most informative ones: 
-```{r, echo=FALSE}
+Based on their segregation types and distribution on the preliminary
+map, markers M4, M23, M19, M20 and M24 are the most informative ones
+(type A is the better, followed by type B). So, let us create a
+framework of ordered markers using `compare` for the most informative
+ones:
+
+```{r, results=FALSE}
 LG2.init <- make.seq(twopts,c(4,23,19,20,24))
 LG2.comp <- compare(LG2.init)
 ``` 
+
 ```{r}
 LG2.comp
-``` 
-Now, the first argument to `make.seq` is an object of class `rf.2pts}, and the second argument is a vector of integers, specifying which molecular markers will be in the sequence.
+```
+
+Now, the first argument to `make.seq` is an object of class `rf.2pts`,
+and the second argument is a vector of integers, specifying which
+molecular markers will be in the sequence.
 
 Select the best order:
+
 ```{r}
 LG2.frame <- make.seq(LG2.comp)
 ``` 
 
-Next, let us try to map the remaining markers, one at a time. Since there are more markers of type D1 than D2, the latter will be tried later. Starting with `M9}:
-```{r}
+Next, let us try to map the remaining markers, one at a time. Since
+there are more markers of type D1 than D2, the latter will be tried
+later. Starting with `M9`:
+
+```{r, results=FALSE}
 LG2.extend <- try.seq(LG2.frame,9)
+```
+
+```{r}
 LG2.extend
 ``` 
 
-Based on the LOD Scores, marker M9 is probably better located between markers M23 and M24. However, the `*` symbol indicates that more than one linkage phase is possible. Detailed results can be seen with
+Based on the LOD Scores, marker M9 is probably better located between
+markers M23 and M24. However, the `*` symbol indicates that more than
+one linkage phase is possible. Detailed results can be seen with
 
 ```{r}
 print(LG2.extend,5)
 ```
 
-The second argument indicates the position where to place the marker. Note that the first allele arrangement is the most likely one. 
+The second argument indicates the position where to place the marker.
+Note that the first allele arrangement is the most likely one.
 
-Also, we can obtain some useful diagnostic graphics using the argument `draw.try=TRUE` when using function `try.seq}:
+Also, we can obtain some useful diagnostic graphics using the argument
+`draw.try=TRUE` when using function `try.seq`:
 
-```{r, echo=FALSE, echo=TRUE, fig=TRUE , width=9, height=9}
+```{r, echo=TRUE}
 LG2.extend <- try.seq(LG2.frame, 9, draw.try=TRUE)
 ``` 
 
 The top figure represents the new genetic map obtained with the
-insertion of marker 9 between markers M23 and M24 (most likely one).
-The left bottom figure represents the frame map M24 - M23 - M4 - M19 -
-M20 on x-axis and the LOD Scores of the linkage maps obtained with the
-insertion of marker 9 at the beginning, between markers and at the end
-of the frame map. The red triangle indicates the most likely position,
-where the marker 9 it is supposed to be placed. The right bottom
-figure is the recombination fraction matrix based on a color scale
-using the function `rf.graph.table`. The diagnostic graphics show an
-almost monotonic recombination fraction matrix (the values are bigger
-as their distance from diagonal increases). This pattern is typical of
-ordered linkage groups. We can see that the position between markers
-`M23` and `M24` is the most likely one for positioning marker `M9}
+insertion of marker 9 between markers `M23` and `M24` (most likely
+position). The left bottom figure represents the frame map `M24 - M23 -
+M4 - M19 - M20` on x-axis and the LOD Scores of the linkage maps
+obtained with the insertion of marker 9 at the beginning, between
+markers and at the end of the frame map. The red triangle indicates
+the most likely position, where the marker 9 it is supposed to be
+placed. The right bottom figure is the recombination fraction matrix
+based on a color scale using the function `rf.graph.table`. The
+diagnostic graphics show an almost monotonic recombination fraction
+matrix (the values are bigger as their distance from diagonal
+increases). This pattern is typical of ordered linkage groups. We can
+see that the position between markers `M23` and `M24` is the most
+likely one for positioning marker `M9`.
 
- Finally, the best order can be obtained with:
+Finally, the best order can be obtained with:
+
 ```{r}
 LG2.frame <- make.seq(LG2.extend,5,1)
 ```
@@ -452,11 +563,18 @@ argument is the position on the map (according to the scale on the
 right of the output) and the last argument indicates linkage phases
 (defaults to 1, higher nested LOD).
 
-It should be pointed out that the framework created by the function `compare` with (`M20`,   `M4`,  `M19`,  `M23` and `M24`) could be in reverse order (`M24`, `M23`, `M19`, `M4` and `M20`) and still be the same map. Thus, the positioning of markers by command `try.seq` can be different in your computer. For example, here, marker `M9` was better placed in position 5, however if you obtain a reverse order,  marker `M9` would be better placed in position 2. In both cases the best position is between markers `M24` and `M23`.
+It should be pointed out that the framework created by the function
+`compare` (with `M20`, `M4`, `M19`, `M23` and `M24`) could be in
+reverse order (`M24`, `M23`, `M19`, `M4` and `M20`) and still be the
+same map. Thus, the positioning of markers by command `try.seq` can be
+different in your computer. For example, here, marker `M9` was better
+placed in position 5, however if you obtain a reverse order, marker
+`M9` would be better placed in position 2. In both cases the best
+position is between markers `M24` and `M23`.
 
 Adding other markers, one by one (output not showed):
 
-```{r, echo=FALSE}
+```{r, results=FALSE}
 LG2.extend <- try.seq(LG2.frame,29)
 LG2.frame <- make.seq(LG2.extend,7)
 LG2.extend <- try.seq(LG2.frame,27)
@@ -467,10 +585,11 @@ LG2.extend <- try.seq(LG2.frame,21)
 LG2.final <- make.seq(LG2.extend,6)
 ``` 
 
-The process of adding markers sequentially can be automated with the use of function `order.seq}.
+The process of adding markers sequentially can be automated with the
+use of function `order.seq`.
   
-```{r, } 
-LG2.ord <- order.seq(LG2, n.init=5, THRES=3, draw.try=TRUE, wait=1)
+```{r}
+LG2.ord <- order.seq(LG2, n.init=5, THRES=3, draw.try=FALSE)
 ``` 
 
 Basically, this function automates what the `try.seq` function does,
@@ -479,22 +598,29 @@ five markers (the most informative ones) will be used in the `compare`
 step; `THRES = 3` indicates that the `try.seq` step will only add
 markers to the sequence which can be mapped with LOD Score greater
 than 3; `draw.try=TRUE` will display a diagnostic graphic for each
-`try.seq` step; `wait=1` indicates the minimum time interval in
-seconds to display the diagnostic graphic.
+`try.seq` step (in this example, we set this to `draw.try=FALSE`),
+which should be combined with `wait=1`, that indicates the minimum
+time interval in seconds to display the diagnostic graphic.
 
 *NOTE*: Although very useful, this function can be misleading,
  specially if there are not many fully informative markers, so use it
  carefully. Results can vary for each running, of course.
 
 Check the final order:
-```{r}  
+
+```{r}
 LG2.ord
-``` 
-Note that markers `21` and `29` could not be safely mapped to a single position (`LOD Score > THRES` in absolute value). The output displays the `safe` order and the most likely positions for markers not mapped, where `***` indicates the most likely position and `*` corresponds to other plausible positions.
+```
+
+Note that markers `21` and `29` could not be safely mapped to a single
+position (`LOD Score > THRES` in absolute value). The output displays
+the `safe` order and the most likely positions for markers not mapped,
+where `***` indicates the most likely position and `*` corresponds to
+other plausible positions.
 
 To get the safe order (i.e. without markers 21 and 29), use
 
-```{r, echo=FALSE}
+```{r}
 LG2.safe <- make.seq(LG2.ord,"safe")
 ```
 
@@ -514,12 +640,16 @@ algorithms, first using `THRES` and then `THRES - 1` as threshold.
 This generally results in safe orders with more markers mapped, but
 may take longer to run. To do this use the `touchdown` options:
 
-```{r}
+```{r, results=FALSE}
 LG2.ord <- order.seq(LG2, n.init=5, THRES=3, touchdown=TRUE)
+```
+
+```{r}
 LG2.ord
 ```
 
-For this particular sequence, the `touchdown` step could not map any additional marker, but this depends on the specific dataset.
+For this particular sequence, the `touchdown` step could not map any
+additional marker, but this depends on the particular dataset.
 
 Finally, to check for alternative orders (since we did not use
 exhaustive search), use the `ripple.seq` function:
@@ -529,30 +659,33 @@ ripple.seq(LG2.all, ws=4, LOD=3)
 ``` 
 
 We should do this to any of the orders we found, either using
-`try.seq` or `order.seq`. Here, we choose `LG2.all` only for didactic
-purpose. The second argument, `ws = 4`, means that subsets (windows)
-of four markers will be permutated sequentially (`4!` orders for each
-window), to search for other plausible orders. The `LOD` argument
-means that only orders with LOD Score smaller than 3 will be printed.
+`try.seq` or `order.seq`. Here, we choose `LG2.all` only for
+ilustration purposes. The second argument, `ws = 4`, means that
+subsets (windows) of four markers will be permutated sequentially
+(`4!` orders for each window), to search for other plausible orders.
+The `LOD` argument means that only orders with LOD Score smaller than
+3 will be printed.
 
 The output shows sequences of four numbers, since `ws = 4`. They will
 be followed by an `OK`, if there is no alternative orders with LOD
 Scores smaller than `LOD = 3` in absolute value, or by a list of
 alternative orders. On the example, just the last sequence showed an
 alternative order with LOD smaller than `LOD=3` (2.06, in absolute
-value). However, the best order was the previous one (LOD=0.00).
+value). However, the best order was the previous one (`LOD=0.00`).
 
 If there was an alternative order most likely than the original, one
 should check the difference between these orders (and linkage phases)
-and change it using, for example, the function `drop.marker` (see
-other Section) and `seq.try` or typing the new order. You can use
-`$seq.num` and `$seq.phases` after the name of the sequence (for
-example, `LG2.all\$seq.num` and `LG2.all\$seq.phases`) to obtain the
-original order and linkage phases, make the necessary changes (by
-copying and paste) and then use the function `map` (see correspondent
-Section to reestimate the genetic map for the new order).
+and change it using, for example, the function `drop.marker` and
+`seq.try` or typing the new order. You can use `$seq.num` and
+`$seq.phases` after the name of the sequence (for example,
+`LG2.all\$seq.num` and `LG2.all\$seq.phases`) to obtain the original
+order and linkage phases, make the necessary changes (by copying and
+paste) and then use the function `map` (see correspondent Section to
+reestimate the genetic map for the new order).
 
-Here, the function `ripple.seq` showed that the final order obtained is indeed the best for this linkage group. The map can then be printed using
+Here, the function `ripple.seq` showed that the final order obtained
+is indeed the best for this linkage group. The map can then be printed
+using
     
 ```{r}
 LG2.all
@@ -567,8 +700,12 @@ LG1 <- make.seq(LGs, 1)
 ``` 
 
 Construct the linkage map, by automatic using try algorithm:
-```{r}  
+
+```{r, results=FALSE}
 LG1.ord <- order.seq(LG1, n.init=6, touchdown=TRUE)
+```
+
+```{r}
 LG1.ord
 ```
 
@@ -581,20 +718,20 @@ Now, get the order with all markers:
 ``` 
 
 Check the final map:
-```{r}  
+```{r}
 ripple.seq(LG1.final)
 ``` 
 
 No better order was observed.
 
-Print it
+Print it:
 ```{r}
 LG1.final
 ```
 
 As an option, different algorithms to order markers should be applied: 
 
-```{r,  echo=FALSE}
+```{r}
 LG1.ser <- seriation(LG1)
 LG1.rcd <- rcd(LG1)
 LG1.rec <- record(LG1)
@@ -638,7 +775,8 @@ add markers 4 to 8 to `any.seq`.
 (any.seq <- add.marker(any.seq, 4:8))
 ```
 
-Removing markers 3, 4, 5, 12 and 30 from `any.seq`: 
+Removing markers 3, 4, 5, 12 and 30 from `any.seq`:
+
 ```{r}
 (any.seq <- drop.marker(any.seq, c(3,4,5,12,30)))
 ```
@@ -652,8 +790,7 @@ fraction matrix and LOD Scores based on a color scale using the
 function `rf.graph.table`. This matrix can be useful to make some
 diagnostics about the map.
   
-\begin{enumerate}
-For example, using the function `group` with `LOD=2.5}:
+For example, using the function `group` with `LOD=2.5`:
 
 ```{r, eval=FALSE}
 (LGs <- group(mark.all, LOD=2.5))
@@ -665,33 +802,30 @@ placed together.
 
 Ordering markers (results not shown):
 
-```{r, eval=FALSE}
-LG.err<-make.seq(LGs, 2)
-LG.err.ord<-order.seq(LG.err)
+```{r, results=FALSE}
+LG.err < -make.seq(LGs, 2)
+LG.err.ord <- order.seq(LG.err)
 ```
 
 The map using option `force`:
 
 ```{r, eval=FALSE}
-(LG.err.map<-make.seq(LG.err.ord, "force"))
+(LG.err.map <- make.seq(LG.err.ord, "force"))
 ``` 
 
 ```{r, echo=FALSE}
-(LG.err.map<-map(make.seq(twopts,c(27,16,20,4,19,21,23,9,24,29,22,7,18, 8, 13), phase=c(1,1,2,4,1,3,1,2,3,3,2,1,4,4))))
+LG.err.map <- map(make.seq(twopts,c(27,16,20,4,19,21,23,9,24,29,22,7,18, 8, 13), phase=c(1,1,2,4,1,3,1,2,3,3,2,1,4,4)))
+LG.err.map
 ``` 
 
 A careful examination of the results shows that there are problems on the map. This can be done by plotting the recombination fraction matrix:
 
-```{r, eval=FALSE, echo=TRUE}
+```{r, eval=FALSE}
 rf.graph.table(LG.err.map)
 ```
 
-```{r,  echo=FALSE,fig=TRUE}
+```{r,  echo=FALSE}
 rf.graph.table(LG.err.map, inter=FALSE)
-``` 
-
-```{r, echo=FALSE}
-dev.off()
 ``` 
 
 The recombination fractions are plotted below the diagonal and the LOD
@@ -699,27 +833,28 @@ Scores are plotted above the diagonal. The color scale varies from red
 (small distances or big LODs) to dark blue. This color scale follows
 the `rainbow` color palette with `start` argument equals to 0 and
 `end` argument equals to 0.65. White cells indicate for combinations
-of markers whose recombination fractions cannot be estimated (D1 and
-D2).
+of markers whose recombination fractions cannot be estimated in
+two-point analysis (D1 and D2).
 
 Clicking on the cell corresponding to two markers (off secondary
-diagonal), you can see some information about them. For example,
-clicking on the cell corresponding to markers `M4` and `M19` you can
-see their names, types (`A.4` and `B1.5`), recombination fraction
-(`rf=0.02281}) and LOD Scores for each possible linkage phase.
-Clicking in a cell on the diagonal, some information about the
-corresponding marker is shown, including percent of missing data. We
-think this is quite useful in helping to interpret the results.
+diagonal), you can see some useful information. For example, clicking
+on the cell corresponding to markers `M4` and `M19` you can see their
+names, types (`A.4` and `B1.5`), recombination fraction (`rf=0.02281`)
+and LOD Scores for each possible linkage phase. Clicking in a cell on
+the diagonal, some information about the corresponding marker is
+shown, including the amount of missing data. We think this is quite
+useful in helping to interpret the results.
 
 Looking at the matrix, it is possible to see two groups: one with
-markers from `LG2` (`M27` `M16` `M20` `M4` `M19` `M21` `M23` `M9`
-`M24` and `M29`) and other with markers from `LG3` (`M22` `M7` `M18`
-`M8` and `M13`). There is a gap between markers `M22` and `M29`
-(`rf=0.4594`). At this position, the group should be divided, that is,
-a higher LOD Score should be used. Notice that these two groups were
-placed together due to a false linkage (false positive) detected
-between markers `M4` and `M22` (LOD Score 2.9) due to the fact of not
-using appropriated LOD threshold (more conservative value).
+markers from `LG2` (`M27`, `M16`, `M20`, `M4`, `M19`, `M21`, `M23`,
+`M9`, `M24` and `M29`) and other with markers from `LG3` (`M22`, `M7`,
+`M18`, `M8`, and `M13`). There is a gap between markers `M22` and
+`M29` (`rf=0.4594`). At this position, the group should be divided,
+that is, a higher LOD Score should be used. Notice that these two
+groups were placed together due to a false linkage (false positive)
+detected between markers `M4` and `M22` (LOD Score `2.9`) due to the
+fact of not using appropriated LOD threshold (more conservative
+value).
 
 The `rf.graph.table` can also be used to check the order of markers
 based on the monotonicity of the matrix, i.e. as we get away from the
@@ -732,13 +867,13 @@ the function `draw.map`. We can draw a genetic map for all linkage
 groups:
 
 ```{r, echo=TRUE, fig=TRUE}
-maps<-list(LG1.final, LG2.final, LG3.final)
+maps <- list(LG1.final, LG2.final, LG3.final)
 draw.map(maps, names= TRUE, grid=TRUE, cex.mrk=0.7)
 ``` 
 
 For a specific linkage group:
 
-```{r,  echo=TRUE, fig=TRUE, width = 9.5, height = 9.5}
+```{r, width = 9.5, height = 9.5}
 draw.map(LG1.final, names= TRUE, grid=TRUE, cex.mrk=0.7)
 ``` 
 
@@ -746,6 +881,6 @@ It is obvious that function `draw.maps` draws a very simple graphic
 representation of the genetic map. But once the distances and the
 linkage phases are estimated, better map figures can be drawn by the
 user using any appropriate software. There are several free softwares
-that can be used, such as MapChart (Voorrips, 2002).
+that can be used, such as `MapChart` (Voorrips, 2002).
 
 
