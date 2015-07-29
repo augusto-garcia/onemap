@@ -792,7 +792,7 @@ diagnostics about the map.
   
 For example, using the function `group` with `LOD=2.5`:
 
-```{r, eval=FALSE}
+```{r}
 (LGs <- group(mark.all, LOD=2.5))
 ``` 
 
