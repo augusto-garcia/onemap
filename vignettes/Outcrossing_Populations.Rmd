@@ -173,7 +173,7 @@ example.out
 To start the analysis, the first step is estimating the recombination
 fraction between all pairs of markers, using two-point tests:
 
-```{r, twopoint, results=FALSE}
+```{r, twopoint, results=hide}
 twopts <- rf.2pts(example.out)
 ``` 
 
@@ -182,7 +182,7 @@ maximum recombination fraction `0.50`.
 
 Different values for the criteria can be chosen using:
 
-```{r, linkcriteria, results=FALSE}
+```{r, linkcriteria, results=hide}
 twopts <- rf.2pts(example.out, LOD=3, max.rf=0.4)
 ``` 
 
@@ -351,7 +351,7 @@ as Seriation (Buetow and Chakravarti, 1987), Rapid Chain Delineation
 (Doerge, 1996), Recombination Counting and Ordering (Van Os et al.,
 2005) and Unidirectional Growth (Tan and Fu, 2006):
   
-```{r,  results=FALSE}
+```{r,  results=hide}
 LG3.ser <- seriation(LG3)
 LG3.rcd <- rcd(LG3)
 LG3.rec <- record(LG3)
@@ -363,7 +363,7 @@ In this case, all algorithms provided the same results (results not showed).
 To order by comparing all possible orders (exhaustive search), the
 function `compare` can be used:
 
-```{r,  results=FALSE}
+```{r,  results=hide}
 LG3.comp <- compare(LG3)
 ``` 
 
@@ -488,7 +488,7 @@ map, markers M4, M23, M19, M20 and M24 are the most informative ones
 framework of ordered markers using `compare` for the most informative
 ones:
 
-```{r, results=FALSE}
+```{r, results=hide}
 LG2.init <- make.seq(twopts,c(4,23,19,20,24))
 LG2.comp <- compare(LG2.init)
 ``` 
@@ -511,7 +511,7 @@ Next, let us try to map the remaining markers, one at a time. Since
 there are more markers of type D1 than D2, the latter will be tried
 later. Starting with `M9`:
 
-```{r, results=FALSE}
+```{r, results=hide}
 LG2.extend <- try.seq(LG2.frame,9)
 ```
 
@@ -574,7 +574,7 @@ position is between markers `M24` and `M23`.
 
 Adding other markers, one by one (output not showed):
 
-```{r, results=FALSE}
+```{r, results=hide}
 LG2.extend <- try.seq(LG2.frame,29)
 LG2.frame <- make.seq(LG2.extend,7)
 LG2.extend <- try.seq(LG2.frame,27)
@@ -640,7 +640,7 @@ algorithms, first using `THRES` and then `THRES - 1` as threshold.
 This generally results in safe orders with more markers mapped, but
 may take longer to run. To do this use the `touchdown` options:
 
-```{r, results=FALSE}
+```{r, results=hide}
 LG2.ord <- order.seq(LG2, n.init=5, THRES=3, touchdown=TRUE)
 ```
 
@@ -701,7 +701,7 @@ LG1 <- make.seq(LGs, 1)
 
 Construct the linkage map, by automatic using try algorithm:
 
-```{r, results=FALSE}
+```{r, results=hide}
 LG1.ord <- order.seq(LG1, n.init=6, touchdown=TRUE)
 ```
 
@@ -802,7 +802,7 @@ placed together.
 
 Ordering markers (results not shown):
 
-```{r, results=FALSE}
+```{r, results=hide}
 LG.err < -make.seq(LGs, 2)
 LG.err.ord <- order.seq(LG.err)
 ```
