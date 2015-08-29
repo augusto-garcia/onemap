@@ -15,6 +15,7 @@
 
 ## ---- echo=FALSE, eval=FALSE---------------------------------------------
 #  example.out <- read.outcross(system.file("example",package="onemap"),"example.out.txt")
+#  save(example.out, file = "example.out.RData") #Must move it to proper directory
 
 ## ------------------------------------------------------------------------
 data(example.out)

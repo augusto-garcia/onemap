@@ -1,4 +1,4 @@
-100 30
+100 30 0
 *M1 B3.7    ab,ab,ab,ab,b,ab,ab,a,ab,b,a,b,ab,ab,b,a,a,ab,ab,a,ab,a,a,b,ab,a,
             ab,ab,a,b,ab,b,ab,ab,b,ab,a,a,b,ab,ab,ab,ab,ab,a,ab,b,a,ab,a,ab,
             ab,a,ab,ab,ab,ab,a,a,ab,b,ab,ab,ab,ab,b,a,ab,ab,ab,ab,a,ab,a,ab,

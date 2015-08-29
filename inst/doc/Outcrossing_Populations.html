@@ -297,7 +297,7 @@ separates the information for each individual.</p>
 is very similar to a MAPMAKER/EXP file, but has additional information
 about the crosstype.</p>
 
-<pre><code>10 5
+<pre><code>10 5 0
 *M1 B3.7        ab,ab,-,ab,b,ab,ab,-,ab,b
 *M2 D2.18       o,-,a,a,-,o,a,-,o,o
 *M3 D1.13       o,a,a,o,o,-,a,o,a,o
@@ -324,7 +324,7 @@ you installed it) to see how this file should be. You can see where
 
 <p>Once the input file is created, data can be loaded and saved into an R
 object. The function used to import data is named <code>read.outcross</code>.
-Its usage is quite simple:</p>
+exIts usage is quite simple:</p>
 
 <pre><code class="r">example.out&lt;- read.outcross(&quot;C:/workingdirectory&quot;,&quot;example.out.txt&quot;)
 </code></pre>
@@ -361,7 +361,7 @@ objects of this class. Thus, if you type</p>
 
 <p>you will see some information about the object:</p>
 
-<pre><code>## This is an object of class &#39;outcross&#39;
+<pre><code>##   This is an object of class &#39;outcross&#39;
 ##     No. individuals:    100 
 ##     No. markers:        30 
 ##     Segregation types:
@@ -379,6 +379,7 @@ objects of this class. Thus, if you type</p>
 ##        D2.16:    2
 ##        D2.17:    2
 ##        D2.18:    2
+##     No. traits:         0
 </code></pre>
 
 <h2>Estimating two-point recombination fractions</h2>
@@ -931,7 +932,7 @@ long time to proceed.</p>
 <pre><code>## 
 ## order obtained using RCD algorithm:
 ## 
-##  29 24 9 16 20 4 19 23 21 27 
+##  27 9 21 23 19 4 20 16 29 24 
 ## 
 ## calculating multipoint map using tol =  1e-04 .
 </code></pre>
@@ -944,18 +945,18 @@ long time to proceed.</p>
 ## 
 ## Markers           Position           Parent 1       Parent 2
 ## 
-## 29 M29                0.00           a |  | o       o |  | o 
-## 24 M24               20.61           b |  | a       a |  | b 
-##  9 M9                53.21           b |  | a       a |  | a 
-## 16 M16               78.59           a |  | a       o |  | b 
-## 20 M20               89.05           b |  | a       d |  | c 
-##  4 M4               101.82           o |  | a       b |  | o 
-## 19 M19              104.05           a |  | b       o |  | a 
-## 23 M23              117.25           o |  | a       o |  | a 
-## 21 M21              120.64           o |  | o       b |  | a 
-## 27 M27              157.67           o |  | b       a |  | a 
+## 27 M27                0.00           b |  | o       a |  | a 
+##  9 M9                49.81           a |  | b       a |  | a 
+## 21 M21               65.05           o |  | o       a |  | b 
+## 23 M23               68.79           a |  | o       a |  | o 
+## 19 M19               81.61           b |  | a       a |  | o 
+##  4 M4                83.91           a |  | o       o |  | b 
+## 20 M20               96.68           a |  | b       c |  | d 
+## 16 M16              107.89           a |  | a       b |  | o 
+## 29 M29              182.57           o |  | a       o |  | o 
+## 24 M24              203.88           a |  | b       b |  | a 
 ## 
-## 10 markers            log-likelihood: -611.9559
+## 10 markers            log-likelihood: -616.1494
 </code></pre>
 
 <p>Use the <code>marker.type</code> function to check the segregation types of all

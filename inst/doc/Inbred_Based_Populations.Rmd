@@ -5,7 +5,7 @@
 
 # Inbred-based populations (Backcrosses, F2s and RILs)
 
-```{r, globalsetup, echo=FALSE, results=FALSE, cache=FALSE}
+```{r, globalsetup, echo=FALSE, results='hide', cache=FALSE}
 #opts_chunk$set(cache=TRUE, autodep=TRUE)
 ```
 

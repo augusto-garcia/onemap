@@ -87,7 +87,7 @@ is very similar to a MAPMAKER/EXP file, but has additional information
 about the crosstype.
 
 ```
-10 5
+10 5 0
 *M1 B3.7        ab,ab,-,ab,b,ab,ab,-,ab,b
 *M2 D2.18       o,-,a,a,-,o,a,-,o,o
 *M3 D1.13       o,a,a,o,o,-,a,o,a,o
@@ -115,7 +115,7 @@ system.file(package="onemap")
 
 Once the input file is created, data can be loaded and saved into an R
 object. The function used to import data is named `read.outcross`.
-Its usage is quite simple:
+exIts usage is quite simple:
  
 ```{r, eval=FALSE}
 example.out<- read.outcross("C:/workingdirectory","example.out.txt")
@@ -145,6 +145,7 @@ of markers:
 
 ```{r, echo=FALSE, eval=FALSE}
 example.out <- read.outcross(system.file("example",package="onemap"),"example.out.txt")
+save(example.out, file = "example.out.RData") #Must move it to proper directory
 ``` 
 
 Because this particular data set is distributed along with the
