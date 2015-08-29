@@ -1,7 +1,7 @@
 Package: onemap
 Title: Software for constructing genetic maps in experimental crosses:
         full-sib, RILs, F2 and backcrosses
-Version: 2.0.5
+Version: 2.0.6
 Description: Analysis of molecular marker data from model (backcrosses,
         F2 and recombinant inbred lines) and non-model systems (i. e.
         outcrossing species). For the later, it allows statistical
