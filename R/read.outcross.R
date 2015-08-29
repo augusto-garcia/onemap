@@ -27,8 +27,8 @@
 ##' parents and creates an object of class \code{outcross}.
 ##' 
 ##' The file format is quite similar to that used by \code{MAPMAKER/EXP}
-##' (\cite{Lincoln et al.}, 1993). The first line contains two integers: the
-##' number of individuals and the number of markers.
+##' (\cite{Lincoln et al.}, 1993). The first line contains three integers: the
+##' number of individuals, the number of markers and the number of traits.
 ##' 
 ##' Next comes the genotype data for all markers. Each new marker is initiated
 ##' with a \dQuote{*} (without the quotes) followed by the marker name, without
@@ -40,13 +40,16 @@
 ##' \code{"D2.17"} or \code{"D2.18"} (without quotes) [see
 ##' \code{\link[onemap]{marker.type}} and \cite{Wu et al.} (2002) for details].
 ##' 
-##' Finally, after the segregation type comes the genotype data for the
+##' After the segregation type comes the genotype data for the
 ##' corresponding marker. Depending on the segregation type, genotypes may be
 ##' denoted by \code{ac}, \code{ad}, \code{bc}, \code{bd}, \code{a}, \code{ba},
 ##' \code{b}, \code{bc}, \code{ab} and \code{o}, in several possible
 ##' combinations. To make things easier, we have followed \strong{exactly} the
 ##' notation used by \cite{Wu et al.} (2002). Genotypes \emph{must} be
 ##' separated by commas. Missing values are denoted by \code{"-"}
+##'
+##' Finally, if there is phenotypic data, it will be added just after the marker data.
+##' They need to be separated by commas as well, using the same symbol for missing information.
 ##' 
 ##' The \code{example} directory in the package distribution contains an
 ##' example data file to be read with this function. Further instructions can
@@ -68,7 +71,7 @@
 ##' to markers of type \code{"D1"} and 7 corresponds to markers of type
 ##' \code{"D2"}} \item{input}{the name of the input file.}
 ##' @author Adapted from Karl Broman (package \pkg{qtl}) by Gabriel R A
-##' Margarido, \email{gramarga@@gmail.com}
+##' Margarido, \email{gramarga@@gmail.com}, later with additions from Luciano S Silva
 ##' @seealso \code{example} directory in the package source.
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
