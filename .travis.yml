@@ -3,5 +3,29 @@ apt_packages:
  - r-cran-tkrplot
  - tk-dev
 language: r
+
+env:
+  global:
+    - BIOC_USE_DEVEL="FALSE"
+
+before_install:
+  - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
+  - chmod 755 ./travis-tool.sh
+  - ./travis-tool.sh bootstrap
+
+install:
+  - ./travis-tool.sh install_deps
+  - ./travis-tool.sh install_bioc_deps
+
+script: ./travis-tool.sh run_tests
+
+after_failure:
+  - ./travis-tool.sh dump_logs
+
 r_build_args: --no-build-vignettes
 r_check_args: --no-vignettes
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
