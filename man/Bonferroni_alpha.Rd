@@ -23,5 +23,6 @@ data(fake.bc.onemap) # Loads a fake backcross dataset installed with onemap
 Chi <- test_segregation(fake.bc.onemap) # Performs the chi-square test for all markers
 print(Chi) # Shows the results of the Chi-square tests
 Bonferroni_alpha (Chi) # Shows the individual alpha level to be used
+
 }
 
