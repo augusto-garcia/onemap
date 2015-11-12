@@ -15,6 +15,10 @@ This github page has his version under development. New functions will
 be added (experimental work) and, once it is done, we will synchronize
 the repositories and add it to CRAN.
 
+We are working very hard to release a new stable version allowing
+users to analyze data sets with markers based on sequencing
+technologies, such as Illumina, GBS, etc.
+
 `OneMap` comprises by a set of functions that allows users to build a
 linkage map. Some functions are used internally by the package, and
 should not be used directly.
@@ -70,6 +74,15 @@ github. If you use Windows, first install
 [Rtools](https://cran.r-project.org/bin/windows/Rtools/). On a Mac,
 you will need Xcode (available on the App Store). On Linux, you are
 good to go.
+
+Dependencies: you also need to install `r-cran-tkrplot` (see above)
+and a few packages from Bioconductor (try http:// if https:// URLs are not supported):
+
+```R
+source("https://bioconductor.org/biocLite.R")
+biocLite("Rhtslib")
+biocLite("zlibbioc")
+```
 
 Then, to install `OneMap` from github (this very repo):
 
