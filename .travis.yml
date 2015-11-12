@@ -2,6 +2,9 @@ sudo: required
 apt_packages:
  - r-cran-tkrplot
  - tk-dev
+bioc_packages:
+ - Rhtslib
+ - zlibbioc
 language: r
 
 env:
