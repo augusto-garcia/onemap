@@ -25,7 +25,7 @@ to markers of type \code{"B2.6"}; 4 corresponds to markers of type
 \code{"B3.7"}; 5 corresponds to markers of type \code{"C.8"}; 6 corresponds
 to markers of type \code{"D1"} and 7 corresponds to markers of type
 \code{"D2"}} \item{n.phen}{the number of traits included in the file}
-\item{pheno}{the name of the phenoytpes} \item{file}{the name of the input file.}
+\item{pheno}{the name of the phenoytpes} \item{input}{the name of the input file.}
 }
 \description{
 Imports data from a full-sib family derived from the cross of two outbred
