@@ -9,27 +9,27 @@
 # Adapted from read.cross.mm (package: R/qtl)                         #
 # copyright (c) 2000-6, Karl W Broman                                 #
 # First version: 11/07/2007                                           #
-#
+#                                                                     #
 # On August 29th, 2015, it was modified by Augusto Garcia, by changing#
 # the code adding a new feature developed by Luciano da Costa e Silva #
 # on his package oneqtl. Help files were also modified.               #
 # The modification allows the inclusion of phenotypic traits.         #
-#
-# Last update: 2015/08/29                                             #
+#                                                                     #
+# Last update: 2015/12/07                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
 
 
 ##' Read data from a full-sib progeny (outcrossing populations)
-##' 
+##'
 ##' Imports data from a full-sib family derived from the cross of two outbred
 ##' parents and creates an object of class \code{outcross}.
-##' 
+##'
 ##' The file format is quite similar to that used by \code{MAPMAKER/EXP}
 ##' (\cite{Lincoln et al.}, 1993). The first line contains three integers: the
 ##' number of individuals, the number of markers and the number of traits.
-##' 
+##'
 ##' Next comes the genotype data for all markers. Each new marker is initiated
 ##' with a \dQuote{*} (without the quotes) followed by the marker name, without
 ##' any space between them. Each marker name is followed by the corresponding
@@ -39,7 +39,7 @@
 ##' \code{"D1.13"}, \code{"D2.14"}, \code{"D2.15"}, \code{"D2.16"},
 ##' \code{"D2.17"} or \code{"D2.18"} (without quotes) [see
 ##' \code{\link[onemap]{marker.type}} and \cite{Wu et al.} (2002) for details].
-##' 
+##'
 ##' After the segregation type comes the genotype data for the
 ##' corresponding marker. Depending on the segregation type, genotypes may be
 ##' denoted by \code{ac}, \code{ad}, \code{bc}, \code{bd}, \code{a}, \code{ba},
@@ -50,11 +50,11 @@
 ##'
 ##' Finally, if there is phenotypic data, it will be added just after the marker data.
 ##' They need to be separated by commas as well, using the same symbol for missing information.
-##' 
+##'
 ##' The \code{example} directory in the package distribution contains an
 ##' example data file to be read with this function. Further instructions can
-##' be found at the tutorial distributed along with this package.
-##' 
+##' be found at the tutorial distributed along with the package.
+##'
 ##' @param dir directory where the input file is located.
 ##' @param file the name of the input file which contains the data to be read.
 ##' @return An object of class \code{outcross}, i.e., a list with the following
@@ -69,36 +69,37 @@
 ##' to markers of type \code{"B2.6"}; 4 corresponds to markers of type
 ##' \code{"B3.7"}; 5 corresponds to markers of type \code{"C.8"}; 6 corresponds
 ##' to markers of type \code{"D1"} and 7 corresponds to markers of type
-##' \code{"D2"}} \item{input}{the name of the input file.}
+##' \code{"D2"}} \item{n.phen}{the number of traits included in the file}
+##' \item{pheno}{the name of the phenoytpes} \item{input}{the name of the input file.}
 ##' @author Adapted from Karl Broman (package \pkg{qtl}) by Gabriel R A
-##' Margarido, \email{gramarga@@gmail.com}, later with additions from Luciano S Silva
+##' Margarido, \email{gramarga@@gmail.com}, later with additions from Luciano C Silva
 ##' @seealso \code{example} directory in the package source.
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
 ##' 1.09-43
-##' 
+##'
 ##' Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993) Constructing genetic
 ##' linkage maps with MAPMAKER/EXP Version 3.0: a tutorial and reference
 ##' manual. \emph{A Whitehead Institute for Biomedical Research Technical
 ##' Report}.
-##' 
+##'
 ##' Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002) Simultaneous maximum
 ##' likelihood estimation of linkage and linkage phases in outcrossing species.
 ##' \emph{Theoretical Population Biology} 61: 349-363.
 ##' @keywords IO
 ##' @examples
-##' 
+##'
 ##'   \dontrun{
 ##'     outcr_data <-
 ##' read.outcross(dir="work_directory",file="data_file.txt")
 ##'   }
-##' 
+##'
 read.outcross <- function (dir, file) {
   if (missing(file))
     stop("missing file")
   if (!missing(dir) && dir != "")
     file <- file.path(dir, file)
-  n.lines <- length(scan(file, what = character(), skip = 0, 
+  n.lines <- length(scan(file, what = character(), skip = 0,
                          nlines = 0, blank.lines.skip = FALSE, quiet = TRUE, sep = "\n"))
   cur.mar <- 0
   cur.pheno <- 0
@@ -137,7 +138,7 @@ read.outcross <- function (dir, file) {
         cur.row <- 1
         if (cur.mar > n.mar) {#reading lines of traits that start with "*"
           cur.pheno <- cur.pheno + 1
-          if (cur.pheno > n.phen) 
+          if (cur.pheno > n.phen)
             next
           phenonames[cur.pheno] <- substring(a[1], 2)
           if (length(a) > 1) {
@@ -151,15 +152,15 @@ read.outcross <- function (dir, file) {
             if (any(wh)) {
               droppedasmissing <- unique(p[wh])
               if (length(droppedasmissing) > 1) {
-                themessage <- paste("The values", paste("\"", 
+                themessage <- paste("The values", paste("\"",
                                                         droppedasmissing, "\"", sep = "", collapse = " "))
-                themessage <- paste(themessage, " for pheno \"", 
+                themessage <- paste(themessage, " for pheno \"",
                                     phenonames[cur.pheno], "\" were", sep = "")
               }
               else {
-                themessage <- paste("The value \"", droppedasmissing, 
+                themessage <- paste("The value \"", droppedasmissing,
                                     "\" ", sep = "")
-                themessage <- paste(themessage, " for pheno \"", 
+                themessage <- paste(themessage, " for pheno \"",
                                     phenonames[cur.pheno], "\" was", sep = "")
               }
               themessage <- paste(themessage, "interpreted as missing.")
@@ -202,7 +203,7 @@ read.outcross <- function (dir, file) {
           cur.row <- cur.row + n
         }#finishes reading lines of markers that do not start with "*"
       }#finishes reading lines of markers and traits that do not start with "*"
-    }#finishes reading lines of markers and traits 
+    }#finishes reading lines of markers and traits
   } #close loop for lines (i)
   colnames(geno) <- marnames
   geno[!is.na(geno) & geno == "-"] <- NA
@@ -228,14 +229,14 @@ read.outcross <- function (dir, file) {
 
   structure(list(geno = geno, n.ind = n.ind, n.mar = n.mar,
                  segr.type = segr.type, segr.type.num = segr.type.num,
-                 n.phen = n.phen, pheno = pheno, 
+                 n.phen = n.phen, pheno = pheno,
                  input = file),
             class = "outcross")
 }
 
 print.outcross <- function (x, ...) {
-  if (any(is.na(match(c("geno", "n.ind", "n.mar", "segr.type"), 
-                      names(x))))) 
+  if (any(is.na(match(c("geno", "n.ind", "n.mar", "segr.type"),
+                      names(x)))))
     stop("this is not an object of class 'outcross'")
   cat("  This is an object of class 'outcross'\n")
   cat("    No. individuals:   ", x$n.ind, "\n")
@@ -243,7 +244,7 @@ print.outcross <- function (x, ...) {
   cat("    Segregation types:\n")
   quant <- cbind(table(x$segr.type))
   for (i in 1:length(quant)) {
-    cat(paste("       ", rownames(quant)[i], ":\t", quant[i], 
+    cat(paste("       ", rownames(quant)[i], ":\t", quant[i],
               "\n", sep = ""))
   }
   cat("    No. traits:        ", x$n.phen, "\n")

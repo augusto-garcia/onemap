@@ -24,7 +24,8 @@ simplified manner as integers, i.e. 1 corresponds to markers of type
 to markers of type \code{"B2.6"}; 4 corresponds to markers of type
 \code{"B3.7"}; 5 corresponds to markers of type \code{"C.8"}; 6 corresponds
 to markers of type \code{"D1"} and 7 corresponds to markers of type
-\code{"D2"}} \item{input}{the name of the input file.}
+\code{"D2"}} \item{n.phen}{the number of traits included in the file}
+\item{pheno}{the name of the phenoytpes} \item{input}{the name of the input file.}
 }
 \description{
 Imports data from a full-sib family derived from the cross of two outbred
@@ -58,7 +59,7 @@ They need to be separated by commas as well, using the same symbol for missing i
 
 The \code{example} directory in the package distribution contains an
 example data file to be read with this function. Further instructions can
-be found at the tutorial distributed along with this package.
+be found at the tutorial distributed along with the package.
 }
 \examples{
 
@@ -70,7 +71,7 @@ read.outcross(dir="work_directory",file="data_file.txt")
 }
 \author{
 Adapted from Karl Broman (package \pkg{qtl}) by Gabriel R A
-Margarido, \email{gramarga@gmail.com}, later with additions from Luciano S Silva
+Margarido, \email{gramarga@gmail.com}, later with additions from Luciano C Silva
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
