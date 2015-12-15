@@ -35,7 +35,7 @@
 ##' read for each marker in \code{onemap} fashion. Each column contains data
 ##' for a marker and each row represents an individual.}
 ##' 
-##' \item{geno.mmk}{a list containing the type of cross and a matrix with
+##' \item{geno.mmk}{ a matrix with
 ##' integers indicating the genotypes read for each marker in
 ##' \code{MAPMAKER/EXP} fashion, i.e., 1, 2, 3: AA, AB, BB, respectively; 3, 4:
 ##' BB, not BB, respectively; 1, 5: AA, not AA, respectively. Each column
@@ -89,13 +89,14 @@ read.mapmaker<-function (dir, file)
   n.lines <- length(scan(file, what = character(), skip = 0, 
                          nlines = 0, blank.lines.skip = FALSE,
                          quiet = TRUE, sep = "\n"))
-  ## begin reading/parsing the genotype data
+  ## begin reading/parsing the genotype data 
   cur.mar <- 0
   cur.phe <- 0
   NEW.symb <- c("1", "2", "3", "4", "5", NA)
   OLD.symb <- c("A", "H", "B", "D", "C", "-")
   flag <- 0
-  for (i in 1:n.lines) {
+  for (i in 1:n.lines)
+  {
     a <- scan(file, what = character(), skip = i - 1, 
               nlines = 1, blank.lines.skip = TRUE, quiet = TRUE)
     if (length(a) == 0) 
@@ -240,68 +241,53 @@ read.mapmaker<-function (dir, file)
   }
   dimnames(geno) <- list(NULL, marnames)
   dimnames(pheno) <- list(NULL, phenames)
-  ## done reading the raw file
-  
+  ## done reading the raw file     
   ## data coding in onemap style
   segr.type<-character(n.mar)
   segr.type.num<-numeric(n.mar)
-  ph<-rep(1,n.mar)
-  ## maintains the data in MAPMAKER style (maybe it will be removed in a near future)
-  geno.mmk<-list(geno=geno, type=type)
-  geno.mmk[is.na(geno.mmk)]<-0
-
+  ph<-rep(-2,n.mar)
   if(type=="f2"){
     cl<-"f2.onemap"
-    ##Verifying if there are up to three classes in f2 data, ignoring NAs
-    if(any(unlist(lapply(apply(geno, 2, table),length)) > 3))
-      stop("check data: there are more than 3 classes for f2")
-
     ##checking for markers with one class (e.g A A A - - - A - A - - - A)
     ##they are not necessarily monomorphic because we don't know the missing data
     mkt.mono<-NULL
     mkt.mono<-which(apply(geno, 2, function(x) sum(!is.na(unique(x))))<=1)
     if(length(mkt.mono)!=0){
-      segr.type[mkt.mono]<-"B3.7"
-   #   mkt.mono.names <- paste(sQuote(colnames(geno)[mkt.mono]), collapse = ", ")
-   #   msg <- sprintf(ngettext(length(mkt.mono),
-   #                           "There is one marker with one class on dataset: %s",
-   #                           "There are markers with one class on dataset: %s"), mkt.mono.names)
-   #    warning(msg, domain=NA)
+      segr.type[mkt.mono]<-"A.H.B"
     }
-
-    ##more data coding in onemap style (f2 is equivalent to B3.7 and C.8)
     mkt<-apply(geno, 2, function(x) prod(unique(x), na.rm=TRUE))
-    segr.type[mkt==2 | mkt==3 | mkt==6]<-"B3.7"
-    segr.type[mkt==5 | mkt==12]<-"C.8"
-    mkt.wrg<-NULL
-    mkt.wrg<-which(segr.type=="")
-    if(length(mkt.wrg)!=0){
-      mkt.wrg.names <- paste(sQuote(colnames(geno)[mkt.wrg]), collapse = ", ")
-      msg <- sprintf(ngettext(length(mkt.wrg),
-                              "marker %s has invalid codification",
-                              "markers %s have invalid codification"), mkt.wrg.names)
-       stop(msg)
+    segr.type[mkt==2 | mkt==3 | mkt==6]<-"A.H.B"
+    segr.type[mkt==12]<-"C.A"
+    segr.type[mkt==5]<-"D.B"
+    mkt.rest<-which(segr.type=="")   
+    for(i in mkt.rest)
+    {
+        if(any(is.na(match(na.omit(unique(geno[,i])), 1:5))))
+        {
+            mkt.wrg.names <- paste(sQuote(colnames(geno)[mkt.wrg]), collapse = ", ")
+            msg <- sprintf(ngettext(length(mkt.wrg),
+                                    "marker %s has invalid codification",
+                                    "markers %s have invalid codification"), mkt.wrg.names)
+            stop(msg)
+        }
+        else
+            segr.type[i]<-"M.X"
     }
-    segr.type.num[segr.type=="B3.7"]<-4
-    segr.type.num[segr.type=="C.8"]<-5
-    ##coding phases: A B H -> 1; C A -> -1; B D -> 1
-    ##ph[mkt==2]<-ph[mkt==3]<-ph[mkt==6]<-ph[mkt==12]<-1
-    ph[mkt==5]<--1
-    ##data codind for markers that segregates in 3:1 fashion (type C.8)
+    segr.type.num[segr.type=="A.H.B"]<-1
+    segr.type.num[segr.type=="C.A"]<-2
+    segr.type.num[segr.type=="D.B"]<-3
+    segr.type.num[segr.type=="M.X"]<-4    
+    ph[mkt==5]<--3
     geno[is.na(geno)]<-0    
-    geno[,segr.type.num==5][geno[,segr.type.num==5]==1]<-2
-    geno[,segr.type.num==5][geno[,segr.type.num==5]==5]<-1
-    geno[,segr.type.num==5][geno [,segr.type.num==5]==4]<-1
-    geno[,segr.type.num==5][geno[,segr.type.num==5]==3]<-2
   }
   else if(type=="bc"){
     cl<-"bc.onemap"
     ##Verifying if there are up to two classes in bc data, ignoring NAs
     if(sum(!is.na(unique(as.vector(geno)))) > 2)
       stop("check data: there are more than 2 classes for bc")
-    segr.type[]<-"D1.10" ##data coding in onemap style (bc is equivalent to D1.10)
-    segr.type.num<-rep(6,ncol(geno))
-    ph<-rep(1,n.mar) #phases: all merkers in coupling
+    segr.type[]<-"A.H" 
+    segr.type.num<-rep(NA,ncol(geno))
+    ph<-rep(NA,n.mar)
     geno[is.na(geno)]<-0 
     geno[geno==3]<-1 #coding for raw data entered as H and B 
   }
@@ -311,15 +297,15 @@ read.mapmaker<-function (dir, file)
     ##Verifying if there are up to two classes in ril data, ignoring NAs
     if(sum(!is.na(unique(as.vector(geno)))) > 2)
       stop("check data: there are more than 2 classes for ", type)
-    segr.type[]<-"D1.10" ##more data coding in onemap style 
-    segr.type.num<-rep(6,ncol(geno))
-    ph<-rep(1,n.mar) #phases: all merkers inn coupling
+    segr.type[]<-"A.B" 
+    segr.type.num<-rep(NA,ncol(geno))
+    ph<-rep(NA,n.mar) 
     geno[is.na(geno)]<-0 
     geno[geno==3]<-2 #coding as backcross
   }
   else
     stop("Invalide type of cross")
-  structure(list(geno = geno, geno.mmk = geno.mmk, n.ind = n.ind, n.mar = n.mar,
+  structure(list(geno = geno, n.ind = n.ind, n.mar = n.mar,
                  segr.type = segr.type, segr.type.num=segr.type.num,phase=ph,
                  input=file, n.phe=n.phe, pheno = pheno),  class = cl)
 }
@@ -327,7 +313,7 @@ read.mapmaker<-function (dir, file)
 ##print method for object class 'f2.onemap'
 print.f2.onemap<-function (x, ...){
   ##checking for correct object
-  if (any(is.na(match(c("geno","geno.mmk","n.ind","n.mar","segr.type",
+  if (any(is.na(match(c("geno","n.ind","n.mar","segr.type",
                         "segr.type.num","phase","input","n.phe","pheno"), 
                       names(x))))) 
     stop("this is not an object of class 'f2.onemap'")
@@ -339,11 +325,11 @@ print.f2.onemap<-function (x, ...){
   cat("    Percent genotyped:  ", round(mis), "\n\n")
   cat("    Number of markers per type:\n")
   ##counting the number of markers with each segregation type
-  quant <- table(x$segr.type.num-x$phase)
-  names(quant)[which(names(quant)=="3") ] <-"AA : AB : BB -->"
-  names(quant)[which(names(quant)=="5") ] <-"AA : AB : BB -->"
-  names(quant)[which(names(quant)=="4")]  <-" Not BB : BB -->"
-  names(quant)[which(names(quant)=="6")]  <-" Not AA : AA -->" 
+  quant<-table(x$segr.type)
+  names(quant)[which(names(quant)=="A.H.B") ] <-"AA : AB : BB -->"
+  names(quant)[which(names(quant)=="M.X") ] <-"AA : AB : BB (+ dom)  -->"
+  names(quant)[which(names(quant)=="D.B")]  <-" Not BB : BB -->"
+  names(quant)[which(names(quant)=="C.A")]  <-" Not AA : AA -->" 
   for (i in 1:length(quant)) {
     cat(paste("       ", names(quant)[i],"  ", quant[i], 
               "\n", sep = ""))
@@ -356,7 +342,7 @@ print.f2.onemap<-function (x, ...){
 ##print method for object class 'bc.onemap'
 print.bc.onemap<-function (x, ...) {
   ##checking for correct object
-  if (any(is.na(match(c("geno","geno.mmk","n.ind","n.mar","segr.type",
+  if (any(is.na(match(c("geno","n.ind","n.mar","segr.type",
                         "segr.type.num","phase","input","n.phe","pheno"), 
                       names(x))))) 
     stop("this is not an object of class 'bc.onemap'")
@@ -376,7 +362,7 @@ print.bc.onemap<-function (x, ...) {
 ##print method for object class 'riself.onemap'
 print.riself.onemap<-function (x, ...) {
   ##checking for correct object
-  if (any(is.na(match(c("geno","geno.mmk","n.ind","n.mar","segr.type",
+  if (any(is.na(match(c("geno","n.ind","n.mar","segr.type",
                         "segr.type.num","phase","input","n.phe","pheno"), 
                       names(x))))) 
     stop("this is not an object of class 'riself.onemap'")
@@ -396,7 +382,7 @@ print.riself.onemap<-function (x, ...) {
 ##print method for object class 'risib.onemap'
 print.risib.onemap<-function (x, ...) {
   ##checking for correct object
-  if (any(is.na(match(c("geno","geno.mmk","n.ind","n.mar","segr.type",
+  if (any(is.na(match(c("geno","n.ind","n.mar","segr.type",
                         "segr.type.num","phase","input","n.phe","pheno"), 
                       names(x))))) 
     stop("this is not an object of class 'risib.onemap'")
