@@ -82,15 +82,15 @@ est_rf_bc<-function(geno, mrk=0,  nind, type=0, verbose=TRUE)
     return(r)
 }
 
-group_cpp<-function(geno, seg_type=NULL, nind, verbose=TRUE)
+est_map_hmm_f2<-function(geno, rf.vec, verbose=TRUE)
 {
-  r<-.Call("group_wrap",
-           geno,
-           seg_type,
-           as.numeric(1),
-           as.numeric(nind), #0=bc; 1=riself; 2=risib
-           as.numeric(verbose),
-           PACKAGE = "onemap" )
-  return(r)
+    r<-.Call("est_hmm_f2",
+             geno,
+             as.numeric(rf.vec),
+             as.numeric(verbose),
+             PACKAGE = "onemap" )
+    return(r)
 }
+
+
 
