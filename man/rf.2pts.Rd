@@ -30,9 +30,7 @@ corresponding to any markers in the input file.}
 }
 \value{
 An object of class \code{rf.2pts}, which is a list containing the
-following components: \item{data.name}{name of the object with the raw
-data.} \item{n.mar}{total number of markers.} \item{marnames}{marker names,
-according to the input file.} \item{LOD}{minimum LOD Score to declare
+following components:  \item{n.mar}{total number of markers.} \item{LOD}{minimum LOD Score to declare
 linkage.} \item{max.rf}{maximum recombination fraction to declare linkage.}
 \item{input}{the name of the input file.} \item{analysis}{an array with the
 complete results of the two-point analysis for each pair of markers.}
@@ -61,7 +59,7 @@ subsequent analyses, but can be overriden.
 
 }
 \author{
-Gabriel R A Margarido, \email{gramarga@gmail.com}
+Gabriel R A Margarido \email{gramarga@gmail.com} and Marcelo Mollinari \email{mmollina@usp.br}
 }
 \references{
 Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002)

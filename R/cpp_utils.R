@@ -9,7 +9,7 @@
 # Written Marcelo Mollinari                                           #
 #                                                                     #
 # First version: 09/2015                                              #
-# Last update: 11/2015                                                #
+# Last update: 09/2015                                                #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -23,3 +23,74 @@ get.bins <- function(geno, exact=TRUE)
               PACKAGE = "onemap" )
   return(bins)
 }
+
+est_rf_out<-function(geno, mrk=0, seg_type=NULL, nind, verbose=TRUE)
+{
+  r<-.Call("est_rf_out_wrap",
+           geno,
+           mrk=mrk-1,
+           as.numeric(seg_type),
+           as.numeric(nind),
+           as.numeric(verbose),
+           PACKAGE = "onemap" )
+
+  if(mrk <= 0)
+  {
+      names(r)<-c("CC", "CR", "RC", "RR")
+      for(i in 1:4) dimnames(r[[i]])<-list(colnames(geno), colnames(geno))
+      return(r)
+  }
+  else
+  {
+      rownames(r[[1]])<-c("rCC", "rCR", "rRC", "rRR")
+      colnames(r[[1]])<-colnames(geno)
+      rownames(r[[2]])<-c("LODCC", "LODCR", "LODRC", "LODRR")
+      colnames(r[[2]])<-colnames(geno)
+      return(r)
+  }
+}
+
+est_rf_f2<-function(geno, mrk=0, seg_type=NULL, nind, verbose=TRUE)
+{
+    r<-.Call("est_rf_f2_wrap",
+             geno,
+             mrk-1,
+             as.numeric(seg_type),
+             as.numeric(nind),
+             as.numeric(verbose),
+             PACKAGE = "onemap" )
+    if(mrk <= 0)
+        dimnames(r)<-list(colnames(geno), colnames(geno))
+    else
+        dimnames(r)<-list(c("rf", "LOD"), colnames(geno))
+    return(r)
+}
+
+est_rf_bc<-function(geno, mrk=0,  nind, type=0, verbose=TRUE)
+{
+    r<-.Call("est_rf_bc_wrap",
+             geno,
+             mrk-1,
+             as.numeric(nind),
+             as.numeric(type), #0=bc; 1=riself; 2=risib
+             as.numeric(verbose),
+             PACKAGE = "onemap" )
+    if(mrk <= 0)
+        dimnames(r)<-list(colnames(geno), colnames(geno))
+    else
+        dimnames(r)<-list(c("rf", "LOD"), colnames(geno))
+    return(r)
+}
+
+group_cpp<-function(geno, seg_type=NULL, nind, verbose=TRUE)
+{
+  r<-.Call("group_wrap",
+           geno,
+           seg_type,
+           as.numeric(1),
+           as.numeric(nind), #0=bc; 1=riself; 2=risib
+           as.numeric(verbose),
+           PACKAGE = "onemap" )
+  return(r)
+}
+

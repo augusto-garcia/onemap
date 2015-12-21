@@ -18,7 +18,7 @@ components: \item{geno}{a matrix with integers indicating the genotypes
 read for each marker in \code{onemap} fashion. Each column contains data
 for a marker and each row represents an individual.}
 
-\item{geno.mmk}{a list containing the type of cross and a matrix with
+\item{geno.mmk}{ a matrix with
 integers indicating the genotypes read for each marker in
 \code{MAPMAKER/EXP} fashion, i.e., 1, 2, 3: AA, AB, BB, respectively; 3, 4:
 BB, not BB, respectively; 1, 5: AA, not AA, respectively. Each column
@@ -34,7 +34,7 @@ adapted from outcross segregation types. For details see
 \link{read.outcross}.} \item{phase}{a numeric vector containing the linkage
 phase information between markers, i.e., 1 for coupling and -1 for
 repulsion, which is trivial for backcrosses, \eqn{F_2} and RILs.}
-\item{input}{the name of the input file.} \item{n.phe}{number of
+\item{input}{the name of the input file.} \item{n.phen}{number of
 phenotypes.} \item{pheno}{a matrix with phenotypic values.  Each column
 contains data for a trait and each row represents an individual. Currently
 ignored.}

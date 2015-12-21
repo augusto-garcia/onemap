@@ -104,7 +104,7 @@ function(input.obj, arg=NULL, phase=NULL, twopt=NULL) {
   if(all(is.na(match(class(input.obj),c("rf.2pts","group","compare","try","order")))))
     stop(deparse(substitute(input.obj))," is not an object of classes 'rf.2pts', 'group', 'compare', 'try' or 'order'")
 
-  switch(EXPR=class(input.obj),
+  switch(EXPR=class(input.obj)[1],
          'rf.2pts' = {
            if (length(arg) == 1 && arg == "all") seq.num <- 1:input.obj$n.mar # generally used for grouping markers
 		   else if(is.vector(arg) && is.numeric(arg)) seq.num <- arg
