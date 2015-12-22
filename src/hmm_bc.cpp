@@ -20,13 +20,13 @@
 */
 
 /*
-  File: hmm_f2.cpp
+  File: hmm_bc.cpp
   Description: Set of functions to be used with software R
                Implements the methodology of Hidden Markov Models (HMM)
-	       to construct multipoint linkage maps in f2 crosses
+	       to construct multipoint linkage maps in bc crosses
 
   Written by Marcelo Mollinari
-  Adapted from hmm_main.c, hmm_f2.c and util.c (found in the R package qtl)
+  Adapted from hmm_main.c, hmm_bc.c and util.c (found in the R package qtl)
   copyright (c) 2001-10, Karl W Broman                                
 
   Escola Superior de Agricultura "Luiz de Queiroz"
@@ -37,7 +37,7 @@
 */
 
 #include <Rcpp.h>
-#include "hmm_f2.h"
+#include "hmm_bc.h"
 using namespace Rcpp;
 using namespace std;
 #define THRESH 200.0
@@ -45,9 +45,9 @@ using namespace std;
 
 /**********************************************************************
  * 
- * est_hmm_f2
+ * est_hmm_bc
  *
- * This function re-estimates the genetic map for a chromosome in a f2 cross
+ * This function re-estimates the genetic map for a chromosome in a bc cross
  *
  * geno_R       Genotype data, as a matrix. The columns represent the number
  *              of markers and the rows represent the number of individuals
@@ -64,14 +64,14 @@ using namespace std;
 /* Note: true genotypes coded as 1, 2, ...
    but in the alpha's and beta's, we use 0, 1, ... */
 
-RcppExport SEXP est_hmm_f2(SEXP geno_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R){
+RcppExport SEXP est_hmm_bc(SEXP geno_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R){
   Rcpp::NumericMatrix geno = Rcpp::as<Rcpp::NumericMatrix>(geno_R);
   Rcpp::NumericVector rf = Rcpp::as<Rcpp::NumericVector>(rf_R);
   int verbose = Rcpp::as<int>(verbose_R);
   double tol = Rcpp::as<double>(tol_R);
   int n_mar = geno.nrow();
   int n_ind = geno.ncol();
-  int n_gen = 4;
+  int n_gen = 2;
   int it, i, v, v2, j, j2, flag=0, maxit=1000;
   double error_prob = 0.00001, s=0.0; 
   double loglik, curloglik; 
@@ -79,22 +79,18 @@ RcppExport SEXP est_hmm_f2(SEXP geno_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R){
   NumericMatrix beta(n_gen, n_mar);
   NumericMatrix gamma(n_gen, n_gen);
   NumericVector cur_rf(n_mar-1);
-  NumericVector initf(4,0.25);
+  NumericVector initf(2,0.5);
 
   NumericMatrix tr(n_gen, (n_mar-1)*n_gen);
 
-  NumericMatrix em(6,4);
-  em(0,0)=em(0,1)=em(0,2)=em(0,3)=1.0;
+  NumericMatrix em(4,2);
+  em(0,0)=em(0,1)=1.0;
   em(1,0)=1.0-error_prob;
-  em(1,1)=em(1,2)=em(1,3)=error_prob/3.0;
-  em(2,1)=em(2,2)=1.0-error_prob;
-  em(2,0)=em(2,3)=error_prob/2.0;
-  em(3,3)=1.0-error_prob;
-  em(3,0)=em(3,1)=em(3,2)=error_prob/3.0;
-  em(4,0)=em(4,1)=em(4,2)=1.0-error_prob/3.0;
-  em(4,3)=error_prob;
-  em(5,1)=em(5,2)=em(5,3)=1.0-error_prob/3.0;;
-  em(5,0)=error_prob;
+  em(1,1)=error_prob;
+  em(2,1)=1.0-error_prob;
+  em(2,0)=error_prob;
+  em(3,1)=1.0-error_prob;
+  em(3,0)=error_prob;
   if(verbose) {
     /* print initial estimates */
     Rprintf("      "); 
@@ -123,7 +119,7 @@ RcppExport SEXP est_hmm_f2(SEXP geno_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R){
     */
     for(j=0; j < ((n_mar-1)*n_gen); j++){
       for(i=0; i<n_gen; i++){
-	tr(i,j)= stepf_f2(i+1, (j%4)+1, cur_rf(j/4));
+	tr(i,j)= stepf_bc(i+1, (j%n_gen)+1, cur_rf(j/n_gen));
       }
     }
 
@@ -139,7 +135,7 @@ RcppExport SEXP est_hmm_f2(SEXP geno_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R){
       for(j=1,j2=n_mar-2; j<n_mar; j++, j2--) {
 	for(v=0; v<n_gen; v++) {
 	  alpha(v,j) = alpha(0,j-1) * tr(0, (j-1)*n_gen+v);
-	  beta(v,j2) = beta(0,j2+1) * tr(v, j2*4) * em(geno(j2+1,i),0);
+	  beta(v,j2) = beta(0,j2+1) * tr(v, j2*n_gen) * em(geno(j2+1,i),0);
 	  for(v2=1; v2<n_gen; v2++) {
 	    alpha(v,j) = alpha(v,j) + alpha(v2,j-1) * tr(v2,(j-1)*n_gen+v);
 	    beta(v,j2) = beta(v,j2) + beta(v2,j2+1) * tr(v, j2*n_gen+v2)  * em(geno(j2+1,i),v2);
@@ -158,7 +154,7 @@ RcppExport SEXP est_hmm_f2(SEXP geno_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R){
 	}
 	for(v=0; v<n_gen; v++) {
 	  for(v2=0; v2<n_gen; v2++) {
-	    rf(j) += nrecf_f2(v+1,v2+1) * gamma(v,v2)/s;
+	    rf(j) += nrecf_bc(v+1,v2+1) * gamma(v,v2)/s;
 	  }
 	}
       }
@@ -194,11 +190,11 @@ RcppExport SEXP est_hmm_f2(SEXP geno_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R){
     for(j=1; j<n_mar; j++) {
       for(v=0; v<n_gen; v++) {
 	alpha(v,j) = alpha(0,j-1) *
-	  stepf_f2(1, v+1, rf(j-1));
+	  stepf_bc(1, v+1, rf(j-1));
 
 	for(v2=1; v2<n_gen; v2++)
 	  alpha(v,j) = alpha(v,j) + alpha(v2,j-1) *
-	    stepf_f2(v2+1,v+1,rf(j-1));
+	    stepf_bc(v2+1,v+1,rf(j-1));
 	alpha(v,j) *= em(geno(j,i),v);
       }
     }
@@ -221,16 +217,14 @@ RcppExport SEXP est_hmm_f2(SEXP geno_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R){
   return(z);
 }
 
-double stepf_f2(int gen1, int gen2, double rf)
+double stepf_bc(int gen1, int gen2, double rf)
 {
-  if(gen1==gen2) return((1.0-rf)*(1.0-rf));
-  else if((gen1+gen2)==5) return(rf*rf);
-  else return((1.0-rf)*rf);
+  if(gen1==gen2) return((1.0-rf));
+  else return(rf);
 }
 
-double nrecf_f2(int gen1, int gen2)
+double nrecf_bc(int gen1, int gen2)
 {
   if(gen1==gen2) return(0.0);
-  else if((gen1+gen2)==5) return(1.0);
-  else return(0.5);
+  else return(1.0);
 }

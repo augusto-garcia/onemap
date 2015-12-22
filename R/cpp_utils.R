@@ -82,15 +82,34 @@ est_rf_bc<-function(geno, mrk=0,  nind, type=0, verbose=TRUE)
     return(r)
 }
 
-est_map_hmm_f2<-function(geno, rf.vec, verbose=TRUE)
+est_map_hmm_f2<-function(geno, rf.vec=NULL, verbose=TRUE, tol=1e-6)
 {
+    if(length(rf.vec) != (nrow(geno)-1))
+        rf.vec = rep(0.1, (nrow(geno)-1))
     r<-.Call("est_hmm_f2",
              geno,
              as.numeric(rf.vec),
              as.numeric(verbose),
+             as.numeric(tol),
              PACKAGE = "onemap" )
+    names(r)<-c("rf", "loglike") 
+    return(r)
+}
+
+est_map_hmm_bc<-function(geno, rf.vec=NULL, verbose=TRUE, tol=1e-6)
+{
+    if(length(rf.vec) != (nrow(geno)-1))
+        rf.vec = rep(0.1, (nrow(geno)-1))
+    r<-.Call("est_hmm_bc",
+             geno,
+             as.numeric(rf.vec),
+             as.numeric(verbose),
+             as.numeric(tol),
+             PACKAGE = "onemap" )
+    names(r)<-c("rf", "loglike") 
     return(r)
 }
 
 
+#end of the file
 

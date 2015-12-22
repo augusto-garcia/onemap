@@ -11,4 +11,4 @@ using namespace Rcpp;
 using namespace std;
 double stepf_f2(int gen1, int gen2, double rf);
 double nrecf_f2(int gen1, int gen2);
-RcppExport SEXP est_hmm_f2(SEXP geno_R, SEXP rf_R, SEXP verbose_R);
+RcppExport SEXP est_hmm_f2(SEXP geno_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R);

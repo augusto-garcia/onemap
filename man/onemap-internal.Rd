@@ -13,6 +13,13 @@
 \alias{draw.rf.inter}
 \alias{draw.try}
 \alias{est.map.c}
+\alias{est_map_hmm_f2}
+\alias{est_rf_bc}
+\alias{est_rf_f2}
+\alias{est_rf_out}
+\alias{get.bins}
+\alias{get_mat_rf_in}
+\alias{get_vec_rf_in}
 \alias{perm.pars}
 \alias{perm.tot}
 \alias{phases}
@@ -48,6 +55,13 @@ draw.order(map.input)
 draw.rf.inter(info.graph, scale, cex)
 draw.try(base.input, try.input, pos=NULL)
 est.map.c(geno,type,phase,rec,verbose,tol=1e-2)
+est_rf_out(geno, mrk, seg_type, nind, verbose)
+est_rf_f2(geno, mrk, seg_type, nind, verbose)
+est_rf_bc(geno, mrk,  nind, type, verbose)
+est_map_hmm_f2(geno, rf.vec, verbose)
+get.bins(geno, exact)
+get_mat_rf_in(input.seq)
+get_vec_rf_in(input.seq)
 perm.pars(v)
 perm.tot(v)
 phases(input.seq, LOD=0, max.rf=0.50)

@@ -34,6 +34,7 @@
 ##' @param input.seq an object of class \code{sequence}.
 ##' @param tol tolerance for the C routine, i.e., the value used to evaluate
 ##' convergence.
+##' @param verbose If \code{TRUE}, print tracing information.
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}
@@ -80,34 +81,38 @@
 ##'   markers <- make.seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
 ##'   map(markers)
 ##' 
-map <-
-function(input.seq,tol=10E-5) {
-  # checking for correct object
-  if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequnece'")
-  if(length(input.seq$seq.num) < 2) stop("The sequence must have at least 2 markers")
-
-  ##For F2, BC and rils
-  if(class(get(input.seq$data.name, pos=1))=="f2.onemap"){
-    ph <- numeric(length(input.seq$seq.num) - 1)
-    for(i in 1:(length(input.seq$seq.num)-1)) {
-      if(input.seq$seq.num[i] > input.seq$seq.num[i+1])
-        ph[i] <- which.max(get(input.seq$twopt)$analysis[acum(input.seq$seq.num[i]-2)+input.seq$seq.num[i+1],,2])
-      else
-        ph[i] <- which.max(get(input.seq$twopt)$analysis[acum(input.seq$seq.num[i+1]-2)+input.seq$seq.num[i],,2])
+map <- function(input.seq,tol=10E-5, verbose=FALSE)
+{
+    ## checking for correct object
+    if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequnece'")
+    if(length(input.seq$seq.num) < 2) stop("The sequence must have at least 2 markers")
+    ##For F2, BC and rils
+    if(class(get(input.seq$data.name, pos=1))=="f2.onemap")
+    {
+        final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,input.seq$seq.num]),
+                                  rf.vec=get_vec_rf_in(input.seq),
+                                  verbose=verbose,
+                                  tol=tol)
+        return(structure(list(seq.num=input.seq$seq.num, seq.phases=input.seq$seq.phases, seq.rf=final.map$rf,
+                              seq.like=final.map$loglike, data.name=input.seq$data.name, twopt=input.seq$twopt), class = "sequence"))
     }
-    input.seq$seq.phases<-ph
+  else if(class(get(input.seq$data.name, pos=1))=="bc.onemap" || class(get(input.seq$data.name, pos=1))=="riself.onemap" || class(get(input.seq$data.name, pos=1))=="risib.onemap")
+  {
+      final.map<-est_map_hmm_bc(geno=t(get(input.seq$data.name, pos=1)$geno[,input.seq$seq.num]),
+                                rf.vec=get_vec_rf_in(input.seq),
+                                verbose=verbose,
+                                tol=tol)
+      if(class(get(input.seq$data.name, pos=1))=="riself.onemap" || class(get(input.seq$data.name, pos=1))=="risib.onemap")
+          final.map$rf<-adjust.rf.ril(final.map$rf, type=class(get(input.seq$data.name, pos=1)), expand = FALSE)
+      return(structure(list(seq.num=input.seq$seq.num, seq.phases=input.seq$seq.phases, seq.rf=final.map$rf,
+                            seq.like=final.map$loglike, data.name=input.seq$data.name, twopt=input.seq$twopt), class = "sequence"))      
   }
-  else if(class(get(input.seq$data.name, pos=1))=="bc.onemap" || class(get(input.seq$data.name, pos=1))=="riself.onemap" || class(get(input.seq$data.name, pos=1))=="risib.onemap"){
-    ph <- rep(1,(length(input.seq$seq.num) - 1))
-    input.seq$seq.phases<-ph
-  }
-  
-  if((input.seq$seq.phases == -1) && (input.seq$seq.rf == -1) && is.null(input.seq$seq.like)) {
-    ## if only the marker order is provided, without predefined linkage phases,
-    ## a search for the best combination of phases is performed and recombination
-    ## fractions are estimated
-    seq.phase <- numeric(length(input.seq$seq.num)-1)
-    results <- list(rep(NA,4),rep(-Inf,4))
+    if((input.seq$seq.phases == -1) && (input.seq$seq.rf == -1) && is.null(input.seq$seq.like)) {
+        ## if only the marker order is provided, without predefined linkage phases,
+        ## a search for the best combination of phases is performed and recombination
+        ## fractions are estimated
+        seq.phase <- numeric(length(input.seq$seq.num)-1)
+        results <- list(rep(NA,4),rep(-Inf,4))
     
     ## linkage map is started with the first two markers in the sequence
     ## gather two-point information for this pair
@@ -164,9 +169,6 @@ function(input.seq,tol=10E-5) {
                            rec=rf.init,
                            verbose=FALSE,
                            tol=tol)
-    
-    if(class(get(input.seq$data.name, pos=1))=="riself.onemap" || class(get(input.seq$data.name, pos=1))=="risib.onemap")
-      final.map$rf<-adjust.rf.ril(final.map$rf, type=class(get(input.seq$data.name, pos=1)), expand = FALSE)
     
     structure(list(seq.num=input.seq$seq.num, seq.phases=input.seq$seq.phases, seq.rf=final.map$rf,
                    seq.like=final.map$loglike, data.name=input.seq$data.name, twopt=input.seq$twopt), class = "sequence")
