@@ -185,15 +185,14 @@ compare <- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
       ## out.pr <- seq(from=1,to=nrow(all.ord), length.out=20)
       cat("    ")
       for(i in 1:nrow(all.ord)){
-        
-      ##                                    # print output for each order
-      ##    if (sum(i == round(out.pr))){
-      ##      cat(rep("\b",nchar(nc)+1),sep="")
-      ##      nc<-round(i*100/nrow(all.ord))
-      ##      cat(nc,"%", sep="")
-      ##      flush.console()
-      ##    }      
-        ## get initial values for the HMM
+          ## print output for each order
+          ##    if (sum(i == round(out.pr))){
+          ##      cat(rep("\b",nchar(nc)+1),sep="")
+          ##      nc<-round(i*100/nrow(all.ord))
+          ##      cat(nc,"%", sep="")
+          ##      flush.console()
+          ##    }      
+          ## get initial values for the HMM
         all.match <- match(all.ord[i,],input.seq$seq.num)
         for(j in 1:(length(input.seq$seq.num)-1)){
           if(all.match[j] > all.match[j+1]){

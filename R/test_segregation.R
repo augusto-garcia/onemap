@@ -1,19 +1,20 @@
 #######################################################################
-#                                                                     #
-# Package: onemap                                                     #
-#                                                                     #
-# File: test_segregation.R                                            #
-# Contains: test_segregation_of_a_marker,                             #
-# test_segregation, plot.onemap.segreg.test,                          #
-# print.onemap.segreg.test, Bonferroni_alpha, select_segreg           #
-#                                                                     #
-# Written by Antonio Augusto Franco Garcia                            #
-# copyright (c) 2015 Antonio Augusto Franco Garcia                    #
-#                                                                     #
-# First version: 2015/04/18                                           #
-# Last update: 2015/07/25                                             #
-# License: GNU General Public License version 3 or later              #
-#                                                                     #
+##                                                                     ##
+## Package: onemap                                                     ##
+##                                                                     ##
+## File: test_segregation.R                                            ##
+## Contains: test_segregation_of_a_marker,                             ##
+## test_segregation, plot.onemap.segreg.test,                          ##
+## print.onemap.segreg.test, Bonferroni_alpha, select_segreg           ##
+##                                                                     ##
+## Written by Antonio Augusto Franco Garcia with minor modifications   ##
+## by Marcelo Mollinari                                                ##
+## copyright (c) 2015 Antonio Augusto Franco Garcia                    ##
+##                                                                     ##
+## First version: 2015/04/18                                           ##
+## Last update: 2015/07/25                                             ##
+## License: GNU General Public License version 3 or later              ##
+##                                                                     ##
 #######################################################################
 
 ##' test_segregation_of_a_marker
@@ -41,13 +42,22 @@
 ##' data(example.out) # Loads a fake outcross dataset installed with onemap
 ##' test_segregation_of_a_marker(example.out,1)
 test_segregation_of_a_marker <- function(x, marker) {
-    # Segregation pattern for each marker type
+    ## Segregation pattern for each marker type
     p.a <- rep(1/4, 4); p.b <- c(1/4, 1/2, 1/4); p.c <- c(3/4,1/4); p.d <- rep(1/2, 2)
-    # Counting each category
+    ## Counting each category
     count <- table(x$geno[,marker], exclude=0)
-    # Do the chisq test, using the appropriate expected segregation
-    # grepl() allows finding the marker type (it has the letter in the argument)
-    if (grepl("A",x$segr.type[marker])) {
+    ## Do the chisq test, using the appropriate expected segregation
+    ## grepl() allows finding the marker type (it has the letter in the argument)    
+    if (grepl("A.H.B",x$segr.type[marker])) {
+        qui <- chisq.test(count, p=p.b, correct = FALSE)
+        H0 <- "1:2:1"}
+    else if (grepl("C.A",x$segr.type[marker]) | grepl("D.B",x$segr.type[marker])) {
+        qui <- chisq.test(count, p=rev(p.c), correct = FALSE)
+        H0 <- "3:1"}
+    else if (grepl("A.H",x$segr.type[marker]) | grepl("A.B",x$segr.type[marker])) {
+        qui <- chisq.test(count, p=p.d, correct = FALSE)
+        H0 <- "1:1"}
+    else if (grepl("A",x$segr.type[marker])) {
         qui <- chisq.test(count, p=p.a, correct = FALSE)
         H0 <- "1:1:1:1" }
     else if (grepl("B",x$segr.type[marker])) {
@@ -59,6 +69,11 @@ test_segregation_of_a_marker <- function(x, marker) {
     else if (grepl("D",x$segr.type[marker])) {
         qui <- chisq.test(count, p=p.d, correct = FALSE)
         H0 <- "1:1" }
+    #impossible to test: dominant and co-dominant mixed in the same marker
+    else if (grepl("M.X",x$segr.type[marker])) { 
+        qui <- NA
+        H0 <- NA
+    }
     return(list(Hypothesis=H0, qui.quad=qui$statistic, p.val=qui$p.value,
                 perc.genot=100*(sum(table(x$geno[,marker], exclude=0))/x$n.ind)))
 }
@@ -92,10 +107,10 @@ test_segregation <- function(x) {
     if (is(x,"bc.onemap")|is(x,"f2.onemap")|is(x,"riself.onemap")|
         is(x,"risib.onemap")|is(x,"outcross")) {
         y <- list(Marker=dimnames(x$geno)[[2]],
-                     Results.of.tests=sapply(1:x$n.mar, function(onemap.object, marker)
-                         test_segregation_of_a_marker(onemap.object, marker),
-                         onemap.object=x))
-        # sapply iterates from 1 to x$n.mar; x is fixed (onemap object with data)
+                  Results.of.tests=sapply(1:x$n.mar, function(onemap.object, marker)
+                      test_segregation_of_a_marker(onemap.object, marker),
+                      onemap.object=x))
+                                        # sapply iterates from 1 to x$n.mar; x is fixed (onemap object with data)
         class(y) <- c("onemap.segreg.test")
         invisible(y) #returns y without showing it
     }
@@ -169,19 +184,19 @@ print.onemap.segreg.test <- function(x) {
 ##' 
 ##' @export
 plot.onemap.segreg.test <- function(x, order=TRUE) {
-    # Create a data frame
+                                        # Create a data frame
     Z <- data.frame(Marker=x$Marker,
                     X.square=unlist(x$Results.of.tests[2,]),
                     p.value=unlist(x$Results.of.tests[3,]))
     Bonf <- -log10(.05/nrow(Z)) #Bonferroni's threshold'
     Z$signif <- factor(ifelse(-log10(Z$p.value)<Bonf,"non sign.","sign."))
     Z$order <- 1:nrow(Z)
-    # % of distorted
+                                        # % of distorted
     perc <- 100*(1-(table(Z$signif)[1]/nrow(Z)))
-    # Keeping markers in their original order (not alphanumeric), or by p-values (default)
+                                        # Keeping markers in their original order (not alphanumeric), or by p-values (default)
     if (order!=TRUE) Z$Marker <- factor(Z$Marker, levels = Z$Marker[order(Z$order)])
     else Z$Marker <- factor(Z$Marker, levels = Z$Marker[order(Z$p.value, decreasing=TRUE)])
-    # Plotting
+                                        # Plotting
     g <- ggplot(data=Z, aes(x=Marker, y=-log10(p.value)))
     g <- g + ylab(expression(-log[10](p-value)))
     g <- g + geom_point(aes(color=signif), stat="identity",size=2.5)
