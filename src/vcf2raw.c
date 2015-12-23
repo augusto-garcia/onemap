@@ -296,7 +296,7 @@ void vcf2raw(char **filename, char **out_filename, char **cross, int *n_parent1,
     free(seq_names);
     error("Could not correctly parse sequence names in VCF file. Is the input file tabix indexed?\n");
   }
-
+  
   // Map parent names to sample indices
   int idx_parent1[*n_parent1];
   int idx_parent2[*n_parent2];
@@ -317,7 +317,7 @@ void vcf2raw(char **filename, char **out_filename, char **cross, int *n_parent1,
       }
     }
   }
-
+  
   // Minimum count to assign parent genotype
   int min_class_parent1 = (int)ceil(*min_class * *n_parent1);
   int min_class_parent2 = (int)ceil(*min_class * *n_parent2);
@@ -445,7 +445,15 @@ void vcf2raw(char **filename, char **out_filename, char **cross, int *n_parent1,
   fprintf(final_f, "data type %s\n", *cross);
   // The next header line contains the following information: number of individuals, number of markers, 1 for the presence of CHROM information, 1 for the presence of POS information and 0 for the absence of phenotypes (these need to be manually included later)
   fprintf(final_f, "%d %d 1 1 0\n", n_progeny, marker_count);
-
+  // The next header line contains the sample names
+  char *cur_sample_name = vcf_hdr->samples[idx_progeny[0]];
+  fprintf(final_f, "%s", cur_sample_name);
+  for (i = 1; i < n_progeny; i++) {
+    cur_sample_name = vcf_hdr->samples[idx_progeny[i]];
+    fprintf(final_f, "\t%s", cur_sample_name);
+  }
+  fprintf(final_f, "\n");
+  
   // Copy marker data from temporary file to final file
   rewind(temp_f);
   char buf[BUFSIZ];

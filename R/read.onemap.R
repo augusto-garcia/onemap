@@ -9,7 +9,7 @@
 # copyright (c) 2015, Gabriel R A Margarido                           #
 #                                                                     #
 # First version: 11/25/2015                                           #
-# Last update: 12/12/2015                                             #
+# Last update: 12/23/2015                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -21,15 +21,19 @@
 ##' parents (backcross, F2 intercross and recombinant inbred lines obtained
 ##' by self- or sib-mating). Creates an object of class \code{onemap}.
 ##'
-##' The file format is quite similar to that used by \code{MAPMAKER/EXP}
+##' The file format is similar to that used by \code{MAPMAKER/EXP}
 ##' (\cite{Lincoln et al.}, 1993). The first line indicates the cross type,
 ##' which must be one of \code{"outcross"}, \code{"intercross"},
 ##' \code{"backcross"}, \code{"riself"} or  \code{"risib"}. The second line
 ##' contains five integers: i) the number of individuals; ii) the number of
-##' markers; iii) as indicator variable taking the value 1 if there is CHROM
+##' markers; iii) an indicator variable taking the value 1 if there is CHROM
 ##' information, i.e., if markers are anchored on any reference sequence, and
 ##' 0 otherwise; iv) a similar 1/0 variable indicating whether there is POS
 ##' information for markers; and v) the number of phenotypic traits.
+##'
+##' The next line contains sample IDs, separated by empty spaces or tabs.
+##' Addition of this sample ID requirement makes it possible for separate input
+##' datasets to be merged.
 ##'
 ##' Next comes the genotype data for all markers. Each new marker is initiated
 ##' with a \dQuote{*} (without the quotes) followed by the marker name, without
@@ -86,7 +90,8 @@
 ##' \code{"D2"}. Markers for F2 intercrosses are coded as 1; all other crosses
 ##' are left as \code{NA}.}\item{input}{the name of the input file.}
 ##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com}
-##' @seealso \code{example} directory in the package source.
+##' @seealso \code{\link[onemap]{merge.onemap}} and the \code{example} directory
+##' in the package source.
 ##' @references Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993)
 ##' Constructing genetic linkage maps with MAPMAKER/EXP Version 3.0: a tutorial
 ##' and reference manual. \emph{A Whitehead Institute for Biomedical Research
@@ -136,6 +141,14 @@ read.onemap <- function (dir, inputfile) {
   has_POS <- l[4] == 1
   n.phen <- l[5]
 
+  ## Parse the sample IDs
+  l <- scan(f, what=character(), nlines = 1, n = n.ind,
+            blank.lines.skip = TRUE, quiet = TRUE)  
+  if (length(l) != n.ind) {
+    stop("Incomplete sample ID information.", call. = TRUE)
+  }
+  sample_IDs <- l
+
   ## Read marker genotype information
   cat(" Working...\n\n")
   l <- matrix(scan(f, what = character(), n = (2 + n.ind) * n.mar, nlines = n.mar,
@@ -159,6 +172,7 @@ read.onemap <- function (dir, inputfile) {
   geno <- l[-c(1,2),]
   geno[!is.na(geno) & geno == "-"] <- NA
   colnames(geno) <- marnames
+  rownames(geno) <- sample_IDs
   temp.data <- codif.data(geno, segr.type, crosstype)
   geno <- temp.data[[1]]
   segr.type.num <- temp.data[[2]]

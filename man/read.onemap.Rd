@@ -33,15 +33,19 @@ parents (backcross, F2 intercross and recombinant inbred lines obtained
 by self- or sib-mating). Creates an object of class \code{onemap}.
 }
 \details{
-The file format is quite similar to that used by \code{MAPMAKER/EXP}
+The file format is similar to that used by \code{MAPMAKER/EXP}
 (\cite{Lincoln et al.}, 1993). The first line indicates the cross type,
 which must be one of \code{"outcross"}, \code{"intercross"},
 \code{"backcross"}, \code{"riself"} or  \code{"risib"}. The second line
 contains five integers: i) the number of individuals; ii) the number of
-markers; iii) as indicator variable taking the value 1 if there is CHROM
+markers; iii) an indicator variable taking the value 1 if there is CHROM
 information, i.e., if markers are anchored on any reference sequence, and
 0 otherwise; iv) a similar 1/0 variable indicating whether there is POS
 information for markers; and v) the number of phenotypic traits.
+
+The following line contains sample IDs, separated by empty spaces or tabs.
+Addition of this sample ID requirement makes it possible for separate input
+datasets to be merged.
 
 Next comes the genotype data for all markers. Each new marker is initiated
 with a \dQuote{*} (without the quotes) followed by the marker name, without
@@ -100,7 +104,8 @@ likelihood estimation of linkage and linkage phases in outcrossing species.
 \emph{Theoretical Population Biology} 61: 349-363.
 }
 \seealso{
-\code{example} directory in the package source.
+\code{\link[onemap]{merge.onemap}} and the \code{example} directory
+in the package source.
 }
 \keyword{IO}
 
