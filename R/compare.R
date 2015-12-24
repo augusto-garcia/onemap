@@ -109,7 +109,8 @@ compare <- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
       ANSWER <- readline("\nPlease answer: 'y' or 'n' \n")
     if (substr(ANSWER, 1, 1) == "n") stop("Execution stopped!")
   }
-  if(length(input.seq$seq.num) == 2) return(map(input.seq, tol=tol)) ## nothing to be done for 2 markers
+  if(length(input.seq$seq.num) == 2)
+      return(map(input.seq, tol=tol)) ## nothing to be done for 2 markers
   else {
     ## allocating variables
     rf.init <- vector("list",length(input.seq$seq.num)-1)
