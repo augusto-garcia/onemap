@@ -76,7 +76,7 @@ sex-specific differences. \emph{Genetical Research} 79: 85-96
 }
 \seealso{
 \code{\link[onemap]{make.seq}}, \code{\link[onemap]{compare}},
-\code{\link[onemap]{try.seq}} and \code{\link[onemap]{order.seq}}.
+\code{\link[onemap]{try_seq}} and \code{\link[onemap]{order.seq}}.
 }
 \keyword{utilities}
 
