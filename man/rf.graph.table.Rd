@@ -56,7 +56,7 @@ data for that marker.
   rf.graph.table(LG1.rcd, inter=FALSE)
 \dontrun{
   ##Now, using interactive Tcl-Tk
-  rf.graph.table(LG1.rcd, scale=1.5, inter=TRUE)
+  rf.graph.table(LG1.rcd, scale=2, inter=TRUE)
 
   ##F2 example
   data(fake.f2.onemap)
@@ -68,21 +68,19 @@ data for that marker.
   maps.list<-vector("list", groups$n.groups)
 
   for(i in 1:groups$n.groups){
-    ##create linkage group i  
+    ##create linkage group i
     LG.cur <- make.seq(groups,i)
-    ##ordering 
+    ##ordering
     map.cur<-order.seq(LG.cur, subset.search = "sample")
-    ##assign the map of the i-th group to the maps.list 
-    maps.list[[i]]<-make.seq(map.cur, "force")      
+    ##assign the map of the i-th group to the maps.list
+    maps.list[[i]]<-make.seq(map.cur, "force")
   }
-  ##Plot LOD/recombination fraction matrices for each group 
+  ##Plot LOD/recombination fraction matrices for each group
   op <- par(mfrow = c(1, 3))
   for(i in 1:groups$n.groups)
     rf.graph.table(maps.list[[i]], axis.cex=.7, main=paste("Group", i),inter=FALSE)
   par(op)
 }
- 
-
 
 }
 \author{
