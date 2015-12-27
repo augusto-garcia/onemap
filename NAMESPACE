@@ -2,8 +2,8 @@ useDynLib(onemap)
 
 ## Import all packages listed as Imports or Depends
 import(tcltk, tkrplot)
-importFrom(fields, image.plot)
 importFrom(fields, tim.colors)
+importFrom(fields, splint)
 
 ## Export all names
 exportPattern(".")
