@@ -171,6 +171,91 @@ try_seq<-function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,verbose=FALSE
                               pos=pos, verbose=verbose))
 }
 
+try_seq_inbred<- function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,verbose=FALSE)
+{
+                                        # checking for correct objects
+    if(!any(class(input.seq)=="sequence"))
+        stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+    if(input.seq$seq.rf[1] == -1 ||
+       is.null(input.seq$seq.like))
+        stop("You must run 'compare' or 'map' before the 'try_seq' function")
+    if(mrk > get(input.seq$data.name, pos=1)$n.mar)
+        stop(deparse(substitute(mrk))," exceeds the number of markers in object ", input.seq$data.name)
+    ## allocate variables
+    ord.rf <- matrix(NA, length(input.seq$seq.num)+1, length(input.seq$seq.num)) 
+    ord.like <- rep(NA, length(input.seq$seq.num)+1)
+    mark.max<-max(nchar(colnames(get(input.seq$data.name, pos=1)$geno)))
+    num.max<-nchar(ncol(get(input.seq$data.name, pos=1)$geno))
+    ## create first order
+    try.ord <- c(mrk,input.seq$seq.num)
+    if(verbose) cat("TRY", 1,": ", c(mrk,input.seq$seq.num),"\n")
+    else cat(format(mrk,width=num.max) , "-->", format(colnames(get(input.seq$data.name, pos=1)$geno)[mrk], width=mark.max), ": .")
+    flush.console()
+    seq.temp<-make.seq(get(input.seq$twopt), arg=try.ord)
+    seq.temp$twopt<-input.seq$twopt
+    rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)  
+    ## estimate parameters for all possible linkage phases for this order
+    final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,try.ord]),
+                              rf.vec=rf.temp,
+                              verbose=FALSE,
+                              tol=tol)
+    ord.rf[1,] <- final.map$rf
+    ord.like[1] <- final.map$loglike
+    
+    ## positioning between markers of the given sequence
+    for(i in 1:(length(input.seq$seq.num)-1))
+    {
+	## create intermediate orders
+        try.ord <- rbind(try.ord,
+                         c(input.seq$seq.num[1:i],
+                           mrk,
+                           input.seq$seq.num[(i+1):length(input.seq$seq.num)]))
+        if(verbose)
+            cat("TRY", i+1, ": ", try.ord[i+1,], "\n")
+        else cat(".")
+        flush.console()
+        seq.temp<-make.seq(get(input.seq$twopt), arg=try.ord[i+1,])
+        seq.temp$twopt<-input.seq$twopt
+        rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)  
+        ## estimate parameters for all possible linkage phases for this order
+        final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,try.ord[i+1,]]),
+                                  rf.vec=rf.temp,
+                                  verbose=FALSE,
+                                  tol=tol)
+        ord.rf[i+1,] <- final.map$rf
+        ord.like[i+1] <- final.map$loglike
+    }
+    ## positioning after the given sequence
+    ## create last order
+    try.ord <- rbind(try.ord,c(input.seq$seq.num,mrk))
+    if(verbose) cat("TRY",length(input.seq$seq.num)+1,": ", c(input.seq$seq.num,mrk) ,"\n")
+    else cat(".\n")
+    flush.console()
+    ## estimate parameters for all possible linkage phases for this order
+    final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,try.ord[length(input.seq$seq.num)+1,]]),
+                              rf.vec=rf.temp,
+                              verbose=FALSE,
+                              tol=tol)
+    ord.rf[length(input.seq$seq.num)+1,] <- final.map$rf
+    ord.like[length(input.seq$seq.num)+1] <- final.map$loglike
+    ## calculate LOD-Scores (best linkage phase combination for each position)
+    LOD <- (ord.like-max(ord.like))/log(10)
+    ord<-vector("list", nrow(try.ord))
+    for(i in 1:nrow(try.ord))
+    {
+        ord[[i]]<-list(rf=matrix(ord.rf[i,], nrow=1),
+                       phase=matrix(rep(NA,ncol(ord.rf)), nrow=1),
+                       like=ord.like[i])
+        
+    }
+    w<-structure(list(ord=ord, LOD=LOD, try.ord=try.ord, data.name=input.seq$data.name, twopt=input.seq$twopt), class = "try")
+    if(draw.try==TRUE){
+        draw.try(input.seq, w, pos=pos)
+  }
+  w
+}
+
+
 try_seq_outcross<- function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,verbose=FALSE)
 {
                                         # checking for correct objects
@@ -462,27 +547,32 @@ draw.try<-function(base.input, try.input, pos=NULL){
     new.dist.len<-length(new.dist)
     plot(x=new.dist, rep(1,new.dist.len), pch="|", xlab="New Genetic Map", ylab="", axes=FALSE, type="n", main=paste("Adding marker ",try.input$try.ord[1,1]," (", colnames(get(try.input$data.name,pos=1)$geno)[try.input$try.ord[1,1]],")", sep=""))
     axis(1, at=round(new.dist,1), lwd.ticks = .75, cex.axis=.75, las=2)
-    text(new.dist, y=rep(1,length(new.dist)), labels=new.map$seq.num, cex=.7)
+    text(new.dist, y=rep(1,length(new.dist)), labels=new.map$seq.num, cex=.7, srt=90)
     points(new.dist[which.max(try.input$LOD)],1.5, col=2, cex=1.5, pch=25, bg = 2)
     text(x=new.dist[1]-(max(new.dist)/40), y=1 ,"Markers",  adj=c(1,0.5))
     text(x=new.dist[1]-(max(new.dist)/40), y=0 ,"Distance",  adj=c(1,0.2))
     par(op)
   }
   else{
-    op<-par(xpd=TRUE)
+    op<-par(xpd=TRUE, las=2)
     points(try.dist[pos],0, pch=17, col=2, cex=1.5)
     new.map<-make.seq(try.input,pos)
     new.dist<-cumsum(c(0, kosambi(new.map$seq.rf)))
     new.dist.len<-length(new.dist)
     plot(x=new.dist, rep(1,new.dist.len), xlab="New Genetic Map", ylab="", axes=FALSE, type="n", main=paste("Adding marker ",try.input$try.ord[1,1]," (", colnames(get(try.input$data.name,pos=1)$geno)[try.input$try.ord[1,1]],")", sep=""))
     axis(1, at=round(new.dist,1), lwd.ticks = .75, cex.axis=.75, las=2)
-    text(new.dist, y=rep(1,length(new.dist)), labels=new.map$seq.num, cex=.7)
+    text(new.dist, y=rep(1,length(new.dist)), labels=new.map$seq.num, cex=.7, srt=90)
     points(new.dist[pos], 1.5, col=2, cex=1.5, pch=25, bg = 2)
     text(x=new.dist[1]-(max(new.dist)/40), y=1 ,"Markers",  adj=c(1,0.5))
     text(x=new.dist[1]-(max(new.dist)/40), y=0 ,"Distance",  adj=c(1,0.2))
     par(op)
   }
-  rf.graph.table(new.map, inter=FALSE, axis.cex = .75, main="")
+  rf.graph.table(input.seq=new.map,
+                 axis.cex = 0.75,
+                 main ="",
+                 inter = FALSE,
+                 mrk.names = TRUE,
+                 colorkey = FALSE) 
   title(main = "LOD (above diag.) and Recombination Fraction Matrix", cex.main=.9, line=15.4)
 }
 
