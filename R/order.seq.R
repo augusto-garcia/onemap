@@ -188,10 +188,13 @@ order.seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
     structure(list(ord=seq.ord, mrk.unpos=NULL, LOD.unpos=NULL, THRES=THRES,
                    ord.all=seq.ord, data.name=input.seq$data.name, twopt=input.seq$twopt), class = "order")
   }
-  else {
+  else
+  {
     ## here, the complete algorithm will be applied
     if(class(get(input.seq$data.name, pos=1)) == "f2.onemap") FLAG <- "f2"
-    else if (class(get(input.seq$data.name, pos=1)) == "bc.onemap" || class(get(input.seq$data.name, pos=1)) == "riself.onemap" || class(get(input.seq$data.name, pos=1)) == "risib.onemap") FLAG <- "bc"
+    else if (class(get(input.seq$data.name, pos=1)) == "bc.onemap" ||
+             class(get(input.seq$data.name, pos=1)) == "riself.onemap" ||
+             class(get(input.seq$data.name, pos=1)) == "risib.onemap") FLAG <- "bc"
     else if (class(get(input.seq$data.name, pos=1)) == "outcross") FLAG <- "outcross"
     else stop("Invalid cross type\n")
     cross.type<-substr(class(get(input.seq$data.name, pos=1)), 1, nchar(class(get(input.seq$data.name, pos=1)))-7)
@@ -231,35 +234,41 @@ order.seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
           seq.type <- get(input.seq$data.name, pos=1)$segr.type.num[seq.rest] ##checking maker type (4: co-dominant; 5: dominant)
           names(seq.type) <- names(seq.mis)
           tp.ord <- sort(seq.type) ##sorting by type, automatically co-dominant markers (4) come first
-          rest.ord <- c(sort(seq.mis[pmatch(names(tp.ord)[tp.ord==4],names(seq.mis))]), sort(seq.mis[pmatch(names(tp.ord)[tp.ord==5],names(seq.mis))]))##within each type of marker, sort by missing 
+          rest.ord <- c(sort(seq.mis[pmatch(names(tp.ord)[tp.ord==1],names(seq.mis))]),
+                        sort(seq.mis[pmatch(names(tp.ord)[tp.ord==4],names(seq.mis))]),
+                        sort(seq.mis[pmatch(names(tp.ord)[tp.ord==2],names(seq.mis))]),
+                        sort(seq.mis[pmatch(names(tp.ord)[tp.ord==3],names(seq.mis))]))##within each type of marker, sort by missing 
           rest <- pmatch(names(rest.ord), colnames(get(input.seq$data.name, pos=1)$geno)) ##matching names with the positions on the raw data
           seq.work <- pmatch(c(seq.init,rest), input.seq$seq.num) ##sequence to work with
         }
         else stop("Invalid cross type\n")
       }
       else if(subset.search=="sample"){
-        cat("\nCross type: ", cross.type, "\nChoosing initial subset using the 'sample' approach\n")
+          cat("\nCross type: ", cross.type, "\nChoosing initial subset using the 'sample' approach\n")
         LOD.test <- i <- 0
-        while(abs(LOD.test) < abs(subset.THRES) && i < subset.n.try){
-          smp.seq <- make.seq(get(input.seq$twopt), sample(input.seq$seq.num, size=n.init), twopt=input.seq$twopt)
-          res.test <- compare(smp.seq)
-          LOD.test <- res.test$best.ord.LOD[2]
-          i < -i+1
-        }     
-        if(abs(LOD.test) >= abs(subset.THRES)){
-          seq.init <- res.test$best.ord[1,] ##best order based on 'compare'
-          seq.rest <- input.seq$seq.num[-pmatch(seq.init, input.seq$seq.num)] ##the rest of the markers 
-          seq.mis <- apply(as.matrix(get(input.seq$data.name, pos=1)$geno[,seq.rest]), 2, function(x) sum(x==0)) ##checking missing markers for the rest
-           names(seq.mis)<-colnames(get(input.seq$data.name, pos=1)$geno)[seq.rest]
-          if(FLAG == "bc"){
-            rest.ord <- pmatch(names(seq.mis), colnames(get(input.seq$data.name, pos=1)$geno))
-            seq.work <- pmatch(c(seq.init,rest.ord), input.seq$seq.num)
-          }
+          while(abs(LOD.test) < abs(subset.THRES) && i < subset.n.try){
+              smp.seq <- make.seq(get(input.seq$twopt), sample(input.seq$seq.num, size=n.init), twopt=input.seq$twopt)
+              res.test <- compare(smp.seq)
+              LOD.test <- res.test$best.ord.LOD[2]
+              i < -i+1
+          }     
+          if(abs(LOD.test) >= abs(subset.THRES)){
+              seq.init <- res.test$best.ord[1,] ##best order based on 'compare'
+              seq.rest <- input.seq$seq.num[-pmatch(seq.init, input.seq$seq.num)] ##the rest of the markers 
+              seq.mis <- apply(as.matrix(get(input.seq$data.name, pos=1)$geno[,seq.rest]), 2, function(x) sum(x==0)) ##checking missing markers for the rest
+              names(seq.mis)<-colnames(get(input.seq$data.name, pos=1)$geno)[seq.rest]
+              if(FLAG == "bc"){
+                  rest.ord <- pmatch(names(seq.mis), colnames(get(input.seq$data.name, pos=1)$geno))
+                  seq.work <- pmatch(c(seq.init,rest.ord), input.seq$seq.num)
+              }
           else if(FLAG == "f2"){
-            seq.type <- get(input.seq$data.name, pos=1)$segr.type.num[seq.rest] ##checking maker type (4: co-dominant; 5: dominant)
-            names(seq.type) <- names(seq.mis)
-            tp.ord <- sort(seq.type) ##sorting by type, automatically co-dominant markers (4) come first
-            rest.ord <- c(sort(seq.mis[pmatch(names(tp.ord)[tp.ord==4],names(seq.mis))]), sort(seq.mis[pmatch(names(tp.ord)[tp.ord==5],names(seq.mis))]))##within each type of marker, sort by missing 
+              seq.type <- get(input.seq$data.name, pos=1)$segr.type.num[seq.rest] ##checking maker type (4: co-dominant; 5: dominant)
+              names(seq.type) <- names(seq.mis)
+              tp.ord <- sort(seq.type) ##sorting by type, automatically co-dominant markers (4) come first
+              rest.ord <- c(sort(seq.mis[pmatch(names(tp.ord)[tp.ord==1],names(seq.mis))]),
+                            sort(seq.mis[pmatch(names(tp.ord)[tp.ord==4],names(seq.mis))]),
+                            sort(seq.mis[pmatch(names(tp.ord)[tp.ord==2],names(seq.mis))]),
+                            sort(seq.mis[pmatch(names(tp.ord)[tp.ord==3],names(seq.mis))]))##within each type of marker, sort by missing 
             rest <- pmatch(names(rest.ord),colnames(get(input.seq$data.name, pos=1)$geno)) ##matching names with the positions on the raw data
             seq.work <- pmatch(c(seq.init,rest), input.seq$seq.num) ##sequence to work with
           }
@@ -416,7 +425,7 @@ draw.order<-function(map.input){
   text(x=new.dist[1]-(max(new.dist)/40), y=1 ,"Markers",  adj=c(1,0.5))
   text(x=new.dist[1]-(max(new.dist)/40), y=0 ,"Distance",  adj=c(1,0.2))
   par(op)
-  rf.graph.table(map.input, inter=FALSE, axis.cex = .75, main="")
+  rf.graph.table(map.input, inter=FALSE, axis.cex = .75, main="", colorkey = FALSE, mrk.names = TRUE)
   title(main = "LOD (above diag.) and Recombination Fraction Matrix", cex.main=.9, line=15.4)
 }
 ## end of file

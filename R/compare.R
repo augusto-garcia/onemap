@@ -257,9 +257,13 @@ compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
     }
         cat("\n")
         best.ord.LOD <- round((best.ord.like-max(best.ord.like))/log(10),4)
-        structure(list(best.ord = best.ord, best.ord.rf = best.ord.rf,
-                       best.ord.phase = best.ord.phase, best.ord.like = best.ord.like,
-                       best.ord.LOD = best.ord.LOD, data.name=input.seq$data.name, twopt=input.seq$twopt), class = "compare")
+        structure(list(best.ord = best.ord,
+                       best.ord.rf = best.ord.rf,
+                       best.ord.phase = best.ord.phase,
+                       best.ord.like = best.ord.like,
+                       best.ord.LOD = best.ord.LOD,
+                       data.name=input.seq$data.name,
+                       twopt=input.seq$twopt), class = "compare")
         
     }
 }
@@ -327,9 +331,13 @@ compare_inbred<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
         ## cat("\nFinished\n\n")
         cat("\n")
         best.ord.LOD <- round((best.ord.like-max(best.ord.like))/log(10),4)
-        structure(list(best.ord = best.ord, best.ord.rf = best.ord.rf,
+        structure(list(best.ord = best.ord,
+                       best.ord.rf = best.ord.rf,
+                       best.ord.phase = matrix(1, nrow(best.ord.rf), ncol(best.ord.rf)),
                        best.ord.like = best.ord.like,
-                       best.ord.LOD = best.ord.LOD, data.name=input.seq$data.name, twopt=input.seq$twopt), class = "compare")   
+                       best.ord.LOD = best.ord.LOD,
+                       data.name=input.seq$data.name,
+                       twopt=input.seq$twopt), class = "compare")   
     }
 }
 
@@ -363,7 +371,6 @@ print.compare <- function(x,...) {
         cat(paste(rep("-",leng.print),collapse=""),"\n")
     }
     else stop ("Should not get here!")
-        
         if(FLAG==0){ ## outcrossing
             for (i in 1:n.ord.nest) {
                 cat(paste("order ",format(i,width=skip[1]),":  ",paste(format(unique.orders[i,],width=skip[2]),collapse=""),"\n",sep=""))
