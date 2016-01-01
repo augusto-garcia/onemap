@@ -4,10 +4,12 @@
 \alias{plot.risib.onemap}
 \title{Draw a heatmap graphic of raw data for a RIL population (made by sibing)}
 \usage{
-\method{plot}{risib.onemap}(x)
+\method{plot}{risib.onemap}(x, ...)
 }
 \arguments{
 \item{x}{an object of class risib.onemap, with data and additional information}
+
+\item{...}{currently ignored}
 }
 \value{
 a ggplot graphic

@@ -4,13 +4,16 @@
 \alias{plot.outcross}
 \title{Draw a heatmap graphic for raw data in an outcross population}
 \usage{
-\method{plot}{outcross}(x, all = TRUE)
+\method{plot}{outcross}(x, all = TRUE, ...)
 }
 \arguments{
 \item{x}{an object of class outcross, with data and additional information}
 
-\item{all}{a TRUE/FALSE option to indicate if results will be plotted together (if TRUE)
-or splitted based on their segregation pattern}
+\item{all}{a TRUE/FALSE option to indicate if results will be
+plotted together (if TRUE) or splitted based on their
+segregation pattern}
+
+\item{...}{currently ignored}
 }
 \value{
 a ggplot graphic

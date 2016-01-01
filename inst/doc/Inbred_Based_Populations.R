@@ -149,7 +149,7 @@ LG2.f2.ord <- order.seq(input.seq=LG2.f2, n.init = 5,
 (LG2.f2.final<-make.seq(LG2.f2.ord, "force"))
 
 ## ---- ripple_lg2_final, results="hide"-----------------------------------
-ripple.seq(LG2.f2.final, ws=5, LOD=3)
+ripple_seq(LG2.f2.final, ws=5, LOD=3)
 
 ## ------------------------------------------------------------------------
 LG2.f2.final
@@ -168,7 +168,7 @@ LG1.f2.ord <- order.seq(input.seq=LG1.f2, n.init = 5,
 (LG1.f2.final <- make.seq(LG1.f2.ord,"force"))
 
 ## ---- results="hide"-----------------------------------------------------
-ripple.seq(ws=5, LG1.f2.final)
+ripple_seq(ws=5, LG1.f2.final)
 
 ## ------------------------------------------------------------------------
 LG1.f2.final
@@ -187,7 +187,7 @@ LG3.f2.ord <- order.seq(input.seq=LG3.f2, n.init = 5,
 (LG3.f2.final <- make.seq(LG3.f2.ord,"force"))
 
 ## ---- ripple_LG3, results="hide"-----------------------------------------
-ripple.seq(ws=5, LG3.f2.final)
+ripple_seq(ws=5, LG3.f2.final)
 
 ## ---- LG3_final----------------------------------------------------------
 LG3.f2.final
@@ -221,7 +221,7 @@ rf.graph.table(LG3.f2.wrong, inter=FALSE)
 ## ---- try_M38, width=9, height=9-----------------------------------------
 temp.seq <- drop.marker(LG3.f2.wrong,38)
 temp.map <- map(temp.seq)
-temp.try <- try.seq(temp.map, 38, draw.try=TRUE)
+temp.try <- try_seq(temp.map, 38, draw.try=TRUE)
 
 ## ------------------------------------------------------------------------
 (LG3.f2.final<-make.seq(temp.try, 4))

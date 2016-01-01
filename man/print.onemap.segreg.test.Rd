@@ -4,10 +4,12 @@
 \alias{print.onemap.segreg.test}
 \title{Show the results of segregation tests}
 \usage{
-\method{print}{onemap.segreg.test}(x)
+\method{print}{onemap.segreg.test}(x, ...)
 }
 \arguments{
 \item{x}{an object of class onemap.segreg.test}
+
+\item{...}{currently ignored}
 }
 \value{
 a dataframe with marker name, H0 hypothesis, chi-square statistics,

@@ -738,7 +738,7 @@ unfeasible. Thus we will apply an heuristic that shows reliable
 results. First, we will choose a moderate number of markers, say 6, to
 create a framework using the function <code>compare</code>, and then we will
 positioning the remaining markers into this framework using function
-<code>try.seq</code>. The way we choose these markers in inbred-based populations
+<code>try_seq</code>. The way we choose these markers in inbred-based populations
 is somewhat different from what we did in outcrossing populations,
 where there is a mixture of segregation patterns (see the vignette for
 details).</p>
@@ -950,9 +950,9 @@ reasons).</p>
 argument <code>subset.search = &quot;twopt&quot;</code> indicates that these five markers
 should be chosen by using a two point method, which will be Rapid
 Chain Delineation, as indicated by the argument <code>twopt.alg = &quot;rcd&quot;</code>.
-<code>THRES = 3</code> indicates that the <code>try.seq</code> step will only add markers to
+<code>THRES = 3</code> indicates that the <code>try_seq</code> step will only add markers to
 the sequence which can be mapped with LOD Score greater than 3.
-<code>draw.try=TRUE</code> will display a diagnostic graphic for each <code>try.seq</code>
+<code>draw.try=TRUE</code> will display a diagnostic graphic for each <code>try_seq</code>
 step. Finally, <code>wait=1</code> indicates the minimum time interval in seconds
 to display the diagnostic graphic, so you will some sort of
 &ldquo;animation&rdquo;. </p>
@@ -1082,7 +1082,7 @@ mapped to a single position), use:</p>
 we see no reason do not use option <code>force</code>, and recommend it for
 users. </p>
 
-<p>The <code>order.seq</code> function can perform two rounds of the <code>try.seq</code> step,
+<p>The <code>order.seq</code> function can perform two rounds of the <code>try_seq</code> step,
 first using <code>THRES</code> and then <code>THRES - 1</code> as the threshold. This
 generally results in safe orders with more markers mapped, but takes
 longer to run. To do this, type:</p>
@@ -1314,9 +1314,9 @@ using the order with all markers as suggested by the function
 ##  16 markers            log-likelihood: -997.5836
 </code></pre>
 
-<p>Finally, to check for alternative orders, use <code>ripple.seq</code> function:</p>
+<p>Finally, to check for alternative orders, use <code>ripple_seq</code> function:</p>
 
-<pre><code class="r">ripple.seq(LG2.f2.final, ws=5, LOD=3)
+<pre><code class="r">ripple_seq(LG2.f2.final, ws=5, LOD=3)
 </code></pre>
 
 <p>The second argument, <code>ws = 5</code>, means that subsets (windows) of five
@@ -1598,7 +1598,7 @@ fractions, using hidden Markov models.</p>
 <p>We use here option <code>draw.try=FALSE</code> just to shortening the vignette,
 but recommend that you change it for <code>TRUE</code>.</p>
 
-<p>The second round of <code>try.seq</code> added markers <code>M9</code>, <code>M44</code> and <code>M48</code> (try
+<p>The second round of <code>try_seq</code> added markers <code>M9</code>, <code>M44</code> and <code>M48</code> (try
 it; results not shown).</p>
 
 <p>Get the order with all markers:</p>
@@ -1644,7 +1644,7 @@ it; results not shown).</p>
 
 <p>Check the final map (results not shown):</p>
 
-<pre><code class="r">ripple.seq(ws=5, LG1.f2.final)
+<pre><code class="r">ripple_seq(ws=5, LG1.f2.final)
 </code></pre>
 
 <p>No alternative order was found (please, try it).</p>
@@ -1904,7 +1904,7 @@ drawing some useful graphics (not shown; please change <code>draw.try</code> to
 ## Estimating final genetic map using tol = 10E-5.
 </code></pre>
 
-<p>We can see that in the second round of <code>try.seq</code> marker <code>M56</code> was
+<p>We can see that in the second round of <code>try_seq</code> marker <code>M56</code> was
 added (please, try it). A careful examination of the graphics can be a
 good source of information about how markers where placed.</p>
 
@@ -1947,7 +1947,7 @@ good source of information about how markers where placed.</p>
 
 <p>Check the final map (results not showed):</p>
 
-<pre><code class="r">ripple.seq(ws=5, LG3.f2.final)
+<pre><code class="r">ripple_seq(ws=5, LG3.f2.final)
 </code></pre>
 
 <p>No better alternative order was observed.</p>
@@ -2170,11 +2170,11 @@ marker <code>M38</code> and other markers. Thus <code>M38</code> is suppose to b
 them on the map.</p>
 
 <p>Since we have enough evidence that marker <code>M38</code> is misplaced, let us
-drop this marker and try to position it using the function <code>try.seq</code>:</p>
+drop this marker and try to position it using the function <code>try_seq</code>:</p>
 
 <pre><code class="r">temp.seq &lt;- drop.marker(LG3.f2.wrong,38)
 temp.map &lt;- map(temp.seq)
-temp.try &lt;- try.seq(temp.map, 38, draw.try=TRUE)
+temp.try &lt;- try_seq(temp.map, 38, draw.try=TRUE)
 </code></pre>
 
 <pre><code>## 38 --&gt; M38 : .......................

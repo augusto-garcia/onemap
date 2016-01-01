@@ -20,6 +20,10 @@ considered in the vicinity of the permuted window. If
 considered. In this veriosn, it is used only in backcross,
 \eqn{F_2}{F_2} or RIL crosses.}
 
+\item{LOD}{threshold for the LOD-Score, so that alternative orders
+with LOD less then or equal to this threshold will be
+displayed.}
+
 \item{tol}{tolerance for the C routine, i.e., the value used to
 evaluate convergence.}
 }

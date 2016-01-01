@@ -124,6 +124,8 @@ test_segregation <- function(x) {
 ##' of class class bc.onemap, f2.onemap, riself.onemap, risib.onemap or outcross.
 ##' 
 ##' @param x an object of class onemap.segreg.test
+##'
+##' @param ... currently ignored
 ##' 
 ##' @return a dataframe with marker name, H0 hypothesis, chi-square statistics,
 ##' p-values, and % of individuals genotyped.
@@ -134,7 +136,7 @@ test_segregation <- function(x) {
 ##' print(Chi) # Shows the results
 ##'
 ##' @export
-print.onemap.segreg.test <- function(x) {
+print.onemap.segreg.test <- function(x,...) {
     Z <- data.frame(Marker=x$Marker,
                     H0=unlist(x$Results.of.tests[1,]),
                     Chi.square=unlist(x$Results.of.tests[2,]),
@@ -157,6 +159,8 @@ print.onemap.segreg.test <- function(x) {
 ##' test_segregation()), i. e., after performing segregation tests
 ##' @param order a variable to define if p-values will be ordered in the plot
 ##'
+##' @param ... currently ignored
+##' 
 ##' @return a ggplot graphic
 ##'
 ##' @import ggplot2
@@ -183,7 +187,7 @@ print.onemap.segreg.test <- function(x) {
 ##' ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
 ##' 
 ##' @export
-plot.onemap.segreg.test <- function(x, order=TRUE) {
+plot.onemap.segreg.test <- function(x, order=TRUE,...) {
                                         # Create a data frame
     Z <- data.frame(Marker=x$Marker,
                     X.square=unlist(x$Results.of.tests[2,]),

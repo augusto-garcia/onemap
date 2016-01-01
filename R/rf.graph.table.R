@@ -62,6 +62,7 @@
 ##'   LG1 <- make.seq(groups,1)
 ##'   LG1.rcd <- rcd(LG1)
 ##'   rf.graph.table(LG1.rcd, inter=FALSE)
+##' 
 ##' \dontrun{
 ##'   ##Now, using interactive Tcl-Tk
 ##'   rf.graph.table(LG1.rcd, scale=2, inter=TRUE)
