@@ -29,19 +29,27 @@
 ##' Large values for the window size make computations very slow, specially if
 ##' there are many partially informative markers.
 ##' 
-##' @param input.seq an object of class \code{sequence} with a predefined
-##' order.
-##' @param ws an integer specifying the length of the window size (defaults to
-##' 4).
-##' @param LOD threshold for the LOD-Score, so that alternative orders with LOD
-##' less then or equal to this threshold will be displayed.
-##' @param tol tolerance for the C routine, i.e., the value used to evaluate
-##' convergence.
-##' @return This function does not return any value; it just produces text
-##' output to suggest alternative orders.
-##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com}
-##' @seealso \code{\link[onemap]{make.seq}}, \code{\link[onemap]{compare}},
-##' \code{\link[onemap]{try_seq}} and \code{\link[onemap]{order.seq}}.
+##' @param input.seq an object of class \code{sequence} with a
+##'     predefined order.
+##' @param ws an integer specifying the length of the window size
+##'     (defaults to 4).
+##' @param ext.w an integer specifying how many markers should be
+##'     considered in the vicinity of the permuted window. If
+##'     \code{ext.w=NULL} all markers in the sequence are
+##'     considered. In this veriosn, it is used only in backcross,
+##'     \eqn{F_2}{F_2} or RIL crosses.
+##' @param LOD threshold for the LOD-Score, so that alternative orders
+##'     with LOD less then or equal to this threshold will be
+##'     displayed.\
+##' @param tol tolerance for the C routine, i.e., the value used to
+##'     evaluate convergence.
+##' @return This function does not return any value; it just produces
+##'     text output to suggest alternative orders.
+##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com} and
+##'     Marcelo Mollinari, \email{mmollina@@usp.br}
+##' @seealso \code{\link[onemap]{make.seq}},
+##'     \code{\link[onemap]{compare}}, \code{\link[onemap]{try_seq}}
+##'     and \code{\link[onemap]{order.seq}}.
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
 ##' 1.09-43
@@ -69,16 +77,45 @@
 ##' @examples
 ##' 
 ##' \dontrun{
+##'  #Outcross example
 ##'   data(example.out)
 ##'   twopt <- rf.2pts(example.out)
-##'   
 ##'   markers <- make.seq(twopt,c(27,16,20,4,19,21,23,9,24,29))
 ##'   markers.map <- map(markers)
-##'   ripple.seq(markers.map)
-##' }
+##'   ripple_seq(markers.map)
 ##' 
-ripple.seq <-
-function(input.seq,ws=4,LOD=3,tol=10E-2) {
+##' #F2 example
+##'  data(fake.f2.onemap)
+##'  twopt <- rf.2pts(fake.f2.onemap)
+##'  all.mark <- make.seq(twopt,"all")
+##'  groups <- group(all.mark)
+##'  LG3 <- make.seq(groups,3)
+##'  LG3.ord <- order.seq(LG3, subset.search = "twopt", twopt.alg = "rcd", touchdown=TRUE)
+##'  LG3.ord
+##'  make.seq(LG3.ord) # get safe sequence
+##'  ord.1<-make.seq(LG3.ord,"force") # get forced sequence
+##'  ripple_seq(ord.1, ws=5)
+##' }
+##'
+##'
+
+ripple_seq<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2)
+{
+    if(is(get(input.seq$data.name), "outcross"))
+        return(ripple_seq_outcross(input.seq=input.seq,
+                                   ws=ws,
+                                   LOD=LOD,
+                                   tol=tol))
+    else
+        return(ripple_seq_inbred(input.seq=input.seq,
+                                 ws=ws,
+                                 ext.w=ext.w,
+                                 LOD=LOD,
+                                 tol=tol))
+}
+
+
+ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2) {
   # checking for correct objects
   if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   if(ws < 2) stop("ws must be greater than or equal to 2")
@@ -111,9 +148,9 @@ function(input.seq,ws=4,LOD=3,tol=10E-2) {
   # gather two-point information
   list.init <- phases(input.seq)
   
-  ### first position
-  cat(input.seq$seq.num[1:ws],"...")
-  
+  ## first position
+  cat(input.seq$seq.num[1:ws],"|",input.seq$seq.num[ws+1], "...", sep="-")
+    
   # create all possible alternative orders for the first subset
   all.ord <- t(apply(perm.tot(head(input.seq$seq.num,ws)),1,function(x) c(x,tail(input.seq$seq.num,-ws))))
   for(i in 1:nrow(all.ord)){
@@ -174,11 +211,11 @@ function(input.seq,ws=4,LOD=3,tol=10E-2) {
   }
   else cat(" OK\n\n")
   
-  ### middle positions
+  ## middle positions
   if (len > (ws+1)) {
     for (p in 2:(len-ws)) {
-      cat(input.seq$seq.num[p:(p+ws-1)],"...")
-      
+        cat("...", input.seq$seq.num[p-1], "|", input.seq$seq.num[p:(p+ws-1)],"|", input.seq$seq.num[p+ws],"...", sep="-")
+ 
 	  # create all possible alternative orders for the first subset
       all.ord <- t(apply(perm.tot(input.seq$seq.num[p:(p+ws-1)]),1,function(x) c(head(input.seq$seq.num,p-1),x,tail(input.seq$seq.num,-p-ws+1))))
       for(i in 1:nrow(all.ord)){
@@ -243,8 +280,7 @@ function(input.seq,ws=4,LOD=3,tol=10E-2) {
   }
   
   ### last position
-  cat(tail(input.seq$seq.num,ws),"...")
-  
+  cat(input.seq$seq.num[len-ws], "|" , tail(input.seq$seq.num,ws), sep="-")
   # create all possible alternative orders for the first subset
   all.ord <- t(apply(perm.tot(tail(input.seq$seq.num,ws)),1,function(x) c(head(input.seq$seq.num,-ws),x)))
   for(i in 1:nrow(all.ord)){
@@ -306,6 +342,156 @@ function(input.seq,ws=4,LOD=3,tol=10E-2) {
     cat("\n")
   }
   else cat(" OK\n\n") 
+}
+
+ripple_seq_inbred<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2)
+{
+    ## checking for correct objects
+    if(!any(class(input.seq)=="sequence"))
+        stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+    if(ws < 2)
+        stop("ws must be greater than or equal to 2")
+    if(ws > 5)
+        cat("WARNING: this operation may take a VERY long time\n\n")
+    flush.console()
+    len <- length(input.seq$seq.num)
+
+    ## computations unnecessary in this case
+    if (len <= ws)
+        stop("Length of sequence ", deparse(substitute(input.seq))," is smaller than ws. You can use the 'compare' function instead")
+
+    ## allocate variables
+    rf.init <- rep(NA,len-1)
+    tot <- prod(1:ws)
+    best.ord.like <- best.ord.LOD <- rep(-Inf,tot)
+    
+    ## first position
+    cat(input.seq$seq.num[1:ws],"|",input.seq$seq.num[ws+1], "...", sep="-")
+
+    ## create all possible alternative orders for the first subset
+    if(is.null(ext.w) || ext.w >= (length(input.seq$seq.num)-ws))
+        all.ord <- t(apply(perm.tot(head(input.seq$seq.num,ws)),1,function(x) c(x,tail(input.seq$seq.num,-ws))))
+    else 
+        all.ord <- t(apply(perm.tot(head(input.seq$seq.num,ws)),1,function(x) c(x,input.seq$seq.num[(ws+1):(ws+1+ext.w)])))
+
+    for(i in 1:nrow(all.ord)){
+        ## estimate parameters
+        seq.temp<-make.seq(get(input.seq$twopt), arg=all.ord[i,])
+        seq.temp$twopt<-input.seq$twopt
+        rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)     
+        final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
+                                  rf.vec=rf.temp,
+                                  verbose=FALSE,
+                                  tol=tol)
+        best.ord.like[i] <- final.map$loglike
+    }
+    ## calculate LOD-Scores for alternative orders
+    best.ord.LOD <- round((best.ord.like-max(best.ord.like))/log(10),2)
+    ## which orders will be printed
+    which.LOD <- which(abs(best.ord.LOD) < LOD)
+
+    if(length(which.LOD) > 1) {
+        ## if any order to print, sort by LOD-Score
+        order.print <- order(best.ord.LOD,decreasing=TRUE)
+        all.ord <- all.ord[order.print,]
+        best.ord.LOD <- best.ord.LOD[order.print]
+	## display results
+	which.LOD <- which(best.ord.LOD > -LOD)
+	LOD.print <- format(best.ord.LOD,digits=2,nsmall=2)
+        cat("\n  Alternative orders:\n")
+        for(j in which.LOD)
+            cat("  ",all.ord[j,1:(ws)], ifelse(len > (ws+1),"... : ",": "), LOD.print[j],"\n")
+        cat("\n")
+    }
+    else
+       cat(" OK\n\n")  
+    ## middle positions
+    if (len > (ws+1)) {
+        for (p in 2:(len-ws)) {
+            cat("...", input.seq$seq.num[p-1], "|", input.seq$seq.num[p:(p+ws-1)],"|", input.seq$seq.num[p+ws],"...", sep="-")
+            ## create all possible alternative orders for the first subset
+            if(is.null(ext.w) || ext.w >= (length(input.seq$seq.num)-ws))
+                all.ord <- t(apply(perm.tot(input.seq$seq.num[p:(p+ws-1)]),1,function(x) c(head(input.seq$seq.num,p-1),x,tail(input.seq$seq.num,-p-ws+1))))
+            else{   
+                x0<-(p-ext.w):(p-1)
+                x1<-(p+ws):((p+ws)+ext.w)
+                all.ord <- t(apply(perm.tot(input.seq$seq.num[p:(p+ws-1)]),1,function(x) c(input.seq$seq.num[x0[x0>0]],x,input.seq$seq.num[x1[x1 <= len]])))
+            }
+            for(i in 1:nrow(all.ord)){                
+                ## estimate parameters
+                seq.temp<-make.seq(get(input.seq$twopt), arg=all.ord[i,])
+                seq.temp$twopt<-input.seq$twopt
+                rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)     
+                final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
+                                          rf.vec=rf.temp,
+                                          verbose=FALSE,
+                                          tol=tol)
+                best.ord.like[i] <- final.map$loglike
+            }
+            ## calculate LOD-Scores for alternative orders
+            best.ord.LOD <- round((best.ord.like-max(best.ord.like))/log(10),2)
+            ## which orders will be printed
+            which.LOD <- which(best.ord.LOD > -LOD)
+      
+            if(length(which.LOD) > 1) {
+                ## if any order to print, sort by LOD-Score
+                order.print <- order(best.ord.LOD,decreasing=TRUE)
+                all.ord <- all.ord[order.print,]
+                best.ord.LOD <- best.ord.LOD[order.print]
+		
+		## display results
+                which.LOD <- which(best.ord.LOD > -LOD)
+                LOD.print <- format(best.ord.LOD, digits=2, nsmall=2)
+                cat("\n  Alternative orders:\n")
+                for(j in which.LOD)
+                {
+                    fin<-which(names(all.ord[j,])=="M")
+                    fin
+                    cat(ifelse(p>2,"  ...","  "),all.ord[j,(fin-ws+1):fin],ifelse((p+ws)<len,"... : ",": "),LOD.print[j],"\n")
+                }
+                cat("\n")
+            }
+      else cat(" OK\n\n")
+        }
+    }
+    ## last position
+    cat(input.seq$seq.num[len-ws], "|" , tail(input.seq$seq.num,ws), sep="-")
+        ## create all possible alternative orders for the first subset
+    if(is.null(ext.w) || ext.w >= (length(input.seq$seq.num)-ws))
+        all.ord <- t(apply(perm.tot(tail(input.seq$seq.num,ws)),1,function(x) c(head(input.seq$seq.num,-ws),x)))
+    else 
+        all.ord <- t(apply(perm.tot(tail(input.seq$seq.num,ws)),1,function(x) c(input.seq$seq.num[(len-ws-ext.w+1):(len-ws)],x)))
+    for(i in 1:nrow(all.ord)){
+        ## estimate parameters
+        seq.temp<-make.seq(get(input.seq$twopt), arg=all.ord[i,])
+        seq.temp$twopt<-input.seq$twopt
+        rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)     
+        final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
+                                  rf.vec=rf.temp,
+                                  verbose=FALSE,
+                                  tol=tol)
+        best.ord.like[i] <- final.map$loglike
+    }
+    ## calculate LOD-Scores for alternative orders
+    best.ord.LOD <- round((best.ord.like-max(best.ord.like))/log(10),2)
+    ## which orders will be printed
+    which.LOD <- which(abs(best.ord.LOD) < LOD)
+
+    if(length(which.LOD) > 1) {
+        ## if any order to print, sort by LOD-Score
+        order.print <- order(best.ord.LOD,decreasing=TRUE)
+        all.ord <- all.ord[order.print,]
+        best.ord.LOD <- best.ord.LOD[order.print]
+	## display results
+	which.LOD <- which(best.ord.LOD > -LOD)
+	LOD.print <- format(best.ord.LOD,digits=2,nsmall=2)
+        cat("\n  Alternative orders:\n")
+        for(j in which.LOD)
+            cat("  ",all.ord[j,(ncol(all.ord)-ws+1):ncol(all.ord)],ifelse(len > (ws+1),"... : ",": "),LOD.print[j],"\n")
+        cat("\n")
+    }
+    else
+       cat(" OK\n\n")  
 }
 
 # end of file
