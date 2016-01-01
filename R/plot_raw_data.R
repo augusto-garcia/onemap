@@ -1,20 +1,21 @@
-#######################################################################
-#                                                                     #
-# Package: onemap                                                     #
-#                                                                     #
-# File: plot_raw_data.R                                               #
-# Contains: plot.bc.onemap, plot.riself.onemap, plot.risib.onemap,    #
-# plot.f2.onemap, create_dataframe_for_plot_outcross, plot.outcross,  #
-# plot_by_segreg_type                                                 #
-#                                                                     #
-# Written by Antonio Augusto Franco Garcia                            #
-# copyright (c) 2015 Antonio Augusto Franco Garcia                    #
-#                                                                     #
-# First version: 2015/03/31                                           #
-# Last update: 2015/07/25                                             #
-# License: GNU General Public License version 3 or later              #
-#                                                                     #
-#######################################################################
+#########################################################################
+##                                                                     ##
+## Package: onemap                                                     ##
+##                                                                     ##
+## File: plot_raw_data.R                                               ##
+## Contains: plot.bc.onemap, plot.riself.onemap, plot.risib.onemap,    ##
+## plot.f2.onemap, create_dataframe_for_plot_outcross, plot.outcross,  ##
+## plot_by_segreg_type                                                 ##
+##                                                                     ##
+## Written by Antonio Augusto Franco Garcia with minor modifications   ##
+## by Marcelo Mollinari                                                ##
+## copyright (c) 2015 Antonio Augusto Franco Garcia                    ##
+##                                                                     ##
+## First version: 2015/03/31                                           ##
+## Last update: 2016/01/01                                             ##
+## License: GNU General Public License version 3 or later              ##
+##                                                                     ##
+#########################################################################
 
 ##' Draw a graphic of raw data for a backcross population
 ##'
@@ -154,7 +155,7 @@ plot.risib.onemap <- function(x) {
 ##' @export
 plot.f2.onemap <- function(x) {
     # Creating the data frame
-    df.F2 <- data.frame(x$geno.mmk[[1]])
+    df.F2 <- data.frame(x$geno)
     df.F2 <- reshape2::melt(df.F2) # function from package reshape
     df.F2[is.na(df.F2)] <- 0 # To avoid problems with NAs
     df.F2 <- cbind(ind=1:x$n.ind, df.F2)
