@@ -14,6 +14,7 @@
 #                                                                     #
 #######################################################################
 
+# This function calls C++ routine to find markers with redundant information
 get.bins <- function(geno, exact=TRUE)
 {
   bins<-.Call("get_bins",
@@ -24,6 +25,7 @@ get.bins <- function(geno, exact=TRUE)
   return(bins)
 }
 
+# This function calls C++ routine for two-point analysis (outcross)
 est_rf_out<-function(geno, mrk=0, seg_type=NULL, nind, verbose=TRUE)
 {
   r<-.Call("est_rf_out_wrap",
@@ -50,6 +52,7 @@ est_rf_out<-function(geno, mrk=0, seg_type=NULL, nind, verbose=TRUE)
   }
 }
 
+# This function calls C++ routine for two-point analysis (F2)
 est_rf_f2<-function(geno, mrk=0, seg_type=NULL, nind, verbose=TRUE)
 {
     r<-.Call("est_rf_f2_wrap",
@@ -66,6 +69,7 @@ est_rf_f2<-function(geno, mrk=0, seg_type=NULL, nind, verbose=TRUE)
     return(r)
 }
 
+# This function calls C++ routine for two-point analysis (bc)
 est_rf_bc<-function(geno, mrk=0,  nind, type=0, verbose=TRUE)
 {
     r<-.Call("est_rf_bc_wrap",
@@ -82,6 +86,7 @@ est_rf_bc<-function(geno, mrk=0,  nind, type=0, verbose=TRUE)
     return(r)
 }
 
+# This function calls C++ routine for multipoint analysis (f2)
 est_map_hmm_f2<-function(geno, rf.vec=NULL, verbose=TRUE, tol=1e-6)
 {
     if(length(rf.vec) != (nrow(geno)-1))
@@ -96,6 +101,7 @@ est_map_hmm_f2<-function(geno, rf.vec=NULL, verbose=TRUE, tol=1e-6)
     return(r)
 }
 
+# This function calls C++ routine for multipoint analysis (bc)
 est_map_hmm_bc<-function(geno, rf.vec=NULL, verbose=TRUE, tol=1e-6)
 {
     if(length(rf.vec) != (nrow(geno)-1))
@@ -109,7 +115,5 @@ est_map_hmm_bc<-function(geno, rf.vec=NULL, verbose=TRUE, tol=1e-6)
     names(r)<-c("rf", "loglike") 
     return(r)
 }
-
-
 #end of the file
 

@@ -27,7 +27,7 @@
 ##' using \code{NULL}, the new values overridden the ones in object
 ##' \code{input.seq}.
 ##' 
-##' @aliases group print.group
+##' @aliases group
 ##' @param input.seq an object of class \code{sequence}.
 ##' @param LOD a (positive) real number used as minimum LOD score
 ##'     (threshold) to declare linkage.
@@ -35,12 +35,6 @@
 ##'     maximum recombination fraction to declare linkage.
 ##' @param verbose logical. If \code{TRUE}, current progress is shown;
 ##'     if \code{FALSE}, no output is produced.
-##' @param x an object of class \code{group}.
-##' @param detailed logical. If \code{FALSE}, only a small summary of
-##'     the linkage groups is printed. If \code{TRUE} (default), the
-##'     names of markers in each linkage group are also displayed.
-##' @param \dots further arguments, passed to other methods. Currently
-##'     ignored.
 ##' @return Returns an object of class \code{group}, which is a list
 ##'     containing the following components: \item{data.name}{name of
 ##'     the object of class \code{outcross} that contains the raw
@@ -70,6 +64,7 @@
 ##'   all.data <- make.seq(twopts,"all")
 ##'   link_gr <- group(all.data)
 ##'   link_gr
+##'   print(link_gr, details=FALSE) #omit the names of the markers
 ##' 
 group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
 {
@@ -122,7 +117,22 @@ group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
                    n.groups=i-1, groups=groups), class = "group")
 }
 
-## print method for object class 'group'
+##' Show the results of grouping procedure
+##'
+##' It shows the linkage groups as well as the unlinked markers.
+##' 
+##' @aliases print.group
+##' @param x an object of class onemap.segreg.test
+##'
+##' @param detailed logical. If \code{TRUE} the markers in each
+##'     linkage group are printed.
+##'
+##' @param ... currently ignored
+##' @return \code{NULL}
+##' @keywords internal
+##' @export
+##'
+
 print.group <-
     function(x, detailed=TRUE,...) {
         ## checking for correct object
@@ -157,6 +167,8 @@ print.group <-
         }
     }
 
+
+##Checks if a marker i is linked with markers in a vector s
 check.linkage<-function(i, s, cl, geno, st=NULL, max.rf, LOD)
 {
     s<-s[is.na(match(s,i))]

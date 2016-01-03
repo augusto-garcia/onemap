@@ -2,7 +2,6 @@
 % Please edit documentation in R/group.R
 \name{group}
 \alias{group}
-\alias{print.group}
 \title{Assign markers to linkage groups}
 \usage{
 group(input.seq, LOD = NULL, max.rf = NULL, verbose = TRUE)
@@ -18,15 +17,6 @@ maximum recombination fraction to declare linkage.}
 
 \item{verbose}{logical. If \code{TRUE}, current progress is shown;
 if \code{FALSE}, no output is produced.}
-
-\item{x}{an object of class \code{group}.}
-
-\item{detailed}{logical. If \code{FALSE}, only a small summary of
-the linkage groups is printed. If \code{TRUE} (default), the
-names of markers in each linkage group are also displayed.}
-
-\item{\dots}{further arguments, passed to other methods. Currently
-ignored.}
 }
 \value{
 Returns an object of class \code{group}, which is a list
@@ -61,6 +51,7 @@ using \code{NULL}, the new values overridden the ones in object
   all.data <- make.seq(twopts,"all")
   link_gr <- group(all.data)
   link_gr
+  print(link_gr, details=FALSE) #omit the names of the markers
 
 }
 \author{

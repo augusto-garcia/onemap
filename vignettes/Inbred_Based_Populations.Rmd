@@ -349,7 +349,7 @@ If you want to see the results for a single pair of markers, say `M12` and
 `M42`, use:
 
 ```{r, print_2Mks_two_points}
-print(twopts.f2, "M12", "M42")
+print(twopts.f2, c("M12", "M42"))
 ``` 
 
 This was possible because `OneMap` has a version of `plot` function

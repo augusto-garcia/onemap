@@ -214,7 +214,7 @@ If you want to see the results for some arbitrary markers, say `M1`
 and `M3`, the command is:
 
 ```{r}
-print(twopts, "M1", "M3")
+print(twopts, c("M1", "M3"))
 ``` 
 
 Each line corresponds to a possible linkage phase. 1 denotes coupling

@@ -106,7 +106,8 @@ compare<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
         return(compare_inbred(input.seq=input.seq,n.best=n.best,tol=tol,verbose=verbose))
 }
 
-
+## Compare all possible orders (exhaustive search) for a given sequence of
+## markers (for outcrosses)
 compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
 {
     ## checking for correct objects
@@ -268,7 +269,8 @@ compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
     }
 }
 
-
+## Compare all possible orders (exhaustive search) for a given sequence of
+## markers (crosses derived from inbred lines)
 compare_inbred<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
     ## checking for correct objects
     if(!any(class(input.seq)=="sequence"))
