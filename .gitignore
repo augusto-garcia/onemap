@@ -5,3 +5,6 @@
 onemap.Rproj~
 *.o
 *.so
+*.cro
+*.map
+*.bak

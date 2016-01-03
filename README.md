@@ -1,5 +1,5 @@
-<!-- [![Build Status](https://travis-ci.org/augusto-garcia/onemap.svg?branch=master)](https://travis-ci.org/augusto-garcia/onemap) -->
-[![Build Status](https://travis-ci.org/mmollina/onemap.svg?branch=master)](https://travis-ci.org/mmollina/onemap)
+[![Build Status](https://travis-ci.org/augusto-garcia/onemap.svg?branch=master)](https://travis-ci.org/augusto-garcia/onemap)
+<!-- [![Build Status](https://travis-ci.org/mmollina/onemap.svg?branch=master)](https://travis-ci.org/mmollina/onemap) -->
 [![Development](https://img.shields.io/badge/development-active-blue.svg)](https://img.shields.io/badge/development-active-blue.svg)
 
 # OneMap
