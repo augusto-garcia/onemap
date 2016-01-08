@@ -31,10 +31,7 @@ types, using the same notation. For details see \link{read.outcross}.}
 \item{segr.type.num}{a vector with the segregation type of each marker,
 represented in a simplified manner as integers. Segregation types were
 adapted from outcross segregation types. For details see
-\link{read.outcross}.} \item{phase}{a numeric vector containing the linkage
-phase information between markers, i.e., 1 for coupling and -1 for
-repulsion, which is trivial for backcrosses, \eqn{F_2} and RILs.}
-\item{input}{the name of the input file.} \item{n.phen}{number of
+\link{read.outcross}.} \item{input}{the name of the input file.} \item{n.phen}{number of
 phenotypes.} \item{pheno}{a matrix with phenotypic values.  Each column
 contains data for a trait and each row represents an individual. Currently
 ignored.}

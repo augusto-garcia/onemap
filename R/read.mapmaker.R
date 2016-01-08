@@ -48,10 +48,7 @@
 ##' \item{segr.type.num}{a vector with the segregation type of each marker,
 ##' represented in a simplified manner as integers. Segregation types were
 ##' adapted from outcross segregation types. For details see
-##' \link{read.outcross}.} \item{phase}{a numeric vector containing the linkage
-##' phase information between markers, i.e., 1 for coupling and -1 for
-##' repulsion, which is trivial for backcrosses, \eqn{F_2} and RILs.}
-##' \item{input}{the name of the input file.} \item{n.phen}{number of
+##' \link{read.outcross}.} \item{input}{the name of the input file.} \item{n.phen}{number of
 ##' phenotypes.} \item{pheno}{a matrix with phenotypic values.  Each column
 ##' contains data for a trait and each row represents an individual. Currently
 ##' ignored.}
@@ -245,7 +242,6 @@ read.mapmaker<-function (dir, file)
     ## data coding in onemap style
     segr.type<-character(n.mar)
     segr.type.num<-numeric(n.mar)
-    ph<-rep(-2,n.mar)
     if(type=="f2"){
         cl<-"f2.onemap"
         ##checking for markers with one class (e.g A A A - - - A - A - - - A)
@@ -277,7 +273,6 @@ read.mapmaker<-function (dir, file)
         segr.type.num[segr.type=="C.A"]<-2
         segr.type.num[segr.type=="D.B"]<-3
         segr.type.num[segr.type=="M.X"]<-4    
-        ph[mkt==5]<--3
         geno[is.na(geno)]<-0    
     }
     else if(type=="bc"){
@@ -287,7 +282,6 @@ read.mapmaker<-function (dir, file)
             stop("check data: there are more than 2 classes for bc")
         segr.type[]<-"A.H" 
         segr.type.num<-rep(NA,ncol(geno))
-        ph<-rep(NA,n.mar)
         geno[is.na(geno)]<-0 
         geno[geno==3]<-1 #coding for raw data entered as H and B 
     }
@@ -299,7 +293,6 @@ read.mapmaker<-function (dir, file)
             stop("check data: there are more than 2 classes for ", type)
         segr.type[]<-"A.B" 
         segr.type.num<-rep(NA,ncol(geno))
-        ph<-rep(NA,n.mar) 
         geno[is.na(geno)]<-0 
         geno[geno==3]<-2 #coding as backcross
     }
@@ -313,7 +306,7 @@ read.mapmaker<-function (dir, file)
         }
     }
     structure(list(geno = geno, n.ind = n.ind, n.mar = n.mar,
-                   segr.type = segr.type, segr.type.num=segr.type.num,phase=ph,
+                   segr.type = segr.type, segr.type.num=segr.type.num,
                    input=file, n.phen=n.phen, pheno = pheno),  class = cl)
 }
 
@@ -321,7 +314,8 @@ read.mapmaker<-function (dir, file)
 print.f2.onemap<-function (x, ...){
     ##checking for correct object
     if (any(is.na(match(c("geno","n.ind","n.mar","segr.type",
-                          "segr.type.num","phase","input","n.phen","pheno"), 
+                          "segr.type.num",
+                          "input","n.phen","pheno"), 
                         names(x))))) 
         stop("this is not an object of class 'f2.onemap'")
     mis<-100*sum(x$geno!=0)/length(x$geno) #counting missing data
@@ -358,7 +352,8 @@ print.f2.onemap<-function (x, ...){
 print.bc.onemap<-function (x, ...) {
     ##checking for correct object
     if (any(is.na(match(c("geno","n.ind","n.mar","segr.type",
-                          "segr.type.num","phase","input","n.phen","pheno"), 
+                          "segr.type.num",
+                          "input","n.phen","pheno"), 
                         names(x))))) 
         stop("this is not an object of class 'bc.onemap'")
     mis<-100*sum(x$geno!=0)/length(x$geno)#counting missing data
@@ -386,7 +381,8 @@ print.bc.onemap<-function (x, ...) {
 print.riself.onemap<-function (x, ...) {
     ##checking for correct object
     if (any(is.na(match(c("geno","n.ind","n.mar","segr.type",
-                          "segr.type.num","phase","input","n.phen","pheno"), 
+                          "segr.type.num",
+                          "input","n.phen","pheno"), 
                         names(x))))) 
         stop("this is not an object of class 'riself.onemap'")
     mis<-100*sum(x$geno!=0)/length(x$geno)#counting missing data
@@ -414,7 +410,8 @@ print.riself.onemap<-function (x, ...) {
 print.risib.onemap<-function (x, ...) {
     ##checking for correct object
     if (any(is.na(match(c("geno","n.ind","n.mar","segr.type",
-                          "segr.type.num","phase","input","n.phen","pheno"), 
+                          "segr.type.num",
+                          "input","n.phen","pheno"), 
                         names(x))))) 
         stop("this is not an object of class 'risib.onemap'")
     mis<-100*sum(x$geno!=0)/length(x$geno)#counting missing data

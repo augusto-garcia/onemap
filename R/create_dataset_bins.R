@@ -65,7 +65,7 @@ create_data_bins <- function(input.obj, bins)
   dat.temp$n.mar<-ncol(dat.temp$geno)
   dat.temp$segr.type<-input.obj$segr.type[wrk]
   dat.temp$segr.type.num<-input.obj$segr.type.num[wrk]
-  dat.temp$phase<-input.obj$phase[wrk]
+  #dat.temp$phase<-input.obj$phase[wrk]
   dat.temp$n.phen<-input.obj$n.phen
   dat.temp$pheno<-input.obj$pheno
  return(dat.temp)
