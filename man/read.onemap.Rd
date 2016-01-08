@@ -43,7 +43,7 @@ information, i.e., if markers are anchored on any reference sequence, and
 0 otherwise; iv) a similar 1/0 variable indicating whether there is POS
 information for markers; and v) the number of phenotypic traits.
 
-The following line contains sample IDs, separated by empty spaces or tabs.
+The next line contains sample IDs, separated by empty spaces or tabs.
 Addition of this sample ID requirement makes it possible for separate input
 datasets to be merged.
 

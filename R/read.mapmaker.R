@@ -11,7 +11,7 @@
 # copyright (c) 2000-6, Karl W Broman                                 #
 #                                                                     #
 # First version: 09/27/2009                                           #
-# Last update:   03/05/2011                                           #
+# Last update:   01/07/2016                                           #
 # License: GNU General Public License version 3 (June, 2007) or later #
 #                                                                     #
 #######################################################################
@@ -29,8 +29,7 @@
 ##' 
 ##' @param dir directory where the input file is located.
 ##' @param file the name of the input file which contains the data to be read.
-##' @return An object of class \code{bc.onemap}, \code{f2.onemap},
-##' \code{riself.onemap} or \code{risib.onemap} i.e., a list with the following
+##' @return An object of class \code{onemap}, i.e., a list with the following
 ##' components: \item{geno}{a matrix with integers indicating the genotypes
 ##' read for each marker in \code{onemap} fashion. Each column contains data
 ##' for a marker and each row represents an individual.}
@@ -44,11 +43,11 @@
 ##' \item{n.ind}{number of individuals.} \item{n.mar}{number of markers.}
 ##' \item{segr.type}{a vector with the segregation type of each marker, as
 ##' \code{strings}. Segregation types were adapted from outcross segregation
-##' types, using the same notation. For details see \link{read.outcross}.}
+##' types, using the same notation. For details see \link{read.onemap}.}
 ##' \item{segr.type.num}{a vector with the segregation type of each marker,
 ##' represented in a simplified manner as integers. Segregation types were
 ##' adapted from outcross segregation types. For details see
-##' \link{read.outcross}.} \item{phase}{a numeric vector containing the linkage
+##' \link{read.onemap}.} \item{phase}{a numeric vector containing the linkage
 ##' phase information between markers, i.e., 1 for coupling and -1 for
 ##' repulsion, which is trivial for backcrosses, \eqn{F_2} and RILs.}
 ##' \item{input}{the name of the input file.} \item{n.phe}{number of

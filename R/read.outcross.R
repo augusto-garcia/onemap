@@ -69,7 +69,7 @@
 ##' to markers of type \code{"B2.6"}; 4 corresponds to markers of type
 ##' \code{"B3.7"}; 5 corresponds to markers of type \code{"C.8"}; 6 corresponds
 ##' to markers of type \code{"D1"} and 7 corresponds to markers of type
-##' \code{"D2"}} \item{n.phen}{the number of traits included in the file}
+##' \code{"D2"}} \item{n.phe}{the number of traits included in the file}
 ##' \item{pheno}{the name of the phenoytpes} \item{input}{the name of the input file.}
 ##' @author Adapted from Karl Broman (package \pkg{qtl}) by Gabriel R A
 ##' Margarido, \email{gramarga@@gmail.com}, later with additions from Luciano C Silva
@@ -103,7 +103,7 @@ read.outcross <- function (dir, file) {
                          nlines = 0, blank.lines.skip = FALSE, quiet = TRUE, sep = "\n"))
   cur.mar <- 0
   cur.pheno <- 0
-  n.phen <- 0
+  n.phe <- 0
   flag <- 0
   for (i in 1:n.lines) {
     a <- scan(file, what = character(), skip = i - 1, nlines = 1,
@@ -118,18 +118,18 @@ read.outcross <- function (dir, file) {
         stop("The first line of the input file must have the following information: 'number of individuals', 'number of markers', and 'number of traits'. These numbers must be separated with an empty space. For instance, 10 5 0.", call.= TRUE)
       n.ind <- as.numeric(a[1])
       n.mar <- as.numeric(a[2])
-      n.phen <- as.numeric(a[3]) #
+      n.phe <- as.numeric(a[3]) #
       cat(" Working...\n\n")
       marnames <- rep("", n.mar)
       geno <- matrix(0, ncol = n.mar, nrow = n.ind)
       segr.type <- character(n.mar)
-      if (n.phen == 0) {
+      if (n.phe == 0) {
         pheno <- numeric(0) #matrix(1:n.ind, ncol = 1)
         phenonames <- character(0) #c("number")
       }
       else {
-        pheno <- matrix(0, ncol = n.phen, nrow = n.ind)
-        phenonames <- rep("", n.phen)
+        pheno <- matrix(0, ncol = n.phe, nrow = n.ind)
+        phenonames <- rep("", n.phe)
       }
     } #finishes reading first line in the file (flag==0)
     else {#reading lines of markers and traits
@@ -138,7 +138,7 @@ read.outcross <- function (dir, file) {
         cur.row <- 1
         if (cur.mar > n.mar) {#reading lines of traits that start with "*"
           cur.pheno <- cur.pheno + 1
-          if (cur.pheno > n.phen)
+          if (cur.pheno > n.phe)
             next
           phenonames[cur.pheno] <- substring(a[1], 2)
           if (length(a) > 1) {
@@ -211,25 +211,25 @@ read.outcross <- function (dir, file) {
   geno <- temp.data[[1]]
   segr.type.num <- temp.data[[2]]
   rm(temp.data)
-  if(n.phen != 0) {
+  if(n.phe != 0) {
     colnames(pheno) <- phenonames
     pheno[!is.na(pheno) & pheno == "-"] <- NA
   }
   cat(" --Read the following data:\n")
   cat("\tNumber of individuals: ", n.ind, "\n")
   cat("\tNumber of markers:     ", n.mar, "\n")
-  cat("\tNumber of traits:      ", n.phen, "\n")
-  if(n.phen != 0) {
+  cat("\tNumber of traits:      ", n.phe, "\n")
+  if(n.phe != 0) {
     miss.value.pheno <- apply((apply(pheno, 2,is.na)),2,sum)
     cat("\tMissing trait values:      ", "\n")
-    for(i in 1:n.phen) {
+    for(i in 1:n.phe) {
       cat("\t",formatC(paste(colnames(pheno)[i],":",sep=""),width=max(nchar(paste(colnames(pheno),":",sep="")))), miss.value.pheno[i], "\n")
     }
   }
 
   structure(list(geno = geno, n.ind = n.ind, n.mar = n.mar,
                  segr.type = segr.type, segr.type.num = segr.type.num,
-                 n.phen = n.phen, pheno = pheno,
+                 n.phe = n.phe, pheno = pheno,
                  input = file),
             class = "outcross")
 }
@@ -247,11 +247,11 @@ print.outcross <- function (x, ...) {
     cat(paste("       ", rownames(quant)[i], ":\t", quant[i],
               "\n", sep = ""))
   }
-  cat("    No. traits:        ", x$n.phen, "\n")
-  if(x$n.phen > 0) {
+  cat("    No. traits:        ", x$n.phe, "\n")
+  if(x$n.phe > 0) {
     miss.value <- apply((apply(x$pheno, 2,is.na)),2,sum)
     cat("    Missing trait values:", "\n")
-    for (i in 1:x$n.phen) {
+    for (i in 1:x$n.phe) {
       #cat(paste("       ", colnames(x$pheno)[i], "\n", sep = ""))
       cat("\t",formatC(paste(colnames(x$pheno)[i],":", sep=""), width= max(nchar(paste(colnames(x$pheno),":",sep="")))), miss.value[i], "\n")
     }

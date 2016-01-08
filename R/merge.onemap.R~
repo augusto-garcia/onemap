@@ -1,0 +1,30 @@
+merge.onemap <- function(...) {
+    onemap.objs <- list(...)
+    n.objs <- length(onemap.objs)
+    if (!n.objs) {
+        stop("You must provide a list of OneMap objects as input.")
+    }
+    for (i in 1:n.objs) {
+        if(class(onemap.objs[[i]])[1] != "onemap")
+            stop("All objects must be of class 'onemap'.")
+    }
+    if (n.objs == 1) {
+        stop("Nothing to merge.")
+    }
+    
+    ## Check if all objects are of the same cross type
+    cross.type <- class(onemap.objs[[1]])[2]
+    for (i in 2:n.objs) {
+        if(class(onemap.objs[[i]])[2] != cross.type)
+            stop("All objects must be of the same cross type.")
+    }
+
+    ## Start merging
+    
+### CREATE WITH MISSING DATA
+### MATCH INDIVIDUALS
+##### IF ONE OBJECT (OR MORE) DOES NOT CONTAIN SAMPLE IDs, IT IS OLD -> CHECK FOR NUMBER OF INDIVIDUALS AND ASSUME SAME ORDERING
+### SIMPLY CONCATENATE MARKERS
+### MAYBE CHECK DUPLICATE MARKER NAMES?
+### CONCATENATE ALL OTHER ATTRIBUTES
+}
