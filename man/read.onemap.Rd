@@ -25,7 +25,10 @@ to markers of type \code{"B2.6"}; 4 corresponds to markers of type
 \code{"B3.7"}; 5 corresponds to markers of type \code{"C.8"}; 6 corresponds
 to markers of type \code{"D1"} and 7 corresponds to markers of type
 \code{"D2"}. Markers for F2 intercrosses are coded as 1; all other crosses
-are left as \code{NA}.}\item{input}{the name of the input file.}
+are left as \code{NA}.} \item{input}{the name of the input file.}
+\item{n.phe}{number of phenotypes.} \item{pheno}{a matrix with phenotypic
+values. Each column contains data for a trait and each row represents an
+individual.}
 }
 \description{
 Imports data derived from outbred parents (full-sib family) or inbred
@@ -104,8 +107,8 @@ likelihood estimation of linkage and linkage phases in outcrossing species.
 \emph{Theoretical Population Biology} 61: 349-363.
 }
 \seealso{
-\code{\link[onemap]{merge.onemap}} and the \code{example} directory
-in the package source.
+\code{\link[onemap]{combine.onemap}} and the \code{example}
+directory in the package source.
 }
 \keyword{IO}
 

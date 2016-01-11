@@ -3,13 +3,13 @@
 # Package: onemap                                                     #
 #                                                                     #
 # File: read.onemap.R                                                 #
-# Contains: read.onemap, print.outcross                               #
+# Contains: read.onemap, print.onemap                                 #
 #                                                                     #
 # Written by Gabriel Rodrigues Alves Margarido                        #
 # copyright (c) 2015, Gabriel R A Margarido                           #
 #                                                                     #
 # First version: 11/25/2015                                           #
-# Last update: 12/23/2015                                             #
+# Last update: 01/11/2016                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -88,10 +88,13 @@
 ##' \code{"B3.7"}; 5 corresponds to markers of type \code{"C.8"}; 6 corresponds
 ##' to markers of type \code{"D1"} and 7 corresponds to markers of type
 ##' \code{"D2"}. Markers for F2 intercrosses are coded as 1; all other crosses
-##' are left as \code{NA}.}\item{input}{the name of the input file.}
+##' are left as \code{NA}.} \item{input}{the name of the input file.}
+##' \item{n.phe}{number of phenotypes.} \item{pheno}{a matrix with phenotypic
+##' values. Each column contains data for a trait and each row represents an
+##' individual.}
 ##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com}
-##' @seealso \code{\link[onemap]{merge.onemap}} and the \code{example} directory
-##' in the package source.
+##' @seealso \code{\link[onemap]{combine.onemap}} and the \code{example}
+##' directory in the package source.
 ##' @references Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993)
 ##' Constructing genetic linkage maps with MAPMAKER/EXP Version 3.0: a tutorial
 ##' and reference manual. \emph{A Whitehead Institute for Biomedical Research
