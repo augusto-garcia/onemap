@@ -4,10 +4,12 @@
 \alias{plot.f2.onemap}
 \title{Draw a graphic of raw data for an F2 population}
 \usage{
-\method{plot}{f2.onemap}(x)
+\method{plot}{f2.onemap}(x, ...)
 }
 \arguments{
 \item{x}{an object of class f2.onemap, with data and additional information}
+
+\item{...}{currently ignored}
 }
 \value{
 a ggplot graphic

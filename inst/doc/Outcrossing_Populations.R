@@ -125,7 +125,7 @@ LG2.comp
 LG2.frame <- make.seq(LG2.comp)
 
 ## ---- results='hide'-----------------------------------------------------
-LG2.extend <- try.seq(LG2.frame,9)
+LG2.extend <- try_seq(LG2.frame,9)
 
 ## ------------------------------------------------------------------------
 LG2.extend
@@ -134,19 +134,19 @@ LG2.extend
 print(LG2.extend,5)
 
 ## ---- echo=TRUE----------------------------------------------------------
-LG2.extend <- try.seq(LG2.frame, 9, draw.try=TRUE)
+LG2.extend <- try_seq(LG2.frame, 9, draw.try=TRUE)
 
 ## ------------------------------------------------------------------------
 LG2.frame <- make.seq(LG2.extend,5,1)
 
 ## ---- results='hide'-----------------------------------------------------
-LG2.extend <- try.seq(LG2.frame,29)
+LG2.extend <- try_seq(LG2.frame,29)
 LG2.frame <- make.seq(LG2.extend,7)
-LG2.extend <- try.seq(LG2.frame,27)
+LG2.extend <- try_seq(LG2.frame,27)
 LG2.frame <- make.seq(LG2.extend,1)
-LG2.extend <- try.seq(LG2.frame, 16)
+LG2.extend <- try_seq(LG2.frame, 16)
 LG2.frame <- make.seq(LG2.extend,2)
-LG2.extend <- try.seq(LG2.frame,21)
+LG2.extend <- try_seq(LG2.frame,21)
 LG2.final <- make.seq(LG2.extend,6)
 
 ## ------------------------------------------------------------------------
@@ -169,7 +169,7 @@ LG2.ord <- order.seq(LG2, n.init=5, THRES=3, touchdown=TRUE)
 LG2.ord
 
 ## ------------------------------------------------------------------------
-ripple.seq(LG2.all, ws=4, LOD=3)
+ripple_seq(LG2.all, ws=4, LOD=3)
 
 ## ------------------------------------------------------------------------
 LG2.all
@@ -187,7 +187,7 @@ LG1.ord
 (LG1.final <- make.seq(LG1.ord,"force"))
 
 ## ------------------------------------------------------------------------
-ripple.seq(LG1.final)
+ripple_seq(LG1.final)
 
 ## ------------------------------------------------------------------------
 LG1.final

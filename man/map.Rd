@@ -4,13 +4,15 @@
 \alias{map}
 \title{Construct the linkage map for a sequence of markers}
 \usage{
-map(input.seq, tol = 1e-04)
+map(input.seq, tol = 1e-04, verbose = FALSE)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}
 
 \item{tol}{tolerance for the C routine, i.e., the value used to evaluate
 convergence.}
+
+\item{verbose}{If \code{TRUE}, print tracing information.}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the

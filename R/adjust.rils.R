@@ -6,7 +6,7 @@
 # Contains: adjust.rf.ril                                             #
 #                                                                     #
 # Written by Marcelo Mollinari                                        #
-# Adapted from read.cross.mm (found in the R package qtl)             #
+# Adapted from qtl package                                            #
 # copyright (c) 2001-10, Karl W Broman                                #
 #                                                                     #
 # First version: Feb 2001                                             #

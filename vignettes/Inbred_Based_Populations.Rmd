@@ -349,7 +349,7 @@ If you want to see the results for a single pair of markers, say `M12` and
 `M42`, use:
 
 ```{r, print_2Mks_two_points}
-print(twopts.f2, "M12", "M42")
+print(twopts.f2, c("M12", "M42"))
 ``` 
 
 This was possible because `OneMap` has a version of `plot` function
@@ -524,7 +524,7 @@ unfeasible. Thus we will apply an heuristic that shows reliable
 results. First, we will choose a moderate number of markers, say 6, to
 create a framework using the function `compare`, and then we will
 positioning the remaining markers into this framework using function
-`try.seq`. The way we choose these markers in inbred-based populations
+`try_seq`. The way we choose these markers in inbred-based populations
 is somewhat different from what we did in outcrossing populations,
 where there is a mixture of segregation patterns (see the vignette for
 details).
@@ -571,9 +571,9 @@ The first argument is an object of class `sequence` (LG2.f2). `n.init
 argument `subset.search = "twopt"` indicates that these five markers
 should be chosen by using a two point method, which will be Rapid
 Chain Delineation, as indicated by the argument `twopt.alg = "rcd"`.
-`THRES = 3` indicates that the `try.seq` step will only add markers to
+`THRES = 3` indicates that the `try_seq` step will only add markers to
 the sequence which can be mapped with LOD Score greater than 3.
-`draw.try=TRUE` will display a diagnostic graphic for each `try.seq`
+`draw.try=TRUE` will display a diagnostic graphic for each `try_seq`
 step. Finally, `wait=1` indicates the minimum time interval in seconds
 to display the diagnostic graphic, so you will some sort of
 "animation". 
@@ -614,7 +614,7 @@ Although some old publications presented maps with only `safe` orders,
 we see no reason do not use option `force`, and recommend it for
 users. 
 
-The `order.seq` function can perform two rounds of the `try.seq` step,
+The `order.seq` function can perform two rounds of the `try_seq` step,
 first using `THRES` and then `THRES - 1` as the threshold. This
 generally results in safe orders with more markers mapped, but takes
 longer to run. To do this, type:
@@ -647,10 +647,10 @@ using the order with all markers as suggested by the function
 (LG2.f2.final<-make.seq(LG2.f2.ord, "force"))
 ``` 
 
-Finally, to check for alternative orders, use `ripple.seq` function:
+Finally, to check for alternative orders, use `ripple_seq` function:
 
 ```{r, ripple_lg2_final, results="hide"}
-ripple.seq(LG2.f2.final, ws=5, LOD=3)
+ripple_seq(LG2.f2.final, ws=5, LOD=3)
 ``` 
 
 The second argument, `ws = 5`, means that subsets (windows) of five
@@ -705,7 +705,7 @@ LG1.f2.ord <- order.seq(input.seq=LG1.f2, n.init = 5,
 We use here option `draw.try=FALSE` just to shortening the vignette,
 but recommend that you change it for `TRUE`.
 
-The second round of `try.seq` added markers `M9`, `M44` and `M48` (try
+The second round of `try_seq` added markers `M9`, `M44` and `M48` (try
 it; results not shown).
 
 Get the order with all markers:
@@ -717,7 +717,7 @@ Get the order with all markers:
 Check the final map (results not shown):
 
 ```{r, results="hide"}
-ripple.seq(ws=5, LG1.f2.final)
+ripple_seq(ws=5, LG1.f2.final)
 ``` 
 
 No alternative order was found (please, try it).
@@ -750,7 +750,7 @@ LG3.f2.ord <- order.seq(input.seq=LG3.f2, n.init = 5,
                         touchdown=TRUE)
 ``` 
 
-We can see that in the second round of `try.seq` marker `M56` was
+We can see that in the second round of `try_seq` marker `M56` was
 added (please, try it). A careful examination of the graphics can be a
 good source of information about how markers where placed.
 
@@ -763,7 +763,7 @@ Now, get the order with all markers:
 Check the final map (results not showed):
 
 ```{r, ripple_LG3, results="hide"}
-ripple.seq(ws=5, LG3.f2.final)
+ripple_seq(ws=5, LG3.f2.final)
 ``` 
 
 No better alternative order was observed.
@@ -874,12 +874,12 @@ marker `M38` and other markers. Thus `M38` is suppose to be close to
 them on the map.
 
 Since we have enough evidence that marker `M38` is misplaced, let us
-drop this marker and try to position it using the function `try.seq`:
+drop this marker and try to position it using the function `try_seq`:
   
 ```{r, try_M38, width=9, height=9}
 temp.seq <- drop.marker(LG3.f2.wrong,38)
 temp.map <- map(temp.seq)
-temp.try <- try.seq(temp.map, 38, draw.try=TRUE)
+temp.try <- try_seq(temp.map, 38, draw.try=TRUE)
 ```
 
 We can see that the most likely position for marker `M38` is between

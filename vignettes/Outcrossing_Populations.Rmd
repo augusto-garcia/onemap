@@ -214,7 +214,7 @@ If you want to see the results for some arbitrary markers, say `M1`
 and `M3`, the command is:
 
 ```{r}
-print(twopts, "M1", "M3")
+print(twopts, c("M1", "M3"))
 ``` 
 
 Each line corresponds to a possible linkage phase. 1 denotes coupling
@@ -513,7 +513,7 @@ there are more markers of type D1 than D2, the latter will be tried
 later. Starting with `M9`:
 
 ```{r, results='hide'}
-LG2.extend <- try.seq(LG2.frame,9)
+LG2.extend <- try_seq(LG2.frame,9)
 ```
 
 ```{r}
@@ -532,10 +532,10 @@ The second argument indicates the position where to place the marker.
 Note that the first allele arrangement is the most likely one.
 
 Also, we can obtain some useful diagnostic graphics using the argument
-`draw.try=TRUE` when using function `try.seq`:
+`draw.try=TRUE` when using function `try_seq`:
 
 ```{r, echo=TRUE}
-LG2.extend <- try.seq(LG2.frame, 9, draw.try=TRUE)
+LG2.extend <- try_seq(LG2.frame, 9, draw.try=TRUE)
 ``` 
 
 The top figure represents the new genetic map obtained with the
@@ -567,7 +567,7 @@ right of the output) and the last argument indicates linkage phases
 It should be pointed out that the framework created by the function
 `compare` (with `M20`, `M4`, `M19`, `M23` and `M24`) could be in
 reverse order (`M24`, `M23`, `M19`, `M4` and `M20`) and still be the
-same map. Thus, the positioning of markers by command `try.seq` can be
+same map. Thus, the positioning of markers by command `try_seq` can be
 different in your computer. For example, here, marker `M9` was better
 placed in position 5, however if you obtain a reverse order, marker
 `M9` would be better placed in position 2. In both cases the best
@@ -576,13 +576,13 @@ position is between markers `M24` and `M23`.
 Adding other markers, one by one (output not showed):
 
 ```{r, results='hide'}
-LG2.extend <- try.seq(LG2.frame,29)
+LG2.extend <- try_seq(LG2.frame,29)
 LG2.frame <- make.seq(LG2.extend,7)
-LG2.extend <- try.seq(LG2.frame,27)
+LG2.extend <- try_seq(LG2.frame,27)
 LG2.frame <- make.seq(LG2.extend,1)
-LG2.extend <- try.seq(LG2.frame, 16)
+LG2.extend <- try_seq(LG2.frame, 16)
 LG2.frame <- make.seq(LG2.extend,2)
-LG2.extend <- try.seq(LG2.frame,21)
+LG2.extend <- try_seq(LG2.frame,21)
 LG2.final <- make.seq(LG2.extend,6)
 ``` 
 
@@ -593,13 +593,13 @@ use of function `order.seq`.
 LG2.ord <- order.seq(LG2, n.init=5, THRES=3, draw.try=FALSE)
 ``` 
 
-Basically, this function automates what the `try.seq` function does,
+Basically, this function automates what the `try_seq` function does,
 using some pre-defined rules. In the function, `n.init = 5` means that
 five markers (the most informative ones) will be used in the `compare`
-step; `THRES = 3` indicates that the `try.seq` step will only add
+step; `THRES = 3` indicates that the `try_seq` step will only add
 markers to the sequence which can be mapped with LOD Score greater
 than 3; `draw.try=TRUE` will display a diagnostic graphic for each
-`try.seq` step (in this example, we set this to `draw.try=FALSE`),
+`try_seq` step (in this example, we set this to `draw.try=FALSE`),
 which should be combined with `wait=1`, that indicates the minimum
 time interval in seconds to display the diagnostic graphic.
 
@@ -634,9 +634,9 @@ LG2.all
 
 Notice that, for this linkage group, the `forced` map obtained with
 `order.seq` is the same as that obtained with `compare` plus
-`try.seq`, but *this is not always the case.*
+`try_seq`, but *this is not always the case.*
 
-The `order.seq` function can also performs two rounds of the `try.seq`
+The `order.seq` function can also performs two rounds of the `try_seq`
 algorithms, first using `THRES` and then `THRES - 1` as threshold.
 This generally results in safe orders with more markers mapped, but
 may take longer to run. To do this use the `touchdown` options:
@@ -653,14 +653,14 @@ For this particular sequence, the `touchdown` step could not map any
 additional marker, but this depends on the particular dataset.
 
 Finally, to check for alternative orders (since we did not use
-exhaustive search), use the `ripple.seq` function:
+exhaustive search), use the `ripple_seq` function:
 
 ```{r}
-ripple.seq(LG2.all, ws=4, LOD=3)
+ripple_seq(LG2.all, ws=4, LOD=3)
 ``` 
 
 We should do this to any of the orders we found, either using
-`try.seq` or `order.seq`. Here, we choose `LG2.all` only for
+`try_seq` or `order.seq`. Here, we choose `LG2.all` only for
 ilustration purposes. The second argument, `ws = 4`, means that
 subsets (windows) of four markers will be permutated sequentially
 (`4!` orders for each window), to search for other plausible orders.
@@ -684,7 +684,7 @@ order and linkage phases, make the necessary changes (by copying and
 paste) and then use the function `map` (see correspondent Section to
 reestimate the genetic map for the new order).
 
-Here, the function `ripple.seq` showed that the final order obtained
+Here, the function `ripple_seq` showed that the final order obtained
 is indeed the best for this linkage group. The map can then be printed
 using
     
@@ -710,7 +710,7 @@ LG1.ord <- order.seq(LG1, n.init=6, touchdown=TRUE)
 LG1.ord
 ```
 
-Notice that the second round of `try.seq` added markers `M5` and `M25`.
+Notice that the second round of `try_seq` added markers `M5` and `M25`.
 
 Now, get the order with all markers:
 
@@ -720,7 +720,7 @@ Now, get the order with all markers:
 
 Check the final map:
 ```{r}
-ripple.seq(LG1.final)
+ripple_seq(LG1.final)
 ``` 
 
 No better order was observed.

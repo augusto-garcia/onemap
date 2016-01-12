@@ -1129,7 +1129,7 @@ molecular markers will be in the sequence.</p>
 there are more markers of type D1 than D2, the latter will be tried
 later. Starting with <code>M9</code>:</p>
 
-<pre><code class="r">LG2.extend &lt;- try.seq(LG2.frame,9)
+<pre><code class="r">LG2.extend &lt;- try_seq(LG2.frame,9)
 </code></pre>
 
 <pre><code class="r">LG2.extend
@@ -1202,9 +1202,9 @@ one linkage phase is possible. Detailed results can be seen with</p>
 Note that the first allele arrangement is the most likely one.</p>
 
 <p>Also, we can obtain some useful diagnostic graphics using the argument
-<code>draw.try=TRUE</code> when using function <code>try.seq</code>:</p>
+<code>draw.try=TRUE</code> when using function <code>try_seq</code>:</p>
 
-<pre><code class="r">LG2.extend &lt;- try.seq(LG2.frame, 9, draw.try=TRUE)
+<pre><code class="r">LG2.extend &lt;- try_seq(LG2.frame, 9, draw.try=TRUE)
 </code></pre>
 
 <pre><code>##  9 --&gt; M9  : ......
@@ -1240,7 +1240,7 @@ right of the output) and the last argument indicates linkage phases
 <p>It should be pointed out that the framework created by the function
 <code>compare</code> (with <code>M20</code>, <code>M4</code>, <code>M19</code>, <code>M23</code> and <code>M24</code>) could be in
 reverse order (<code>M24</code>, <code>M23</code>, <code>M19</code>, <code>M4</code> and <code>M20</code>) and still be the
-same map. Thus, the positioning of markers by command <code>try.seq</code> can be
+same map. Thus, the positioning of markers by command <code>try_seq</code> can be
 different in your computer. For example, here, marker <code>M9</code> was better
 placed in position 5, however if you obtain a reverse order, marker
 <code>M9</code> would be better placed in position 2. In both cases the best
@@ -1248,13 +1248,13 @@ position is between markers <code>M24</code> and <code>M23</code>.</p>
 
 <p>Adding other markers, one by one (output not showed):</p>
 
-<pre><code class="r">LG2.extend &lt;- try.seq(LG2.frame,29)
+<pre><code class="r">LG2.extend &lt;- try_seq(LG2.frame,29)
 LG2.frame &lt;- make.seq(LG2.extend,7)
-LG2.extend &lt;- try.seq(LG2.frame,27)
+LG2.extend &lt;- try_seq(LG2.frame,27)
 LG2.frame &lt;- make.seq(LG2.extend,1)
-LG2.extend &lt;- try.seq(LG2.frame, 16)
+LG2.extend &lt;- try_seq(LG2.frame, 16)
 LG2.frame &lt;- make.seq(LG2.extend,2)
-LG2.extend &lt;- try.seq(LG2.frame,21)
+LG2.extend &lt;- try_seq(LG2.frame,21)
 LG2.final &lt;- make.seq(LG2.extend,6)
 </code></pre>
 
@@ -1422,13 +1422,13 @@ use of function <code>order.seq</code>.</p>
 ## Estimating final genetic map using tol = 10E-5.
 </code></pre>
 
-<p>Basically, this function automates what the <code>try.seq</code> function does,
+<p>Basically, this function automates what the <code>try_seq</code> function does,
 using some pre-defined rules. In the function, <code>n.init = 5</code> means that
 five markers (the most informative ones) will be used in the <code>compare</code>
-step; <code>THRES = 3</code> indicates that the <code>try.seq</code> step will only add
+step; <code>THRES = 3</code> indicates that the <code>try_seq</code> step will only add
 markers to the sequence which can be mapped with LOD Score greater
 than 3; <code>draw.try=TRUE</code> will display a diagnostic graphic for each
-<code>try.seq</code> step (in this example, we set this to <code>draw.try=FALSE</code>),
+<code>try_seq</code> step (in this example, we set this to <code>draw.try=FALSE</code>),
 which should be combined with <code>wait=1</code>, that indicates the minimum
 time interval in seconds to display the diagnostic graphic.</p>
 
@@ -1530,9 +1530,9 @@ LG2.all
 
 <p>Notice that, for this linkage group, the <code>forced</code> map obtained with
 <code>order.seq</code> is the same as that obtained with <code>compare</code> plus
-<code>try.seq</code>, but <em>this is not always the case.</em></p>
+<code>try_seq</code>, but <em>this is not always the case.</em></p>
 
-<p>The <code>order.seq</code> function can also performs two rounds of the <code>try.seq</code>
+<p>The <code>order.seq</code> function can also performs two rounds of the <code>try_seq</code>
 algorithms, first using <code>THRES</code> and then <code>THRES - 1</code> as threshold.
 This generally results in safe orders with more markers mapped, but
 may take longer to run. To do this use the <code>touchdown</code> options:</p>
@@ -1567,9 +1567,9 @@ may take longer to run. To do this use the <code>touchdown</code> options:</p>
 additional marker, but this depends on the particular dataset.</p>
 
 <p>Finally, to check for alternative orders (since we did not use
-exhaustive search), use the <code>ripple.seq</code> function:</p>
+exhaustive search), use the <code>ripple_seq</code> function:</p>
 
-<pre><code class="r">ripple.seq(LG2.all, ws=4, LOD=3)
+<pre><code class="r">ripple_seq(LG2.all, ws=4, LOD=3)
 </code></pre>
 
 <pre><code>## 27 16 20 4 ... OK
@@ -1591,7 +1591,7 @@ exhaustive search), use the <code>ripple.seq</code> function:</p>
 </code></pre>
 
 <p>We should do this to any of the orders we found, either using
-<code>try.seq</code> or <code>order.seq</code>. Here, we choose <code>LG2.all</code> only for
+<code>try_seq</code> or <code>order.seq</code>. Here, we choose <code>LG2.all</code> only for
 ilustration purposes. The second argument, <code>ws = 4</code>, means that
 subsets (windows) of four markers will be permutated sequentially
 (<code>4!</code> orders for each window), to search for other plausible orders.
@@ -1615,7 +1615,7 @@ order and linkage phases, make the necessary changes (by copying and
 paste) and then use the function <code>map</code> (see correspondent Section to
 reestimate the genetic map for the new order).</p>
 
-<p>Here, the function <code>ripple.seq</code> showed that the final order obtained
+<p>Here, the function <code>ripple_seq</code> showed that the final order obtained
 is indeed the best for this linkage group. The map can then be printed
 using</p>
 
@@ -1725,7 +1725,7 @@ using</p>
 ## &#39;*&#39; indicates likely positions (LOD &gt; -2.0)
 </code></pre>
 
-<p>Notice that the second round of <code>try.seq</code> added markers <code>M5</code> and <code>M25</code>.</p>
+<p>Notice that the second round of <code>try_seq</code> added markers <code>M5</code> and <code>M25</code>.</p>
 
 <p>Now, get the order with all markers:</p>
 
@@ -1758,7 +1758,7 @@ using</p>
 
 <p>Check the final map:</p>
 
-<pre><code class="r">ripple.seq(LG1.final)
+<pre><code class="r">ripple_seq(LG1.final)
 </code></pre>
 
 <pre><code>## 30 12 3 14 ...

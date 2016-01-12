@@ -19,16 +19,16 @@
 ## second, it adds markers sequentially with the 'try' function
 
 
-##' Search for the best order of markers combining compare and try.seq
+##' Search for the best order of markers combining compare and try_seq
 ##' functions
 ##' 
 ##' For a given sequence of markers, this function first uses the
 ##' \code{compare} function to create a framework for a subset of informative
-##' markers. Then, it tries to map remaining ones using the \code{try.seq}
+##' markers. Then, it tries to map remaining ones using the \code{try_seq}
 ##' function.
 ##' 
 ##' For outcrossing populations, the initial subset and the order in which
-##' remaining markers will be used in the \code{try.seq} step is given by the
+##' remaining markers will be used in the \code{try_seq} step is given by the
 ##' degree of informativeness of markers (i.e markers of type A, B, C and D, in
 ##' this order).
 ##' 
@@ -38,7 +38,7 @@
 ##' log-likelihood of the \eqn{\frac{n.init!}{2}}{n.init!/2} possible orders.
 ##' If the LOD Score of the second best order is greater than
 ##' \code{subset.THRES}, than it takes the best order to proceed with the
-##' \code{try.seq} step. If not, the procedure is repeated. The maximum number
+##' \code{try_seq} step. If not, the procedure is repeated. The maximum number
 ##' of times to repeat this procedure is given by the \code{subset.n.try}
 ##' argument. ii) \code{"twopt"} uses a two-point based algorithm, given by the
 ##' option \code{"twopt.alg"}, to construct a two-point based map. The options
@@ -48,10 +48,10 @@
 ##' \code{"compare"} step will then be applied on this subset of markers.
 ##' 
 ##' In both cases, the order in which the other markers will be used in the
-##' \code{try.seq} step is given by marker types (i.e. co-dominant before
+##' \code{try_seq} step is given by marker types (i.e. co-dominant before
 ##' dominant) and by the missing information on each marker.
 ##' 
-##' After running the \code{compare} and \code{try.seq} steps, which result in
+##' After running the \code{compare} and \code{try_seq} steps, which result in
 ##' a "safe" order, markers that could not be mapped are "forced" into the map,
 ##' resulting in a map with all markers positioned.
 ##' 
@@ -72,17 +72,17 @@
 ##' should be used if \code{subset.search=="twopt"}. See the \code{Details}
 ##' section.
 ##' @param THRES threshold to be used when positioning markers in the
-##' \code{try.seq} step.
-##' @param touchdown logical. If \code{FALSE} (default), the \code{try.seq}
+##' \code{try_seq} step.
+##' @param touchdown logical. If \code{FALSE} (default), the \code{try_seq}
 ##' step is run only once, with the value of \code{THRES}. If \code{TRUE},
-##' \code{try.seq} runs with \code{THRES} and then once more, with
+##' \code{try_seq} runs with \code{THRES} and then once more, with
 ##' \code{THRES-1}. The latter calculations take longer, but usually are able
 ##' to map more markers.
 ##' @param draw.try if \code{TRUE}, a diagnostic graphic for each
-##' \code{try.seq} step is displayed. See \code{Details} section in
-##' \code{\link[onemap]{try.seq}} function.
+##' \code{try_seq} step is displayed. See \code{Details} section in
+##' \code{\link[onemap]{try_seq}} function.
 ##' @param wait the minimum time interval in seconds to display the diagnostic
-##' graphic for each \code{try.seq} step. Defaults to 0.00
+##' graphic for each \code{try_seq} step. Defaults to 0.00
 ##' @param tol tolerance number for the C routine, i.e., the value used to
 ##' evaluate convergence of the EM algorithm.
 ##' @return An object of class \code{order}, which is a list containing the
@@ -99,7 +99,7 @@
 ##' @author Gabriel R A Margarido, \email{gramarga@@usp.br} and Marcelo
 ##' Mollinari, \email{mmollina@@gmail.com}
 ##' @seealso \code{\link[onemap]{make.seq}}, \code{\link[onemap]{compare}} and
-##' \code{\link[onemap]{try.seq}}.
+##' \code{\link[onemap]{try_seq}}.
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
 ##' 1.09-43
@@ -160,7 +160,7 @@
 ##'   rbind(ord.1$seq.num, ord.2$seq.num) # probably, the same order for
 ##'   this dataset
 ##' 
-##'   #Now showing diagnostic graphics for each try.seq step.
+##'   #Now showing diagnostic graphics for each try_seq step.
 ##'   LG3.ord.dg <- order.seq(LG3, subset.search = "sample", touchdown=TRUE,
 ##'                           draw.try=TRUE, wait=3)
 ##' 
@@ -188,10 +188,13 @@ order.seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
     structure(list(ord=seq.ord, mrk.unpos=NULL, LOD.unpos=NULL, THRES=THRES,
                    ord.all=seq.ord, data.name=input.seq$data.name, twopt=input.seq$twopt), class = "order")
   }
-  else {
+  else
+  {
     ## here, the complete algorithm will be applied
     if(class(get(input.seq$data.name, pos=1)) == "f2.onemap") FLAG <- "f2"
-    else if (class(get(input.seq$data.name, pos=1)) == "bc.onemap" || class(get(input.seq$data.name, pos=1)) == "riself.onemap" || class(get(input.seq$data.name, pos=1)) == "risib.onemap") FLAG <- "bc"
+    else if (class(get(input.seq$data.name, pos=1)) == "bc.onemap" ||
+             class(get(input.seq$data.name, pos=1)) == "riself.onemap" ||
+             class(get(input.seq$data.name, pos=1)) == "risib.onemap") FLAG <- "bc"
     else if (class(get(input.seq$data.name, pos=1)) == "outcross") FLAG <- "outcross"
     else stop("Invalid cross type\n")
     cross.type<-substr(class(get(input.seq$data.name, pos=1)), 1, nchar(class(get(input.seq$data.name, pos=1)))-7)
@@ -231,35 +234,41 @@ order.seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
           seq.type <- get(input.seq$data.name, pos=1)$segr.type.num[seq.rest] ##checking maker type (4: co-dominant; 5: dominant)
           names(seq.type) <- names(seq.mis)
           tp.ord <- sort(seq.type) ##sorting by type, automatically co-dominant markers (4) come first
-          rest.ord <- c(sort(seq.mis[pmatch(names(tp.ord)[tp.ord==4],names(seq.mis))]), sort(seq.mis[pmatch(names(tp.ord)[tp.ord==5],names(seq.mis))]))##within each type of marker, sort by missing 
+          rest.ord <- c(sort(seq.mis[pmatch(names(tp.ord)[tp.ord==1],names(seq.mis))]),
+                        sort(seq.mis[pmatch(names(tp.ord)[tp.ord==4],names(seq.mis))]),
+                        sort(seq.mis[pmatch(names(tp.ord)[tp.ord==2],names(seq.mis))]),
+                        sort(seq.mis[pmatch(names(tp.ord)[tp.ord==3],names(seq.mis))]))##within each type of marker, sort by missing 
           rest <- pmatch(names(rest.ord), colnames(get(input.seq$data.name, pos=1)$geno)) ##matching names with the positions on the raw data
           seq.work <- pmatch(c(seq.init,rest), input.seq$seq.num) ##sequence to work with
         }
         else stop("Invalid cross type\n")
       }
       else if(subset.search=="sample"){
-        cat("\nCross type: ", cross.type, "\nChoosing initial subset using the 'sample' approach\n")
+          cat("\nCross type: ", cross.type, "\nChoosing initial subset using the 'sample' approach\n")
         LOD.test <- i <- 0
-        while(abs(LOD.test) < abs(subset.THRES) && i < subset.n.try){
-          smp.seq <- make.seq(get(input.seq$twopt), sample(input.seq$seq.num, size=n.init), twopt=input.seq$twopt)
-          res.test <- compare(smp.seq)
-          LOD.test <- res.test$best.ord.LOD[2]
-          i < -i+1
-        }     
-        if(abs(LOD.test) >= abs(subset.THRES)){
-          seq.init <- res.test$best.ord[1,] ##best order based on 'compare'
-          seq.rest <- input.seq$seq.num[-pmatch(seq.init, input.seq$seq.num)] ##the rest of the markers 
-          seq.mis <- apply(as.matrix(get(input.seq$data.name, pos=1)$geno[,seq.rest]), 2, function(x) sum(x==0)) ##checking missing markers for the rest
-           names(seq.mis)<-colnames(get(input.seq$data.name, pos=1)$geno)[seq.rest]
-          if(FLAG == "bc"){
-            rest.ord <- pmatch(names(seq.mis), colnames(get(input.seq$data.name, pos=1)$geno))
-            seq.work <- pmatch(c(seq.init,rest.ord), input.seq$seq.num)
-          }
+          while(abs(LOD.test) < abs(subset.THRES) && i < subset.n.try){
+              smp.seq <- make.seq(get(input.seq$twopt), sample(input.seq$seq.num, size=n.init), twopt=input.seq$twopt)
+              res.test <- compare(smp.seq)
+              LOD.test <- res.test$best.ord.LOD[2]
+              i < -i+1
+          }     
+          if(abs(LOD.test) >= abs(subset.THRES)){
+              seq.init <- res.test$best.ord[1,] ##best order based on 'compare'
+              seq.rest <- input.seq$seq.num[-pmatch(seq.init, input.seq$seq.num)] ##the rest of the markers 
+              seq.mis <- apply(as.matrix(get(input.seq$data.name, pos=1)$geno[,seq.rest]), 2, function(x) sum(x==0)) ##checking missing markers for the rest
+              names(seq.mis)<-colnames(get(input.seq$data.name, pos=1)$geno)[seq.rest]
+              if(FLAG == "bc"){
+                  rest.ord <- pmatch(names(seq.mis), colnames(get(input.seq$data.name, pos=1)$geno))
+                  seq.work <- pmatch(c(seq.init,rest.ord), input.seq$seq.num)
+              }
           else if(FLAG == "f2"){
-            seq.type <- get(input.seq$data.name, pos=1)$segr.type.num[seq.rest] ##checking maker type (4: co-dominant; 5: dominant)
-            names(seq.type) <- names(seq.mis)
-            tp.ord <- sort(seq.type) ##sorting by type, automatically co-dominant markers (4) come first
-            rest.ord <- c(sort(seq.mis[pmatch(names(tp.ord)[tp.ord==4],names(seq.mis))]), sort(seq.mis[pmatch(names(tp.ord)[tp.ord==5],names(seq.mis))]))##within each type of marker, sort by missing 
+              seq.type <- get(input.seq$data.name, pos=1)$segr.type.num[seq.rest] ##checking maker type (4: co-dominant; 5: dominant)
+              names(seq.type) <- names(seq.mis)
+              tp.ord <- sort(seq.type) ##sorting by type, automatically co-dominant markers (4) come first
+              rest.ord <- c(sort(seq.mis[pmatch(names(tp.ord)[tp.ord==1],names(seq.mis))]),
+                            sort(seq.mis[pmatch(names(tp.ord)[tp.ord==4],names(seq.mis))]),
+                            sort(seq.mis[pmatch(names(tp.ord)[tp.ord==2],names(seq.mis))]),
+                            sort(seq.mis[pmatch(names(tp.ord)[tp.ord==3],names(seq.mis))]))##within each type of marker, sort by missing 
             rest <- pmatch(names(rest.ord),colnames(get(input.seq$data.name, pos=1)$geno)) ##matching names with the positions on the raw data
             seq.work <- pmatch(c(seq.init,rest), input.seq$seq.num) ##sequence to work with
           }
@@ -284,7 +293,7 @@ order.seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
     input.seq2 <- make.seq(seq.ord,1)
     cat ("\n\nRunning try algorithm\n")
     for (i in (n.init+1):length(input.seq$seq.num)){
-      time.elapsed<-system.time(seq.ord <- try.seq(input.seq2,input.seq$seq.num[seq.work[i]],tol=tol, draw.try=draw.try))[3]
+      time.elapsed<-system.time(seq.ord <- try_seq(input.seq2,input.seq$seq.num[seq.work[i]],tol=tol, draw.try=draw.try))[3]
       if(time.elapsed < wait)
         Sys.sleep(wait - time.elapsed)
       if(all(seq.ord$LOD[-which(seq.ord$LOD==max(seq.ord$LOD))[1]] < -THRES))
@@ -301,7 +310,7 @@ order.seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
       ## here, a second round of the 'try' algorithm is performed, if requested
       cat("\n\n\nTrying to map remaining markers with LOD threshold ",THRES-1,"\n")
       for (i in mrk.unpos) {
-        time.elapsed<-system.time(seq.ord <- try.seq(input.seq2,i,tol=tol, draw.try=draw.try))[3]
+        time.elapsed<-system.time(seq.ord <- try_seq(input.seq2,i,tol=tol, draw.try=draw.try))[3]
         if(time.elapsed < wait)
           Sys.sleep(wait - time.elapsed)
         if(all(seq.ord$LOD[-which(seq.ord$LOD==max(seq.ord$LOD))[1]] < (-THRES+1)))
@@ -320,7 +329,7 @@ order.seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
       j <- 1
       cat("\n\nCalculating LOD-Scores\n")
       for (i in mrk.unpos){
-        LOD.unpos[j,] <- try.seq(input.seq=input.seq2,mrk=i,tol=tol)$LOD
+        LOD.unpos[j,] <- try_seq(input.seq=input.seq2,mrk=i,tol=tol)$LOD
         j <- j+1
       }
     }
@@ -335,7 +344,7 @@ order.seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
       which.order <- order(apply(LOD.unpos,1,function(x) max(x[-which(x==0)[1]])))
       
       for (i in mrk.unpos[which.order]) {        
-        time.elapsed<-system.time(seq.ord <- try.seq(input.seq3,i,tol,draw.try=draw.try))[3]
+        time.elapsed<-system.time(seq.ord <- try_seq(input.seq3,i,tol,draw.try=draw.try))[3]
         if(time.elapsed < wait)
           Sys.sleep(wait - time.elapsed)  
         input.seq3 <- make.seq(seq.ord,which(seq.ord$LOD==0)[sample(sum(seq.ord$LOD==0))[1]])
@@ -416,7 +425,7 @@ draw.order<-function(map.input){
   text(x=new.dist[1]-(max(new.dist)/40), y=1 ,"Markers",  adj=c(1,0.5))
   text(x=new.dist[1]-(max(new.dist)/40), y=0 ,"Distance",  adj=c(1,0.2))
   par(op)
-  rf.graph.table(map.input, inter=FALSE, axis.cex = .75, main="")
+  rf.graph.table(map.input, inter=FALSE, axis.cex = .75, main="", colorkey = FALSE, mrk.names = TRUE)
   title(main = "LOD (above diag.) and Recombination Fraction Matrix", cex.main=.9, line=15.4)
 }
 ## end of file

@@ -4,13 +4,15 @@
 \alias{plot.onemap.segreg.test}
 \title{Plot p-values for chi-square tests of expected segregation}
 \usage{
-\method{plot}{onemap.segreg.test}(x, order = TRUE)
+\method{plot}{onemap.segreg.test}(x, order = TRUE, ...)
 }
 \arguments{
 \item{x}{an object of class onemap.segreg.test (produced by onemap's function
 test_segregation()), i. e., after performing segregation tests}
 
 \item{order}{a variable to define if p-values will be ordered in the plot}
+
+\item{...}{currently ignored}
 }
 \value{
 a ggplot graphic

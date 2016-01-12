@@ -5,7 +5,7 @@
 \title{Plots pairwise recombination fractions and LOD Scores in a heatmap}
 \usage{
 rf.graph.table(input.seq, scale = 1, axis.cex = 1, main = NULL,
-  inter = TRUE)
+  inter = TRUE, mrk.names = FALSE, colorkey = TRUE)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence} with a predefined
@@ -21,6 +21,12 @@ not used.}
 
 \item{inter}{logical. If \code{TRUE}, an interactive graphic is plotted.
 Otherwise, a default graphic device is used.}
+
+\item{mrk.names}{logical. If \code{TRUE}, displays the names of the markers.}
+
+\item{colorkey}{logical. If \code{TRUE}, a colorkey is plotted
+along horizontal axis, indicating recombination fraction, and
+along vertical axis, indicating the LOD Score.}
 }
 \description{
 Plots a matrix of pairwise recombination fractions (under the diagonal) and
@@ -53,9 +59,10 @@ data for that marker.
   LG1 <- make.seq(groups,1)
   LG1.rcd <- rcd(LG1)
   rf.graph.table(LG1.rcd, inter=FALSE)
+
 \dontrun{
   ##Now, using interactive Tcl-Tk
-  rf.graph.table(LG1.rcd, scale=1.5, inter=TRUE)
+  rf.graph.table(LG1.rcd, scale=2, inter=TRUE)
 
   ##F2 example
   data(fake.f2.onemap)

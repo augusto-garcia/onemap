@@ -69,7 +69,7 @@
 ##' data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
 ##' 2-point analyses.}
 ##' @author Gabriel Margarido, \email{gramarga@@gmail.com}
-##' @seealso \code{\link[onemap]{compare}}, \code{\link[onemap]{try.seq}},
+##' @seealso \code{\link[onemap]{compare}}, \code{\link[onemap]{try_seq}},
 ##' \code{\link[onemap]{order.seq}} and \code{\link[onemap]{map}}.
 ##' @references Lander, E. S., Green, P., Abrahamson, J., Barlow, A., Daly, M.
 ##' J., Lincoln, S. E. and Newburg, L. (1987) MAPMAKER: An interactive computer
@@ -94,7 +94,7 @@
 ##'   markers.comp <- compare(markers)
 ##'   (base.map <- make.seq(markers.comp))
 ##'   base.map <- make.seq(markers.comp,1,1) # same as above
-##'   (extend.map <- try.seq(base.map,30))
+##'   (extend.map <- try_seq(base.map,30))
 ##'   (base.map <- make.seq(extend.map,5)) # fifth position is the best
 ##' }
 ##' 
@@ -104,7 +104,7 @@ function(input.obj, arg=NULL, phase=NULL, twopt=NULL) {
   if(all(is.na(match(class(input.obj),c("rf.2pts","group","compare","try","order")))))
     stop(deparse(substitute(input.obj))," is not an object of classes 'rf.2pts', 'group', 'compare', 'try' or 'order'")
 
-  switch(EXPR=class(input.obj),
+  switch(EXPR=class(input.obj)[1],
          'rf.2pts' = {
            if (length(arg) == 1 && arg == "all") seq.num <- 1:input.obj$n.mar # generally used for grouping markers
 		   else if(is.vector(arg) && is.numeric(arg)) seq.num <- arg
