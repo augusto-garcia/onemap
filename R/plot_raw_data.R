@@ -1,20 +1,21 @@
-#######################################################################
-#                                                                     #
-# Package: onemap                                                     #
-#                                                                     #
-# File: plot_raw_data.R                                               #
-# Contains: plot.bc.onemap, plot.riself.onemap, plot.risib.onemap,    #
-# plot.f2.onemap, create_dataframe_for_plot_outcross, plot.outcross,  #
-# plot_by_segreg_type                                                 #
-#                                                                     #
-# Written by Antonio Augusto Franco Garcia                            #
-# copyright (c) 2015 Antonio Augusto Franco Garcia                    #
-#                                                                     #
-# First version: 2015/03/31                                           #
-# Last update: 2015/07/25                                             #
-# License: GNU General Public License version 3 or later              #
-#                                                                     #
-#######################################################################
+#########################################################################
+##                                                                     ##
+## Package: onemap                                                     ##
+##                                                                     ##
+## File: plot_raw_data.R                                               ##
+## Contains: plot.bc.onemap, plot.riself.onemap, plot.risib.onemap,    ##
+## plot.f2.onemap, create_dataframe_for_plot_outcross, plot.outcross,  ##
+## plot_by_segreg_type                                                 ##
+##                                                                     ##
+## Written by Antonio Augusto Franco Garcia with minor modifications   ##
+## by Marcelo Mollinari                                                ##
+## copyright (c) 2015 Antonio Augusto Franco Garcia                    ##
+##                                                                     ##
+## First version: 2015/03/31                                           ##
+## Last update: 2016/01/01                                             ##
+## License: GNU General Public License version 3 or later              ##
+##                                                                     ##
+#########################################################################
 
 ##' Draw a graphic of raw data for a backcross population
 ##'
@@ -28,6 +29,8 @@
 ##'
 ##' @param x an object of class bc.onemap, with data and additional information
 ##'
+##' @param ... currently ignored
+##' 
 ##' @return a ggplot graphic
 ##'
 ##' @import ggplot2
@@ -42,7 +45,7 @@
 ##' ggsave("MyRawData.jpg", g, width=7, height=4, dpi=600)
 ##'
 ##' @export
-plot.bc.onemap <- function(x) {
+plot.bc.onemap <- function(x,...) {
     # Creating the data frame
     df.BC <- data.frame(x$geno)
     df.BC <- reshape2::melt(df.BC) # function from package reshape
@@ -76,6 +79,8 @@ plot.bc.onemap <- function(x) {
 ##'
 ##' @param x an object of class riself.onemap, with data and additional information
 ##'
+##' @param ... currently ignored
+##' 
 ##' @return a ggplot graphic
 ##'
 ##' @import ggplot2
@@ -84,7 +89,7 @@ plot.bc.onemap <- function(x) {
 ##' # Please, see examples for plot.bc.onemap; the only difference is the dataset
 ##'
 ##' @export
-plot.riself.onemap <- function(x) {
+plot.riself.onemap <- function(x,...) {
     # Creating the data frame
     df.RIL <- data.frame(x$geno)
     df.RIL <- reshape2::melt(df.RIL) # function from package reshape
@@ -113,13 +118,15 @@ plot.riself.onemap <- function(x) {
 ##'
 ##' @param x an object of class risib.onemap, with data and additional information
 ##'
+##' @param ... currently ignored
+##' 
 ##' @return a ggplot graphic
 ##'
 ##' @examples
 ##' # Please, see examples for plot.bc.onemap; the only difference is the dataset
 ##'
 ##' @export
-plot.risib.onemap <- function(x) {
+plot.risib.onemap <- function(x,...) {
     plot.riself.onemap(x)
 }
 ##'
@@ -138,6 +145,8 @@ plot.risib.onemap <- function(x) {
 ##'
 ##' @param x an object of class f2.onemap, with data and additional information
 ##'
+##' @param ... currently ignored
+##' 
 ##' @return a ggplot graphic
 ##'
 ##' @import ggplot2
@@ -152,9 +161,9 @@ plot.risib.onemap <- function(x) {
 ##' ggsave("MyRawData.jpg", g, width=7, height=4, dpi=600)
 ##'
 ##' @export
-plot.f2.onemap <- function(x) {
+plot.f2.onemap <- function(x,...) {
     # Creating the data frame
-    df.F2 <- data.frame(x$geno.mmk[[1]])
+    df.F2 <- data.frame(x$geno)
     df.F2 <- reshape2::melt(df.F2) # function from package reshape
     df.F2[is.na(df.F2)] <- 0 # To avoid problems with NAs
     df.F2 <- cbind(ind=1:x$n.ind, df.F2)
@@ -191,7 +200,7 @@ plot.f2.onemap <- function(x) {
 ##' with long format
 ##'
 ##' @param x an object of class outcross, with data and additional information
-##'
+##' 
 ##' @return a dataframe
 ##'
 create_dataframe_for_plot_outcross <- function(x) {
@@ -282,9 +291,13 @@ create_dataframe_for_plot_outcross <- function(x) {
 ##' pattern.
 ##'
 ##' @param x an object of class outcross, with data and additional information
-##' @param all a TRUE/FALSE option to indicate if results will be plotted together (if TRUE)
-##' or splitted based on their segregation pattern
+##' 
+##' @param all a TRUE/FALSE option to indicate if results will be
+##'     plotted together (if TRUE) or splitted based on their
+##'     segregation pattern
 ##'
+##' @param ... currently ignored
+##' 
 ##' @return a ggplot graphic
 ##'
 ##' @import ggplot2
@@ -300,7 +313,7 @@ create_dataframe_for_plot_outcross <- function(x) {
 ##' ggsave("MyRawData.jpg", g, width=9, height=4, dpi=600)
 ##'
 ##' @export
-plot.outcross <- function(x, all=TRUE) {
+plot.outcross <- function(x, all=TRUE,...) {
     df <- create_dataframe_for_plot_outcross(x)
     g <- ggplot(data=df, aes(x=ind, y=variable, fill=factor(value)))
     g <- g + geom_tile()

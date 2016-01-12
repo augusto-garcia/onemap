@@ -2,8 +2,8 @@
 #                                                                     #
 # Package: onemap                                                     #
 #                                                                     #
-# File: try.seq.R                                                     #
-# Contains: try.seq, print.try, draw.try                              #
+# File: try_seq.R                                                     #
+# Contains: try_seq, print.try, draw.try                              #
 #                                                                     #
 # Written by Marcelo Mollinari                                        #
 # copyright (c) 2009, Marcelo Mollinari                               #
@@ -17,86 +17,100 @@
 #######################################################################
 
 
-##' Try to map a marker into every possible position between markers in a given map
-##' 
-##' For a given linkage map, tries do add an additional unpositioned marker.
-##' This function estimates parameters for all possible maps including the new
-##' marker in all posible positions, while keeping the original linkage map unaltered.
-##' 
+##' Try to map a marker into every possible position between markers
+##' in a given map
+##'
+##' For a given linkage map, tries do add an additional unpositioned
+##' marker.  This function estimates parameters for all possible maps
+##' including the new marker in all posible positions, while keeping
+##' the original linkage map unaltered.
+##'
 ##' The diagnostic graphic is made of three figures: i) the top figure
-##' represents the new genetic map obtained with the insertion of the new
-##' marker \code{mrk} on position \code{pos}. If \code{pos = NULL} (default),
-##' the marker is placed on the best position i.e. the one which results LOD =
-##' 0.00, which is indicated by a red triangle; ii) the left bottom figure
-##' represents the base map (contained in \code{input.seq}) on x-axis and the
-##' LOD-Scores of the linkage maps obtained with the new marker \code{mrk}
-##' tested at the beginning, between and at the end of the base map. Actually,
-##' it is a graphic representation of the \code{LOD} vector (see \code{Value}
-##' section). The red triangle indicates the best position where the new marker
-##' \code{mrk} should be placed; iii) the right bottom figure is the
-##' non-interactive \code{\link[onemap]{rf.graph.table}} function for the new
-##' genetic map. It plots a matrix of pairwise recombination fractions (under
-##' the diagonal) and LOD Scores (upper the diagonal) using a color scale.
-##' 
-##' @aliases try.seq print.try
-##' @param input.seq an object of class \code{sequence} with a predefined
-##' order.
-##' @param mrk the index of the marker to be tried, according to the input
-##' file.
-##' @param tol tolerance for the C routine, i.e., the value used to evaluate
-##' convergence.
-##' @param draw.try if \code{TRUE}, a diagnostic graphic is displayed. See
-##' \code{Details} section.
-##' @param pos defines in which position the new marker \code{mrk} should be
-##' placed for the diagnostic graphic. If \code{NULL} (default), the marker is
-##' placed on the best position i.e. the one which results LOD = 0.00
-##' @param verbose if \code{FALSE} (default), simplified output is displayed.
-##' if \code{TRUE}, detailed output is displayed.
-##' @param x an object of class \code{try}.
-##' @param j if \code{NULL} (default), output is a summary of the results for
-##' all possible positions of the additional marker. Otherwise, an integer
-##' makes detailed output to be printed for the corresponding position. This
-##' integer must be less than or equal to the length of the original sequence
-##' plus 1.
-##' @param \dots further arguments, passed to other methods. Currently ignored.
-##' @return An object of class \code{try}, which is a list containing the
-##' following components: \item{ord}{a \code{list} containing results for every
-##' linkage map estimated.  These results include linkage phases, recombination
-##' frequencies and log-likelihoods.} \item{LOD}{a \code{vector} with
-##' LOD-Scores for each position where the additional marker is placed. This
-##' Score is based on the best combination of linkage phases for each map.}
-##' \item{try.ord}{a \code{matrix} with the orders of all linkage maps.}
-##' \item{data.name}{name of the object of class \code{outcross} with the raw
-##' data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
-##' 2-point analyses.}
+##' represents the new genetic map obtained with the insertion of the
+##' new marker \code{mrk} on position \code{pos}. If \code{pos = NULL}
+##' (default), the marker is placed on the best position i.e. the one
+##' which results LOD = 0.00, which is indicated by a red triangle;
+##' ii) the left bottom figure represents the base map (contained in
+##' \code{input.seq}) on x-axis and the LOD-Scores of the linkage maps
+##' obtained with the new marker \code{mrk} tested at the beginning,
+##' between and at the end of the base map. Actually, it is a graphic
+##' representation of the \code{LOD} vector (see \code{Value}
+##' section). The red triangle indicates the best position where the
+##' new marker \code{mrk} should be placed; iii) the right bottom
+##' figure is the non-interactive \code{\link[onemap]{rf.graph.table}}
+##' function for the new genetic map. It plots a matrix of pairwise
+##' recombination fractions (under the diagonal) and LOD Scores (upper
+##' the diagonal) using a color scale.
+##'
+##' @aliases try_seq
+##'
+##' @param input.seq an object of class \code{sequence} with a
+##'     predefined order.
+##'
+##' @param mrk the index of the marker to be tried, according to the
+##'     input file.
+##'
+##' @param tol tolerance for the C routine, i.e., the value used to
+##'     evaluate convergence.
+##'
+##' @param draw.try if \code{TRUE}, a diagnostic graphic is
+##'     displayed. See \code{Details} section.
+##'
+##' @param pos defines in which position the new marker \code{mrk}
+##'     should be placed for the diagnostic graphic. If \code{NULL}
+##'     (default), the marker is placed on the best position i.e. the
+##'     one which results LOD = 0.00
+##'
+##' @param verbose if \code{FALSE} (default), simplified output is
+##'     displayed.  if \code{TRUE}, detailed output is displayed.
+##'
+##' @return An object of class \code{try}, which is a list containing
+##'     the following components: \item{ord}{a \code{list} containing
+##'     results for every linkage map estimated.  These results
+##'     include linkage phases, recombination frequencies and
+##'     log-likelihoods.} \item{LOD}{a \code{vector} with LOD-Scores
+##'     for each position where the additional marker is placed. This
+##'     Score is based on the best combination of linkage phases for
+##'     each map.}  \item{try.ord}{a \code{matrix} with the orders of
+##'     all linkage maps.}  \item{data.name}{name of the object of
+##'     class \code{outcross} with the raw data.} \item{twopt}{name of
+##'     the object of class \code{rf.2pts} with the 2-point analyses.}
+##'
 ##' @author Marcelo Mollinari, \email{mmollina@@usp.br}
-##' @seealso \code{\link[onemap]{make.seq}} and \code{\link[onemap]{compare}}.
-##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
-##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
-##' 1.09-43
-##' 
-##' Jiang, C. and Zeng, Z.-B. (1997). Mapping quantitative trait loci with
-##' dominant and missing markers in various crosses from two inbred lines.
-##' \emph{Genetica} 101: 47-58.
-##' 
-##' Lander, E. S., Green, P., Abrahamson, J., Barlow, A., Daly, M. J., Lincoln,
-##' S. E. and Newburg, L. (1987) MAPMAKER: An interactive computer package for
-##' constructing primary genetic linkage maps of experimental and natural
-##' populations. \emph{Genomics} 1: 174-181.
-##' 
-##' Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia, A. A. F.
-##' (2009) Evaluation of algorithms used to order markers on genetic maps.
-##' \emph{Heredity} 103: 494-502
-##' 
-##' Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002a) Simultaneous maximum
-##' likelihood estimation of linkage and linkage phases in outcrossing species.
-##' \emph{Theoretical Population Biology} 61: 349-363.
-##' 
-##' Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage mapping of
-##' sex-specific differences. \emph{Genetical Research} 79: 85-96
+##'
+##' @seealso \code{\link[onemap]{make.seq}} and
+##'     \code{\link[onemap]{compare}}.
+##'
+##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S.,
+##'     Yandell, B.  (2008) \emph{qtl: Tools for analyzing QTL
+##'     experiments} R package version 1.09-43
+##'
+##' Jiang, C. and Zeng, Z.-B. (1997). Mapping quantitative trait loci
+##'     with dominant and missing markers in various crosses from two
+##'     inbred lines.  \emph{Genetica} 101: 47-58.
+##'
+##' Lander, E. S., Green, P., Abrahamson, J., Barlow, A., Daly, M. J.,
+##'     Lincoln, S. E. and Newburg, L. (1987) MAPMAKER: An interactive
+##'     computer package for constructing primary genetic linkage maps
+##'     of experimental and natural populations. \emph{Genomics} 1:
+##'     174-181.
+##'
+##' Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia,
+##'     A. A. F.  (2009) Evaluation of algorithms used to order
+##'     markers on genetic maps.  \emph{Heredity} 103: 494-502
+##'
+##' Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002a)
+##'     Simultaneous maximum likelihood estimation of linkage and
+##'     linkage phases in outcrossing species.  \emph{Theoretical
+##'     Population Biology} 61: 349-363.
+##'
+##' Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage
+##'     mapping of sex-specific differences. \emph{Genetical Research}
+##'     79: 85-96
+##'
 ##' @keywords utilities
 ##' @examples
-##' 
+##'
 ##' \dontrun{
 ##'   #outcrossing example
 ##'   data(example.out)
@@ -104,12 +118,12 @@
 ##'   markers <- make.seq(twopt,c(2,3,12,14))
 ##'   markers.comp <- compare(markers)
 ##'   base.map <- make.seq(markers.comp,1)
-##' 
-##'   extend.map <- try.seq(base.map,30)
+##'
+##'   extend.map <- try_seq(base.map,30)
 ##'   extend.map
 ##'   print(extend.map,5) # best position
 ##'   print(extend.map,4) # second best position
-##' 
+##'
 ##'   #F2 example
 ##'   data(fake.f2.onemap)
 ##'   twopt <- rf.2pts(fake.f2.onemap)
@@ -118,27 +132,134 @@
 ##'   LG3 <- make.seq(groups,3)
 ##'   LG3.ord <- order.seq(LG3, subset.search = "twopt", twopt.alg = "rcd", touchdown=TRUE)
 ##'   LG3.ord
-##'   safe.map<-make.seq(LG3.ord,"safe") 
-##'   extend.map <- try.seq(safe.map,64)
+##'   safe.map<-make.seq(LG3.ord,"safe")
+##'   extend.map <- try_seq(safe.map,64)
 ##'   extend.map
 ##'   (new.map<-make.seq(extend.map,14)) # best position
-##' 
+##'
 ##'   #Display diagnostic graphics
-##'   try.seq(safe.map,64,draw.try=TRUE) #best position (default)
-##'   try.seq(safe.map,64,draw.try=TRUE,pos=13) #second best position
-##'   try.seq(safe.map,64,draw.try=TRUE,pos=4) #wrong position
-##' 
+##'   try_seq(safe.map,64,draw.try=TRUE) #best position (default)
+##'   try_seq(safe.map,64,draw.try=TRUE,pos=13) #second best position
+##'   try_seq(safe.map,64,draw.try=TRUE,pos=4) #wrong position
+##'
 ##'   #Trying to position an unliked marker
-##'   try.seq(safe.map,66,draw.try=TRUE) #note the inconsistencies in the graphic
-##' 
+##'   try_seq(safe.map,66,draw.try=TRUE) #note the inconsistencies in the graphic
+##'
 ##' }
-##' 
-try.seq <-
-function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,verbose=FALSE) {
-  # checking for correct objects
-  if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
-  if(input.seq$seq.phases[1] == -1 || input.seq$seq.rf[1] == -1 || is.null(input.seq$seq.like)) stop("You must run 'compare' or 'map' before the 'try.seq' function")
-  if(mrk > get(input.seq$data.name, pos=1)$n.mar) stop(deparse(substitute(mrk))," exceeds the number of markers in object ", input.seq$data.name)
+##'
+try_seq<-function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,verbose=FALSE)
+{
+    if(is(get(input.seq$data.name), "outcross"))
+        return(try_seq_outcross(input.seq=input.seq,
+                                mrk=mrk, tol=tol,
+                                draw.try=draw.try,
+                                pos=pos, verbose=verbose))
+    else
+        return(try_seq_inbred(input.seq=input.seq,
+                              mrk=mrk, tol=tol,
+                              draw.try=draw.try,
+                              pos=pos, verbose=verbose))
+}
+
+## Try to map a marker into every possible position between markers
+## in a given map (for crosses derived from inbred lines)
+try_seq_inbred<- function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,verbose=FALSE)
+{
+                                        # checking for correct objects
+    if(!any(class(input.seq)=="sequence"))
+        stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+    if(input.seq$seq.rf[1] == -1 ||
+       is.null(input.seq$seq.like))
+        stop("You must run 'compare' or 'map' before the 'try_seq' function")
+    if(mrk > get(input.seq$data.name, pos=1)$n.mar)
+        stop(deparse(substitute(mrk))," exceeds the number of markers in object ", input.seq$data.name)
+    ## allocate variables
+    ord.rf <- matrix(NA, length(input.seq$seq.num)+1, length(input.seq$seq.num))
+    ord.like <- rep(NA, length(input.seq$seq.num)+1)
+    mark.max<-max(nchar(colnames(get(input.seq$data.name, pos=1)$geno)))
+    num.max<-nchar(ncol(get(input.seq$data.name, pos=1)$geno))
+    ## create first order
+    try.ord <- c(mrk,input.seq$seq.num)
+    if(verbose) cat("TRY", 1,": ", c(mrk,input.seq$seq.num),"\n")
+    else cat(format(mrk,width=num.max) , "-->", format(colnames(get(input.seq$data.name, pos=1)$geno)[mrk], width=mark.max), ": .")
+    flush.console()
+    seq.temp<-make.seq(get(input.seq$twopt), arg=try.ord)
+    seq.temp$twopt<-input.seq$twopt
+    rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
+    ## estimate parameters for all possible linkage phases for this order
+    final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,try.ord]),
+                              rf.vec=rf.temp,
+                              verbose=FALSE,
+                              tol=tol)
+    ord.rf[1,] <- final.map$rf
+    ord.like[1] <- final.map$loglike
+
+    ## positioning between markers of the given sequence
+    for(i in 1:(length(input.seq$seq.num)-1))
+    {
+	## create intermediate orders
+        try.ord <- rbind(try.ord,
+                         c(input.seq$seq.num[1:i],
+                           mrk,
+                           input.seq$seq.num[(i+1):length(input.seq$seq.num)]))
+        if(verbose)
+            cat("TRY", i+1, ": ", try.ord[i+1,], "\n")
+        else cat(".")
+        flush.console()
+        seq.temp<-make.seq(get(input.seq$twopt), arg=try.ord[i+1,])
+        seq.temp$twopt<-input.seq$twopt
+        rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
+        ## estimate parameters for all possible linkage phases for this order
+        final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,try.ord[i+1,]]),
+                                  rf.vec=rf.temp,
+                                  verbose=FALSE,
+                                  tol=tol)
+        ord.rf[i+1,] <- final.map$rf
+        ord.like[i+1] <- final.map$loglike
+    }
+    ## positioning after the given sequence
+    ## create last order
+    try.ord <- rbind(try.ord,c(input.seq$seq.num,mrk))
+    if(verbose) cat("TRY",length(input.seq$seq.num)+1,": ", c(input.seq$seq.num,mrk) ,"\n")
+    else cat(".\n")
+    flush.console()
+    ## estimate parameters for all possible linkage phases for this order
+    final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,try.ord[length(input.seq$seq.num)+1,]]),
+                              rf.vec=rf.temp,
+                              verbose=FALSE,
+                              tol=tol)
+    ord.rf[length(input.seq$seq.num)+1,] <- final.map$rf
+    ord.like[length(input.seq$seq.num)+1] <- final.map$loglike
+    ## calculate LOD-Scores (best linkage phase combination for each position)
+    LOD <- (ord.like-max(ord.like))/log(10)
+    ord<-vector("list", nrow(try.ord))
+    for(i in 1:nrow(try.ord))
+    {
+        ord[[i]]<-list(rf=matrix(ord.rf[i,], nrow=1),
+                       phase=matrix(rep(NA,ncol(ord.rf)), nrow=1),
+                       like=ord.like[i])
+
+    }
+    w<-structure(list(ord=ord, LOD=LOD, try.ord=try.ord, data.name=input.seq$data.name, twopt=input.seq$twopt), class = "try")
+    if(draw.try==TRUE){
+        draw.try(input.seq, w, pos=pos)
+  }
+  w
+}
+
+## Try to map a marker into every possible position between markers
+## in a given map (for outcrosses)
+try_seq_outcross<- function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,verbose=FALSE)
+{
+    ## checking for correct objects
+    if(!any(class(input.seq)=="sequence"))
+        stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+    if(input.seq$seq.phases[1] == -1 ||
+       input.seq$seq.rf[1] == -1 ||
+       is.null(input.seq$seq.like))
+        stop("You must run 'compare' or 'map' before the 'try_seq' function")
+    if(mrk > get(input.seq$data.name, pos=1)$n.mar)
+        stop(deparse(substitute(mrk))," exceeds the number of markers in object ", input.seq$data.name)
 
   # allocate variables
   rf.init <- vector("list",length(input.seq$seq.num))
@@ -149,7 +270,7 @@ function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,verbose=FALSE) {
   names(ord[[1]]) <- c("rf","phase","like")
   ord <- rep(ord,length(input.seq$seq.num)+1)
   best.seq <- rep(-Inf,length(input.seq$seq.num)+1)
-      
+
   ### positioning before the given sequence
   # get two-point information
   list.init <- phases(make.seq(get(input.seq$twopt),c(mrk,input.seq$seq.num[1]),twopt=input.seq$twopt))
@@ -161,13 +282,13 @@ function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,verbose=FALSE) {
   Rf.Init <- comb.ger(rf.init)
   mark.max<-max(nchar(colnames(get(input.seq$data.name, pos=1)$geno)))
   num.max<-nchar(ncol(get(input.seq$data.name, pos=1)$geno))
-  
+
   # create first order
   try.ord <- c(mrk,input.seq$seq.num)
   if(verbose) cat("TRY", 1,": ", c(mrk,input.seq$seq.num),"\n")
   else cat(format(mrk,width=num.max) , "-->", format(colnames(get(input.seq$data.name, pos=1)$geno)[mrk], width=mark.max), ": .")
   flush.console()
-  
+
   if(nrow(Ph.Init)>1){
     ##Removing ambigous phases
     rm.ab<-rem.amb.ph(M=Ph.Init, w=input.seq, seq.num=c(mrk,input.seq$seq.num))
@@ -196,7 +317,7 @@ function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,verbose=FALSE) {
   ord[[1]]$rf <- ord[[1]]$rf[ord.ind,]
   ord[[1]]$phase <- ord[[1]]$phase[ord.ind,]
   ord[[1]]$like <- ord[[1]]$like[ord.ind]
-  
+
   ### positioning between markers of the given sequence
   for(i in 1:(length(input.seq$seq.num)-1)) {
     # get two-point information
@@ -216,16 +337,16 @@ function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,verbose=FALSE) {
         rf.init[[k]] <- input.seq$seq.rf[k-1]
         phase.init[[k]] <- input.seq$seq.phases[k-1]
       }
-    }   
+    }
     Ph.Init <- comb.ger(phase.init)
     Rf.Init <- comb.ger(rf.init)
- 
+
 	# create intermediate orders
     try.ord <- rbind(try.ord,c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)]))
     if(verbose) cat("TRY", i+1,": ",c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)]) ,"\n")
     else cat(".")
     flush.console()
-    
+
     if(nrow(Ph.Init)>1){
       ##Removing ambigous phases
       rm.ab<-rem.amb.ph(M=Ph.Init, w=input.seq, seq.num=c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)]))
@@ -253,9 +374,9 @@ function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,verbose=FALSE) {
     ord.ind <- order(ord[[i+1]]$like, decreasing=TRUE)
     ord[[i+1]]$rf <- ord[[i+1]]$rf[ord.ind,]
     ord[[i+1]]$phase <- ord[[i+1]]$phase[ord.ind,]
-    ord[[i+1]]$like <- ord[[i+1]]$like[ord.ind] 
+    ord[[i+1]]$like <- ord[[i+1]]$like[ord.ind]
   }
-  
+
   ### positioning after the given sequence
   # get two-point information
   list.init <- phases(make.seq(get(input.seq$twopt),c(input.seq$seq.num[length(input.seq$seq.num)],mrk),twopt=input.seq$twopt))
@@ -265,7 +386,7 @@ function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,verbose=FALSE) {
   for(j in 1:(length(input.seq$seq.num)-1)) phase.init[[j]] <- input.seq$seq.phases[j]
   Ph.Init <- comb.ger(phase.init)
   Rf.Init <- comb.ger(rf.init)
-  
+
   # create last order
   try.ord <- rbind(try.ord,c(input.seq$seq.num,mrk))
   if(verbose) cat("TRY",length(input.seq$seq.num)+1,": ", c(input.seq$seq.num,mrk) ,"\n")
@@ -299,7 +420,7 @@ function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,verbose=FALSE) {
   ord[[length(input.seq$seq.num)+1]]$rf <- ord[[length(input.seq$seq.num)+1]]$rf[ord.ind,]
   ord[[length(input.seq$seq.num)+1]]$phase <- ord[[length(input.seq$seq.num)+1]]$phase[ord.ind,]
   ord[[length(input.seq$seq.num)+1]]$like <- ord[[length(input.seq$seq.num)+1]]$like[ord.ind]
-  
+
   # calculate LOD-Scores (best linkage phase combination for each position)
   LOD <- (best.seq-max(best.seq))/log(10)
    if(draw.try==TRUE){
@@ -308,13 +429,28 @@ function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,verbose=FALSE) {
   structure(list(ord=ord, LOD=LOD, try.ord=try.ord, data.name=input.seq$data.name, twopt=input.seq$twopt), class = "try")
 }
 
-
-
-# print method for object class 'try'
+##' Print method for object class 'try'
+##'
+##' @aliases print.try
+##'
+##' @param x an object of class \code{try}.
+##'
+##' @param j if \code{NULL} (default), output is a summary of the
+##'     results for all possible positions of the additional
+##'     marker. Otherwise, an integer makes detailed output to be
+##'     printed for the corresponding position. This integer must be
+##'     less than or equal to the length of the original sequence plus
+##'     1.  @param \dots further arguments, passed to other
+##'     methods. Currently ignored.
+##' @param ... currently ignored
+##' @return \code{NULL}
+##' @keywords internal
+##' @export
+##'
 print.try <- function(x,j=NULL,...) {
   phases.char <- c("CC","CR","RC","RR")
   marker <- x$try.ord[1,1]
-  
+
   if(is.null(j)) {
     # general summary
     seq <- format(x$try.ord[1,-1], scientific = FALSE)
@@ -323,7 +459,7 @@ print.try <- function(x,j=NULL,...) {
     size2 <- max(nchar(formatC(x$LOD,format="f",digits=2)))
     LOD.pr <- formatC(round(x$LOD,2),format="f",digits=2,width=size2)
     LOD.pr[which(LOD.pr=="  -0.0")] <- "   0.0"
-    
+
     cat("\nLOD scores correspond to the best linkage phase combination\nfor each position\n")
     cat("\nThe symbol \"*\" outside the box indicates that more than one\nlinkage phase is possible for the corresponding position\n")
     cat(paste("\n\n\t\t  Marker tested: ",marker,"\n\n",sep=""))
@@ -356,11 +492,11 @@ print.try <- function(x,j=NULL,...) {
     nest.LOD <- round((x$ord[[j]]$like[1:n.phase]-max(x$ord[[j]]$like[1:n.phase]))/log(10),1)
     nest.LOD.pr <- formatC(nest.LOD,format="f",digits=1,width=6)
     nest.LOD.pr[which(nest.LOD.pr=="  -0.0")] <- "   0.0"
-    
+
     cat("\nLOD is the overall LOD score (among all orders)\n")
     cat("\nNEST.LOD is the LOD score within the order\n")
     cat(paste("\nMarker tested: ",marker,"\n",sep=""))
-    
+
     cat(paste(rep("-",max(2,size1)+5+7*(n.phase)),collapse=""),"\n")
     cat("|",rep("",max(2,size1)+2),rep("|     ",n.phase),"|\n")
     cat("|",seq.pr[1],rep("",max(3-size1,0)),rep("|     ",n.phase),"|\n|")
@@ -419,27 +555,32 @@ draw.try<-function(base.input, try.input, pos=NULL){
     new.dist.len<-length(new.dist)
     plot(x=new.dist, rep(1,new.dist.len), pch="|", xlab="New Genetic Map", ylab="", axes=FALSE, type="n", main=paste("Adding marker ",try.input$try.ord[1,1]," (", colnames(get(try.input$data.name,pos=1)$geno)[try.input$try.ord[1,1]],")", sep=""))
     axis(1, at=round(new.dist,1), lwd.ticks = .75, cex.axis=.75, las=2)
-    text(new.dist, y=rep(1,length(new.dist)), labels=new.map$seq.num, cex=.7)
+    text(new.dist, y=rep(1,length(new.dist)), labels=new.map$seq.num, cex=.7, srt=90)
     points(new.dist[which.max(try.input$LOD)],1.5, col=2, cex=1.5, pch=25, bg = 2)
     text(x=new.dist[1]-(max(new.dist)/40), y=1 ,"Markers",  adj=c(1,0.5))
     text(x=new.dist[1]-(max(new.dist)/40), y=0 ,"Distance",  adj=c(1,0.2))
     par(op)
   }
   else{
-    op<-par(xpd=TRUE)
+    op<-par(xpd=TRUE, las=2)
     points(try.dist[pos],0, pch=17, col=2, cex=1.5)
     new.map<-make.seq(try.input,pos)
     new.dist<-cumsum(c(0, kosambi(new.map$seq.rf)))
     new.dist.len<-length(new.dist)
     plot(x=new.dist, rep(1,new.dist.len), xlab="New Genetic Map", ylab="", axes=FALSE, type="n", main=paste("Adding marker ",try.input$try.ord[1,1]," (", colnames(get(try.input$data.name,pos=1)$geno)[try.input$try.ord[1,1]],")", sep=""))
     axis(1, at=round(new.dist,1), lwd.ticks = .75, cex.axis=.75, las=2)
-    text(new.dist, y=rep(1,length(new.dist)), labels=new.map$seq.num, cex=.7)
+    text(new.dist, y=rep(1,length(new.dist)), labels=new.map$seq.num, cex=.7, srt=90)
     points(new.dist[pos], 1.5, col=2, cex=1.5, pch=25, bg = 2)
     text(x=new.dist[1]-(max(new.dist)/40), y=1 ,"Markers",  adj=c(1,0.5))
     text(x=new.dist[1]-(max(new.dist)/40), y=0 ,"Distance",  adj=c(1,0.2))
     par(op)
   }
-  rf.graph.table(new.map, inter=FALSE, axis.cex = .75, main="")
+  rf.graph.table(input.seq=new.map,
+                 axis.cex = 0.75,
+                 main ="",
+                 inter = FALSE,
+                 mrk.names = TRUE,
+                 colorkey = FALSE)
   title(main = "LOD (above diag.) and Recombination Fraction Matrix", cex.main=.9, line=15.4)
 }
 

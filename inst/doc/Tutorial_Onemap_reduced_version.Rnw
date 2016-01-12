@@ -328,10 +328,10 @@ You also can use the console menus: {\it Packages} $ \rightarrow $ {\it Install 
                                & record         & Orders markers in a sequence using RECORD algorithm \\
                                & ug             & Orders markers in a sequence using UG algorithm \\
                                & compare        & Compares all possible orders of markers in a sequence \\
-                               & try.seq        & Tries to map a marker into a given linkage group \\
+                               & try_seq        & Tries to map a marker into a given linkage group \\
                                & order.seq      & Automates map construction through ``compare'' and \\
-                               &                & ``try.seq'' functions \\
-                               & ripple.seq     & Compares alternative orders for a map and displays \\ 
+                               &                & ``try_seq'' functions \\
+                               & ripple_seq     & Compares alternative orders for a map and displays \\ 
                                &                & the plausible ones \\
                                & map            & Constructs a multipoint linkage map for a sequence \\
                                &                & in a given order \\
@@ -684,7 +684,7 @@ LG2.frame <- make.seq(LG2.comp)
 
 \item Next, let us try to map the remaining markers, one at a time. Since there are more markers of type D1 than D2, the latter will be tried later. Starting with {\tt M9}:
 <<results=verbatim>>=
-LG2.extend <- try.seq(LG2.frame,9)
+LG2.extend <- try_seq(LG2.frame,9)
 LG2.extend
 @ 
 
@@ -696,10 +696,10 @@ print(LG2.extend,5)
 
 The second argument indicates the position where to place the marker. Note that the first allele arrangement is the most likely one. 
 
-Also, we can obtain some useful diagnostic graphics using the argument {\tt draw.try=TRUE} when using function {\tt try.seq}:
+Also, we can obtain some useful diagnostic graphics using the argument {\tt draw.try=TRUE} when using function {\tt try_seq}:
 
 <<results=hide, echo=TRUE, fig=TRUE , width=9, height=9>>=
-LG2.extend <- try.seq(LG2.frame, 9, draw.try=TRUE)
+LG2.extend <- try_seq(LG2.frame, 9, draw.try=TRUE)
 @ 
 
 The top figure represents the new genetic map obtained with the insertion of marker 9  between markers M23 and M24 (most likely one). The left bottom figure represents the frame map  M24 - M23 - M4 - M19 - M20 on x-axis and the LOD Scores of the linkage maps obtained with the insertion of marker 9 at the beginning, between markers and at the end of the frame map. The red triangle indicates the most likely position, where the marker 9 it is supposed to be placed. The right bottom figure is the recombination fraction matrix based on a color scale using the function {\tt rf.graph.table}. See Section \ref{recmat} for details. The diagnostic graphics show an almost monotonic recombination fraction matrix (the values are bigger as their distance from diagonal increases). This pattern is typical of ordered linkage groups. We can see that the position between markers {\tt M23} and {\tt M24} is the most likely one for positioning marker {\tt M9}
@@ -710,18 +710,18 @@ LG2.frame <- make.seq(LG2.extend,5,1)
 @ 
 When using {\tt make.seq} with an object of class {\tt try}, the second argument is the position on the map (according to the scale on the right of the output) and the last argument indicates linkage phases (defaults to 1, higher nested LOD).
 
-It should be pointed out that the framework created by the function {\tt compare} with ({\tt M20},   {\tt M4},  {\tt M19},  {\tt M23} and {\tt M24}) could be in reverse order ({\tt M24}, {\tt M23}, {\tt M19}, {\tt M4} and {\tt M20}) and still be the same map. Thus, the positioning of markers by command {\tt try.seq} can be different in your computer. For example, here, marker {\tt M9} was better placed in position 5, however if you obtain a reverse order,  marker {\tt M9} would be better placed in position 2. In both cases the best position is between markers {\tt M24} and {\tt M23}.
+It should be pointed out that the framework created by the function {\tt compare} with ({\tt M20},   {\tt M4},  {\tt M19},  {\tt M23} and {\tt M24}) could be in reverse order ({\tt M24}, {\tt M23}, {\tt M19}, {\tt M4} and {\tt M20}) and still be the same map. Thus, the positioning of markers by command {\tt try_seq} can be different in your computer. For example, here, marker {\tt M9} was better placed in position 5, however if you obtain a reverse order,  marker {\tt M9} would be better placed in position 2. In both cases the best position is between markers {\tt M24} and {\tt M23}.
 
 Adding other markers, one by one (output not shown):
 
 <<results=hide>>=
-LG2.extend <- try.seq(LG2.frame,29)
+LG2.extend <- try_seq(LG2.frame,29)
 LG2.frame <- make.seq(LG2.extend,7)
-LG2.extend <- try.seq(LG2.frame,27)
+LG2.extend <- try_seq(LG2.frame,27)
 LG2.frame <- make.seq(LG2.extend,1)
-LG2.extend <- try.seq(LG2.frame, 16)
+LG2.extend <- try_seq(LG2.frame, 16)
 LG2.frame <- make.seq(LG2.extend,2)
-LG2.extend <- try.seq(LG2.frame,21)
+LG2.extend <- try_seq(LG2.frame,21)
 LG2.final <- make.seq(LG2.extend,6)
 @ 
 
@@ -731,7 +731,7 @@ LG2.final <- make.seq(LG2.extend,6)
 LG2.ord <- order.seq(LG2, n.init=5, THRES=3, draw.try=TRUE, wait=1)
 @ 
 
-Basically, this function automates what the {\tt try.seq} function does, using some pre-defined rules. In the function, {\tt n.init = 5} means that five markers (the most informative ones) will be used in the {\tt compare} step; {\tt THRES = 3} indicates that the {\tt try.seq} step will only add markers to the sequence which can be mapped with LOD Score greater than 3; {\tt draw.try=TRUE} will display a diagnostic graphic for each {\tt try.seq} step; {\tt wait=1} indicates the minimum time interval in seconds to display the diagnostic graphic. 
+Basically, this function automates what the {\tt try_seq} function does, using some pre-defined rules. In the function, {\tt n.init = 5} means that five markers (the most informative ones) will be used in the {\tt compare} step; {\tt THRES = 3} indicates that the {\tt try_seq} step will only add markers to the sequence which can be mapped with LOD Score greater than 3; {\tt draw.try=TRUE} will display a diagnostic graphic for each {\tt try_seq} step; {\tt wait=1} indicates the minimum time interval in seconds to display the diagnostic graphic. 
 
 NOTE: Although very useful, this function can be misleading, specially if there are not many fully informative markers, so use it carefully. Results can vary for each running, of course.
 
@@ -750,27 +750,27 @@ and to get the order with all markers, use
 LG2.all <- make.seq(LG2.ord,"force")
 LG2.all
 @ 
-Notice that, for this linkage group, the ``forced'' map obtained with {\tt order.seq} is the same as that obtained with {\tt compare} plus {\tt try.seq}, but \emph{this is not always the case}.
+Notice that, for this linkage group, the ``forced'' map obtained with {\tt order.seq} is the same as that obtained with {\tt compare} plus {\tt try_seq}, but \emph{this is not always the case}.
 
-\item The {\tt order.seq} function can also performs two rounds of the {\tt try.seq} algorithms, first using {\tt THRES} and then {\tt THRES - 1} as threshold. This generally results in safe orders with more markers mapped, but may take longer to run. To do this use the {\tt touchdown} options:
+\item The {\tt order.seq} function can also performs two rounds of the {\tt try_seq} algorithms, first using {\tt THRES} and then {\tt THRES - 1} as threshold. This generally results in safe orders with more markers mapped, but may take longer to run. To do this use the {\tt touchdown} options:
 <<>>=
 LG2.ord <- order.seq(LG2, n.init=5, THRES=3, touchdown=TRUE)
 LG2.ord
 @ 
 For this particular sequence, the {\tt touchdown} step could not map any additional marker, but this depends on the specific dataset.
 
-\item Finally, to check for alternative orders (since we did not use exhaustive search), use the {\tt ripple.seq} function:
+\item Finally, to check for alternative orders (since we did not use exhaustive search), use the {\tt ripple_seq} function:
 <<>>=
-ripple.seq(LG2.all, ws=4, LOD=3)
+ripple_seq(LG2.all, ws=4, LOD=3)
 @ 
 
-We should do this to any of the orders we found, either using {\tt try.seq} or {\tt order.seq}. Here, we choose {\tt LG2.all} only for didactic purpose. The second argument, {\tt ws = 4}, means that subsets (windows) of four markers will be permutated sequentially ({\tt $4!$} orders for each window), to search for other plausible orders. The {\tt LOD} argument means that only orders with LOD Score smaller than 3 will be printed.
+We should do this to any of the orders we found, either using {\tt try_seq} or {\tt order.seq}. Here, we choose {\tt LG2.all} only for didactic purpose. The second argument, {\tt ws = 4}, means that subsets (windows) of four markers will be permutated sequentially ({\tt $4!$} orders for each window), to search for other plausible orders. The {\tt LOD} argument means that only orders with LOD Score smaller than 3 will be printed.
 
 The output shows sequences of four numbers, since {\tt ws = 4}.  They will be followed by an {\tt OK}, if there is no alternative orders with LOD Scores smaller than {\tt LOD = 3} in absolute value, or by a list of alternative orders. On the example, just the last sequence showed an alternative order with LOD smaller than {\tt LOD=3} (2.06, in absolute value). However, the best order was the previous one (LOD=0.00). 
 
 If there was an alternative order most likely than the original, one should check the difference between these orders (and linkage phases) and change it using, for example, the function {\tt drop.marker} (see Section \ref{arbitrary}) and {\tt seq.try} or typing the new order. You can use {\tt \$seq.num} and {\tt \$seq.phases} after the name of the sequence (for example, {\tt LG2.all\$seq.num} and {\tt LG2.all\$seq.phases}) to obtain the original order and linkage phases, make the necessary changes (by copying and paste) and then use the function {\tt map} (see Section \ref{arbitrary}) to reestimate the genetic map for the new order.
 
-Here, the function {\tt ripple.seq} showed that the final order obtained is indeed the best for this linkage group. The map can then be printed using  
+Here, the function {\tt ripple_seq} showed that the final order obtained is indeed the best for this linkage group. The map can then be printed using  
     
 <<results=verbatim>>=
 LG2.all
@@ -790,7 +790,7 @@ LG1 <- make.seq(LGs, 1)
 LG1.ord <- order.seq(LG1, n.init=6, touchdown=TRUE)
 LG1.ord
 @ 
-Notice that the second round of {\tt try.seq} added markers {\tt M5} and {\tt M25}.
+Notice that the second round of {\tt try_seq} added markers {\tt M5} and {\tt M25}.
 
 \item Now, get the order with all markers:
 <<>>=
@@ -799,7 +799,7 @@ Notice that the second round of {\tt try.seq} added markers {\tt M5} and {\tt M2
 
 \item Check the final map:
 <<>>=
-ripple.seq(LG1.final)
+ripple_seq(LG1.final)
 @ 
 
 No better order was observed.
@@ -1115,7 +1115,7 @@ For this particular data set, the algorithms provided different results (results
 
 Now, let us use a multipoint approach to order markers within group 2. We could use the following: for each possible order of this group, we calculate the multipoint likelihood, and then compare all of them, choosing the most likely one (high likelihood). For a moderate number of markers (up to 10 or 11), this is feasible. This procedure is implemented in the function {\tt compare}. Although feasible, with up to 7 markers the function {\tt compare} could take a very long time, depending on the data set and computational resources used.  A detailed use of this function can be seen in Section \ref{group3outcrossing}. It is important to say that for F$_2$ populations, we do not need to estimate the linkage phases, therefore, we can use a slightly large number of markers in function {\tt compare}. However, for 16 markers, which is the number of markers in group 2, the use of function {\tt compare} is unfeasible, and we should use another approach.
 
-Thus we will apply the same procedure used in Section \ref{group2outcrossing}. We will choose a moderate number of markers, say 6, to create a framework using the function {\tt compare} and then positioning the remaining markers using the function {\tt try.seq}. The way we choose these markers in inbred-based populations (F$_2$, backcrosses and RILs) is somewhat different from outcrossing populations. 
+Thus we will apply the same procedure used in Section \ref{group2outcrossing}. We will choose a moderate number of markers, say 6, to create a framework using the function {\tt compare} and then positioning the remaining markers using the function {\tt try_seq}. The way we choose these markers in inbred-based populations (F$_2$, backcrosses and RILs) is somewhat different from outcrossing populations. 
 
 We recommend two methods: i) randomly choose a number of markers and calculate the multipoint likelihood of all possible orders (using the function {\tt compare}). If the LOD Score of the second best order is greater than a threshold, say 3, then take the best order to proceed with the next step. If not, repeat the procedure. ii) use some two-point based algorithm to construct a map; then, take equally spaced markers from this map. Then, create a framework of ordered markers using the function {\tt compare}. Next, try to map the remaining markers, one at a time, beginning with co-dominants (most informative ones), then add the dominants.  You can do this procedure manually, like shown in Section \ref{group2outcrossing}; this procedure is also automated in function {\tt order.seq} which we will use here for the latter procedure:
 
@@ -1127,7 +1127,7 @@ LG2.f2.ord <- order.seq(input.seq=LG2.f2, n.init = 5,
                         
 @   
 
-The first argument is an object of class sequence. {\tt n.init = 5} means that five markers will be used in the {\tt compare} step. The argument {\tt subset.search = "twopt"} indicates that these five markers should be chosen by using a two point method, which will be Rapid Chain Delineation, as indicated by the argument {\tt twopt.alg = "rcd"}. {\tt THRES = 3} indicates that the {\tt try.seq} step will only add markers to the sequence which can be mapped with LOD Score greater than 3. {\tt draw.try=TRUE} will display a diagnostic graphic for each {\tt try.seq} step (see Section \ref{group2outcrossing}). {\tt wait=1} indicates the minimum time interval in seconds to display the diagnostic graphic. 
+The first argument is an object of class sequence. {\tt n.init = 5} means that five markers will be used in the {\tt compare} step. The argument {\tt subset.search = "twopt"} indicates that these five markers should be chosen by using a two point method, which will be Rapid Chain Delineation, as indicated by the argument {\tt twopt.alg = "rcd"}. {\tt THRES = 3} indicates that the {\tt try_seq} step will only add markers to the sequence which can be mapped with LOD Score greater than 3. {\tt draw.try=TRUE} will display a diagnostic graphic for each {\tt try_seq} step (see Section \ref{group2outcrossing}). {\tt wait=1} indicates the minimum time interval in seconds to display the diagnostic graphic. 
 NOTE: Although very useful, this function can be misleading, specially if there are a considerable amount of missing data and dominant markers, use it carefully. 
 
 \item Check the final order:
@@ -1147,7 +1147,7 @@ and to get the order with all markers (i.e. including the ones not mapped to a s
 
 Which places markers {\tt 11} and {\tt 45} into their most likely positions (between markers {\tt 2} and {\tt 43} and {\tt 32} and {\tt 54}, respectively). 
 
-\item The {\tt order.seq} function can perform two rounds of the {\tt try.seq} step, first using {\tt THRES} and then {\tt THRES - 1} as threshold. This generally results in safe orders with more markers mapped, but takes longer to run. To do this,type:
+\item The {\tt order.seq} function can perform two rounds of the {\tt try_seq} step, first using {\tt THRES} and then {\tt THRES - 1} as threshold. This generally results in safe orders with more markers mapped, but takes longer to run. To do this,type:
 <<results=hide>>=
 LG2.f2.ord <- order.seq(input.seq=LG2.f2, n.init = 5, 
                         subset.search = "twopt", 
@@ -1162,9 +1162,9 @@ The output is too big to be included here, so please try to see what happened. I
 (LG2.f2.final<-make.seq(LG2.f2.ord, "force"))
 @ 
 
-\item Finally, to check for alternative orders, use the {\tt ripple.seq} function:
+\item Finally, to check for alternative orders, use the {\tt ripple_seq} function:
 <<>>=
-ripple.seq(LG2.f2.final, ws=5, LOD=3)
+ripple_seq(LG2.f2.final, ws=5, LOD=3)
 @ 
 The second argument, {\tt ws = 5}, means that subsets (windows) of five markers will be permutated sequentially ({\tt $5!$} orders for each window), to search for other plausible orders. The {\tt LOD} argument means that only orders with LOD Score smaller than 3 will be printed.
 
@@ -1172,7 +1172,7 @@ The output shows sequences of four numbers, since {\tt ws = 5}.  They can be fol
 
 On the example, the six first sequences showed alternative orders with LOD smaller than {\tt LOD=3}. However, the best order was that obtained with the {\tt order.seq} function (LOD=0.00). If there was an alternative order most likely than the original, one should check the difference between these orders and if necessary change it using, for example, the function {\tt drop.marker} (see Section \ref{arbitraryf2}) and {\tt seq.try}, or simple typing the new order.Use {\tt LG2.f2.final\$seq.num} to obtain the original order; then make the necessary changes (by copying and paste) and use the function {\tt map} (see Section \ref{arbitraryf2}) to reestimate the genetic map for the new order.
 
-\item The {\tt ripple.seq} command showed that the final order obtained is indeed the best for this linkage group. The map can then be printed using
+\item The {\tt ripple_seq} command showed that the final order obtained is indeed the best for this linkage group. The map can then be printed using
     
 <<results=verbatim>>=
 LG2.f2.final
@@ -1196,7 +1196,7 @@ LG1.f2.ord <- order.seq(input.seq=LG1.f2, n.init = 5,
                         draw.try = TRUE, wait = 1,
                         touchdown=TRUE)
 @ 
-The second round of {\tt try.seq} added markers {\tt M9}, {\tt M44} and {\tt M48} (try it; results not shown).
+The second round of {\tt try_seq} added markers {\tt M9}, {\tt M44} and {\tt M48} (try it; results not shown).
 
 \item Get the order with all markers:
 <<>>=
@@ -1205,7 +1205,7 @@ The second round of {\tt try.seq} added markers {\tt M9}, {\tt M44} and {\tt M48
 
 \item Check the final map (results not shown):
 <<results=hide>>=
-ripple.seq(ws=5, LG1.f2.final)
+ripple_seq(ws=5, LG1.f2.final)
 @ 
 
 No better order was observed (please, try it to see).
@@ -1234,7 +1234,7 @@ LG3.f2.ord <- order.seq(input.seq=LG3.f2, n.init = 5,
                         draw.try = TRUE, wait = 1,
                         touchdown=TRUE)
 @ 
-We can see that in the second round of {\tt try.seq} marker {\tt M56} was added (please, try it). A careful examination of the graphics can be a good source of information about how markers where placed. For more details about how to interpret it, see Section \ref{group2outcrossing} 
+We can see that in the second round of {\tt try_seq} marker {\tt M56} was added (please, try it). A careful examination of the graphics can be a good source of information about how markers where placed. For more details about how to interpret it, see Section \ref{group2outcrossing} 
 
 \item Now, get the order with all markers:
 <<>>=
@@ -1243,7 +1243,7 @@ We can see that in the second round of {\tt try.seq} marker {\tt M56} was added 
 
 \item Check the final map:
 <<results=hide>>=
-ripple.seq(ws=5, LG3.f2.final)
+ripple_seq(ws=5, LG3.f2.final)
 @ 
 
 No better alternative order was observed.
@@ -1315,12 +1315,12 @@ The recombination fractions are plotted under the diagonal and the LOD Scores ar
 
 We clearly see a different pattern for marker {\tt M38}. The blue cell, corresponding to markers {\tt M50} and {\tt M38}, indicates a big recombination fraction between these markers as seen before (by clicking, rf = 0.4049). Moreover, we can see a group of red cells corresponding to marker {\tt M38} and markers {\tt M59}, {\tt M49}, {\tt M39} and {\tt M19}. This pattern indicates small recombination fractions between marker {\tt M38} and other markers. Thus {\tt M38} is suppose to be close to them on the map. 
 
-\item Since we have enough evidence that marker {\tt M38} is misplaced, let us drop this marker and try to position it using the function {\tt try.seq}:
+\item Since we have enough evidence that marker {\tt M38} is misplaced, let us drop this marker and try to position it using the function {\tt try_seq}:
   
 <<echo=TRUE, fig=TRUE , width=9, height=9>>=
 temp.seq <- drop.marker(LG3.f2.wrong,38)
 temp.map <- map(temp.seq)
-temp.try <- try.seq(temp.map, 38, draw.try=TRUE)
+temp.try <- try_seq(temp.map, 38, draw.try=TRUE)
 @  
 
 We can see that the most likely position for marker {\tt M38} is between markers {\tt M39} and {\tt M49} (position 4). The patterns on the color matrix are better now. Therefore:
@@ -1542,7 +1542,7 @@ def.rf.3pts(example, "M13", "M7", "M22")
 This last command line shows that the order {\tt M13 - M7 - M22} is possibly incorrect, and a warning message is displayed. However, the HMM-based analysis use information from every marker in the sequence and, therefore, the order obtained through {\tt compare} is likely to be the best order. Anyway, we had noticed that changing the positions of markers M7 and M22 resulted in an order with LOD Score -0.02, which is very close to zero. This probably happens because M7 is of type D2 and M22 is of type D1.
 \end{enumerate}
 
-These three-point analysis were formerly used to check the final linkage map. In this new version, the best way to do this is using the new function {\tt ripple.seq}.
+These three-point analysis were formerly used to check the final linkage map. In this new version, the best way to do this is using the new function {\tt ripple_seq}.
 
 \end{document}
 

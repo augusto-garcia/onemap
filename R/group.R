@@ -1,21 +1,20 @@
 #######################################################################
-#                                                                     #
-# Package: onemap                                                     #
-#                                                                     #
-# File: group.R                                                       #
-# Contains: group, print.group                                        #
-#                                                                     #
-# Written by Gabriel Rodrigues Alves Margarido                        #
-# copyright (c) 2007-9, Gabriel R A Margarido                         #
-#                                                                     #
-# First version: 11/07/2007                                           #
-# Last update: 09/25/2009                                             #
-# License: GNU General Public License version 2 (June, 1991) or later #
-#                                                                     #
+##                                                                     ##
+## Package: onemap                                                     ##
+##                                                                     ##
+## File: group.R                                                       ##
+## Contains: check.linkage, group, print.group                              ##
+##                                                                     ##
+## Written by Gabriel Rodrigues Alves Margarido and Marcelo Mollinari  ##
+## copyright (c) 2007-9, Gabriel R A Margarido and Marcelo Mollinari   ##
+##                                                                     ##
+## First version: 11/07/2007                                           ##
+## Last update: 11/08/2015                                             ##
+## License: GNU General Public License version 2 (June, 1991) or later ##
+##                                                                     ##
 #######################################################################
 
-# Function to assign markers to linkage groups
-
+## Function to assign markers to linkage groups
 
 ##' Assign markers to linkage groups
 ##' 
@@ -28,33 +27,34 @@
 ##' using \code{NULL}, the new values overridden the ones in object
 ##' \code{input.seq}.
 ##' 
-##' @aliases group print.group
+##' @aliases group
 ##' @param input.seq an object of class \code{sequence}.
-##' @param LOD a (positive) real number used as minimum LOD score (threshold)
-##' to declare linkage.
-##' @param max.rf a real number (usually smaller than 0.5) used as maximum
-##' recombination fraction to declare linkage.
-##' @param x an object of class \code{group}.
-##' @param detailed logical. If \code{FALSE}, only a small summary of the
-##' linkage groups is printed. If \code{TRUE} (default), the names of markers
-##' in each linkage group are also displayed.
-##' @param \dots further arguments, passed to other methods. Currently ignored.
-##' @return Returns an object of class \code{group}, which is a list containing
-##' the following components: \item{data.name}{name of the object of class
-##' \code{outcross} that contains the raw data.} \item{twopt}{name of the
-##' object of class \code{rf.2ts} used as input, i.e., containing information
-##' used to assign markers to linkage groups.} \item{marnames}{marker names,
-##' according to the input file.} \item{n.mar}{total number of markers.}
-##' \item{LOD}{minimum LOD Score to declare linkage.} \item{max.rf}{maximum
-##' recombination fraction to declare linkage.} \item{n.groups}{number of
-##' linkage groups found.} \item{groups}{number of the linkage group to which
-##' each marker is assigned.}
-##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com}
-##' @seealso \code{\link[onemap]{rf.2pts}} and \code{\link[onemap]{make.seq}}
+##' @param LOD a (positive) real number used as minimum LOD score
+##'     (threshold) to declare linkage.
+##' @param max.rf a real number (usually smaller than 0.5) used as
+##'     maximum recombination fraction to declare linkage.
+##' @param verbose logical. If \code{TRUE}, current progress is shown;
+##'     if \code{FALSE}, no output is produced.
+##' @return Returns an object of class \code{group}, which is a list
+##'     containing the following components: \item{data.name}{name of
+##'     the object of class \code{outcross} that contains the raw
+##'     data.} \item{twopt}{name of the object of class \code{rf.2ts}
+##'     used as input, i.e., containing information used to assign
+##'     markers to linkage groups.} \item{marnames}{marker names,
+##'     according to the input file.} \item{n.mar}{total number of
+##'     markers.}  \item{LOD}{minimum LOD Score to declare linkage.}
+##'     \item{max.rf}{maximum recombination fraction to declare
+##'     linkage.} \item{n.groups}{number of linkage groups found.}
+##'     \item{groups}{number of the linkage group to which each marker
+##'     is assigned.}
+##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com} and
+##'     Marcelo Mollinari, \email{mmollina@usp.br}
+##' @seealso \code{\link[onemap]{rf.2pts}} and
+##'     \code{\link[onemap]{make.seq}}
 ##' @references Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993)
-##' Constructing genetic linkage maps with MAPMAKER/EXP Version 3.0: a tutorial
-##' and reference manual. \emph{A Whitehead Institute for Biomedical Research
-##' Technical Report}.
+##'     Constructing genetic linkage maps with MAPMAKER/EXP Version
+##'     3.0: a tutorial and reference manual. \emph{A Whitehead
+##'     Institute for Biomedical Research Technical Report}.
 ##' @keywords misc
 ##' @examples
 ##' 
@@ -64,130 +64,141 @@
 ##'   all.data <- make.seq(twopts,"all")
 ##'   link_gr <- group(all.data)
 ##'   link_gr
+##'   print(link_gr, details=FALSE) #omit the names of the markers
 ##' 
-group <-
-function(input.seq, LOD=NULL, max.rf=NULL) {
-  # checking for correct object
-  if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
-  
-  n.mar <- length(input.seq$seq.num)
-  # 'groups' indicates the linkage group to which each marker is associated
-  groups <- rep(NA,n.mar)
-  
-  # determining thresholds
-  if (is.null(LOD)) 
-    LOD <- get(input.seq$twopt, pos=1)$LOD
-  if (is.null(max.rf)) 
-    max.rf <- get(input.seq$twopt, pos=1)$max.rf
-  
-  # 'group.count' is the current linkage group
-  group.count <- 1
-  significant <- rep(NA,n.mar)
-  temp <- matrix(NA,4,2)
-  
-  for (m in 1:n.mar) {
-    if (is.na(groups[m])) {  # marker with index 'm' is not associated to any group
-      
-      for (k in (1:n.mar)[-m]) {
-        # recover values from two-point analyses
-        big <- pmax.int(input.seq$seq.num[m],input.seq$seq.num[k])
-        small <- pmin.int(input.seq$seq.num[m],input.seq$seq.num[k])
-        temp <- get(input.seq$twopt, pos=1)$analysis[acum(big-2)+small,,]
-
-        # check if any assignment meets the criteria
-        if (any(temp[,1] <= max.rf & temp[,2] >= LOD)) significant[k] <- "*"
-        else significant[k] <- "ns"
-      }
-      significant[m] <- NA
-      
-      # check which markers are linked with 'm'
-      grouping <- c(m,which(significant=="*"))
-      
-      if (length(grouping) > 1) {  # 'm' is linked with at least one marker
-        begin <- 1 # 'begin' is the index of the last marker added
-        flag <- 1 # 'flag' indicates if a new marker has been added to the group
-        while (flag) {
-          flag <- 0
-          next.begin <- length(grouping) # 'next.begin' holds the future value of 'begin'
-          
-          for (i in tail(grouping,-begin)) {
-            # detect all markers linked to those already in group
-            significant <- rep(NA,n.mar)
-            
-			for (k in (1:n.mar)[-i]) {
-			  # recover values from two-point analyses
-              big <- pmax.int(input.seq$seq.num[i],input.seq$seq.num[k])
-              small <- pmin.int(input.seq$seq.num[i],input.seq$seq.num[k])
-              temp <- get(input.seq$twopt, pos=1)$analysis[acum(big-2)+small,,]
-              
-              # check if any assignment meets the criteria
-              if (any(temp[,1] <= max.rf & temp[,2] >= LOD)) significant[k] <- "*"
-              else significant[k] <- "ns"
+group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
+{
+    ## checking for correct object
+    if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")    
+    ## determining thresholds
+    if (is.null(LOD)) 
+        LOD <- get(input.seq$twopt, pos=1)$LOD
+    if (is.null(max.rf)) 
+        max.rf <- get(input.seq$twopt, pos=1)$max.rf
+    cl<-class(get(input.seq$data.name))
+    geno<-get(input.seq$data.name)$geno[,input.seq$seq.num]
+    st<-get(input.seq$data.name)$segr.type.num
+    groups<-rep(0, length(input.seq$seq.num))
+    tp<-list(unlk=input.seq$seq.num)
+    i<-1
+    if(verbose) cat("   Selecting markers: \n")
+    while(length(tp$unlk) > 0)
+    {
+        g<-tp$unlk[1]
+        s<-tp$unlk
+        j<-1
+        tp<-check.linkage(i=g[j], s=s, cl=cl, geno=geno, st=st, max.rf=max.rf, LOD=LOD)
+        gt<-tp$lk
+        if(length(gt) > 0)
+        {
+            if(verbose) cat("\t  group   ", i,"\n\t   ")
+            g<-c(g,gt)
+            while(!is.na(g[j])){
+                if(verbose)
+                    {
+                        cat(".")
+                        if(j %% 60 == 0) cat("\n\t   ")
+                    }
+                tp<-check.linkage(i=g[j+1], s=tp$unlk, cl=cl, geno=geno, st=st, max.rf=max.rf, LOD=LOD)
+                gt<-tp$lk
+                g<-c(g,gt)
+                j<-j+1
             }
-            significant[i] <- NA
-            
-            group_parc <- which(significant=="*")
-
-            # check if markers in 'group_parc' are already in the current group
-            if (any(new.mrk <- is.na(match(group_parc,grouping)))) {
-              grouping <- c(grouping,group_parc[new.mrk])
-              flag <- 1
-            }
-          }
-          begin <- next.begin
+            if(verbose) cat("\n")
+            groups[g]<-i
+            i<-i+1
         }
-        
-        # finishing the current linkage group
-        groups[grouping] <- group.count
-        group.count <- group.count + 1
-      }
     }
-  }
-  
-  ifelse(all(is.na(groups)), n.groups <- 0, n.groups <- max(groups,na.rm=TRUE))
-  
-  # results
-  structure(list(data.name=get(input.seq$twopt, pos=1)$data.name, input.name=deparse(substitute(input.seq)),
-                 twopt=input.seq$twopt, marnames=get(input.seq$twopt, pos=1)$marnames,
-                 n.mar=n.mar, seq.num=input.seq$seq.num, LOD=LOD, max.rf=max.rf,
-                 n.groups=n.groups, groups=groups), class = "group")
+    if(all(groups==0)) cat("\t No group found.\n")
+    ## results
+    structure(list(data.name=input.seq$data.name, input.name=deparse(substitute(input.seq)),
+                   twopt=input.seq$twopt, marnames=colnames(geno),
+                   n.mar=length(input.seq$seq.num), seq.num=input.seq$seq.num, LOD=LOD, max.rf=max.rf,
+                   n.groups=i-1, groups=groups), class = "group")
 }
 
+##' Show the results of grouping procedure
+##'
+##' It shows the linkage groups as well as the unlinked markers.
+##' 
+##' @aliases print.group
+##' @param x an object of class onemap.segreg.test
+##'
+##' @param detailed logical. If \code{TRUE} the markers in each
+##'     linkage group are printed.
+##'
+##' @param ... currently ignored
+##' @return \code{NULL}
+##' @keywords internal
+##' @export
+##'
 
-
-# print method for object class 'group'
 print.group <-
-function(x, detailed=TRUE,...) {
-  # checking for correct object
-  if(!any(class(x)=="group")) stop(deparse(substitute(x))," is not an object of class 'group'")
-  
-  cat("  This is an object of class 'group'\n")
-  cat(paste("  It was generated from the object \"", x$input.name,
-            "\"\n\n",sep=""))
-  
-  # criteria
-  cat("  Criteria used to assign markers to groups:\n")
-  cat("    LOD =", x$LOD, ", Maximum recombination fraction =",
-      x$max.rf, "\n")
+    function(x, detailed=TRUE,...) {
+        ## checking for correct object
+        if(!any(class(x)=="group")) stop(deparse(substitute(x))," is not an object of class 'group'")
+        
+        cat("  This is an object of class 'group'\n")
+        cat(paste("  It was generated from the object \"", x$input.name,
+                  "\"\n\n",sep=""))
+        
+        ## criteria
+        cat("  Criteria used to assign markers to groups:\n")
+        cat("    LOD =", x$LOD, ", Maximum recombination fraction =",
+            x$max.rf, "\n")
 
-  # printing summary
-  cat("\n  No. markers:           ", x$n.mar, "\n")
-  cat("  No. groups:            ", x$n.groups, "\n")
-  cat("  No. linked markers:    ", sum(!is.na(x$groups)), "\n")
-  cat("  No. unlinked markers:  ", sum(is.na(x$groups)), "\n")
-  
-  if (detailed) {
-    # printing detailed results (markers in each linkage group)
-    cat("\n  Printing groups:")
-    for (i in 1:x$n.groups) {
-      cat("\n  Group", i, ":", length(which(x$groups==i)) , "markers\n    ")
-      cat(x$marnames[x$seq.num[which(x$groups==i)]], "\n")
+        ## printing summary
+        cat("\n  No. markers:           ", x$n.mar, "\n")
+        cat("  No. groups:            ", x$n.groups, "\n")
+        cat("  No. linked markers:    ", sum(!is.na(x$groups)), "\n")
+        cat("  No. unlinked markers:  ", sum(x$groups==0), "\n")
+        
+        if (detailed) {
+            ## printing detailed results (markers in each linkage group)
+            cat("\n  Printing groups:")
+            for (i in 1:x$n.groups) {
+                cat("\n  Group", i, ":", length(which(x$groups==i)) , "markers\n    ")
+                cat(x$marnames[x$seq.num[which(x$groups==i)]], "\n")
+            }
+            if (any(is.na(x$groups))) {
+                cat("\n  Unlinked markers:", length(which(is.na(x$groups))) ," markers\n    ")
+                cat(x$marnames[x$seq.num[which(is.na(x$groups))]], "\n")
+            }
+        }
     }
-    if (any(is.na(x$groups))) {
-      cat("\n  Unlinked markers:", length(which(is.na(x$groups))) ," markers\n    ")
-      cat(x$marnames[x$seq.num[which(is.na(x$groups))]], "\n")
+
+
+##Checks if a marker i is linked with markers in a vector s
+check.linkage<-function(i, s, cl, geno, st=NULL, max.rf, LOD)
+{
+    s<-s[is.na(match(s,i))]
+    if(cl=="outcross")
+    {
+        r<-est_rf_out(geno = geno[,c(i,s)], mrk = 1, seg_type = st[c(i,s)], nind = nrow(geno))
+        sig<-apply(r[[1]], 2, function(x,y) min(x) <= y, y=max.rf) &
+            apply(r[[2]], 2, function(x,y) max(x) >= y, y=LOD)
     }
-  }
+    else if(cl=="f2.onemap")
+    {
+        r<-est_rf_f2(geno = geno[,c(i,s)], mrk = 1, seg_type = st[c(i,s)], nind = nrow(geno))
+        sig<-r[1,] <= max.rf & r[2,] >=LOD
+    }
+    else if(cl=="bc.onemap")
+    {
+        r<-est_rf_bc(geno = geno[,c(i,s)], mrk = 1, type = 0, nind = nrow(geno))
+        sig<-r[1,] <= max.rf & r[2,] >=LOD
+    }
+    else if(cl=="riself.onemap")
+    {
+        r<-est_rf_bc(geno = geno[,c(i,s)], mrk = 1, type = 1, nind = nrow(geno))
+        sig<-r[1,] <= max.rf & r[2,] >=LOD
+    }
+    
+    else if(cl=="risib.onemap")
+    {
+        r<-est_rf_bc(geno = geno[,c(i,s)], mrk = 1, type = 1, nind = nrow(geno))
+        sig<-r[1,] <= max.rf & r[2,] >=LOD
+    }
+    return(list(lk=s[sig[-1]], unlk=s[!(sig[-1])]))
 }
-##end of file
-
+###end of file

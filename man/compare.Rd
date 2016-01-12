@@ -67,6 +67,9 @@ same in both parents. Hidden Markov chain codes adapted from Broman et al.
   (markers.comp <- compare(markers,verbose=TRUE))
 
 }
+
+
+
 }
 \author{
 Marcelo Mollinari, \email{mmollina@usp.br}

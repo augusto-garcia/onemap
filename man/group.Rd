@@ -2,39 +2,35 @@
 % Please edit documentation in R/group.R
 \name{group}
 \alias{group}
-\alias{print.group}
 \title{Assign markers to linkage groups}
 \usage{
-group(input.seq, LOD = NULL, max.rf = NULL)
+group(input.seq, LOD = NULL, max.rf = NULL, verbose = TRUE)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}
 
-\item{LOD}{a (positive) real number used as minimum LOD score (threshold)
-to declare linkage.}
+\item{LOD}{a (positive) real number used as minimum LOD score
+(threshold) to declare linkage.}
 
-\item{max.rf}{a real number (usually smaller than 0.5) used as maximum
-recombination fraction to declare linkage.}
+\item{max.rf}{a real number (usually smaller than 0.5) used as
+maximum recombination fraction to declare linkage.}
 
-\item{x}{an object of class \code{group}.}
-
-\item{detailed}{logical. If \code{FALSE}, only a small summary of the
-linkage groups is printed. If \code{TRUE} (default), the names of markers
-in each linkage group are also displayed.}
-
-\item{\dots}{further arguments, passed to other methods. Currently ignored.}
+\item{verbose}{logical. If \code{TRUE}, current progress is shown;
+if \code{FALSE}, no output is produced.}
 }
 \value{
-Returns an object of class \code{group}, which is a list containing
-the following components: \item{data.name}{name of the object of class
-\code{outcross} that contains the raw data.} \item{twopt}{name of the
-object of class \code{rf.2ts} used as input, i.e., containing information
-used to assign markers to linkage groups.} \item{marnames}{marker names,
-according to the input file.} \item{n.mar}{total number of markers.}
-\item{LOD}{minimum LOD Score to declare linkage.} \item{max.rf}{maximum
-recombination fraction to declare linkage.} \item{n.groups}{number of
-linkage groups found.} \item{groups}{number of the linkage group to which
-each marker is assigned.}
+Returns an object of class \code{group}, which is a list
+    containing the following components: \item{data.name}{name of
+    the object of class \code{outcross} that contains the raw
+    data.} \item{twopt}{name of the object of class \code{rf.2ts}
+    used as input, i.e., containing information used to assign
+    markers to linkage groups.} \item{marnames}{marker names,
+    according to the input file.} \item{n.mar}{total number of
+    markers.}  \item{LOD}{minimum LOD Score to declare linkage.}
+    \item{max.rf}{maximum recombination fraction to declare
+    linkage.} \item{n.groups}{number of linkage groups found.}
+    \item{groups}{number of the linkage group to which each marker
+    is assigned.}
 }
 \description{
 Identifies linkage groups of markers, using results from two-point
@@ -54,18 +50,23 @@ data(example.out)
   all.data <- make.seq(twopts,"all")
   link_gr <- group(all.data)
   link_gr
+
+  print(link_gr, details=FALSE) #omit the names of the markers
+
 }
 \author{
-Gabriel R A Margarido, \email{gramarga@gmail.com}
+Gabriel R A Margarido, \email{gramarga@gmail.com} and
+    Marcelo Mollinari, \email{mmollina@usp.br}
 }
 \references{
 Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993)
-Constructing genetic linkage maps with MAPMAKER/EXP Version 3.0: a tutorial
-and reference manual. \emph{A Whitehead Institute for Biomedical Research
-Technical Report}.
+    Constructing genetic linkage maps with MAPMAKER/EXP Version
+    3.0: a tutorial and reference manual. \emph{A Whitehead
+    Institute for Biomedical Research Technical Report}.
 }
 \seealso{
-\code{\link[onemap]{rf.2pts}} and \code{\link[onemap]{make.seq}}
+\code{\link[onemap]{rf.2pts}} and
+    \code{\link[onemap]{make.seq}}
 }
 \keyword{misc}
 

@@ -423,7 +423,7 @@
 ###################################################
 ### code chunk number 68: Tutorial_Onemap_reduced_version.Rnw:686-688 (eval = FALSE)
 ###################################################
-## LG2.extend <- try.seq(LG2.frame,9)
+## LG2.extend <- try_seq(LG2.frame,9)
 ## LG2.extend
 
 
@@ -436,7 +436,7 @@
 ###################################################
 ### code chunk number 70: Tutorial_Onemap_reduced_version.Rnw:701-702 (eval = FALSE)
 ###################################################
-## LG2.extend <- try.seq(LG2.frame, 9, draw.try=TRUE)
+## LG2.extend <- try_seq(LG2.frame, 9, draw.try=TRUE)
 
 
 ###################################################
@@ -448,13 +448,13 @@
 ###################################################
 ### code chunk number 72: Tutorial_Onemap_reduced_version.Rnw:717-725 (eval = FALSE)
 ###################################################
-## LG2.extend <- try.seq(LG2.frame,29)
+## LG2.extend <- try_seq(LG2.frame,29)
 ## LG2.frame <- make.seq(LG2.extend,7)
-## LG2.extend <- try.seq(LG2.frame,27)
+## LG2.extend <- try_seq(LG2.frame,27)
 ## LG2.frame <- make.seq(LG2.extend,1)
-## LG2.extend <- try.seq(LG2.frame, 16)
+## LG2.extend <- try_seq(LG2.frame, 16)
 ## LG2.frame <- make.seq(LG2.extend,2)
-## LG2.extend <- try.seq(LG2.frame,21)
+## LG2.extend <- try_seq(LG2.frame,21)
 ## LG2.final <- make.seq(LG2.extend,6)
 
 
@@ -493,7 +493,7 @@
 ###################################################
 ### code chunk number 78: Tutorial_Onemap_reduced_version.Rnw:763-764 (eval = FALSE)
 ###################################################
-## ripple.seq(LG2.all, ws=4, LOD=3)
+## ripple_seq(LG2.all, ws=4, LOD=3)
 
 
 ###################################################
@@ -524,7 +524,7 @@
 ###################################################
 ### code chunk number 83: Tutorial_Onemap_reduced_version.Rnw:801-802 (eval = FALSE)
 ###################################################
-## ripple.seq(LG1.final)
+## ripple_seq(LG1.final)
 
 
 ###################################################
@@ -766,7 +766,7 @@
 ###################################################
 ### code chunk number 120: Tutorial_Onemap_reduced_version.Rnw:1166-1167 (eval = FALSE)
 ###################################################
-## ripple.seq(LG2.f2.final, ws=5, LOD=3)
+## ripple_seq(LG2.f2.final, ws=5, LOD=3)
 
 
 ###################################################
@@ -800,7 +800,7 @@
 ###################################################
 ### code chunk number 125: Tutorial_Onemap_reduced_version.Rnw:1207-1208 (eval = FALSE)
 ###################################################
-## ripple.seq(ws=5, LG1.f2.final)
+## ripple_seq(ws=5, LG1.f2.final)
 
 
 ###################################################
@@ -834,7 +834,7 @@
 ###################################################
 ### code chunk number 130: Tutorial_Onemap_reduced_version.Rnw:1245-1246 (eval = FALSE)
 ###################################################
-## ripple.seq(ws=5, LG3.f2.final)
+## ripple_seq(ws=5, LG3.f2.final)
 
 
 ###################################################
@@ -898,7 +898,7 @@
 ###################################################
 ## temp.seq <- drop.marker(LG3.f2.wrong,38)
 ## temp.map <- map(temp.seq)
-## temp.try <- try.seq(temp.map, 38, draw.try=TRUE)
+## temp.try <- try_seq(temp.map, 38, draw.try=TRUE)
 
 
 ###################################################

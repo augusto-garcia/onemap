@@ -4,10 +4,12 @@
 \alias{plot.bc.onemap}
 \title{Draw a graphic of raw data for a backcross population}
 \usage{
-\method{plot}{bc.onemap}(x)
+\method{plot}{bc.onemap}(x, ...)
 }
 \arguments{
 \item{x}{an object of class bc.onemap, with data and additional information}
+
+\item{...}{currently ignored}
 }
 \value{
 a ggplot graphic

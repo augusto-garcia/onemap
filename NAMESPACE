@@ -1,8 +1,30 @@
 useDynLib(onemap)
 
 ## Import all packages listed as Imports or Depends
-import(tcltk, tkrplot)
+import(tcltk, tkrplot, ggplot2)
+importFrom(fields, tim.colors)
+importFrom(fields, splint)
 
 ## Export all names
 exportPattern(".")
 
+# S3 methods
+S3method(plot, bc.onemap)
+S3method(plot, f2.onemap)
+S3method(plot, onemap.segreg.test)
+S3method(plot, outcross)
+S3method(plot, riself.onemap)
+S3method(plot, risib.onemap)
+S3method(print, bc.onemap)
+S3method(print, compare)
+S3method(print, f2.onemap)
+S3method(print, group)
+S3method(print, onemap.bin)
+S3method(print, onemap.segreg.test)
+S3method(print, order)
+S3method(print, outcross)
+S3method(print, rf.2pts)
+S3method(print, riself.onemap)
+S3method(print, risib.onemap)
+S3method(print, sequence)
+S3method(print, try)

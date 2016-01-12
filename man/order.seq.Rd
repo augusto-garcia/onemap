@@ -2,7 +2,7 @@
 % Please edit documentation in R/order.seq.R
 \name{order.seq}
 \alias{order.seq}
-\title{Search for the best order of markers combining compare and try.seq
+\title{Search for the best order of markers combining compare and try_seq
 functions}
 \usage{
 order.seq(input.seq, n.init = 5, subset.search = c("twopt", "sample"),
@@ -34,20 +34,20 @@ should be used if \code{subset.search=="twopt"}. See the \code{Details}
 section.}
 
 \item{THRES}{threshold to be used when positioning markers in the
-\code{try.seq} step.}
+\code{try_seq} step.}
 
-\item{touchdown}{logical. If \code{FALSE} (default), the \code{try.seq}
+\item{touchdown}{logical. If \code{FALSE} (default), the \code{try_seq}
 step is run only once, with the value of \code{THRES}. If \code{TRUE},
-\code{try.seq} runs with \code{THRES} and then once more, with
+\code{try_seq} runs with \code{THRES} and then once more, with
 \code{THRES-1}. The latter calculations take longer, but usually are able
 to map more markers.}
 
 \item{draw.try}{if \code{TRUE}, a diagnostic graphic for each
-\code{try.seq} step is displayed. See \code{Details} section in
-\code{\link[onemap]{try.seq}} function.}
+\code{try_seq} step is displayed. See \code{Details} section in
+\code{\link[onemap]{try_seq}} function.}
 
 \item{wait}{the minimum time interval in seconds to display the diagnostic
-graphic for each \code{try.seq} step. Defaults to 0.00}
+graphic for each \code{try_seq} step. Defaults to 0.00}
 
 \item{tol}{tolerance number for the C routine, i.e., the value used to
 evaluate convergence of the EM algorithm.}
@@ -68,12 +68,12 @@ data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
 \description{
 For a given sequence of markers, this function first uses the
 \code{compare} function to create a framework for a subset of informative
-markers. Then, it tries to map remaining ones using the \code{try.seq}
+markers. Then, it tries to map remaining ones using the \code{try_seq}
 function.
 }
 \details{
 For outcrossing populations, the initial subset and the order in which
-remaining markers will be used in the \code{try.seq} step is given by the
+remaining markers will be used in the \code{try_seq} step is given by the
 degree of informativeness of markers (i.e markers of type A, B, C and D, in
 this order).
 
@@ -83,7 +83,7 @@ of markers, indicated by \code{n.init}, and calculates the multipoint
 log-likelihood of the \eqn{\frac{n.init!}{2}}{n.init!/2} possible orders.
 If the LOD Score of the second best order is greater than
 \code{subset.THRES}, than it takes the best order to proceed with the
-\code{try.seq} step. If not, the procedure is repeated. The maximum number
+\code{try_seq} step. If not, the procedure is repeated. The maximum number
 of times to repeat this procedure is given by the \code{subset.n.try}
 argument. ii) \code{"twopt"} uses a two-point based algorithm, given by the
 option \code{"twopt.alg"}, to construct a two-point based map. The options
@@ -93,10 +93,10 @@ Growth. Then, equally spaced markers are taken from this map. The
 \code{"compare"} step will then be applied on this subset of markers.
 
 In both cases, the order in which the other markers will be used in the
-\code{try.seq} step is given by marker types (i.e. co-dominant before
+\code{try_seq} step is given by marker types (i.e. co-dominant before
 dominant) and by the missing information on each marker.
 
-After running the \code{compare} and \code{try.seq} steps, which result in
+After running the \code{compare} and \code{try_seq} steps, which result in
 a "safe" order, markers that could not be mapped are "forced" into the map,
 resulting in a map with all markers positioned.
 }
@@ -132,7 +132,7 @@ resulting in a map with all markers positioned.
   rbind(ord.1$seq.num, ord.2$seq.num) # probably, the same order for
   this dataset
 
-  #Now showing diagnostic graphics for each try.seq step.
+  #Now showing diagnostic graphics for each try_seq step.
   LG3.ord.dg <- order.seq(LG3, subset.search = "sample", touchdown=TRUE,
                           draw.try=TRUE, wait=3)
 
@@ -172,7 +172,7 @@ sex-specific differences. \emph{Genetical Research} 79: 85-96
 }
 \seealso{
 \code{\link[onemap]{make.seq}}, \code{\link[onemap]{compare}} and
-\code{\link[onemap]{try.seq}}.
+\code{\link[onemap]{try_seq}}.
 }
 \keyword{utilities}
 
