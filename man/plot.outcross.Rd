@@ -10,8 +10,8 @@
 \item{x}{an object of class outcross, with data and additional information}
 
 \item{all}{a TRUE/FALSE option to indicate if results will be
-plotted together (if TRUE) or splitted based on their
-segregation pattern}
+    plotted together (if TRUE) or splitted based on their
+    segregation pattern}
 
 \item{...}{currently ignored}
 }

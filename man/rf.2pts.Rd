@@ -45,7 +45,6 @@ data(example.out)
   twopts
 
   print(twopts,c("M1","M2")) # detailed results for markers 1 and 2
-
 }
 \author{
 Gabriel R A Margarido \email{gramarga@gmail.com} and Marcelo Mollinari \email{mmollina@usp.br}

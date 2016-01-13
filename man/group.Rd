@@ -50,9 +50,7 @@ data(example.out)
   all.data <- make.seq(twopts,"all")
   link_gr <- group(all.data)
   link_gr
-
   print(link_gr, details=FALSE) #omit the names of the markers
-
 }
 \author{
 Gabriel R A Margarido, \email{gramarga@gmail.com} and

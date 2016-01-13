@@ -24,7 +24,7 @@ simplified manner as integers, i.e. 1 corresponds to markers of type
 to markers of type \code{"B2.6"}; 4 corresponds to markers of type
 \code{"B3.7"}; 5 corresponds to markers of type \code{"C.8"}; 6 corresponds
 to markers of type \code{"D1"} and 7 corresponds to markers of type
-\code{"D2"}} \item{n.phen}{the number of traits included in the file}
+\code{"D2"}} \item{n.phe}{the number of traits included in the file}
 \item{pheno}{the name of the phenoytpes} \item{input}{the name of the input file.}
 }
 \description{

@@ -3,7 +3,7 @@
 ## Package: onemap                                                     ##
 ##                                                                     ##
 ## File: group.R                                                       ##
-## Contains: check.linkage, group, print.group                              ##
+## Contains: check.linkage, group, print.group                         ##
 ##                                                                     ##
 ## Written by Gabriel Rodrigues Alves Margarido and Marcelo Mollinari  ##
 ## copyright (c) 2007-9, Gabriel R A Margarido and Marcelo Mollinari   ##
@@ -48,7 +48,7 @@
 ##'     \item{groups}{number of the linkage group to which each marker
 ##'     is assigned.}
 ##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com} and
-##'     Marcelo Mollinari, \email{mmollina@usp.br}
+##'     Marcelo Mollinari, \email{mmollina@@usp.br}
 ##' @seealso \code{\link[onemap]{rf.2pts}} and
 ##'     \code{\link[onemap]{make.seq}}
 ##' @references Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993)

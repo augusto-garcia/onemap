@@ -12,8 +12,7 @@ read.mapmaker(dir, file)
 \item{file}{the name of the input file which contains the data to be read.}
 }
 \value{
-An object of class \code{bc.onemap}, \code{f2.onemap},
-\code{riself.onemap} or \code{risib.onemap} i.e., a list with the following
+An object of class \code{onemap}, i.e., a list with the following
 components: \item{geno}{a matrix with integers indicating the genotypes
 read for each marker in \code{onemap} fashion. Each column contains data
 for a marker and each row represents an individual.}
@@ -27,14 +26,14 @@ contains data for a marker and each row represents an individual.}
 \item{n.ind}{number of individuals.} \item{n.mar}{number of markers.}
 \item{segr.type}{a vector with the segregation type of each marker, as
 \code{strings}. Segregation types were adapted from outcross segregation
-types, using the same notation. For details see \link{read.outcross}.}
+types, using the same notation. For details see \link{read.onemap}.}
 \item{segr.type.num}{a vector with the segregation type of each marker,
 represented in a simplified manner as integers. Segregation types were
 adapted from outcross segregation types. For details see
-\link{read.outcross}.} \item{input}{the name of the input file.} \item{n.phen}{number of
-phenotypes.} \item{pheno}{a matrix with phenotypic values.  Each column
-contains data for a trait and each row represents an individual. Currently
-ignored.}
+\link{read.onemap}.} \item{input}{the name of the input file.}
+\item{n.phe}{number of phenotypes.} \item{pheno}{a matrix with phenotypic
+values.  Each column contains data for a trait and each row represents an
+individual. Currently ignored.}
 }
 \description{
 Imports data from a Mapmaker raw file.
