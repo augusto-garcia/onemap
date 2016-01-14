@@ -3,6 +3,7 @@
 .Rproj.user
 .RData
 onemap.Rproj~
+.Rd
 *.o
 *.so
 *.cro
