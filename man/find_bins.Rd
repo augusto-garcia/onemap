@@ -7,18 +7,17 @@
 find_bins(input.obj, exact = TRUE, ch = NULL)
 }
 \arguments{
-\item{input.obj}{an object of class \code{outcross}, \code{bc.onemap},
-\code{f2.onemap}, \code{riself.onemap} or \code{risib.onemap}.}
+\item{input.obj}{an object of class \code{onemap}.}
 
 \item{exact}{logical. If \code{TRUE}, it only allocates markers with
 the exact same information into bins, including missing data; if
 \code{FALSE}, missing data are not considered when allocating markers.
-In  later case, the marker with the lower amount of missing data is
+In the latter case, the marker with the lowest amount of missing data is
 taken as the representative marker on that bin.}
 
 \item{ch}{not used in this OneMap version. Chromosome for which the
 analysis should be performed. If \code{NULL} the analisys is performed
-for all chromosomes}
+for all chromosomes.}
 }
 \value{
 An object of class \code{onemap.bin}, which is a list containing the

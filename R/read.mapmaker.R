@@ -3,15 +3,14 @@
 ##  Package: onemap                                                     #
 ##                                                                      #
 ##  File: read.mapmaker.R                                               #
-##  Contains: read.mapmaker, print.f2.onemap, print.bc.onemap           #
-##            print.riself.onemap, print.risib.onemap                   #
+##  Contains: read.mapmaker                                             #
 ##                                                                      #
 ##  Written by Marcelo Mollinari                                        #
 ##  Adapted from read.cross.mm (found in the R package qtl)             #
 ##  copyright (c) 2000-6, Karl W Broman                                 #
 ##                                                                      #
 ##  First version: 09/27/2009                                           #
-##  Last update:   01/07/2016                                           #
+##  Last update:   01/14/2016                                           #
 ##  License: GNU General Public License version 3 (June, 2007) or later #
 ##                                                                      #
 #########################################################################
@@ -104,7 +103,7 @@ read.mapmaker<-function (dir, file)
             if (!is.na(match("intercross", a))) 
                 type <- "f2"
             else if (!is.na(match("backcross", a))) 
-                type <- "bc"
+                type <- "backcross"
             else if (!is.na(match("self", a))) 
                 type <- "riself"
             else if (!is.na(match("sib", a))) 
@@ -116,7 +115,7 @@ read.mapmaker<-function (dir, file)
             flag <- 2
             n.ind <- as.numeric(a[1])
             n.mar <- as.numeric(a[2])
-            n.phen <- as.numeric(a[3])
+            n.phe <- as.numeric(a[3])
             cat(" --Read the following data:\n")
             cat("\tType of cross:         ", type, "\n")
             cat("\tNumber of individuals: ", n.ind, "\n")
@@ -148,13 +147,13 @@ read.mapmaker<-function (dir, file)
             }
             marnames <- rep("", n.mar)
             geno <- matrix(0, ncol = n.mar, nrow = n.ind)
-            if (n.phen == 0) {
+            if (n.phe == 0) {
                 pheno <- matrix(1:n.ind, ncol = 1)
                 phenames <- c("number")
             }
             else {
-                pheno <- matrix(0, ncol = n.phen, nrow = n.ind)
-                phenames <- rep("", n.phen)
+                pheno <- matrix(0, ncol = n.phe, nrow = n.ind)
+                phenames <- rep("", n.phe)
             }
         }
         else {
@@ -163,7 +162,7 @@ read.mapmaker<-function (dir, file)
                 cur.row <- 1
                 if (cur.mar > n.mar) { ## now reading phenotypes
                     cur.phe <- cur.phe + 1
-                    if (cur.phe > n.phen) 
+                    if (cur.phe > n.phe) 
                         next
                     phenames[cur.phe] <- substring(a[1], 2)
                     if (length(a) > 1) {
@@ -242,7 +241,7 @@ read.mapmaker<-function (dir, file)
     segr.type<-character(n.mar)
     segr.type.num<-numeric(n.mar)
     if(type=="f2"){
-        cl<-"f2.onemap"
+        cl <- c("onemap", "f2")
         ##checking for markers with one class (e.g A A A - - - A - A - - - A)
         ##they are not necessarily monomorphic because we don't know the missing data
         mkt.mono<-NULL
@@ -274,19 +273,19 @@ read.mapmaker<-function (dir, file)
         segr.type.num[segr.type=="M.X"]<-4    
         geno[is.na(geno)]<-0    
     }
-    else if(type=="bc"){
-        cl<-"bc.onemap"
+    else if(type=="backcross"){
+        cl <- c("onemap", "backcross")
         ##Verifying if there are up to two classes in bc data, ignoring NAs
         if(sum(!is.na(unique(as.vector(geno)))) > 2)
-            stop("check data: there are more than 2 classes for bc")
+            stop("check data: there are more than 2 classes for backcross")
         segr.type[]<-"A.H" 
         segr.type.num<-rep(NA,ncol(geno))
         geno[is.na(geno)]<-0 
         geno[geno==3]<-1 #coding for raw data entered as H and B 
     }
     else if(type=="riself" || type=="risib"){
-        if (type=="riself") cl<-"riself.onemap"
-        else cl<-"risib.onemap"
+        if (type=="riself") cl <- c("onemap", "riself")
+        else cl <- c("onemap", "risib")
         ##Verifying if there are up to two classes in ril data, ignoring NAs
         if(sum(!is.na(unique(as.vector(geno)))) > 2)
             stop("check data: there are more than 2 classes for ", type)
@@ -296,143 +295,17 @@ read.mapmaker<-function (dir, file)
         geno[geno==3]<-2 #coding as backcross
     }
     else
-        stop("Invalide type of cross")
-    if(n.phen != 0) {
+        stop("Invalid cross type")
+    if(n.phe != 0) {
         miss.value.pheno <- apply((apply(pheno, 2,is.na)),2,sum)
         cat("\tMissing trait values:      ", "\n")
-        for(i in 1:n.phen) {
+        for(i in 1:n.phe) {
             cat("\t",formatC(paste(colnames(pheno)[i],":",sep=""),width=max(nchar(paste(colnames(pheno),":",sep="")))), miss.value.pheno[i], "\n")
         }
     }
     structure(list(geno = geno, n.ind = n.ind, n.mar = n.mar,
                    segr.type = segr.type, segr.type.num=segr.type.num,
-                   input=file, n.phen=n.phen, pheno = pheno),  class = cl)
+                   input=file, n.phe=n.phe, pheno = pheno),  class = cl)
 }
-
-##print method for object class 'f2.onemap'
-print.f2.onemap<-function (x, ...){
-    ##checking for correct object
-    if (any(is.na(match(c("geno","n.ind","n.mar","segr.type",
-                          "segr.type.num",
-                          "input","n.phen","pheno"), 
-                        names(x))))) 
-        stop("this is not an object of class 'f2.onemap'")
-    mis<-100*sum(x$geno!=0)/length(x$geno) #counting missing data
-    ##printing brief summary of the data
-    cat("This is an object of class 'f2.onemap'\n")
-    cat("    No. individuals:    ", x$n.ind, "\n")
-    cat("    No. markers:        ", x$n.mar, "\n")
-    cat("    Percent genotyped:  ", round(mis), "\n\n")
-    cat("    Number of markers per type:\n")
-    ##counting the number of markers with each segregation type
-    quant<-table(x$segr.type)
-    names(quant)[which(names(quant)=="A.H.B") ] <-"AA : AB : BB -->"
-    names(quant)[which(names(quant)=="M.X") ] <-"AA : AB : BB (+ dom)  -->"
-    names(quant)[which(names(quant)=="D.B")]  <-" Not BB : BB -->"
-    names(quant)[which(names(quant)=="C.A")]  <-" Not AA : AA -->" 
-    for (i in 1:length(quant)) {
-        cat(paste("       ", names(quant)[i],"  ", quant[i], 
-                  "\n", sep = ""))
-    }
-    ##checking for phenotipic data
-    if(x$n.phen==0) cat("\nThis data contains no phenotypic information\n")
-    else
-    {
-        miss.value <- apply((apply(x$pheno, 2,is.na)),2,sum)
-        cat("    Missing trait values:", "\n")
-        for (i in 1:x$n.phen) {
-            ##cat(paste("       ", colnames(x$pheno)[i], "\n", sep = ""))
-            cat("\t",formatC(paste(colnames(x$pheno)[i],":", sep=""), width= max(nchar(paste(colnames(x$pheno),":",sep="")))), miss.value[i], "\n")
-        }
-    }
-}
-
-##print method for object class 'bc.onemap'
-print.bc.onemap<-function (x, ...) {
-    ##checking for correct object
-    if (any(is.na(match(c("geno","n.ind","n.mar","segr.type",
-                          "segr.type.num",
-                          "input","n.phen","pheno"), 
-                        names(x))))) 
-        stop("this is not an object of class 'bc.onemap'")
-    mis<-100*sum(x$geno!=0)/length(x$geno)#counting missing data
-    ##printing brief summary of the data
-    cat("This is an object of class 'bc.onemap'\n")
-    cat("    No. individuals:    ", x$n.ind, "\n")
-    cat("    No. markers:        ", x$n.mar, "\n")
-    cat("    Percent genotyped:  ", round(mis), "\n\n")
-    cat("    Number of markers per type:\n")
-    cat(paste("       AA : AB --> ", ncol(x$geno), " marker(s)\n", sep = ""))
-    ##checking for phenotipic data
-    if(x$n.phen==0) cat("\nThis data contains no phenotypic information\n\n")
-    else
-    {
-        miss.value <- apply((apply(x$pheno, 2,is.na)),2,sum)
-        cat("    Missing trait values:", "\n")
-        for (i in 1:x$n.phen) {
-                                        #cat(paste("       ", colnames(x$pheno)[i], "\n", sep = ""))
-            cat("\t",formatC(paste(colnames(x$pheno)[i],":", sep=""), width= max(nchar(paste(colnames(x$pheno),":",sep="")))), miss.value[i], "\n")
-        }
-    }
-}
-
-##print method for object class 'riself.onemap'
-print.riself.onemap<-function (x, ...) {
-    ##checking for correct object
-    if (any(is.na(match(c("geno","n.ind","n.mar","segr.type",
-                          "segr.type.num",
-                          "input","n.phen","pheno"), 
-                        names(x))))) 
-        stop("this is not an object of class 'riself.onemap'")
-    mis<-100*sum(x$geno!=0)/length(x$geno)#counting missing data
-    ##printing brief summary of the data
-    cat("This is an object of class 'riself.onemap'\n")
-    cat("    No. individuals:    ", x$n.ind, "\n")
-    cat("    No. markers:        ", x$n.mar, "\n")
-    cat("    Percent genotyped:  ", round(mis), "\n\n")
-    cat("    Number of markers per type:\n")
-    cat(paste("       AA : BB --> ", ncol(x$geno), " marker(s)\n", sep = ""))
-    ##checking for phenotipic data
-    if(x$n.phen==0) cat("\nThis data contains no phenotypic information\n\n")
-    else
-    {
-        miss.value <- apply((apply(x$pheno, 2,is.na)),2,sum)
-        cat("    Missing trait values:", "\n")
-        for (i in 1:x$n.phen) {
-                                        #cat(paste("       ", colnames(x$pheno)[i], "\n", sep = ""))
-            cat("\t",formatC(paste(colnames(x$pheno)[i],":", sep=""), width= max(nchar(paste(colnames(x$pheno),":",sep="")))), miss.value[i], "\n")
-        }
-    }
-}
-
-##print method for object class 'risib.onemap'
-print.risib.onemap<-function (x, ...) {
-    ##checking for correct object
-    if (any(is.na(match(c("geno","n.ind","n.mar","segr.type",
-                          "segr.type.num",
-                          "input","n.phen","pheno"), 
-                        names(x))))) 
-        stop("this is not an object of class 'risib.onemap'")
-    mis<-100*sum(x$geno!=0)/length(x$geno)#counting missing data
-    ##printing brief summary of the data
-    cat("This is an object of class 'risib.onemap'\n")
-    cat("    No. individuals:    ", x$n.ind, "\n")
-    cat("    No. markers:        ", x$n.mar, "\n")
-    cat("    Percent genotyped:  ", round(mis), "\n\n")
-    cat("    Number of markers per type:\n")
-    cat(paste("       AA : BB --> ", ncol(x$geno), " marker(s)\n", sep = ""))
-    ##checking for phenotipic data
-    if(x$n.phen==0) cat("\nThis data contains no phenotypic information\n\n")
-    else
-    {
-        miss.value <- apply((apply(x$pheno, 2,is.na)),2,sum)
-        cat("    Missing trait values:", "\n")
-        for (i in 1:x$n.phen) {
-                                        #cat(paste("       ", colnames(x$pheno)[i], "\n", sep = ""))
-            cat("\t",formatC(paste(colnames(x$pheno)[i],":", sep=""), width= max(nchar(paste(colnames(x$pheno),":",sep="")))), miss.value[i], "\n")
-        }
-    }
-}
-
 
 ## end of file

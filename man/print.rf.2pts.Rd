@@ -9,9 +9,9 @@
 \arguments{
 \item{x}{an object of class \code{rf.2pts}.}
 
-\item{mrk}{a vector containing a pair of markers so, detailed
+\item{mrk}{a vector containing a pair of markers, so detailed
     results of the two-point analysis will be printed for them.
-    can be numeric or character strings indicating the
+    Can be numeric or character strings indicating the
     numbers/names corresponding to any markers in the input file.}
 
 \item{...}{further arguments, passed to other methods. Currently ignored.}

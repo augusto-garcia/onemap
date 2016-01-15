@@ -19,7 +19,7 @@
 
 # This function gets the input in strings and converts into numbers
 codif.data <- function(geno.in, segr.type.in,
-                       cross = c("outcross", "intercross", "backcross",
+                       cross = c("outcross", "f2", "backcross",
                                  "riself", "risib")) {
     cross <- match.arg(cross)
 
@@ -136,7 +136,7 @@ codif.data <- function(geno.in, segr.type.in,
                }
         )
       }
-      else if (cross == "intercross") {
+      else if (cross == "f2") {
         ## We currently only consider codominant markers
         geno.out[which(geno.in[,i]=="a"),i] <- 1
         geno.out[which(geno.in[,i]=="ab"),i] <- 2

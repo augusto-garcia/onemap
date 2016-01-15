@@ -9,7 +9,7 @@
 # copyright (c) 2009, Gabriel R A Margarido                           #
 #                                                                     #
 # First version: 02/27/2009                                           #
-# Last update: 09/25/2009                                             #
+# Last update: 01/14/2016                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -102,14 +102,14 @@ make.seq <-
 function(input.obj, arg=NULL, phase=NULL, twopt=NULL) {
   # checking for correct object
   if(all(is.na(match(class(input.obj),c("rf.2pts","group","compare","try","order")))))
-    stop(deparse(substitute(input.obj))," is not an object of classes 'rf.2pts', 'group', 'compare', 'try' or 'order'")
+    stop(deparse(substitute(input.obj))," is not an object of class 'rf.2pts', 'group', 'compare', 'try' or 'order'")
 
   switch(EXPR=class(input.obj)[1],
          'rf.2pts' = {
            if (length(arg) == 1 && arg == "all") seq.num <- 1:input.obj$n.mar # generally used for grouping markers
 		   else if(is.vector(arg) && is.numeric(arg)) seq.num <- arg
 		   else stop("for an object of class 'rf.2pts', \"arg\" must be a vector of integers or the string 'all'")
-		   ### CHECK IF MARKERS REALLY EXIST
+		   ### TODO: CHECK IF MARKERS REALLY EXIST
            if (is.null(phase)) seq.phases <- -1 # no predefined linkage phases
            else if(length(phase) == (length(seq.num)-1)) seq.phases <- phase
            else stop("the length of 'phase' must be equal to the length of the sequence minus 1")
@@ -205,7 +205,7 @@ print.sequence <- function(x,...) {
     marnumbers <- formatC(x$seq.num, format="d", width=longest.number)   
     distances <- formatC(c(0,cumsum(get(get(".map.fun", envir=.onemapEnv))(x$seq.rf))),format="f",digits=2,width=7)
     ## whith diplotypes for class 'outcross'
-    if(class(get(x$data.name, pos=1))=="outcross"){
+    if(class(get(x$data.name, pos=1))[2] == "outcross"){
       ## create diplotypes from segregation types and linkage phases
       link.phases <- apply(link.phases,1,function(x) paste(as.character(x),collapse="."))
       parents <- matrix("",length(x$seq.num),4)
@@ -220,7 +220,7 @@ print.sequence <- function(x,...) {
       cat(length(marnames),"markers            log-likelihood:",x$seq.like,"\n\n")
     }
     ## whithout diplotypes for another classes
-    else if(class(get(x$data.name, pos=1))=="bc.onemap" || class(get(x$data.name, pos=1))=="f2.onemap" || class(get(x$data.name, pos=1))=="riself.onemap" || class(get(x$data.name, pos=1))=="risib.onemap"){
+    else if(class(get(x$data.name, pos=1))[2] == "backcross" || class(get(x$data.name, pos=1))[2] == "f2" || class(get(x$data.name, pos=1))[2] == "riself" || class(get(x$data.name, pos=1))[2] == "risib"){
       cat("\nPrinting map:\n\n")
       cat("Markers",rep("",max(longest.number+longest.name-7,0)+10),"Position",rep("",10),"\n\n")
       for (i in 1:length(x$seq.num)) {
@@ -228,7 +228,7 @@ print.sequence <- function(x,...) {
       }
       cat("\n",length(marnames),"markers            log-likelihood:",x$seq.like,"\n\n")
     }
-    else warning("invalid type of cross") 
+    else warning("invalid cross type") 
   }
 }
 ##end of file

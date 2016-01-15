@@ -7,7 +7,7 @@
 suggest_lod(x)
 }
 \arguments{
-\item{x}{an object of class bc.onemap, f2.onemap, riself.onemap, risib.onemap or outcross}
+\item{x}{an object of class \code{onemap}}
 }
 \value{
 the suggested LOD to be used for testing linkage
@@ -21,7 +21,7 @@ In a somehow naive approach, the function calculates the number of two-point tes
 will be performed for all markers in the data set, and then using this to calculate
 the global alpha required to control type I error using Bonferroni's correction.
 
-From this global alpha, the corresponding quantil from the chi-square distribution is taken
+From this global alpha, the corresponding quantile from the chi-square distribution is taken
 and then converted to LOD Score.
 
 This can be seen as just an initial approximation to help users to select a LOD Score for two

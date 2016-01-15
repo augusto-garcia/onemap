@@ -30,7 +30,7 @@ along vertical axis, indicating the LOD Score.}
 }
 \description{
 Plots a matrix of pairwise recombination fractions (under the diagonal) and
-LOD Scores (upper the diagonal) using a color scale. Any value of the
+LOD Scores (above the diagonal) using a color scale. Any value of the
 matrix can be easily accessed using an interactive Tcl-Tk interface,
 helping users to check for possible problems.
 }
@@ -44,8 +44,8 @@ the recombination fraction between the markers and \eqn{v}) the LOD-Score
 for each possible linkage phase calculated via two-point analysis. For
 neighbor markers, the multipoint recombination fraction is printed;
 otherwise, the two-point recombination fraction is printed. For markers of
-type \code{D1} and \code{D2}, it's impossible to calculate recombination
-fraction via two-point analysis and, therefore the corresponding cell will
+type \code{D1} and \code{D2}, it is impossible to calculate recombination
+fraction via two-point analysis and, therefore, the corresponding cell will
 be empty. For cells on the diagonal of the matrix, the name, the number and
 the type of the marker are printed, as well as the percentage of missing
 data for that marker.

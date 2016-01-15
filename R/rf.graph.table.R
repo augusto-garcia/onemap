@@ -9,7 +9,7 @@
 ## copyright (c) 2009, Marcelo Mollinari                               ##
 ##                                                                     ##
 ## First version: 03/05/2009                                           ##
-## Last update: 09/25/2009                                             ##
+## Last update: 01/14/2016                                             ##
 ## Description was modified by Augusto Garcia on 2015/07/25            ##
 ## License: GNU General Public License version 2 (June, 1991) or later ##
 ##                                                                     ##
@@ -18,7 +18,7 @@
 ##' Plots pairwise recombination fractions and LOD Scores in a heatmap
 ##'
 ##' Plots a matrix of pairwise recombination fractions (under the diagonal) and
-##' LOD Scores (upper the diagonal) using a color scale. Any value of the
+##' LOD Scores (above the diagonal) using a color scale. Any value of the
 ##' matrix can be easily accessed using an interactive Tcl-Tk interface,
 ##' helping users to check for possible problems.
 ##'
@@ -31,8 +31,8 @@
 ##' for each possible linkage phase calculated via two-point analysis. For
 ##' neighbor markers, the multipoint recombination fraction is printed;
 ##' otherwise, the two-point recombination fraction is printed. For markers of
-##' type \code{D1} and \code{D2}, it's impossible to calculate recombination
-##' fraction via two-point analysis and, therefore the corresponding cell will
+##' type \code{D1} and \code{D2}, it is impossible to calculate recombination
+##' fraction via two-point analysis and, therefore, the corresponding cell will
 ##' be empty. For cells on the diagonal of the matrix, the name, the number and
 ##' the type of the marker are printed, as well as the percentage of missing
 ##' data for that marker.
@@ -343,7 +343,7 @@ draw.rf.inter<-function(info.graph, scale, cex){
         mkx.n<-info.graph$seq.num[x.n]
         mky.n<-info.graph$seq.num[y.n]
         if(mkx.n==mky.n){
-            if(class(get(info.graph$data.name, pos=1))=="outcross"){
+            if(class(get(info.graph$data.name, pos=1))[2] == "outcross"){
                 ##information for message box (class 'outcross')
                 msg <- paste("Marker name: \n    ", info.graph$names[x.n],
                              "\n\nMarker number:\n    ", mkx.n,
@@ -351,7 +351,7 @@ draw.rf.inter<-function(info.graph, scale, cex){
                              "\n\n", format(info.graph$missing[x.n], digits=2), "% of missing data for this marker",
                              sep="")
             }
-            else if (class(get(info.graph$data.name, pos=1))=="f2.onemap" || class(get(info.graph$data.name, pos=1))=="bc.onemap")
+            else if (class(get(info.graph$data.name, pos=1))[2] == "f2" || class(get(info.graph$data.name, pos=1))[2] == "backcross")
             {    
                 ##getting type of marker ('another classes')
                 if(info.graph$types[x.n]=="A.H.B")  mkt<-"AA : AB : BB (1:2:1) "
@@ -367,7 +367,7 @@ draw.rf.inter<-function(info.graph, scale, cex){
                              "\n\n", format(info.graph$missing[x.n], digits=2), "% of missing data for this marker",
                              sep="")
             }
-            else if (class(get(info.graph$data.name, pos=1))=="riself.onemap" || class(get(info.graph$data.name, pos=1))=="risib.onemap"){
+            else if (class(get(info.graph$data.name, pos=1))[2] == "riself" || class(get(info.graph$data.name, pos=1))[2] == "risib"){
             ##getting type of marker ('another classes')
                 if(info.graph$types[x.n]=="A.B")  mkt<-"AA : BB (1:1)"
                 else stop ("invalid type of marker at marker ", info.graph$names[x.n])
@@ -383,7 +383,7 @@ draw.rf.inter<-function(info.graph, scale, cex){
         }
     else{
         if(x.n==(y.n+1) || y.n==(x.n+1)){
-            if(class(get(info.graph$data.name, pos=1))=="outcross"){
+            if(class(get(info.graph$data.name, pos=1))[2] == "outcross"){
                 ##information for message box (class 'outcross')
                 msg <- paste("Marker names: \n    ", info.graph$names[y.n], "\n    and \n    ", info.graph$names[x.n],
                              "\n\nMarker numbers:\n    ",mky.n," and ",mkx.n,
@@ -396,7 +396,7 @@ draw.rf.inter<-function(info.graph, scale, cex){
                              "\n    RR: ", round(info.graph$LOD$RR[x.n, y.n], digits=1),
                              sep="")
             }
-            else if (class(get(info.graph$data.name, pos=1))=="f2.onemap" || class(get(info.graph$data.name, pos=1))=="bc.onemap"){
+            else if (class(get(info.graph$data.name, pos=1))[2] == "f2" || class(get(info.graph$data.name, pos=1))[2] == "backcross"){
             ##getting type of marker
             if(info.graph$types[x.n]=="A.H.B")  mktx<-"AA : AB : BB (1:2:1) "
             else if(info.graph$types[x.n]=="D.B")  mktx<-" Not BB : BB (3:1) "
@@ -420,7 +420,7 @@ draw.rf.inter<-function(info.graph, scale, cex){
                          "\n\nLOD-Score: \n    ", format(LODScore, digits=2),
                          sep="")
         }
-        else if (class(get(info.graph$data.name, pos=1))=="riself.onemap" || class(get(info.graph$data.name, pos=1))=="risib.onemap"){
+        else if (class(get(info.graph$data.name, pos=1))[2] == "riself" || class(get(info.graph$data.name, pos=1))[2] == "risib"){
             ##getting type of marker
             if(info.graph$types[x.n]=="A.B")  mktx<-"AA : BB (1:1)"
             else stop ("invalid type of marker at marker ", info.graph$names[x.n])
@@ -446,7 +446,7 @@ draw.rf.inter<-function(info.graph, scale, cex){
                            sep="")
           }
         else{
-            if(class(get(info.graph$data.name, pos=1))=="outcross"){
+            if(class(get(info.graph$data.name, pos=1))[2] == "outcross"){
                 ##information for message box (class 'outcross')
                 msg <- paste("Marker names: \n    ", info.graph$names[y.n], "\n    and \n    ", info.graph$names[x.n],
                              "\n\nMarker numbers:\n    ",mky.n," and ",mkx.n,
@@ -459,7 +459,7 @@ draw.rf.inter<-function(info.graph, scale, cex){
                              "\n    RR: ", round(info.graph$LOD$RR[x.n, y.n], digits=1),
                              sep="")
             }
-          else if (class(get(info.graph$data.name, pos=1))=="f2.onemap" || class(get(info.graph$data.name, pos=1))=="bc.onemap"){
+          else if (class(get(info.graph$data.name, pos=1))[2] == "f2" || class(get(info.graph$data.name, pos=1))[2] == "backcross"){
               ##getting type of marker
               if(info.graph$types[x.n]=="A.H.B")  mktx<-"AA : AB : BB (1:2:1) "
         else if(info.graph$types[x.n]=="D.B")  mktx<-" Not BB : BB (3:1) "
@@ -485,7 +485,7 @@ draw.rf.inter<-function(info.graph, scale, cex){
                            "\n\nLOD-Score: \n    ", format(LODScore, digits=2),
                            sep="")
           }
-          else if (class(get(info.graph$data.name, pos=1))=="riself.onemap" || class(get(info.graph$data.name, pos=1))=="risib.onemap"){
+          else if (class(get(info.graph$data.name, pos=1))[2] == "riself" || class(get(info.graph$data.name, pos=1))[2] == "risib"){
               ##getting type of marker
               if(info.graph$types[x.n]=="A.B")  mktx<-"AA : BB (1:1)"
             else stop ("invalid type of marker at marker ", info.graph$names[x.n])

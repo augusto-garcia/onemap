@@ -38,7 +38,7 @@ by self- or sib-mating). Creates an object of class \code{onemap}.
 \details{
 The file format is similar to that used by \code{MAPMAKER/EXP}
 (\cite{Lincoln et al.}, 1993). The first line indicates the cross type,
-which must be one of \code{"outcross"}, \code{"intercross"},
+which must be one of \code{"outcross"}, \code{"f2 intercross"},
 \code{"backcross"}, \code{"riself"} or  \code{"risib"}. The second line
 contains five integers: i) the number of individuals; ii) the number of
 markers; iii) an indicator variable taking the value 1 if there is CHROM

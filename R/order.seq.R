@@ -9,7 +9,7 @@
 # copyright (c) 2009, Gabriel R A Margarido & Marcelo Mollinari       #
 #                                                                     #
 # First version: 02/27/2009                                           #
-# Last update: 02/04/2011                                             #
+# Last update: 01/14/2016                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -43,7 +43,7 @@
 ##' argument. ii) \code{"twopt"} uses a two-point based algorithm, given by the
 ##' option \code{"twopt.alg"}, to construct a two-point based map. The options
 ##' are \code{"rec"} for RECORD algorithm, \code{"rcd"} for Rapid Chain
-##' Delineation, \code{"ser"} for Seriation, and \code{"ug"} for Unidirectional
+##' Delineation, \code{"ser"} for Seriation and \code{"ug"} for Unidirectional
 ##' Growth. Then, equally spaced markers are taken from this map. The
 ##' \code{"compare"} step will then be applied on this subset of markers.
 ##' 
@@ -176,7 +176,7 @@ order.seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
   if(!touchdown && THRES <= 10E-10) stop("Threshold must be greater than 0 if 'touchdown' is FALSE")
   if(touchdown && THRES <= (1 + 10E-10)) stop("Threshold must be greater than 1 if 'touchdown' is TRUE")
   if(wait < 0){
-    warning("'wait' shouldn't be < 0!")
+    warning("'wait' should not be < 0!")
     wait<-0
   }
   if(draw.try == FALSE) wait<-0
@@ -191,13 +191,13 @@ order.seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
   else
   {
     ## here, the complete algorithm will be applied
-    if(class(get(input.seq$data.name, pos=1)) == "f2.onemap") FLAG <- "f2"
-    else if (class(get(input.seq$data.name, pos=1)) == "bc.onemap" ||
-             class(get(input.seq$data.name, pos=1)) == "riself.onemap" ||
-             class(get(input.seq$data.name, pos=1)) == "risib.onemap") FLAG <- "bc"
-    else if (class(get(input.seq$data.name, pos=1)) == "outcross") FLAG <- "outcross"
+    cross.type <- class(get(input.seq$data.name, pos=1))[2]
+    if(cross.type == "f2") FLAG <- "f2"
+    else if (cross.type == "backcross" ||
+             cross.type == "riself" ||
+             cross.type == "risib") FLAG <- "bc"
+    else if (cross.type == "outcross") FLAG <- "outcross"
     else stop("Invalid cross type\n")
-    cross.type<-substr(class(get(input.seq$data.name, pos=1)), 1, nchar(class(get(input.seq$data.name, pos=1)))-7)
     ## select the order in which markers will be added
     if(FLAG == "bc" || FLAG == "f2"){
       subset.search <- match.arg(subset.search)

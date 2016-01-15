@@ -21,7 +21,7 @@ if \code{FALSE}, no output is produced.}
 \value{
 Returns an object of class \code{group}, which is a list
     containing the following components: \item{data.name}{name of
-    the object of class \code{outcross} that contains the raw
+    the object of class \code{onemap} that contains the raw
     data.} \item{twopt}{name of the object of class \code{rf.2ts}
     used as input, i.e., containing information used to assign
     markers to linkage groups.} \item{marnames}{marker names,
@@ -40,7 +40,7 @@ Identifies linkage groups of markers, using results from two-point
 If the arguments specifying thresholds used to group markers, i.e., minimum
 LOD Score and maximum recombination fraction, are \code{NULL} (default),
 the values used are those contained in object \code{input.seq}. If not
-using \code{NULL}, the new values overridden the ones in object
+using \code{NULL}, the new values override the ones in object
 \code{input.seq}.
 }
 \examples{

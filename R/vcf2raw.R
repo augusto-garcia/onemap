@@ -9,7 +9,7 @@
 # copyright (c) 2015, Gabriel R A Margarido                           #
 #                                                                     #
 # First version: 10/14/2015                                           #
-# Last update: 11/17/2015                                             #
+# Last update: 01/14/2016                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -43,9 +43,9 @@
 ##' @param input path to the input VCF file.
 ##' @param output path to the output OneMap file.
 ##' @param cross type of cross. Must be one of: \code{"outcross"} for full-sibs;
-##' \code{"intercross"} for an F2 progeny; \code{"backcross"}; \code{"riself"}
-##' for recombinant inbred lines by self-mating; or \code{"risib"} for recombinant
-##' inbred lines by sib-mating.
+##' \code{"f2 intercross"} for an F2 intercross progeny; \code{"backcross"};
+##' \code{"riself"} for recombinant inbred lines by self-mating; or
+##' \code{"risib"} for recombinant inbred lines by sib-mating.
 ##' @param parent1 \code{string} or \code{vector} of \code{strings} specifying
 ##' sample ID(s) of the first parent.
 ##' @param parent2 \code{string} or \code{vector} of \code{strings} specifying
@@ -69,7 +69,7 @@
 ##'
 
 vcf2raw <- function(input = NULL, output = NULL,
-                    cross = c("outcross", "intercross", "backcross", "riself", "risib"),
+                    cross = c("outcross", "f2 intercross", "backcross", "riself", "risib"),
                     parent1 = NULL, parent2 = NULL, min_class = 1.0) {
   if (is.null(input)) {
     stop("You must specify the input file path.")
