@@ -3,13 +3,13 @@
 # Package: onemap                                                     #
 #                                                                     #
 # File: read.onemap.R                                                 #
-# Contains: read.onemap, print.outcross                               #
+# Contains: read.onemap, print.onemap                                 #
 #                                                                     #
 # Written by Gabriel Rodrigues Alves Margarido                        #
 # copyright (c) 2015, Gabriel R A Margarido                           #
 #                                                                     #
 # First version: 11/25/2015                                           #
-# Last update: 12/23/2015                                             #
+# Last update: 01/11/2016                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -23,7 +23,7 @@
 ##'
 ##' The file format is similar to that used by \code{MAPMAKER/EXP}
 ##' (\cite{Lincoln et al.}, 1993). The first line indicates the cross type,
-##' which must be one of \code{"outcross"}, \code{"intercross"},
+##' which must be one of \code{"outcross"}, \code{"f2 intercross"},
 ##' \code{"backcross"}, \code{"riself"} or  \code{"risib"}. The second line
 ##' contains five integers: i) the number of individuals; ii) the number of
 ##' markers; iii) an indicator variable taking the value 1 if there is CHROM
@@ -88,10 +88,13 @@
 ##' \code{"B3.7"}; 5 corresponds to markers of type \code{"C.8"}; 6 corresponds
 ##' to markers of type \code{"D1"} and 7 corresponds to markers of type
 ##' \code{"D2"}. Markers for F2 intercrosses are coded as 1; all other crosses
-##' are left as \code{NA}.}\item{input}{the name of the input file.}
+##' are left as \code{NA}.} \item{input}{the name of the input file.}
+##' \item{n.phe}{number of phenotypes.} \item{pheno}{a matrix with phenotypic
+##' values. Each column contains data for a trait and each row represents an
+##' individual.}
 ##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com}
-##' @seealso \code{\link[onemap]{merge.onemap}} and the \code{example} directory
-##' in the package source.
+##' @seealso \code{\link[onemap]{combine.onemap}} and the \code{example}
+##' directory in the package source.
 ##' @references Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993)
 ##' Constructing genetic linkage maps with MAPMAKER/EXP Version 3.0: a tutorial
 ##' and reference manual. \emph{A Whitehead Institute for Biomedical Research
@@ -117,19 +120,22 @@ read.onemap <- function (dir, inputfile) {
   on.exit(close(f))
 
   ## Read cross type information
-  l <- scan(f, what=character(), nlines = 1, n = 3,
+  l <- scan(f, what=character(), nlines = 1,
             blank.lines.skip = TRUE, quiet = TRUE)
-  if (length(l) != 3 || l[1] != "data" || l[2] != "type") {
+  if ((length(l) != 3 && length(l) != 4)  || l[1] != "data" || l[2] != "type") {
     stop("The first line of the input file must conform to: 'data type X'",
          call.= TRUE)
   }
   crosstype <- l[3]
   crosstype <- match.arg(crosstype,
-                         c("outcross", "intercross", "backcross", "riself", "risib"),
+                         c("outcross", "f2", "backcross", "riself", "risib"),
                          several.ok= FALSE)
+  if (crosstype == "f2" && (length(l) == 3 || l[4] != "intercross")) {
+      stop("Unknown cross type.")
+  }
 
   ## Read in the number of individuals, markers, CHROM/POS availability and number of phenotypes
-  l <- scan(f, what=integer(), nlines = 1, n = 5,
+  l <- scan(f, what=integer(), nlines = 1,
             blank.lines.skip = TRUE, quiet = TRUE)
   if (length(l) != 5) {
     stop("The second line of the input file must have the following information: 'number of individuals', 'number of markers', 'presence of CHROM data', 'presence of POS data' and 'number of traits'. These numbers must be separated with an empty space.",
@@ -139,23 +145,23 @@ read.onemap <- function (dir, inputfile) {
   n.mar <- l[2]
   has_CHROM <- l[3] == 1
   has_POS <- l[4] == 1
-  n.phen <- l[5]
+  n.phe <- l[5]
 
   ## Parse the sample IDs
-  l <- scan(f, what=character(), nlines = 1, n = n.ind,
+  l <- scan(f, what=character(), nlines = 1,
             blank.lines.skip = TRUE, quiet = TRUE)  
   if (length(l) != n.ind) {
-    stop("Incomplete sample ID information.", call. = TRUE)
+    stop("Incomplete or extra sample ID information.", call. = TRUE)
   }
   sample_IDs <- l
 
   ## Read marker genotype information
   cat(" Working...\n\n")
-  l <- matrix(scan(f, what = character(), n = (2 + n.ind) * n.mar, nlines = n.mar,
+  l <- matrix(scan(f, what = character(), nlines = n.mar,
                    blank.lines.skip = TRUE, quiet = TRUE),
               n.ind + 2, n.mar)
   if (length(l) != (2 + n.ind) * n.mar) {
-    stop("Incomplete genotype information.", call. = TRUE)
+    stop("Incomplete or extra genotype information.", call. = TRUE)
   }
 
   ## Get marker names
@@ -180,44 +186,48 @@ read.onemap <- function (dir, inputfile) {
 
   ## Get CHROM/POS
   if (has_CHROM) {
-    l <- scan(f, what = character(), n = n.mar + 1, nlines = 1,
+    l <- scan(f, what = character(), nlines = 1,
               blank.lines.skip = TRUE, quiet = TRUE)
     if (length(l) != n.mar + 1) {
-      stop("Incomplete CHROM information.", call. = TRUE)
+      stop("Incomplete or extra CHROM information.", call. = TRUE)
     }
     if (l[1] != "*CHROM") {
       stop("CHROM information expected but not found.", call. = TRUE)
     }
+    l[l == "-"] <- NA
     CHROM <- l[-1]
   }
   else {
     CHROM <- NULL
   }
   if (has_POS) {
-    l <- scan(f, what = character(), n = n.mar + 1, nlines = 1,
+    l <- scan(f, what = character(), nlines = 1,
               blank.lines.skip = TRUE, quiet = TRUE)
     if (length(l) != n.mar + 1) {
-      stop("Incomplete POS information.", call. = TRUE)
+      stop("Incomplete or extra POS information.", call. = TRUE)
     }
     if (l[1] != "*POS") {
       stop("POS information expected but not found.", call. = TRUE)
     }
-    POS <- as.integer(l[-1])
-    if (any(is.na(POS))) {
-      stop("POS line can only contain integers.", call. = TRUE)
+    l[l == "-"] <- NA
+    ## Check remaining (non-missing) fields for non-integer values
+    temp <- as.integer(l[!is.na(l)][-1])
+    if (any(is.na(temp))) {
+        stop("POS line can only contain integers.", call. = TRUE)
     }
+    POS <- as.integer(l[-1])
   }
   else {
     POS <- NULL
   }
 
   ## Get phenotype data
-  if (n.phen) {
-    l <- matrix(scan(f, what = character(), n = (1 + n.ind) * n.phen, nlines = n.phen,
+  if (n.phe) {
+    l <- matrix(scan(f, what = character(), nlines = n.phe,
                      blank.lines.skip = TRUE, quiet = TRUE),
-                n.ind + 1, n.phen)
-    if (length(l) != (1 + n.ind) * n.phen) {
-      stop("Incomplete phenotype information.", call. = TRUE)
+                n.ind + 1, n.phe)
+    if (length(l) != (1 + n.ind) * n.phe) {
+      stop("Incomplete or extra phenotype information.", call. = TRUE)
     }
 
     bad_lines <- which(substr(l[1,], 1, 1) != "*")
@@ -237,15 +247,16 @@ read.onemap <- function (dir, inputfile) {
 
   ## Output
   cat(" --Read the following data:\n")
+  cat("\tType of cross:          ", crosstype, "\n")
   cat("\tNumber of individuals:  ", n.ind, "\n")
   cat("\tNumber of markers:      ", n.mar, "\n")
   cat("\tChromosome information: ", ifelse(is.null(CHROM), "no", "yes"), "\n")
   cat("\tPosition information:   ", ifelse(is.null(POS), "no", "yes"), "\n")
-  cat("\tNumber of traits:       ", n.phen, "\n")
-  if(n.phen != 0) {
+  cat("\tNumber of traits:       ", n.phe, "\n")
+  if(n.phe != 0) {
     miss.value.pheno <- apply((apply(pheno, 2,is.na)),2,sum)
     cat("\tMissing trait values:      ", "\n")
-    for(i in 1:n.phen) {
+    for(i in 1:n.phe) {
       cat("\t",formatC(paste(colnames(pheno)[i],":",sep=""),width=max(nchar(paste(colnames(pheno),":",sep="")))), miss.value.pheno[i], "\n")
     }
   }
@@ -253,35 +264,75 @@ read.onemap <- function (dir, inputfile) {
   ## Return "onemap" object
   structure(list(geno = geno, n.ind = n.ind, n.mar = n.mar,
                  segr.type = segr.type, segr.type.num = segr.type.num,
-                 n.phen = n.phen, pheno = pheno, CHROM = CHROM, POS = POS,
+                 n.phe = n.phe, pheno = pheno, CHROM = CHROM, POS = POS,
                  input = inputfile),
             class = c("onemap", crosstype))
 }
 
-
-print.outcross <- function (x, ...) {
-  if (any(is.na(match(c("geno", "n.ind", "n.mar", "segr.type"),
-                      names(x)))))
-    stop("this is not an object of class 'outcross'")
-  cat("  This is an object of class 'outcross'\n")
-  cat("    No. individuals:   ", x$n.ind, "\n")
-  cat("    No. markers:       ", x$n.mar, "\n")
-  cat("    CHROM information: ", ifelse(is.null(x$CHROM), "no", "yes"), "\n")
-  cat("    POS information:   ", ifelse(is.null(x$POS), "no", "yes"), "\n")
-  cat("    Segregation types:\n")
-  quant <- cbind(table(x$segr.type))
-  for (i in 1:length(quant)) {
-    cat(paste("       ", rownames(quant)[i], ":\t", quant[i],
-              "\n", sep = ""))
-  }
-  cat("    No. traits:        ", x$n.phen, "\n")
-  if(x$n.phen > 0) {
-    miss.value <- apply((apply(x$pheno, 2,is.na)),2,sum)
-    cat("    Missing trait values:", "\n")
-    for (i in 1:x$n.phen) {
-      #cat(paste("       ", colnames(x$pheno)[i], "\n", sep = ""))
-      cat("\t",formatC(paste(colnames(x$pheno)[i],":", sep=""), width= max(nchar(paste(colnames(x$pheno),":",sep="")))), miss.value[i], "\n")
+## Print method for object class 'onemap'
+print.onemap <- function (x, ...) {
+  ## Check for correct object
+    if (any(is.na(match(c("geno", "n.ind", "n.mar", "segr.type",
+                          "segr.type.num",
+                          "input", "n.phe", "pheno"),
+                        names(x)))))
+        stop("this is not an object of class 'onemap'")
+    
+    ## Print a brief summary of the data
+    not_miss <- 100*sum(x$geno!=0)/length(x$geno)
+    cat("  This is an object of class 'onemap'\n")
+    cat("    Type of cross:     ", class(x)[2], "\n")
+    cat("    No. individuals:   ", x$n.ind, "\n")
+    cat("    No. markers:       ", x$n.mar, "\n")
+    cat("    CHROM information: ", ifelse(is.null(x$CHROM), "no", "yes"), "\n")
+    cat("    POS information:   ", ifelse(is.null(x$POS), "no", "yes"), "\n")
+    cat("    Percent genotyped: ", round(not_miss), "\n\n")
+    
+    ## Count the number of markers with each segregation type
+    cat("    Segregation types:\n")
+    quant <- table(x$segr.type)
+    ## F2 intercross
+    names(quant)[which(names(quant) == "A.H.B") ] <- "AA : AB : BB -->"
+    names(quant)[which(names(quant) == "M.X")]    <- "AA : AB : BB (+ dom)  -->"
+    names(quant)[which(names(quant) == "D.B")]    <- " Not BB : BB -->"
+    names(quant)[which(names(quant) == "C.A")]    <- " Not AA : AA -->"
+    ## Backcross
+    names(quant)[which(names(quant) == "A.H")]    <- "     AA : AB -->"
+    ## RILs
+    names(quant)[which(names(quant) == "A.B")]    <- "     AA : BB -->"
+    ## Outcross
+    names(quant)[which(names(quant) == "A.1")]    <- "         A.1 -->"
+    names(quant)[which(names(quant) == "A.2")]    <- "         A.2 -->"
+    names(quant)[which(names(quant) == "A.3")]    <- "         A.3 -->"
+    names(quant)[which(names(quant) == "A.4")]    <- "         A.4 -->"
+    names(quant)[which(names(quant) == "B1.5")]   <- "        B1.5 -->"
+    names(quant)[which(names(quant) == "B2.6")]   <- "        B2.6 -->"
+    names(quant)[which(names(quant) == "B3.7")]   <- "        B3.7 -->"
+    names(quant)[which(names(quant) == "C.8")]    <- "         C.8 -->"
+    names(quant)[which(names(quant) == "D1.9")]   <- "        D1.9 -->"
+    names(quant)[which(names(quant) == "D1.10")]  <- "       D1.10 -->"
+    names(quant)[which(names(quant) == "D1.11")]  <- "       D1.11 -->"
+    names(quant)[which(names(quant) == "D1.12")]  <- "       D1.12 -->"
+    names(quant)[which(names(quant) == "D1.13")]  <- "       D1.13 -->"
+    names(quant)[which(names(quant) == "D2.14")]  <- "       D2.14 -->"
+    names(quant)[which(names(quant) == "D2.15")]  <- "       D2.15 -->"
+    names(quant)[which(names(quant) == "D2.16")]  <- "       D2.16 -->"
+    names(quant)[which(names(quant) == "D2.17")]  <- "       D2.17 -->"
+    names(quant)[which(names(quant) == "D2.18")]  <- "       D2.18 -->"
+    
+    for (i in 1:length(quant)) {
+        cat(paste("       ", names(quant)[i], "  ", quant[i],
+                  "\n", sep = ""))
     }
-  }
+
+    ## Check for phenotypic data
+    cat("\n    No. traits:        ", x$n.phe, "\n")
+    if(x$n.phe > 0) {
+        miss.value <- apply((apply(x$pheno, 2,is.na)),2,sum)
+        cat("    Missing trait values:", "\n")
+        for (i in 1:x$n.phe) {
+            cat("\t",formatC(paste(colnames(x$pheno)[i],":", sep=""), width= max(nchar(paste(colnames(x$pheno),":",sep="")))), miss.value[i], "\n")
+        }
+    }
 }
-# end of file
+## end of file

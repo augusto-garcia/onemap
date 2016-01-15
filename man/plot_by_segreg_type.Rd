@@ -7,7 +7,7 @@
 plot_by_segreg_type(x, subcateg = TRUE)
 }
 \arguments{
-\item{x}{an object of class outcross, f2.onemap, bc.onemap, risib.onemap or riself.onemap}
+\item{x}{an object of class \code{onemap}}
 
 \item{subcateg}{a TRUE/FALSE option to indicate if results will be plotted showing
 all possible categories (only for outcrossing populations)}
@@ -16,8 +16,7 @@ all possible categories (only for outcrossing populations)}
 a ggplot graphic
 }
 \description{
-The function receives a onemap object of class outcross, f2.onemap, bc.onemap,
-risib.onemap or riself.onemap.
+The function receives an object of class \code{onemap}.
 For outcrossing populations, it can show detailed information (all 18 possible categories),
 or a simplified version.
 }

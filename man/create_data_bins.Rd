@@ -7,14 +7,12 @@
 create_data_bins(input.obj, bins)
 }
 \arguments{
-\item{input.obj}{an object of class \code{outcross}, \code{bc.onemap},
-\code{f2.onemap}, \code{riself.onemap} or \code{risib.onemap}.}
+\item{input.obj}{an object of class \code{onemap}.}
 
 \item{bins}{an object of class \code{onemap.bin}.}
 }
 \value{
-an object of class \code{outcross}, \code{bc.onemap},
-\code{f2.onemap}, \code{riself.onemap} or \code{risib.onemap}.
+an object of class \code{onemap}.
 }
 \description{
 Creates a new dataset based on \code{onemap.bin} object
@@ -29,8 +27,8 @@ amount of missing data among those on the bin.
 \dontrun{
   load(url("https://github.com/mmollina/data/raw/master/fake_big_data_f2.RData"))
   fake.big.data.f2
-  (bins<-find_bins(fake.big.data.f2, exact=FALSE))
-  (new.data<-create_data_bins(fake.big.data.f2, bins))}
+  (bins <- find_bins(fake.big.data.f2, exact=FALSE))
+  (new.data <- create_data_bins(fake.big.data.f2, bins))}
 }
 \author{
 Marcelo Mollinari, \email{mmollina@usp.br}

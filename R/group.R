@@ -3,13 +3,13 @@
 ## Package: onemap                                                     ##
 ##                                                                     ##
 ## File: group.R                                                       ##
-## Contains: check.linkage, group, print.group                              ##
+## Contains: check.linkage, group, print.group                         ##
 ##                                                                     ##
 ## Written by Gabriel Rodrigues Alves Margarido and Marcelo Mollinari  ##
 ## copyright (c) 2007-9, Gabriel R A Margarido and Marcelo Mollinari   ##
 ##                                                                     ##
 ## First version: 11/07/2007                                           ##
-## Last update: 11/08/2015                                             ##
+## Last update: 01/14/2016                                             ##
 ## License: GNU General Public License version 2 (June, 1991) or later ##
 ##                                                                     ##
 #######################################################################
@@ -24,7 +24,7 @@
 ##' If the arguments specifying thresholds used to group markers, i.e., minimum
 ##' LOD Score and maximum recombination fraction, are \code{NULL} (default),
 ##' the values used are those contained in object \code{input.seq}. If not
-##' using \code{NULL}, the new values overridden the ones in object
+##' using \code{NULL}, the new values override the ones in object
 ##' \code{input.seq}.
 ##' 
 ##' @aliases group
@@ -37,7 +37,7 @@
 ##'     if \code{FALSE}, no output is produced.
 ##' @return Returns an object of class \code{group}, which is a list
 ##'     containing the following components: \item{data.name}{name of
-##'     the object of class \code{outcross} that contains the raw
+##'     the object of class \code{onemap} that contains the raw
 ##'     data.} \item{twopt}{name of the object of class \code{rf.2ts}
 ##'     used as input, i.e., containing information used to assign
 ##'     markers to linkage groups.} \item{marnames}{marker names,
@@ -48,7 +48,7 @@
 ##'     \item{groups}{number of the linkage group to which each marker
 ##'     is assigned.}
 ##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com} and
-##'     Marcelo Mollinari, \email{mmollina@usp.br}
+##'     Marcelo Mollinari, \email{mmollina@@usp.br}
 ##' @seealso \code{\link[onemap]{rf.2pts}} and
 ##'     \code{\link[onemap]{make.seq}}
 ##' @references Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993)
@@ -75,7 +75,7 @@ group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
         LOD <- get(input.seq$twopt, pos=1)$LOD
     if (is.null(max.rf)) 
         max.rf <- get(input.seq$twopt, pos=1)$max.rf
-    cl<-class(get(input.seq$data.name))
+    cl<-class(get(input.seq$data.name))[2]
     geno<-get(input.seq$data.name)$geno[,input.seq$seq.num]
     st<-get(input.seq$data.name)$segr.type.num
     groups<-rep(0, length(input.seq$seq.num))
@@ -178,23 +178,23 @@ check.linkage<-function(i, s, cl, geno, st=NULL, max.rf, LOD)
         sig<-apply(r[[1]], 2, function(x,y) min(x) <= y, y=max.rf) &
             apply(r[[2]], 2, function(x,y) max(x) >= y, y=LOD)
     }
-    else if(cl=="f2.onemap")
+    else if(cl=="f2")
     {
         r<-est_rf_f2(geno = geno[,c(i,s)], mrk = 1, seg_type = st[c(i,s)], nind = nrow(geno))
         sig<-r[1,] <= max.rf & r[2,] >=LOD
     }
-    else if(cl=="bc.onemap")
+    else if(cl=="backcross")
     {
         r<-est_rf_bc(geno = geno[,c(i,s)], mrk = 1, type = 0, nind = nrow(geno))
         sig<-r[1,] <= max.rf & r[2,] >=LOD
     }
-    else if(cl=="riself.onemap")
+    else if(cl=="riself")
     {
         r<-est_rf_bc(geno = geno[,c(i,s)], mrk = 1, type = 1, nind = nrow(geno))
         sig<-r[1,] <= max.rf & r[2,] >=LOD
     }
     
-    else if(cl=="risib.onemap")
+    else if(cl=="risib")
     {
         r<-est_rf_bc(geno = geno[,c(i,s)], mrk = 1, type = 1, nind = nrow(geno))
         sig<-r[1,] <= max.rf & r[2,] >=LOD

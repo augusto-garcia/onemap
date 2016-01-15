@@ -9,7 +9,7 @@
 ## copyright (c) 2009, Gabriel R A Margarido                           ##
 ##                                                                     ##
 ## First version: 02/27/2009                                           ##
-## Last update: 09/25/2009                                             ##
+## Last update: 01/14/2016                                             ##
 ## License: GNU General Public License version 2 (June, 1991) or later ##
 ##                                                                     ##
 #######################################################################
@@ -85,7 +85,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE)
 {
     ## checking for correct object
     if(!any(class(input.seq)=="sequence"))
-        stop(deparse(substitute(input.seq))," is not an object of class 'sequnece'")
+        stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
     ##Gathering sequence information
     seq.num<-input.seq$seq.num
     seq.phases<-input.seq$seq.phases
@@ -94,7 +94,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE)
     ##Checking for appropriate number of markers
     if(length(seq.num) < 2) stop("The sequence must have at least 2 markers")
     ##For F2, BC and rils
-    if(class(get(input.seq$data.name, pos=1))=="f2.onemap")
+    if(class(get(input.seq$data.name, pos=1))[2] == "f2")
     {
         final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,seq.num]),
                                   rf.vec=get_vec_rf_in(input.seq),
@@ -108,18 +108,18 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE)
                               twopt=input.seq$twopt),
                          class = "sequence"))
     }
-  else if(class(get(input.seq$data.name, pos=1))=="bc.onemap" ||
-          class(get(input.seq$data.name, pos=1))=="riself.onemap" ||
-          class(get(input.seq$data.name, pos=1))=="risib.onemap")
+  else if(class(get(input.seq$data.name, pos=1))[2] == "backcross" ||
+          class(get(input.seq$data.name, pos=1))[2] == "riself" ||
+          class(get(input.seq$data.name, pos=1))[2] == "risib")
   {
       final.map<-est_map_hmm_bc(geno=t(get(input.seq$data.name, pos=1)$geno[,seq.num]),
                                 rf.vec=get_vec_rf_in(input.seq),
                                 verbose=verbose,
                                 tol=tol)
-      if(class(get(input.seq$data.name, pos=1))=="riself.onemap" ||
-         class(get(input.seq$data.name, pos=1))=="risib.onemap")
+      if(class(get(input.seq$data.name, pos=1))[2] == "riself" ||
+         class(get(input.seq$data.name, pos=1))[2] == "risib")
           final.map$rf<-adjust.rf.ril(final.map$rf,
-                                      type=class(get(input.seq$data.name, pos=1)),
+                                      type=class(get(input.seq$data.name, pos=1))[2],
                                       expand = FALSE)
       return(structure(list(seq.num=seq.num,
                             seq.phases=seq.phases,

@@ -12,7 +12,7 @@
 ## copyright (c) 2015 Antonio Augusto Franco Garcia                    ##
 ##                                                                     ##
 ## First version: 2015/04/18                                           ##
-## Last update: 2015/07/25                                             ##
+## Last update: 2016/01/14                                             ##
 ## License: GNU General Public License version 3 or later              ##
 ##                                                                     ##
 #######################################################################
@@ -23,12 +23,11 @@
 ##' expected segregation pattern, i. e., 1:1:1:1 (A), 1:2:1 (B), 3:1 (C) and 1:1 (D)
 ##' according to OneMap's notation. It does not use Yate's correction.
 ##'
-##' First, the function select the correct segregation pattern, then it
+##' First, the function selects the correct segregation pattern, then it
 ##' defines the H0 hypothesis, and then tests it, together with percentage of
 ##' missing data.
 ##'
-##' @param x an object of class bc.onemap, f2.onemap, riself.onemap,
-##' risib.onemap or outcross, with data and additional information.
+##' @param x an object of class \code{onemap}, with data and additional information.
 ##' @param marker the marker which will be tested for its segregation.
 ##' 
 ##' @return a list with the H0 hypothesis being tested, the chi-square statistics,
@@ -89,11 +88,10 @@ test_segregation_of_a_marker <- function(x, marker) {
 ##' First, it identifies the correct segregation pattern and corresponding H0 hypothesis,
 ##' and then tests it.
 ##'
-##' @param x an object of class bc.onemap, f2.onemap, riself.onemap,
-##' risib.onemap or outcross, with data and additional information.
+##' @param x an object of class \code{onemap}, with data and additional information.
 ##' 
 ##' @return an object of class onemap.segreg.test, which is a list with marker name,
-##' H0 hypothesis being tested, the chi-square statistics,  the associated p-values,
+##' H0 hypothesis being tested, the chi-square statistics, the associated p-values
 ##' and the \% of individuals genotyped. To see the object, it is necessary to print
 ##' it.
 ##' 
@@ -104,8 +102,7 @@ test_segregation_of_a_marker <- function(x, marker) {
 ##'
 ##' @export
 test_segregation <- function(x) {
-    if (is(x,"bc.onemap")|is(x,"f2.onemap")|is(x,"riself.onemap")|
-        is(x,"risib.onemap")|is(x,"outcross")) {
+    if (is(x,"onemap")) {
         y <- list(Marker=dimnames(x$geno)[[2]],
                   Results.of.tests=sapply(1:x$n.mar, function(onemap.object, marker)
                       test_segregation_of_a_marker(onemap.object, marker),
@@ -121,7 +118,7 @@ test_segregation <- function(x) {
 ##' Show the results of segregation tests
 ##'
 ##' It shows the results of Chisquare tests performed for all markers in a onemap object
-##' of class class bc.onemap, f2.onemap, riself.onemap, risib.onemap or outcross.
+##' of cross type outcross, backcross, F2 intercross or recombinant inbred lines.
 ##' 
 ##' @param x an object of class onemap.segreg.test
 ##'
@@ -153,7 +150,7 @@ print.onemap.segreg.test <- function(x,...) {
 ##' chi-square tests for the expected segregation patterns for all markers in a dataset.
 ##' It includes a vertical line showing the threshold for declaring statistical significance
 ##' if Bonferroni's correction is considered, as well as the percentage of markers that
-##' will be discarded if this criteria is used.
+##' will be discarded if this criterion is used.
 ##'
 ##' @param x an object of class onemap.segreg.test (produced by onemap's function
 ##' test_segregation()), i. e., after performing segregation tests

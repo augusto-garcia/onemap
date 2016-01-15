@@ -22,7 +22,7 @@ Draw a graphic showing the p-values (re-scaled to -log10(p-values)) associated w
 chi-square tests for the expected segregation patterns for all markers in a dataset.
 It includes a vertical line showing the threshold for declaring statistical significance
 if Bonferroni's correction is considered, as well as the percentage of markers that
-will be discarded if this criteria is used.
+will be discarded if this criterion is used.
 }
 \examples{
 data(fake.bc.onemap) # load OneMap's fake dataset for a backcross population

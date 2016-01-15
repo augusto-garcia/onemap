@@ -7,12 +7,11 @@
 test_segregation(x)
 }
 \arguments{
-\item{x}{an object of class bc.onemap, f2.onemap, riself.onemap,
-risib.onemap or outcross, with data and additional information.}
+\item{x}{an object of class \code{onemap}, with data and additional information.}
 }
 \value{
 an object of class onemap.segreg.test, which is a list with marker name,
-H0 hypothesis being tested, the chi-square statistics,  the associated p-values,
+H0 hypothesis being tested, the chi-square statistics, the associated p-values
 and the \% of individuals genotyped. To see the object, it is necessary to print
 it.
 }

@@ -7,7 +7,7 @@
 create_dataframe_for_plot_outcross(x)
 }
 \arguments{
-\item{x}{an object of class outcross, with data and additional information}
+\item{x}{an object of classes \code{onemap} and \code{outcross}, with data and additional information}
 }
 \value{
 a dataframe

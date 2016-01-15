@@ -7,8 +7,7 @@
 test_segregation_of_a_marker(x, marker)
 }
 \arguments{
-\item{x}{an object of class bc.onemap, f2.onemap, riself.onemap,
-risib.onemap or outcross, with data and additional information.}
+\item{x}{an object of class \code{onemap}, with data and additional information.}
 
 \item{marker}{the marker which will be tested for its segregation.}
 }
@@ -25,7 +24,7 @@ expected segregation pattern, i. e., 1:1:1:1 (A), 1:2:1 (B), 3:1 (C) and 1:1 (D)
 according to OneMap's notation. It does not use Yate's correction.
 }
 \details{
-First, the function select the correct segregation pattern, then it
+First, the function selects the correct segregation pattern, then it
 defines the H0 hypothesis, and then tests it, together with percentage of
 missing data.
 }
