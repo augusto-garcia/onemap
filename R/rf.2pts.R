@@ -9,7 +9,7 @@
 ## copyright (c) 2007-15, Gabriel R A Margarido and Marcelo Mollinari  ##
 ##                                                                     ##
 ## First version: 11/07/2007                                           ##
-## Last update: 12/03/2015                                             ##
+## Last update: 01/14/2016                                             ##
 ## License: GNU General Public License version 2 (June, 1991) or later ##
 ##                                                                     ##
 #########################################################################
@@ -27,8 +27,7 @@
 ##' take a long time.
 ##'
 ##' @aliases rf.2pts
-##' @param input.obj an object of class \code{outcross}, \code{bc.onemap},
-##' \code{f2.onemap}, \code{riself.onemap} or \code{risib.onemap}.
+##' @param input.obj an object of class \code{onemap}.
 ##' @param LOD minimum LOD Score to declare linkage (defaults to \code{3}).
 ##' @param max.rf maximum recombination fraction to declare linkage (defaults
 ##' to \code{0.50}).
@@ -57,20 +56,24 @@
 ##'
 rf.2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE) {
     ## checking for correct object
-    if(!any(class(input.obj)=="outcross"||class(input.obj)=="f2.onemap" || class(input.obj)=="bc.onemap" || class(input.obj)=="riself.onemap" || class(input.obj)=="risib.onemap")) stop(deparse(substitute(input.obj))," is not an object of class 'outcross', 'bc.onemap', 'f2.onemap', 'riself.onemap' or 'risib.onemap'")
+    if(!is(input.obj, "onemap"))
+        stop(deparse(substitute(input.obj))," is not an object of class 'onemap'.")
+    
     if (input.obj$n.mar<2) stop("there must be at least two markers to proceed with analysis")
+
     ## creating variables (result storage and progress output)
-    if(class(input.obj)=="outcross")
+    if(is(input.obj, "outcross"))
         r<-est_rf_out(geno = input.obj$geno, seg_type = input.obj$segr.type.num, nind = input.obj$n.ind, verbose = verbose)
-    else if(class(input.obj)=="f2.onemap")
+    else if(is(input.obj, "f2"))
         r<-est_rf_f2(geno = input.obj$geno, seg_type = input.obj$segr.type.num, nind = input.obj$n.ind, verbose = verbose)
-    else if(class(input.obj)=="bc.onemap")
+    else if(is(input.obj, "backcross"))
         r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=0, verbose = verbose)
-    else if(class(input.obj)=="riself.onemap")
+    else if(is(input.obj, "riself"))
         r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=1, verbose = verbose)
-    else if(class(input.obj)=="risib.onemap")
+    else if(is(input.obj, "risib"))
         r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=2, verbose = verbose)
-    structure(list(data.name=as.character(sys.call())[2], n.mar=input.obj$n.mar, LOD=LOD, max.rf=max.rf, input=input.obj$input, analysis=r), class = c("rf.2pts", class(input.obj)))
+    
+    structure(list(data.name=as.character(sys.call())[2], n.mar=input.obj$n.mar, LOD=LOD, max.rf=max.rf, input=input.obj$input, analysis=r), class = c("rf.2pts", class(input.obj)[2]))
 }
 
 ##' Print method for object class 'rf.2pts'
@@ -81,9 +84,9 @@ rf.2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE) {
 ##'
 ##' @param x an object of class \code{rf.2pts}.
 ##'
-##' @param mrk a vector containing a pair of markers so, detailed
+##' @param mrk a vector containing a pair of markers, so detailed
 ##'     results of the two-point analysis will be printed for them.
-##'     can be numeric or character strings indicating the
+##'     Can be numeric or character strings indicating the
 ##'     numbers/names corresponding to any markers in the input file.
 ##'
 ##' @param ... further arguments, passed to other methods. Currently ignored.
@@ -94,7 +97,7 @@ rf.2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE) {
 
 print.rf.2pts <- function(x, mrk=NULL,...) {
     ## checking for correct object
-    if(!any(class(x)=="rf.2pts"))
+    if(!is(x, "rf.2pts"))
         stop(deparse(substitute(x))," is not an object of class 'rf.2pts'")
     if (any(is.null(mrk))) {
         ## printing a brief summary
@@ -110,7 +113,7 @@ print.rf.2pts <- function(x, mrk=NULL,...) {
       ## checking if markers exist and converting character to numeric
       if(length(mrk)!=2)
           stop(deparse(substitute(mrk))," must be a pair of markers")
-      if(any(class(x)=="f2.onemap") || any(class(x)=="bc.onemap") || any(class(x)=="risib.onemap") || any(class(x)=="riself.onemap"))
+      if(is(x, "f2") || is(x, "backcross") || is(x, "risib") || is(x, "riself"))
       {
           if (is.character(mrk[1]) && is.character(mrk[2])) {
               mrk1name<-mrk[1]
@@ -139,20 +142,17 @@ print.rf.2pts <- function(x, mrk=NULL,...) {
           if (mrk[1] > mrk[2]){
               r<-x$analysis[mrk[1],mrk[2]]
               LOD<-x$analysis[mrk[2],mrk[1]]
-              output<-c(r, LOD)
-              names(output)<-c("rf","LOD")
-              print(output)
           }
           else
           {
               r<-x$analysis[mrk[2],mrk[1]]
               LOD<-x$analysis[mrk[1],mrk[2]]
-              output<-c(r, LOD)
-              names(output)<-c("rf","LOD")
-              print(output)
           }
+          output<-c(r, LOD)
+          names(output)<-c("rf","LOD")
+          print(output)
       }
-    else if(any(class(x)=="outcross"))
+    else if(is(x, "outcross"))
     {
         if (is.character(mrk[1]) && is.character(mrk[2])) {
             mrk1name<-mrk[1]
@@ -182,17 +182,15 @@ print.rf.2pts <- function(x, mrk=NULL,...) {
             for(i in 1:4)
                 output<-rbind(output,c(x$analysis[[i]][mrk[1],mrk[2]],
                                        x$analysis[[i]][mrk[2],mrk[1]]))
-            dimnames(output)<-list(c("CC", "CR", "RC", "RR"), c("rf","LOD"))
-            print(output)
         }
         else
         {
             for(i in 1:4)
                 output<-rbind(output, c(x$analysis[[i]][mrk[2],mrk[1]],
                                         x$analysis[[i]][mrk[1],mrk[2]]))
-            dimnames(output)<-list(c("CC", "CR", "RC", "RR"), c("rf","LOD"))
-            print(output)
         }
+        dimnames(output)<-list(c("CC", "CR", "RC", "RR"), c("rf","LOD"))
+        print(output)
     }
   }
 }
@@ -200,14 +198,11 @@ print.rf.2pts <- function(x, mrk=NULL,...) {
 ##get twopt information for a given pair of markers
 get_twopt_info<-function(twopt, small, big)
 {
-    if(any(class(twopt)=="outcross"))
+    if(is(twopt, "outcross"))
         return(t(sapply(twopt$analysis, function(x,i,j) c(x[j,i], x[i,j]), i=small, j=big)))
     else
         return(matrix(c(twopt$analysis[big,small], twopt$analysis[small,big]), ncol=2))
 }
-
-
-
 
 ## end of file
 

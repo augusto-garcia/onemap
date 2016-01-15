@@ -134,7 +134,7 @@ int get_cross_type(char** cross) {
   else if(!strcmp(*cross, "riself") || !strcmp(*cross, "risib")) {
     type = cross_ril;
   }
-  else if(!strcmp(*cross, "intercross")) {
+  else if(!strcmp(*cross, "f2 intercross")) {
     type = cross_f2;
   }
 

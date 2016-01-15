@@ -17,7 +17,7 @@ p-values, and % of individuals genotyped.
 }
 \description{
 It shows the results of Chisquare tests performed for all markers in a onemap object
-of class class bc.onemap, f2.onemap, riself.onemap, risib.onemap or outcross.
+of cross type outcross, backcross, F2 intercross or recombinant inbred lines.
 }
 \examples{
 data(example.out) # Loads a fake outcross dataset installed with onemap

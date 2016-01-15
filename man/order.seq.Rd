@@ -88,7 +88,7 @@ of times to repeat this procedure is given by the \code{subset.n.try}
 argument. ii) \code{"twopt"} uses a two-point based algorithm, given by the
 option \code{"twopt.alg"}, to construct a two-point based map. The options
 are \code{"rec"} for RECORD algorithm, \code{"rcd"} for Rapid Chain
-Delineation, \code{"ser"} for Seriation, and \code{"ug"} for Unidirectional
+Delineation, \code{"ser"} for Seriation and \code{"ug"} for Unidirectional
 Growth. Then, equally spaced markers are taken from this map. The
 \code{"compare"} step will then be applied on this subset of markers.
 

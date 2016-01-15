@@ -36,14 +36,10 @@
 \alias{ser.ord}
 \alias{try_seq_inbred}
 \alias{try_seq_outcross}
-\alias{print.bc.onemap}
 \alias{print.compare}
-\alias{print.f2.onemap}
+\alias{print.onemap}
 \alias{print.onemap.bin}
 \alias{print.order}
-\alias{print.outcross}
-\alias{print.riself.onemap}
-\alias{print.risib.onemap}
 \alias{print.sequence}
 \title{Internal onemap functions}
 \description{
@@ -87,16 +83,13 @@ ripple_seq_outcross(input.seq, ws, LOD, tol)
 ser.ord(r,i)
 try_seq_inbred(input.seq, mrk, tol, draw.try, pos, verbose)
 try_seq_outcross(input.seq, mrk, tol, draw.try, pos, verbose)
-\method{print}{bc.onemap}(x, \dots)
 \method{print}{compare}(x, \dots)
-\method{print}{f2.onemap}(x, \dots)
+\method{print}{onemap}(x, \dots)
 \method{print}{onemap.bin}(x, \dots)
 \method{print}{order}(x, \dots)
 \method{print}{order}(x, \dots)
 \method{print}{outcross}(x, \dots)
 \method{print}{sequence}(x, \dots)
-\method{print}{riself.onemap} (x, \dots)
-\method{print}{risib.onemap} (x, \dots)
 }
 \author{Gabriel Rodrigues Alves Margarido and Marcelo Mollinari}
 \keyword{internal}

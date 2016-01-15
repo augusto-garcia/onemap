@@ -3,13 +3,13 @@
 # Package: onemap                                                     #
 #                                                                     #
 # File: find_bins.R                                                   #
-# Contains: find_bins, print.onemap.bin
+# Contains: find_bins, print.onemap.bin                               #
 #                                                                     #
 # Written by Marcelo Mollinari                                        #
 # copyright (c) 2015, Marcelo Mollinari                               #
 #                                                                     #
 # First version: 08/27/2015                                           #
-# Last update: 11/01/2015                                             #
+# Last update: 01/14/2016                                             #
 # License: GNU General Public License version 3                       #
 #                                                                     #
 #######################################################################
@@ -20,16 +20,15 @@
 ##' Within each bin, the pairwise recombination fraction between markers is zero.
 ##'
 ##' @aliases find_bins
-##' @param input.obj an object of class \code{outcross}, \code{bc.onemap},
-##' \code{f2.onemap}, \code{riself.onemap} or \code{risib.onemap}.
+##' @param input.obj an object of class \code{onemap}.
 ##' @param exact logical. If \code{TRUE}, it only allocates markers with
 ##' the exact same information into bins, including missing data; if
 ##' \code{FALSE}, missing data are not considered when allocating markers.
-##' In  later case, the marker with the lower amount of missing data is
+##' In the latter case, the marker with the lowest amount of missing data is
 ##' taken as the representative marker on that bin.
 ##' @param ch not used in this OneMap version. Chromosome for which the
 ##' analysis should be performed. If \code{NULL} the analisys is performed
-##' for all chromosomes
+##' for all chromosomes.
 ##' @return An object of class \code{onemap.bin}, which is a list containing the
 ##' following components: \item{bins}{a list containing the bins. Each element of
 ##' the list is a table whose lines indicate the name of the marker, the bin in
@@ -50,13 +49,11 @@
 find_bins <- function(input.obj, exact=TRUE, ch=NULL)
 {
     ## checking for correct object
-    if(!any(class(input.obj)=="outcross",
-            class(input.obj)=="f2.onemap",
-            class(input.obj)=="bc.onemap",
-            class(input.obj)=="riself.onemap",
-            class(input.obj)=="risib.onemap"))
-        stop(deparse(substitute(input.obj))," is not an object of class 'outcross', 'bc.onemap', 'f2.onemap', 'riself.onemap' or 'risib.onemap'")
+    if(class(input.obj)[1] != "onemap")
+      stop(deparse(substitute(input.obj))," is not an object of class 'onemap'")
+
     if (input.obj$n.mar<2) stop("there must be at least two markers to proceed with analysis")
+
     bin<-get.bins(input.obj$geno, exact)
     mis<-apply(input.obj$geno,2, function(x) 100*sum(x==0)/length(x))
     dtf<-data.frame(bin, mis)

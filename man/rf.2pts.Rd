@@ -7,8 +7,7 @@
 rf.2pts(input.obj, LOD = 3, max.rf = 0.5, verbose = TRUE)
 }
 \arguments{
-\item{input.obj}{an object of class \code{outcross}, \code{bc.onemap},
-\code{f2.onemap}, \code{riself.onemap} or \code{risib.onemap}.}
+\item{input.obj}{an object of class \code{onemap}.}
 
 \item{LOD}{minimum LOD Score to declare linkage (defaults to \code{3}).}
 
