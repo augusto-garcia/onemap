@@ -273,8 +273,8 @@ read.onemap <- function (dir, inputfile) {
 print.onemap <- function (x, ...) {
   ## Check for correct object
     if (any(is.na(match(c("geno", "n.ind", "n.mar", "segr.type",
-                          "segr.type.num",
-                          "input", "n.phe", "pheno"),
+                          "segr.type.num", "n.phe", "pheno",
+                          "CHROM", "POS", "input"),
                         names(x)))))
         stop("this is not an object of class 'onemap'")
     
