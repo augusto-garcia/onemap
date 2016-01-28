@@ -18,10 +18,10 @@
 
 
 ##' Create a sequence of markers
-##' 
+##'
 ##' Makes a sequence of markers based on an object of another type.
-##' 
-##' 
+##'
+##'
 ##' @param input.obj an object of class \code{rf.2pts}, \code{group},
 ##' \code{compare}, \code{try} or \code{order}.
 ##' @param arg its value depends on the type of object \code{input.obj}. For an
@@ -77,11 +77,11 @@
 ##' natural populations. \emph{Genomics} 1: 174-181.
 ##' @keywords utilities
 ##' @examples
-##' 
+##'
 ##' \dontrun{
 ##'   data(example.out)
 ##'   twopt <- rf.2pts(example.out)
-##' 
+##'
 ##'   all.mark <- make.seq(twopt,"all")
 ##'   all.mark <- make.seq(twopt,1:30) # same as above, for this data set
 ##'   groups <- group(all.mark)
@@ -89,7 +89,7 @@
 ##'   LG1.ord <- order.seq(LG1)
 ##'   (LG1.final <- make.seq(LG1.ord)) # safe order
 ##'   (LG1.final.all <- make.seq(LG1.ord,"force")) # forced order
-##' 
+##'
 ##'   markers <- make.seq(twopt,c(2,3,12,14))
 ##'   markers.comp <- compare(markers)
 ##'   (base.map <- make.seq(markers.comp))
@@ -97,8 +97,8 @@
 ##'   (extend.map <- try_seq(base.map,30))
 ##'   (base.map <- make.seq(extend.map,5)) # fifth position is the best
 ##' }
-##' 
-make.seq <- 
+##'
+make.seq <-
 function(input.obj, arg=NULL, phase=NULL, twopt=NULL) {
   # checking for correct object
   if(all(is.na(match(class(input.obj),c("rf.2pts","group","compare","try","order")))))
@@ -170,7 +170,7 @@ function(input.obj, arg=NULL, phase=NULL, twopt=NULL) {
 
   # check if any marker appears more than once in the sequence
   if(length(seq.num) != length(unique(seq.num))) stop("there are duplicated markers in the sequence")
-  
+
   structure(list(seq.num=seq.num, seq.phases=seq.phases, seq.rf=seq.rf, seq.like=seq.like,
                  data.name=input.obj$data.name, twopt=twopt), class = "sequence")
 }
@@ -202,10 +202,10 @@ print.sequence <- function(x,...) {
     longest.name <- max(nchar(marnames))
     marnames <- formatC(marnames,flag="-")
     longest.number <- max(nchar(x$seq.num))
-    marnumbers <- formatC(x$seq.num, format="d", width=longest.number)   
+    marnumbers <- formatC(x$seq.num, format="d", width=longest.number)
     distances <- formatC(c(0,cumsum(get(get(".map.fun", envir=.onemapEnv))(x$seq.rf))),format="f",digits=2,width=7)
     ## whith diplotypes for class 'outcross'
-    if(class(get(x$data.name, pos=1))[2] == "outcross"){
+    if(any(class(get(x$data.name, pos=1)) == "outcross")){
       ## create diplotypes from segregation types and linkage phases
       link.phases <- apply(link.phases,1,function(x) paste(as.character(x),collapse="."))
       parents <- matrix("",length(x$seq.num),4)
@@ -228,7 +228,7 @@ print.sequence <- function(x,...) {
       }
       cat("\n",length(marnames),"markers            log-likelihood:",x$seq.like,"\n\n")
     }
-    else warning("invalid cross type") 
+    else warning("invalid cross type")
   }
 }
 ##end of file

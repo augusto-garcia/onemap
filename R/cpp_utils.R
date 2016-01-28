@@ -9,7 +9,7 @@
 # Written Marcelo Mollinari                                           #
 #                                                                     #
 # First version: 09/2015                                              #
-# Last update: 09/2015                                                #
+# Last update: 01/2016                                                #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -114,6 +114,55 @@ est_map_hmm_bc<-function(geno, rf.vec=NULL, verbose=TRUE, tol=1e-6)
              PACKAGE = "onemap" )
     names(r)<-c("rf", "loglike") 
     return(r)
+}
+
+# 
+
+
+##' C++ routine for multipoint analysis in outcrossing populations
+##'
+##' It calls C++ routine that implements the methodology of Hidden
+##' Markov Models (HMM) to construct multipoint linkage maps in
+##' outcrossing species
+##' 
+##' @param geno matrix of genotypes. Rows represent marker and columns
+##'     represent individuals.
+##'
+##' @param type a vector indicating the type of marker. For more
+##'     information see \code{\link[onemap]{read.onemap}}
+##'
+##' @param phase a vector indicating the linkage phases between
+##'     markers. For more information see
+##'     \code{\link[onemap]{make.seq}}
+##'
+##' @param rf.vec a vector containing the recombination fraction
+##'     initial values
+##'
+##' @param verbose If \code{TRUE}, print tracing information.
+##' 
+##' @param tol tolerance for the C routine, i.e., the value used to
+##'     evaluate convergence.
+##' 
+##' @return a list containing the re-estimated vector of recombination
+##'     fractions and the logarithm of the likelihood
+##'
+##' @keywords internal
+##'
+##' @export
+est_map_hmm_out<-function(geno, type,  phase, rf.vec=NULL, verbose=TRUE, tol=1e-6)
+{
+  if(is.null(rf.vec))
+    rf.vec<-rep(0.1, (nrow(geno)-1))
+  r<-.Call("est_hmm_out",
+           geno,
+           as.numeric(type),
+           as.numeric(phase),
+           as.numeric(rf.vec),
+           as.numeric(verbose),
+           as.numeric(tol),
+           PACKAGE = "onemap")
+  names(r)<-c("rf", "loglike") 
+  return(r)
 }
 #end of the file
 
