@@ -92,7 +92,7 @@ rf.2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE) {
 ##' @return \code{NULL}
 ##' @keywords internal
 ##' @export
-
+##' 
 print.rf.2pts <- function(x, mrk=NULL,...) {
     ## checking for correct object
     if(!is(x, "rf.2pts"))
