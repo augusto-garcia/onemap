@@ -33,7 +33,9 @@
 ##' @return a list with the H0 hypothesis being tested, the chi-square statistics,
 ##' the associated p-values, and the \% of individuals genotyped.
 ##'
-##'
+##' It returns \code{NA} if the numbers of expected and observed classes are 
+##' different or if dominant and co-dominant coding is mixed in the same marker.
+##' 
 ##' ##'@examples
 ##' data(fake.bc.onemap) # Loads a fake backcross dataset installed with onemap
 ##' test_segregation_of_a_marker(fake.bc.onemap,1)
@@ -42,35 +44,95 @@
 ##' test_segregation_of_a_marker(example.out,1)
 test_segregation_of_a_marker <- function(x, marker) {
     ## Segregation pattern for each marker type
-    p.a <- rep(1/4, 4); p.b <- c(1/4, 1/2, 1/4); p.c <- c(3/4,1/4); p.d <- rep(1/2, 2)
+    p.a <- rep(1/4, 4); p.b <- c(1/4, 1/2, 1/4); p.c <- c(3/4, 1/4); p.d <- rep(1/2, 2)
     ## Counting each category
     count <- table(x$geno[,marker], exclude=0)
     ## Do the chisq test, using the appropriate expected segregation
-    ## grepl() allows finding the marker type (it has the letter in the argument)    
+    ## grepl() allows finding the marker type (it has the letter in the argument)
+    ## Impossible to test markers with different number of expected and observed classes
     if (grepl("A.H.B",x$segr.type[marker])) {
-        qui <- chisq.test(count, p=p.b, correct = FALSE)
-        H0 <- "1:2:1"}
+        if (dim(count) == 3) {
+            qui <- chisq.test(count, p=p.b, correct = FALSE)
+            H0 <- "1:2:1"
+        } else {
+            qui <- NULL
+            qui$statistic <- NA
+            qui$p.value <- NA
+            H0 <- NA
+        }
+    }
     else if (grepl("C.A",x$segr.type[marker]) | grepl("D.B",x$segr.type[marker])) {
-        qui <- chisq.test(count, p=rev(p.c), correct = FALSE)
-        H0 <- "3:1"}
+        if (dim(count) == 2) {
+            qui <- chisq.test(count, p=rev(p.c), correct = FALSE)
+            H0 <- "3:1"
+        } else {
+            qui <- NULL
+            qui$statistic <- NA
+            qui$p.value <- NA
+            H0 <- NA
+        }
+    }
     else if (grepl("A.H",x$segr.type[marker]) | grepl("A.B",x$segr.type[marker])) {
-        qui <- chisq.test(count, p=p.d, correct = FALSE)
-        H0 <- "1:1"}
+        if (dim(count) == 2) {
+            qui <- chisq.test(count, p=p.d, correct = FALSE)
+            H0 <- "1:1"
+        } else {
+            qui <- NULL
+            qui$statistic <- NA
+            qui$p.value <- NA
+            H0 <- NA
+        }
+    }
     else if (grepl("A",x$segr.type[marker])) {
-        qui <- chisq.test(count, p=p.a, correct = FALSE)
-        H0 <- "1:1:1:1" }
+        if (dim(count) == 4) {
+            qui <- chisq.test(count, p=p.a, correct = FALSE)
+            H0 <- "1:1:1:1"
+        } else {
+            qui <- NULL
+            qui$statistic <- NA
+            qui$p.value <- NA
+            H0 <- NA
+        }
+    }
     else if (grepl("B",x$segr.type[marker])) {
-        qui <- chisq.test(count, p=p.b, correct = FALSE)
-        H0 <- "1:2:1" }
+        if (dim(count) == 3) {
+            qui <- chisq.test(count, p=p.b, correct = FALSE)
+            H0 <- "1:2:1" 
+        } else {
+            qui <- NULL
+            qui$statistic <- NA
+            qui$p.value <- NA
+            H0 <- NA
+        }
+    }
     else if (grepl("C",x$segr.type[marker])) {
-        qui <- chisq.test(count, p=p.c, correct = FALSE)
-        H0 <- "3:1" }
+        if (dim(count) == 2) {
+            qui <- chisq.test(count, p=p.c, correct = FALSE)
+            H0 <- "3:1"
+        } else {
+            qui <- NULL
+            qui$statistic <- NA
+            qui$p.value <- NA
+            H0 <- NA
+        }
+    }
     else if (grepl("D",x$segr.type[marker])) {
-        qui <- chisq.test(count, p=p.d, correct = FALSE)
-        H0 <- "1:1" }
+        if (dim(count) == 2) {
+            qui <- chisq.test(count, p=p.d, correct = FALSE)
+            H0 <- "1:1"
+        } else {
+            qui <- NULL
+            qui$statistic <- NA
+            qui$p.value <- NA
+            H0 <- NA
+        }
+    }
     #impossible to test: dominant and co-dominant mixed in the same marker
+    #however, it will not work with "qui <- NA"; using NULL instead
     else if (grepl("M.X",x$segr.type[marker])) { 
-        qui <- NA
+        qui <- NULL
+        qui$statistic <- NA
+        qui$p.value <- NA
         H0 <- NA
     }
     return(list(Hypothesis=H0, qui.quad=qui$statistic, p.val=qui$p.value,
