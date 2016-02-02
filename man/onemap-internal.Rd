@@ -13,7 +13,6 @@
 \alias{draw.order}
 \alias{draw.rf.inter}
 \alias{draw.try}
-\alias{est.map.c}
 \alias{est_map_hmm_f2}
 \alias{est_map_hmm_bc}
 \alias{est_rf_bc}
@@ -60,7 +59,6 @@ diplo(w, seq.num, seq.phases)
 draw.order(map.input)
 draw.rf.inter(info.graph, scale, cex)
 draw.try(base.input, try.input, pos=NULL)
-est.map.c(geno,type,phase,rec,verbose,tol=1e-2)
 est_rf_out(geno, mrk, seg_type, nind, verbose)
 est_rf_f2(geno, mrk, seg_type, nind, verbose)
 est_rf_bc(geno, mrk,  nind, type, verbose)

@@ -171,12 +171,12 @@ compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
                 }
                 for(j in 1:nrow(Ph.Init)){
                     ## estimate parameters
-                    final.map <- est.map.c(geno=get(input.seq$data.name, pos=1)$geno[,all.ord[i,]],
-                                           type=get(input.seq$data.name, pos=1)$segr.type.num[all.ord[i,]],
-                                           phase=Ph.Init[j,],
-                                           rec=Rf.Init[j,],
-                                           verbose=FALSE,
-                                           tol=tol)
+                    final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
+                                                 type=get(input.seq$data.name, pos=1)$segr.type.num[all.ord[i,]],
+                                                 phase=Ph.Init[j,],
+                                                 rf.vec=Rf.Init[j,],
+                                                 verbose=FALSE,
+                                                 tol=tol)
                     best.ord[(n.best+1),] <- all.ord[i,]
                     best.ord.rf[(n.best+1),] <- final.map$rf
                     best.ord.phase[(n.best+1),] <- Ph.Init[j,]
@@ -233,12 +233,12 @@ compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
             }
             for(j in 1:nrow(Ph.Init)){
                 ## estimate parameters
-                final.map <- est.map.c(geno=get(input.seq$data.name, pos=1)$geno[,all.ord[i,]],
-                                       type=get(input.seq$data.name, pos=1)$segr.type.num[all.ord[i,]],
-                                       phase=Ph.Init[j,],
-                                       rec=Rf.Init[j,],
-                                       verbose=FALSE,
-                                       tol=tol)
+                final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
+                                             type=get(input.seq$data.name, pos=1)$segr.type.num[all.ord[i,]],
+                                             phase=Ph.Init[j,],
+                                             rf.vec=Rf.Init[j,],
+                                             verbose=FALSE,
+                                             tol=tol)
                 best.ord[(n.best+1),] <- all.ord[i,]
                 best.ord.rf[(n.best+1),] <- final.map$rf
                 best.ord.phase[(n.best+1),] <- Ph.Init[j,]
@@ -346,7 +346,7 @@ compare_inbred<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
 ## print method for object class 'compare'
 print.compare <- function(x,...) {
         FLAG<-0
-        if(class(get(x$data.name, pos=1)) != "outcross") FLAG<-1   
+        if(!any(class(get(x$data.name, pos=1)) == "outcross")) FLAG<-1   
         phases.char <- c("CC","CR","RC","RR")
         n.ord <- max(which(head(x$best.ord.LOD,-1) != -Inf))
         unique.orders <- unique(x$best.ord[1:n.ord,])
