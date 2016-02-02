@@ -120,7 +120,7 @@ plot.onemap <- function(x, all=TRUE, ...) {
     if (is(x, "outcross")) {
         g <- g + scale_fill_manual(name="Genotype",
                                    values=c("#00A08A", "#5BBCD6",  "#F2AD00", "#F98400", "#FF0000"))
-        if (length(levels(x$variable))>20)
+        if (x$n.mar>20)
             g <- g + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
         
         if (all==TRUE) g
@@ -163,9 +163,8 @@ create_dataframe_for_plot_outcross <- function(x) {
         F1.A$value <- factor(F1.A$value)
         if (!exists("F1.A.")) F1.A. <- data.frame(F1.A)
         else F1.A. <- rbind(F1.A.,F1.A)
-        }
+        } else F1.A. <- NULL
     }
-    class(F1.A.) <- "data.frame"
     # Markers of B type
     for (i in 1:3) {
     if (length(which(x$segr.type==paste("B",i,".",i+4,sep=""))!=0)) {
@@ -176,7 +175,7 @@ create_dataframe_for_plot_outcross <- function(x) {
         F1.B$value <- factor(F1.B$value)
         if (!exists("F1.B.")) F1.B. <- data.frame(F1.B)
         else F1.B. <- rbind(F1.B.,F1.B)
-        }
+        } else F1.B. <- NULL
     }
     # Markers of C type
     for (i in 8) {
@@ -188,7 +187,7 @@ create_dataframe_for_plot_outcross <- function(x) {
         F1.C$value <- factor(F1.C$value)
         if (!exists("F1.C.")) F1.C. <- data.frame(F1.C)
         else F1.C. <- rbind(F1.C.,F1.C)
-        }
+        } else F1.C. <- NULL
     }
     # Markers of D1 type
     for (i in 9:13) {
@@ -200,7 +199,7 @@ create_dataframe_for_plot_outcross <- function(x) {
         F1.D1$value <- factor(F1.D1$value)
         if (!exists("F1.D1.")) F1.D1. <- data.frame(F1.D1)
         else F1.D1. <- rbind(F1.D1.,F1.D1)
-        }
+        } else F1.D1. <- NULL
     }
     # Markers of D2 type
     for (i in 14:18) {
@@ -212,14 +211,15 @@ create_dataframe_for_plot_outcross <- function(x) {
         F1.D2$value <- factor(F1.D2$value)
         if (!exists("F1.D2.")) F1.D2. <- data.frame(F1.D2)
         else F1.D2. <- rbind(F1.D2.,F1.D2)
-        }
+        } else F1.D2. <- NULL
     }
     # Defining classes and combining
-    class(F1.A.) <- "data.frame"
-    class(F1.B.) <- "data.frame"
-    class(F1.C.) <- "data.frame"
-    class(F1.D1.) <- "data.frame"
-    class(F1.D2.) <- "data.frame"
+    # It was not working if any class was missing; now it is
+    if (!is.null(F1.A.)) class(F1.A.) <- "data.frame"
+    if (!is.null(F1.B.)) class(F1.B.) <- "data.frame"
+    if (!is.null(F1.C.)) class(F1.C.) <- "data.frame"
+    if (!is.null(F1.D1.)) class(F1.D1.) <- "data.frame"
+    if (!is.null(F1.D2.)) class(F1.D2.) <- "data.frame"
     return(rbind(F1.A.,F1.B.,F1.C.,F1.D1.,F1.D2.))
 }
 ##'
