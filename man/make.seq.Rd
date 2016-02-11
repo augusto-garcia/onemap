@@ -7,38 +7,42 @@
 make.seq(input.obj, arg = NULL, phase = NULL, twopt = NULL)
 }
 \arguments{
-\item{input.obj}{an object of class \code{rf.2pts}, \code{group},
-\code{compare}, \code{try} or \code{order}.}
+\item{input.obj}{an object of class \code{onemap}, \code{rf.2pts},
+\code{group}, \code{compare}, \code{try} or \code{order}.}
 
-\item{arg}{its value depends on the type of object \code{input.obj}. For an
-object \code{rf.2pts}, \code{arg} can be the string "all", resulting in a
-sequence with all markers in the raw data (generally done for grouping
-markers); otherwise, it must be a \code{vector} of integers specifying
-which markers comprise the sequence. For an object of class \code{group},
-\code{arg} must be an integer specifying the group. For a \code{compare}
-object, \code{arg} is an integer indicating the corresponding order
-(arranged according to the likelihood); if \code{NULL} (default), the best
-order is taken. For an object of class \code{try}, \code{arg} must be an
-integer less than or equal to the length of the original sequence plus one;
-the sequence obtained will be that with the additional marker in the
-position indicated by \code{arg}.  Finally, for an \code{order} object,
-\code{arg} is a string: "safe" means the order that contains only markers
-mapped with the provided threshold; "force" means the order with all
-markers.}
+\item{arg}{its value depends on the type of object \code{input.obj}. For
+a \code{onemap} object, \code{arg} must be a string corresponding to one
+of the reference sequences on which markers are anchored (usually
+chromosomes). This requires that \code{CHROM} information be available in
+the input data file. It can also be a \code{vector} of integers specifying
+which markers comprise the sequence. For an object \code{rf.2pts},
+\code{arg} can be the string "all", resulting in a sequence with all
+markers in the raw data (generally done for grouping markers); otherwise,
+it must be a \code{vector} of integers specifying which markers comprise
+the sequence. For an object of class \code{group}, \code{arg} must be an
+integer specifying the group. For a \code{compare} object, \code{arg} is
+an integer indicating the corresponding order (arranged according to the
+likelihood); if \code{NULL} (default), the best order is taken. For an
+object of class \code{try}, \code{arg} must be an integer less than or
+equal to the length of the original sequence plus one; the sequence
+obtained will be that with the additional marker in the position indicated
+by \code{arg}.  Finally, for an \code{order} object, \code{arg} is a
+string: "safe" means the order that contains only markers mapped with the
+provided threshold; "force" means the order with all markers.}
 
 \item{phase}{its value is also dependent on the type of \code{input.obj}.
-For an \code{rf.2pts} object, \code{phase} can be a \code{vector} with
-user- defined linkage phases (its length is equal to the number of markers
-minus one); if \code{NULL} (default), other functions will try to find the
-best linkage phases. For example, if \code{phase} assumes the vector
-\code{c(1,2,3,4)}, the sequence of linkage phases will be couple/couple,
-couple/repulsion, repulsion/couple and repulsion/repulsion for a sequence
-of five markers. If \code{input.obj} is of class \code{compare} or
-\code{try}, this argument indicates which combination of linkage phases
-should be chosen, for the particular order given by argument \code{arg}.
-In both cases, \code{NULL} (default) makes the best combination to be
-taken. If \code{input.obj} is of class \code{group} or \code{order}, this
-argument has no effect.}
+For an \code{rf.2pts} or \code{onemap} object, \code{phase} can be a
+\code{vector} with user- defined linkage phases (its length is equal to the
+number of markers minus one); if \code{NULL} (default), other functions will
+try to find the best linkage phases. For example, if \code{phase} takes on
+the vector \code{c(1,2,3,4)}, the sequence of linkage phases will be
+coupling/coupling, coupling/repulsion, repulsion/coupling and
+repulsion/repulsion for a sequence of five markers. If \code{input.obj} is
+of class \code{compare} or \code{try}, this argument indicates which
+combination of linkage phases should be chosen, for the particular order
+given by argument \code{arg}. In both cases, \code{NULL} (default) makes the
+best combination to be taken. If \code{input.obj} is of class, \code{group}
+or \code{order}, this argument has no effect.}
 
 \item{twopt}{a \code{string} indicating the name of the object which
 contains the two-point information. This does not have to be defined by the
@@ -55,7 +59,7 @@ no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
 recombination frequencies between markers in the sequence. \code{-1} means
 that there are no estimated recombination frequencies.}
 \item{seq.like}{log-likelihood of the corresponding linkage map.}
-\item{data.name}{name of the object of class \code{outcross} with the raw
+\item{data.name}{name of the object of class \code{onemap} with the raw
 data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
 2-point analyses.}
 }

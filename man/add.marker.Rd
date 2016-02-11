@@ -28,7 +28,7 @@ An object of class \code{sequence}, which is a list
     are no estimated recombination fractions.}
 
 \item{seq.like}{log-likelihood of the corresponding linkage map.}
-    \item{data.name}{name of the object of class \code{outcross}
+    \item{data.name}{name of the object of class \code{onemap}
     with the raw data.}
 
 \item{twopt}{name of the object of class \code{rf.2pts} with the

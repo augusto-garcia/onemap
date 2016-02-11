@@ -39,7 +39,7 @@ An object of class \code{try}, which is a list containing
     Score is based on the best combination of linkage phases for
     each map.}  \item{try.ord}{a \code{matrix} with the orders of
     all linkage maps.}  \item{data.name}{name of the object of
-    class \code{outcross} with the raw data.} \item{twopt}{name of
+    class \code{onemap} with the raw data.} \item{twopt}{name of
     the object of class \code{rf.2pts} with the 2-point analyses.}
 }
 \description{

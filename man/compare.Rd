@@ -27,7 +27,7 @@ for the corresponding best orders.} \item{best.ord.phase}{a \code{matrix}
 with linkage phases for the best orders.} \item{best.ord.like}{a
 \code{vector} with log-likelihood values for the best orders.}
 \item{best.ord.LOD}{a \code{vector} with LOD Score values for the best
-orders.} \item{data.name}{name of the object of class \code{outcross} with
+orders.} \item{data.name}{name of the object of class \code{onemap} with
 the raw data.} \item{twopt}{name of the object of class \code{rf.2pts} with
 the 2-point analyses.}
 }

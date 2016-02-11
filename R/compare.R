@@ -48,7 +48,7 @@
 ##' with linkage phases for the best orders.} \item{best.ord.like}{a
 ##' \code{vector} with log-likelihood values for the best orders.}
 ##' \item{best.ord.LOD}{a \code{vector} with LOD Score values for the best
-##' orders.} \item{data.name}{name of the object of class \code{outcross} with
+##' orders.} \item{data.name}{name of the object of class \code{onemap} with
 ##' the raw data.} \item{twopt}{name of the object of class \code{rf.2pts} with
 ##' the 2-point analyses.}
 ##' @author Marcelo Mollinari, \email{mmollina@@usp.br}
@@ -346,7 +346,7 @@ compare_inbred<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
 ## print method for object class 'compare'
 print.compare <- function(x,...) {
         FLAG<-0
-        if(class(get(x$data.name, pos=1)) != "outcross") FLAG<-1   
+        if(!is(get(x$data.name, pos=1), "outcross")) FLAG<-1   
         phases.char <- c("CC","CR","RC","RR")
         n.ord <- max(which(head(x$best.ord.LOD,-1) != -Inf))
         unique.orders <- unique(x$best.ord[1:n.ord,])

@@ -93,7 +93,7 @@
 ##' "safe" order.} \item{THRES}{the same as the input value, just for
 ##' printing.} \item{ord.all}{an object of class \code{sequence} containing the
 ##' "forced" order, i.e., the best order with all markers.}
-##' \item{data.name}{name of the object of class \code{outcross} with the raw
+##' \item{data.name}{name of the object of class \code{onemap} with the raw
 ##' data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
 ##' 2-point analyses.}
 ##' @author Gabriel R A Margarido, \email{gramarga@@usp.br} and Marcelo

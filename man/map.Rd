@@ -24,7 +24,7 @@ no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
 recombination frequencies between markers in the sequence. \code{-1} means
 that there are no estimated recombination frequencies.}
 \item{seq.like}{log-likelihood of the corresponding linkage map.}
-\item{data.name}{name of the object of class \code{outcross} with the raw
+\item{data.name}{name of the object of class \code{onemap} with the raw
 data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
 2-point analyses.}
 }

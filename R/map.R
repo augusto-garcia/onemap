@@ -44,7 +44,7 @@
 ##' recombination frequencies between markers in the sequence. \code{-1} means
 ##' that there are no estimated recombination frequencies.}
 ##' \item{seq.like}{log-likelihood of the corresponding linkage map.}
-##' \item{data.name}{name of the object of class \code{outcross} with the raw
+##' \item{data.name}{name of the object of class \code{onemap} with the raw
 ##' data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
 ##' 2-point analyses.}
 ##' @author Adapted from Karl Broman (package 'qtl') by Gabriel R A Margarido,
@@ -139,7 +139,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE)
         ## linkage map is started with the first two markers in the sequence
         ## gather two-point information for this pair
         phase.init <- vector("list",1)
-	list.init <- phases(make.seq(get(input.seq$twopt,pos = -1),seq.num[1:2],twopt=input.seq$twopt))
+	list.init <- phases(make.seq(get(input.seq$twopt,pos = 1),seq.num[1:2],twopt=input.seq$twopt))
         phase.init[[1]] <- list.init$phase.init[[1]]
         Ph.Init <- comb.ger(phase.init)
         for(j in 1:nrow(Ph.Init)) {
