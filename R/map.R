@@ -84,7 +84,7 @@
 map <- function(input.seq,tol=10E-5, verbose=FALSE)
 {
     ## checking for correct object
-    if(!any(class(input.seq)=="sequence"))
+    if(!("sequence" %in% class(input.seq)))
         stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
     ##Gathering sequence information
     seq.num<-input.seq$seq.num
@@ -178,12 +178,12 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE)
       ## gather two-point information
       rf.init <- get_vec_rf_out(input.seq, acum=FALSE)
       ## estimate parameters
-      final.map <- est.map.c(geno=get(input.seq$data.name, pos=1)$geno[,seq.num],
-                             type=get(input.seq$data.name, pos=1)$segr.type.num[seq.num],
-                             phase=seq.phases,
-                             rec=rf.init,
-                             verbose=FALSE,
-                             tol=tol)
+      final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,seq.num]),
+                                   type=get(input.seq$data.name, pos=1)$segr.type.num[seq.num],
+                                   phase=seq.phases,
+                                   rf.vec=rf.init,
+                                   verbose=FALSE,
+                                   tol=tol)
 
       structure(list(seq.num=seq.num, seq.phases=seq.phases, seq.rf=final.map$rf,
                      seq.like=final.map$loglike, data.name=input.seq$data.name, twopt=input.seq$twopt), class = "sequence")

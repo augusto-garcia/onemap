@@ -9,7 +9,7 @@
 # copyright (c) 2009, Gabriel R A Margarido                           #
 #                                                                     #
 # First version: 02/27/2009                                           #
-# Last update: 01/21/2016                                             #
+# Last update: 02/11/2016                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -244,7 +244,7 @@ print.sequence <- function(x,...) {
     marnumbers <- formatC(x$seq.num, format="d", width=longest.number)
     distances <- formatC(c(0,cumsum(get(get(".map.fun", envir=.onemapEnv))(x$seq.rf))),format="f",digits=2,width=7)
     ## whith diplotypes for class 'outcross'
-    if(class(get(x$data.name, pos=1))[2] == "outcross"){
+    if(any(class(get(x$data.name, pos=1)) == "outcross")){
       ## create diplotypes from segregation types and linkage phases
       link.phases <- apply(link.phases,1,function(x) paste(as.character(x),collapse="."))
       parents <- matrix("",length(x$seq.num),4)

@@ -9,7 +9,7 @@
 ## copyright (c) 2007-15, Gabriel R A Margarido and Marcelo Mollinari  ##
 ##                                                                     ##
 ## First version: 11/07/2007                                           ##
-## Last update: 01/14/2016                                             ##
+## Last update: 01/27/2016                                             ##
 ## License: GNU General Public License version 2 (June, 1991) or later ##
 ##                                                                     ##
 #########################################################################
@@ -56,24 +56,22 @@
 ##'
 rf.2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE) {
     ## checking for correct object
-    if(!is(input.obj, "onemap"))
+    if(!any(c("onemap", "outcross", "f2", "backcross", "riself", "risib") %in% class(input.obj)))
         stop(deparse(substitute(input.obj))," is not an object of class 'onemap'.")
-    
     if (input.obj$n.mar<2) stop("there must be at least two markers to proceed with analysis")
-
     ## creating variables (result storage and progress output)
-    if(is(input.obj, "outcross"))
+    if(("outcross" %in% class(input.obj)))
         r<-est_rf_out(geno = input.obj$geno, seg_type = input.obj$segr.type.num, nind = input.obj$n.ind, verbose = verbose)
-    else if(is(input.obj, "f2"))
+    else if(("f2" %in% class(input.obj)))
         r<-est_rf_f2(geno = input.obj$geno, seg_type = input.obj$segr.type.num, nind = input.obj$n.ind, verbose = verbose)
-    else if(is(input.obj, "backcross"))
+    else if(("backcross" %in% class(input.obj)))
         r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=0, verbose = verbose)
-    else if(is(input.obj, "riself"))
+    else if(("riself" %in% class(input.obj)))
         r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=1, verbose = verbose)
-    else if(is(input.obj, "risib"))
+    else if(("risib" %in% class(input.obj)))
         r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=2, verbose = verbose)
-    
-    structure(list(data.name=as.character(sys.call())[2], n.mar=input.obj$n.mar, LOD=LOD, max.rf=max.rf, input=input.obj$input, analysis=r), class = c("rf.2pts", class(input.obj)[2]))
+    structure(list(data.name=as.character(sys.call())[2], n.mar=input.obj$n.mar, LOD=LOD, max.rf=max.rf,
+                   input=input.obj$input, analysis=r), class = c("rf.2pts", class(input.obj)[2]))
 }
 
 ##' Print method for object class 'rf.2pts'
@@ -94,7 +92,7 @@ rf.2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE) {
 ##' @return \code{NULL}
 ##' @keywords internal
 ##' @export
-
+##' 
 print.rf.2pts <- function(x, mrk=NULL,...) {
     ## checking for correct object
     if(!is(x, "rf.2pts"))
@@ -117,7 +115,7 @@ print.rf.2pts <- function(x, mrk=NULL,...) {
       {
           if (is.character(mrk[1]) && is.character(mrk[2])) {
               mrk1name<-mrk[1]
-              mrk2naxme<-mrk[2]
+              mrk2name<-mrk[2]
               mrk[1]<-match(mrk[1], colnames(x$analysis))
               mrk[2]<-match(mrk[2], colnames(x$analysis))
               mrk<-as.numeric(mrk)
