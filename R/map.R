@@ -184,9 +184,8 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE)
                                    rf.vec=rf.init,
                                    verbose=FALSE,
                                    tol=tol)
-
-      structure(list(seq.num=seq.num, seq.phases=seq.phases, seq.rf=final.map$rf,
-                     seq.like=final.map$loglike, data.name=input.seq$data.name, twopt=input.seq$twopt), class = "sequence")
+      return(structure(list(seq.num=seq.num, seq.phases=seq.phases, seq.rf=final.map$rf,
+                     seq.like=final.map$loglike, data.name=input.seq$data.name, twopt=input.seq$twopt), class = "sequence"))
   }
 }
 
