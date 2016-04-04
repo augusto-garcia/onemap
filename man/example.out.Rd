@@ -8,7 +8,7 @@
 }  
 \usage{data(example.out)}
 \format{
-  An object of class \code{outcross}. 
+  An object of class \code{onemap}. 
 }
 \details{
   A total of 100 F1 individuals were genotyped for 30 markers.  The data
@@ -26,7 +26,7 @@ twopts
 }
 \author{Gabriel R A Margarido, \email{gramarga@gmail.com}}
 \seealso{
-  \code{\link[onemap]{read.outcross}} for details about objects of class
-  \code{outcross}.
+  \code{\link[onemap]{read.onemap}} for details about objects of class
+  \code{onemap}.
 }
 \keyword{datasets}

@@ -10,11 +10,12 @@ Description: Analysis of molecular marker data from model (backcrosses,
     multipoint approaches using hidden Markov models.
 Date: May, 2015
 Authors@R: c(person("Gabriel", "Margarido", role = "aut", email =
-        "gramarga@gmail.com"), person("Marcelo", "Mollinari", role =
+        "gramarga@usp.br"), person("Marcelo", "Mollinari", role =
         c("aut", "cre"), email = "mmollina@usp.br"), person("Karl",
         "Broman", role = "ctb", email = "kbroman@biostat.wisc.edu"),
         person("Augusto", "Garcia", role = c("aut", "ctb"), email =
         "augusto.garcia@usp.br"))
+Author: Gabriel Margarido [aut]
 LinkingTo: Rcpp (>= 0.10.5), Rhtslib, zlibbioc
 Depends:
     tcltk (>= 3.2.0),

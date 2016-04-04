@@ -103,7 +103,8 @@ print.rf.2pts <- function(x, mrk=NULL,...) {
         cat("\n  Criteria: LOD =", x$LOD, ", Maximum recombination fraction =",
             x$max.rf, "\n")
         cat("\n  This object is too complex to print\n")
-        cat("  Type 'print(object,mrk1=marker,mrk2=marker)' to see the analysis for two markers\n")
+        cat("  Type 'print(object, c(mrk1=marker, mrk2=marker))' to see\n")
+        cat("    the analysis for two markers\n")
         cat("    mrk1 and mrk2 can be the names or numbers of both markers\n")
     }
   else {

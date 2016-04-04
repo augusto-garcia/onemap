@@ -9,7 +9,7 @@
 # copyright (c) 2015, Gabriel R A Margarido                           #
 #                                                                     #
 # First version: 10/14/2015                                           #
-# Last update: 03/08/2016                                             #
+# Last update: 04/04/2016                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -68,7 +68,7 @@
 ##' variant site, defines the proportion of parent samples that must be of the
 ##' same genotype for it to be assigned to the corresponding parent.
 ##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com}
-##' @seealso \code{read.outcross} for a description of the OneMap file format.
+##' @seealso \code{read.onemap} for a description of the OneMap file format.
 ##' @keywords IO
 ##' @examples
 ##'
@@ -96,6 +96,11 @@ vcf2raw <- function(input = NULL, output = NULL,
   if (is.null(output)) {
     stop("You must specify the output file path.")
   }
+  
+  ## Get absolute file paths to pass on to C
+  input <- normalizePath(input)
+  output <- normalizePath(output, mustWork = FALSE)
+  
   cross <- match.arg(cross)
   if (is.null(parent1) || is.null(parent2)) {
     stop("You must specify at least one sample each as parents 1 and 2.")

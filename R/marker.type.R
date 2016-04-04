@@ -9,7 +9,7 @@
 # copyright (c) 2007-9, Gabriel R A Margarido                         #
 #                                                                     #
 # First version: 11/07/2007                                           #
-# Last update: 09/25/2009                                             #
+# Last update: 04/04/2016                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -64,9 +64,9 @@ function(input.seq) {
   if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
 
   ## printing marker type
-  if(class(get(input.seq$data.name, pos=1))=="outcross"){
+  if(any(class(get(input.seq$data.name, pos=1))=="outcross")) {
     for(i in 1:length(input.seq$seq.num))
-      cat("  Marker", input.seq$seq.num[i], "(", colnames(get(input.seq$twopt)$analysis[[1]])[input.seq$seq.num[i]], ") has type", get(input.seq$data.name, pos=1)$segr.type[input.seq$seq.num[i]], "\n")
+      cat("  Marker", input.seq$seq.num[i], "(", colnames(get(input.seq$twopt)$analysis[[1]])[input.seq$seq.num[i]], ") is of type", get(input.seq$data.name, pos=1)$segr.type[input.seq$seq.num[i]], "\n")
   }
   else{
     for(i in 1:length(input.seq$seq.num)){

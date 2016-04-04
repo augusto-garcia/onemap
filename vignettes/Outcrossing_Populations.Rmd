@@ -103,7 +103,7 @@ common mistake made by users, so please be careful**.
 
 The input file must be saved in text format, with extensions like
 `.txt`. It is a good idea to open the text file called
-`example.out.txt` (available with `OneMap` and saved in the directory
+`example.out.raw` (available with `OneMap` and saved in the directory
 you installed it) to see how this file should be. You can see where
 `OneMap` is installed using the command
 
@@ -114,15 +114,15 @@ system.file(package="onemap")
 ## Importing data
 
 Once the input file is created, data can be loaded and saved into an R
-object. The function used to import data is named `read.outcross`.
+object. The function used to import data is named `read.onemap`.
 exIts usage is quite simple:
  
 ```{r, eval=FALSE}
-example.out<- read.outcross("C:/workingdirectory","example.out.txt")
+example.out<- read.onemap("C:/workingdirectory","example.out.raw")
 ```
 
 ```{r, eval=FALSE, echo=FALSE}
-example.out<- read.outcross(system.file("example",package="onemap"),"example.out.txt")
+example.out<- read.onemap(system.file("example",package="onemap"),"example.out.raw")
 ```
 
 The first argument is the directory where the input file is located,
@@ -136,7 +136,7 @@ in the toolbar clicking `File -> Change dir`. If you set your working
 directory to the one containing the input file, you can just type:
 
 ```{r, eval=FALSE}
-example.out <- read.outcross(file="example.out.txt")
+example.out <- read.onemap(file="example.out.raw")
 ``` 
 
 If no error has occurred, a message will display some basic
@@ -144,7 +144,7 @@ information about the data, such as number of individuals and number
 of markers:
 
 ```{r, echo=FALSE, eval=FALSE}
-example.out <- read.outcross(system.file("example",package="onemap"),"example.out.txt")
+example.out <- read.onemap(system.file("example",package="onemap"),"example.out.raw")
 save(example.out, file = "example.out.RData") #Must move it to proper directory
 ``` 
 

@@ -17,6 +17,8 @@
 ##                                                                     ##
 #######################################################################
 
+globalVariables(c("Marker", "p.value"))
+
 ##' test_segregation_of_a_marker
 ##'
 ##' Applies the chi-square test to check if markers are following the

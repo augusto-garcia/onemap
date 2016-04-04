@@ -22,8 +22,9 @@
 ##' by self- or sib-mating). Creates an object of class \code{onemap}.
 ##'
 ##' The file format is similar to that used by \code{MAPMAKER/EXP}
-##' (\cite{Lincoln et al.}, 1993). The first line indicates the cross type,
-##' which must be one of \code{"outcross"}, \code{"f2 intercross"},
+##' (\cite{Lincoln et al.}, 1993). The first line indicates the cross type
+##' and is structured as \code{data type \{cross\}}, where \code{cross}
+##' must be one of \code{"outcross"}, \code{"f2 intercross"},
 ##' \code{"backcross"}, \code{"riself"} or  \code{"risib"}. The second line
 ##' contains five integers: i) the number of individuals; ii) the number of
 ##' markers; iii) an indicator variable taking the value 1 if there is CHROM
@@ -74,7 +75,7 @@
 ##' be found at the tutorial distributed along with this package.
 ##'
 ##' @param dir directory where the input file is located.
-##' @param file the name of the input file which contains the data to be read.
+##' @param inputfile the name of the input file which contains the data to be read.
 ##' @return An object of class \code{onemap}, i.e., a list with the following
 ##' components: \item{geno}{a matrix with integers indicating the genotypes
 ##' read for each marker. Each column contains data for a marker and each row
@@ -149,7 +150,7 @@ read.onemap <- function (dir, inputfile) {
 
   ## Parse the sample IDs
   l <- scan(f, what=character(), nlines = 1,
-            blank.lines.skip = TRUE, quiet = TRUE)  
+            blank.lines.skip = TRUE, quiet = TRUE)
   if (length(l) != n.ind) {
     stop("Incomplete or extra sample ID information.", call. = TRUE)
   }
@@ -236,7 +237,7 @@ read.onemap <- function (dir, inputfile) {
     }
     pheno_names <- substring(l[1,], 2)
 
-    pheno <- l[-1,]
+    pheno <- as.matrix(l[-1,])
     pheno[!is.na(pheno) & pheno == "-"] <- NA
     mode(pheno) <- "numeric"
     colnames(pheno) <- pheno_names
@@ -277,7 +278,7 @@ print.onemap <- function (x, ...) {
                           "CHROM", "POS", "input"),
                         names(x)))))
         stop("this is not an object of class 'onemap'")
-    
+
     ## Print a brief summary of the data
     not_miss <- 100*sum(x$geno!=0)/length(x$geno)
     cat("  This is an object of class 'onemap'\n")
@@ -287,7 +288,7 @@ print.onemap <- function (x, ...) {
     cat("    CHROM information: ", ifelse(is.null(x$CHROM), "no", "yes"), "\n")
     cat("    POS information:   ", ifelse(is.null(x$POS), "no", "yes"), "\n")
     cat("    Percent genotyped: ", round(not_miss), "\n\n")
-    
+
     ## Count the number of markers with each segregation type
     cat("    Segregation types:\n")
     quant <- table(x$segr.type)
@@ -319,7 +320,7 @@ print.onemap <- function (x, ...) {
     names(quant)[which(names(quant) == "D2.16")]  <- "       D2.16 -->"
     names(quant)[which(names(quant) == "D2.17")]  <- "       D2.17 -->"
     names(quant)[which(names(quant) == "D2.18")]  <- "       D2.18 -->"
-    
+
     for (i in 1:length(quant)) {
         cat(paste("       ", names(quant)[i], "  ", quant[i],
                   "\n", sep = ""))

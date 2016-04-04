@@ -9,7 +9,7 @@ read.onemap(dir, inputfile)
 \arguments{
 \item{dir}{directory where the input file is located.}
 
-\item{file}{the name of the input file which contains the data to be read.}
+\item{inputfile}{the name of the input file which contains the data to be read.}
 }
 \value{
 An object of class \code{onemap}, i.e., a list with the following
@@ -37,8 +37,9 @@ by self- or sib-mating). Creates an object of class \code{onemap}.
 }
 \details{
 The file format is similar to that used by \code{MAPMAKER/EXP}
-(\cite{Lincoln et al.}, 1993). The first line indicates the cross type,
-which must be one of \code{"outcross"}, \code{"f2 intercross"},
+(\cite{Lincoln et al.}, 1993). The first line indicates the cross type
+and is structured as \code{data type \{cross\}}, where \code{cross}
+must be one of \code{"outcross"}, \code{"f2 intercross"},
 \code{"backcross"}, \code{"riself"} or  \code{"risib"}. The second line
 contains five integers: i) the number of individuals; ii) the number of
 markers; iii) an indicator variable taking the value 1 if there is CHROM

@@ -16,6 +16,9 @@
 ##                                                                     ##
 #########################################################################
 
+globalVariables(c("ind", "variable", "value"))
+globalVariables(c("Type", "segr.type"))
+
 ##' Draw a graphic of raw data for any OneMap population
 ##'
 ##' Shows a heatmap (in ggplot2, a graphic of geom "tile") for raw data.

@@ -83,7 +83,7 @@ fields denoted \code{CHROM} and \code{POS}.
 Gabriel R A Margarido, \email{gramarga@gmail.com}
 }
 \seealso{
-\code{read.outcross} for a description of the OneMap file format.
+\code{read.onemap} for a description of the OneMap file format.
 }
 \keyword{IO}
 

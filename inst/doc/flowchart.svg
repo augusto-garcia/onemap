@@ -14,7 +14,7 @@
    viewBox="0 0 992.12596 1133.8582"
    id="svg2"
    version="1.1"
-   inkscape:version="0.91 r"
+   inkscape:version="0.91 r13725"
    sodipodi:docname="flowchart.svg">
   <defs
      id="defs4">
@@ -1336,16 +1336,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.70710678"
-     inkscape:cx="56.721061"
-     inkscape:cy="271.35199"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="360.78527"
+     inkscape:cy="909.8971"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1920"
-     inkscape:window-height="1028"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-width="1301"
+     inkscape:window-height="744"
+     inkscape:window-x="65"
+     inkscape:window-y="24"
      inkscape:window-maximized="1"
      fit-margin-top="0"
      fit-margin-left="0"
@@ -1562,7 +1562,7 @@
        y="-600.48804" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.5px;line-height:125%;font-family:sans-serif;-inkscape-font-specification:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.5px;line-height:125%;font-family:sans-serif;-inkscape-font-specification:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="334.24808"
        y="-580.82019"
        id="text4156"
@@ -1752,14 +1752,14 @@
     <text
        sodipodi:linespacing="125%"
        id="text4162"
-       y="-441.32544"
-       x="344.00821"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.5px;line-height:125%;font-family:sans-serif;-inkscape-font-specification:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
+       y="-442.53699"
+       x="344.98172"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.5px;line-height:125%;font-family:sans-serif;-inkscape-font-specification:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        xml:space="preserve"><tspan
-         y="-441.32544"
-         x="344.00821"
+         y="-442.53699"
+         x="344.98172"
          id="tspan4164"
-         sodipodi:role="line">read.outcross</tspan></text>
+         sodipodi:role="line">read.onemap</tspan></text>
     <rect
        ry="4.6794453"
        rx="6.0166974"
@@ -1827,15 +1827,27 @@
        sodipodi:nodetypes="cc" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.5px;line-height:125%;font-family:sans-serif;-inkscape-font-specification:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.5px;line-height:125%;font-family:sans-serif;-inkscape-font-specification:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="209.02866"
-       y="-442.53976"
+       y="-457.29639"
        id="text4150"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4152"
          x="209.02866"
-         y="-442.53976">Outcross</tspan></text>
+         y="-457.29639">Outcross</tspan><tspan
+         sodipodi:role="line"
+         x="209.02866"
+         y="-441.67139"
+         id="tspan5338">    F2</tspan><tspan
+         sodipodi:role="line"
+         x="209.02866"
+         y="-426.04639"
+         id="tspan5340">    BC</tspan><tspan
+         sodipodi:role="line"
+         x="209.02866"
+         y="-410.42139"
+         id="tspan5342">    RIL</tspan></text>
     <ellipse
        ry="6.4763284"
        rx="30.222864"

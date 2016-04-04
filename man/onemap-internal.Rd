@@ -49,7 +49,8 @@ acum(w)
 avoid.reverse(input)
 adjust.rf.ril(r,type,expand)
 check.linkage(i, s, cl, geno, st, max.rf, LOD)
-codif.data(geno.in,segr.type.in)
+codif.data(geno.in,segr.type.in,cross = c("outcross", "f2", "backcross",
+"riself", "risib"))
 comb(x,y)
 comb.ger(f)
 compare_inbred(input.seq, n.best, tol, verbose = FALSE)
@@ -86,7 +87,6 @@ try_seq_outcross(input.seq, mrk, tol, draw.try, pos, verbose)
 \method{print}{onemap.bin}(x, \dots)
 \method{print}{order}(x, \dots)
 \method{print}{order}(x, \dots)
-\method{print}{outcross}(x, \dots)
 \method{print}{sequence}(x, \dots)
 }
 \author{Gabriel Rodrigues Alves Margarido and Marcelo Mollinari}

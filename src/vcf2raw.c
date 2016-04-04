@@ -329,6 +329,9 @@ void vcf2raw(char **filename, char **out_filename, char **cross, int *n_parent1,
   FILE *temp_f;
   char temp_filename[] = "tmp_raw_XXXXXX";
   int temp_fd;
+  /**************************************************************
+   * mkstemp MAY BE CAUSING PROBLEM IN INSTALLATIONS WITH MINGW *
+   **************************************************************/
   temp_fd = mkstemp(temp_filename);
   if (temp_fd == -1) {
     error("Could not open temporary output file.\n");

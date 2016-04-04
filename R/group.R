@@ -150,8 +150,8 @@ print.group <-
         ## printing summary
         cat("\n  No. markers:           ", x$n.mar, "\n")
         cat("  No. groups:            ", x$n.groups, "\n")
-        cat("  No. linked markers:    ", sum(!is.na(x$groups)), "\n")
-        cat("  No. unlinked markers:  ", sum(x$groups==0), "\n")
+        cat("  No. linked markers:    ", sum(x$groups > 0), "\n")
+        cat("  No. unlinked markers:  ", sum(x$groups == 0), "\n")
         
         if (detailed) {
             ## printing detailed results (markers in each linkage group)

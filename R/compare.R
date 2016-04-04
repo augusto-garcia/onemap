@@ -117,7 +117,7 @@ compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
         cat("WARNING: this operation may take a VERY long time\n")
     flush.console()
     if(length(input.seq$seq.num) > 10) {
-        cat("\nIt is not wisely trying to use 'compare' with more than 10 markers \n")
+        cat("\nIt is not wise trying to use 'compare' with more than 10 markers \n")
         ANSWER <- readline("Are you sure you want to proceed? [y or n]\n")
         while(substr(ANSWER, 1, 1) != "n" & substr(ANSWER, 1, 1) != "y")
             ANSWER <- readline("\nPlease answer: 'y' or 'n' \n")
@@ -152,10 +152,10 @@ compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
                         rf.init[[j]] <- list.init$rf.init[[acum(all.match[j]-2)+all.match[j+1]]]
                         phase.init[[j]] <- list.init$phase.init[[acum(all.match[j]-2)+all.match[j+1]]]
                     }
-          else {
-              rf.init[[j]] <- list.init$rf.init[[acum(all.match[j+1]-2)+all.match[j]]]
-              phase.init[[j]] <- list.init$phase.init[[acum(all.match[j+1]-2)+all.match[j]]]
-          }
+                    else {
+                        rf.init[[j]] <- list.init$rf.init[[acum(all.match[j+1]-2)+all.match[j]]]
+                        phase.init[[j]] <- list.init$phase.init[[acum(all.match[j+1]-2)+all.match[j]]]
+                    }
                 }    
                 Ph.Init <- comb.ger(phase.init)
                 Rf.Init <- comb.ger(rf.init)
