@@ -25,7 +25,7 @@
 ##' (\cite{Lincoln et al.}, 1993). The first line indicates the cross type
 ##' and is structured as \code{data type \{cross\}}, where \code{cross}
 ##' must be one of \code{"outcross"}, \code{"f2 intercross"},
-##' \code{"backcross"}, \code{"riself"} or  \code{"risib"}. The second line
+##' \code{"f2 backcross"}, \code{"ri self"} or  \code{"ri sib"}. The second line
 ##' contains five integers: i) the number of individuals; ii) the number of
 ##' markers; iii) an indicator variable taking the value 1 if there is CHROM
 ##' information, i.e., if markers are anchored on any reference sequence, and
@@ -127,12 +127,29 @@ read.onemap <- function (dir, inputfile) {
     stop("The first line of the input file must conform to: 'data type X'",
          call.= TRUE)
   }
-  crosstype <- l[3]
-  crosstype <- match.arg(crosstype,
-                         c("outcross", "f2", "backcross", "riself", "risib"),
+  crosstype <- match.arg(l[3],
+                         c("outcross", "f2", "ri"),
                          several.ok= FALSE)
-  if (crosstype == "f2" && (length(l) == 3 || l[4] != "intercross")) {
-      stop("Unknown cross type.")
+  if (crosstype == "f2") {
+      if (length(l) == 3 || l[4] != "intercross" || l[4] != "backcross") {
+          stop("Unknown cross type.")
+      }
+      ## "f2" denotes an F2 intercross; "backcross" denotes an F2 backcross
+      if (l[4] == "backcross") {
+          crosstype <- "backcross"
+      }
+  }
+  else if (crosstype == "ri") {
+      if (length(l) == 3 || l[4] != "self" || l[4] != "sib") {
+          stop("Unknown cross type.")
+      }
+      ## "riself" denotes RI by selfing; "risib" denotes RI by sib mating
+      if (l[4] == "self") {
+          crosstype <- "riself"
+      }
+      else if (l[4] == "sib") {
+          crosstype <- "risib"
+      }
   }
 
   ## Read in the number of individuals, markers, CHROM/POS availability and number of phenotypes
