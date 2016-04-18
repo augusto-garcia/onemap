@@ -2,13 +2,13 @@ This file contains a list of changes and updates for package OneMap, started sin
 
 Version 1.0-1
 
-* improvements for backcross and F2: reading data with MAPMAKER/EXP format; no redundant calculations regarding linkage phases; different criteria for initial framework (order.seq)
+* improvements for backcross and F2: reading data with MAPMAKER/EXP format; no redundant calculations regarding linkage phases; different criteria for initial framework (order_seq)
 
-* rf.2pts: new progress bar
+* rf_2pts: new progress bar
 
 * the number of markers in a given sequence is now printed
 
-* rf.graph.table now displays LOD scores above the diagonal
+* rf_graph_table now displays LOD scores above the diagonal
 
 * rf.graph table now displays marker numbers, not names
 

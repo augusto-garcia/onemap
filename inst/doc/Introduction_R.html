@@ -37,23 +37,23 @@ pre, code{font-size:90%;}
 <p>R is a language and environment for statistical computing and
 graphics. To download R, please visit the <a href="http://cran.r-project.org">Comprehensive R Archive
 Network</a>. You do not need to be an expert
-on it to be able to build you linkage map using <code>OneMap</code>.</p>
+on it to be able to build your linkage map using <em>OneMap</em>.</p>
 
 <p>Although we prefer and recommend the Linux version, in this tutorial
 it is assumed that the user is running Windows. Users of R under Linux
-or Mac OS should have no difficult in following this tutorial.</p>
+or Mac OS should have no difficulty following this tutorial.</p>
 
 <p>We would like to recommend that new users, instead of using plain R,
 use it through the fantastic software
 <a href="http://www.rstudio.com/">RStudio</a>. With this package, there is no
-noticeable difference between the operation system you are using.</p>
+noticeable difference between operating systems.</p>
 
 <p>As advertised on the website, <em>RStudio is an integrated development
 environment (IDE) for R. It includes a console, syntax-highlighting
 editor that supports direct code execution, as well as tools for
-plotting, history, debugging and workspace management</em>. In another
+plotting, history, debugging and workspace management</em>. In other
 words, it offers a number of facilities for your convenience that will
-make your live easier, specially if you never use R before.</p>
+make your life easier, specially if you have never used R before.</p>
 
 <p>So, go ahead and download and install R and RStudio. The window on the
 left is where you type the R commands you want.</p>
@@ -63,11 +63,11 @@ left is where you type the R commands you want.</p>
 <p>In the left window, you can see a <em>greater than</em> sign (&ldquo;&gt;&#39;&#39;), which
 means that R is waiting for a command. We call this a <em>prompt</em>. </p>
 
-<p>Let us start with a simple example adding two numbers. Type <code>2+3</code> at the
+<p>Let us start with a simple example adding two numbers. Type <code>2 + 3</code> at the
 prompt then type the <em>Enter</em> key. You will see the result directly on
 the screen.</p>
 
-<pre><code class="r">2+3
+<pre><code class="r">2 + 3
 </code></pre>
 
 <pre><code>## [1] 5
@@ -76,7 +76,7 @@ the screen.</p>
 <p>You can store this result into a variable for future use, applying the
 assignment operator _ &lt;- _ (<em>less than</em> sign and _ minus_ altogether):</p>
 
-<pre><code class="r">x &lt;- 2+3
+<pre><code class="r">x &lt;- 2 + 3
 </code></pre>
 
 <p>The result of the calculation was stored into the variable <em>x</em>. You
@@ -88,10 +88,10 @@ can access this result typing <em>x</em> at the prompt:</p>
 <pre><code>## [1] 5
 </code></pre>
 
-<p>You can also use the variable <em>x</em> into another calculations. For
+<p>You can also use the variable <em>x</em> into other calculations. For
 example:</p>
 
-<pre><code class="r">x+4 
+<pre><code class="r">x + 4
 </code></pre>
 
 <pre><code>## [1] 9
@@ -118,9 +118,9 @@ values of a function are called <em>arguments</em>. </p>
 
 <p>In the previous example, we provided only one argument (\(6.7\)) to the
 function. Sometimes a function has more than one argument. For
-example, to obtain the logarithm of \(6.7\) on base \(4\), you can use:</p>
+example, to obtain the logarithm of \(6.7\) to base \(4\), you can use:</p>
 
-<pre><code class="r">log(6.7, base=4)
+<pre><code class="r">log(6.7, base = 4)
 </code></pre>
 
 <pre><code>## [1] 1.372081
@@ -157,7 +157,7 @@ function such its syntax, its arguments and some usage examples.</p>
 
 <p>There are many other ways of getting help, of course. For example, from RStudio,
 click <em>Help</em> on the menu. For doing searches on the internet, it is
-better first go to <a href="http://rseek.org/">http://rseek.org/</a>, since R
+better to first go to <a href="http://rseek.org/">http://rseek.org/</a>, since R
 is a very common letter to include in searches.  </p>
 
 <h2>Packages</h2>
@@ -172,15 +172,16 @@ example data files that have been bundled together (Adler, 2010).</p>
 
 <p>For example, let us assume that you need to convert a set of
 recombination fractions into centimorgan distance using the Kosambi
-mapping function. One possible way to do this is by using the basic R
+mapping function. One possible way to do this is by using basic R
 to write a function to calculate the distances. Another way is use the
 <em>OneMap</em> package. To install it you can type:</p>
 
-<pre><code class="r">install.packages(&quot;onemap&quot;)
+<pre><code class="r">setRepositories(ind = 1:2)
+install.packages(&quot;onemap&quot;)
 </code></pre>
 
-<p>You also can use the console menus on RStudio. On the bottom window on
-right, select <strong>Packages</strong>, then <strong>Install</strong> and finally select
+<p>You also can use the console menus on RStudio. On the bottom window to
+the right, select <strong>Packages</strong>, then <strong>Install</strong> and finally select
 <em>OneMap</em> (select CRAN as your repository). Yes, it is that easy!</p>
 
 <p>Returning to the console, you need to load <em>OneMap</em> by typing:</p>
@@ -214,7 +215,7 @@ variable named <em>rf</em>:</p>
 </code></pre>
 
 <p>You can also obtain help on the function <em>kosambi</em> using the
-question mark in the same way it was done before:</p>
+question mark in the same way as done before:</p>
 
 <pre><code class="r">?kosambi
 </code></pre>
@@ -252,10 +253,10 @@ Directory</em>, pointing to where you saved the file <em>test.txt</em>.</p>
 <p>Now let us read the file <em>test.txt</em> into R and store it in a variable
 named <em>dat</em>. To do this, we can use using the R function <em>read.table</em>.
 The first argument is the name of the file; the second one indicates
-if the file contains a header, i. e. if the first line of the file
+if the file contains a header, that is, if the first line of the file
 contains the names of the variables (which is true for our example):</p>
 
-<pre><code class="r">dat &lt;- read.table(file=&quot;test.txt&quot;, header=TRUE)
+<pre><code class="r">dat &lt;- read.table(file = &quot;test.txt&quot;, header = TRUE)
 dat
 </code></pre>
 
@@ -274,8 +275,8 @@ dat
 ## 12 23.71 37.39
 </code></pre>
 
-<p>The second line, with <em>dat</em>, is necessary to ask R to return the
-results of the object <em>dat</em> (i. e., the data itself). Inspecting the
+<p>The second line, with <em>dat</em>, is necessary to ask R to print the
+contents of the object <em>dat</em> (i. e., the data itself). Inspecting the
 object <em>dat</em> you can see a table with 12 rows and two columns. The
 names of the columns are <em>x</em> and <em>y</em>. We can access the
 variables in columns using the dollar sign followed by the column
@@ -329,7 +330,7 @@ separately:</p>
 variables in the dataset. If you want to export these information to a
 file you can use the function <em>write.table</em>:</p>
 
-<pre><code class="r">write.table(x=summary(dat), file=&quot;testsum.txt&quot;, quote=FALSE)
+<pre><code class="r">write.table(x = summary(dat), file = &quot;test_sum.txt&quot;, quote = FALSE)
 </code></pre>
 
 <p>The first argument is the output of the <em>summary</em> function. Note that
@@ -338,13 +339,13 @@ second argument is the name of the file in which the summary will be
 written. Notice that this will happen in the <em>working directory</em>,
 previously set through RStudio menus. The third argument eliminates
 double quotes from the output file. After running the command, you can
-look for the file <em>testsum.txt</em> in the working directory you defined
+look for the file <em>test_sum.txt</em> in the working directory you defined
 before.</p>
 
 <h2>Classes and methods</h2>
 
 <p>In R, every object belongs to a <strong><em>class</em></strong>. This is a simple concept
-that you must remember. For example, the object mentioned above <em>dat</em>
+that you must remember. For example, the <em>dat</em> object mentioned above
 belongs to class <em>data.frame</em>. We can obtain this information using
 the function <em>class</em>:</p>
 
@@ -359,7 +360,7 @@ class of the object <em>dat</em> and applied a specific procedure developed
 for class <em>data.frame</em>, which in this case involves the computation of
 some descriptive statistics.</p>
 
-<p>This procedure is named <em>method</em>. However, another classes of objects
+<p>This procedure is named <em>method</em>. However, other classes of objects
 can be used as arguments to function <em>summary</em> and the result will be
 different!</p>
 
@@ -367,8 +368,8 @@ different!</p>
 response variable, and column <em>x</em> as the independent one. This can be done
 with the function <em>lm()</em>:</p>
 
-<pre><code class="r">ft.mod &lt;- lm(dat$y~dat$x)
-ft.mod
+<pre><code class="r">ft_mod &lt;- lm(dat$y ~ dat$x)
+ft_mod
 </code></pre>
 
 <pre><code>## 
@@ -380,11 +381,11 @@ ft.mod
 ##       1.803        1.111
 </code></pre>
 
-<p>This function  is used to fit linear models and, by default, returns
+<p>This function is used to fit linear models and, by default, prints
 just a formula and the coefficients of the linear regression. Object
-<em>ft.mod</em> have class <em>lm</em>:</p>
+<em>ft_mod</em> is of class <em>lm</em>:</p>
 
-<pre><code class="r">class(ft.mod)
+<pre><code class="r">class(ft_mod)
 </code></pre>
 
 <pre><code>## [1] &quot;lm&quot;
@@ -393,7 +394,7 @@ just a formula and the coefficients of the linear regression. Object
 <p>So, if we use function <em>summary</em> to obtain more information about the
 fitted model, the result will be:</p>
 
-<pre><code class="r">summary(ft.mod)
+<pre><code class="r">summary(ft_mod)
 </code></pre>
 
 <pre><code>## 
@@ -405,27 +406,29 @@ fitted model, the result will be:</p>
 ## -13.091  -5.144  -1.413   5.421  11.446 
 ## 
 ## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)
-## (Intercept)   1.8026     4.7689   0.378  0.71334
-## dat$x         1.1110     0.2771   4.009  0.00248
+##             Estimate Std. Error t value Pr(&gt;|t|)   
+## (Intercept)   1.8026     4.7689   0.378  0.71334   
+## dat$x         1.1110     0.2771   4.009  0.00248 **
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Residual standard error: 8.075 on 10 degrees of freedom
 ## Multiple R-squared:  0.6164, Adjusted R-squared:  0.5781 
 ## F-statistic: 16.07 on 1 and 10 DF,  p-value: 0.002482
 </code></pre>
 
-<p>In this case, function <em>summary</em> recognizes <em>ft.mod</em> as an object of
+<p>In this case, function <em>summary</em> recognizes <em>ft_mod</em> as an object of
 class <em>lm</em> and applies a method which shows information about the
 fitted model, such as the distribution of the residuals, regression
-coefficients, t-tests, and the coefficient of determination (\(r^2\)),
+coefficients, t-tests, and the coefficient of determination (\(R^2\)),
 etc.</p>
 
-<p>Thus, it is possible to use the same function in different classes of
+<p>Thus, it is possible to use the same function on different classes of
 object to obtain different results. This concept is very important in
 <em>OneMap</em> and you must remember it to use the package. For example, in
-other vignettes, it will be showed that depending on the class of the
-dataset, which can be <em>outcross</em>, <em>f2.onemap</em>, <em>bc.onemap</em>,
-<em>riself.onemap</em> and <em>risib.onemap</em>, a certain set of procedures will
+other vignettes, we will show that depending on the class of the
+dataset, which can be <em>outcross</em>, <em>f2</em>, <em>backcross</em>,
+<em>riself</em> and <em>risib</em>, a certain set of procedures will
 be applied. Not by coincidence, these classes correspond to all types
 of populations that can be analyzed. The advantage of this approach is
 that you do not need to change the function to do a specific analysis;
@@ -433,18 +436,18 @@ it will recognize the object type and will adapt accordingly.</p>
 
 <h2>Saving your work</h2>
 
-<p>Finally, you need how to save your work to come back to it in another
+<p>Finally, you may need to save your work to come back to it in another
 working session. But before we explain how to do that, let us explain
 a few other concepts.</p>
 
-<p>We can save your <strong><em>R Script</em></strong>, which is the file that has all R
-instructions you typed so far. So, you load the them and run all
-instructions again to have the same results. This is easy, just click
+<p>You can save your <strong><em>R Script</em></strong>, which is the file that has all R
+instructions you typed so far. You can later load them and run all
+instructions again to get the same results. This is easy: just click
 <em>File</em>, <em>Save As</em>, and choose a directory and a name (usually with the
 extension .R, such as Example1.R, etc).</p>
 
 <p>A different thing is to save your <strong>R Session</strong>, with all objects you
-created so far (called <em>R Workspace</em>). This is not the same, since
+created so far (called <em>R Workspace</em>). This is not the same, because
 once you load the workspace, you will have all the objects already
 loaded, not requiring you to do everything again, i. e, running your
 script. This will help you to save a lot of time, since some of the

@@ -4,8 +4,8 @@
 ##                                                                     ##
 ## File: test_segregation.R                                            ##
 ## Contains: test_segregation_of_a_marker,                             ##
-## test_segregation, plot.onemap.segreg.test,                          ##
-## print.onemap.segreg.test, Bonferroni_alpha, select_segreg           ##
+## test_segregation, plot.onemap_segreg_test,                          ##
+## print.onemap_segreg_test, Bonferroni_alpha, select_segreg           ##
 ##                                                                     ##
 ## Written by Antonio Augusto Franco Garcia with minor modifications   ##
 ## by Marcelo Mollinari                                                ##
@@ -31,19 +31,19 @@ globalVariables(c("Marker", "p.value"))
 ##'
 ##' @param x an object of class \code{onemap}, with data and additional information.
 ##' @param marker the marker which will be tested for its segregation.
-##' 
+##'
 ##' @return a list with the H0 hypothesis being tested, the chi-square statistics,
 ##' the associated p-values, and the \% of individuals genotyped.
 ##'
-##' It returns \code{NA} if the numbers of expected and observed classes are 
+##' It returns \code{NA} if the numbers of expected and observed classes are
 ##' different or if dominant and co-dominant coding is mixed in the same marker.
-##' 
-##' ##'@examples
-##' data(fake.bc.onemap) # Loads a fake backcross dataset installed with onemap
-##' test_segregation_of_a_marker(fake.bc.onemap,1)
 ##'
-##' data(example.out) # Loads a fake outcross dataset installed with onemap
-##' test_segregation_of_a_marker(example.out,1)
+##' ##'@examples
+##' data(fake_bc_onemap) # Loads a fake backcross dataset installed with onemap
+##' test_segregation_of_a_marker(fake_bc_onemap,1)
+##'
+##' data(example_out) # Loads a fake outcross dataset installed with onemap
+##' test_segregation_of_a_marker(example_out,1)
 test_segregation_of_a_marker <- function(x, marker) {
     ## Segregation pattern for each marker type
     p.a <- rep(1/4, 4); p.b <- c(1/4, 1/2, 1/4); p.c <- c(3/4, 1/4); p.d <- rep(1/2, 2)
@@ -99,7 +99,7 @@ test_segregation_of_a_marker <- function(x, marker) {
     else if (grepl("B",x$segr.type[marker])) {
         if (dim(count) == 3) {
             qui <- chisq.test(count, p=p.b, correct = FALSE)
-            H0 <- "1:2:1" 
+            H0 <- "1:2:1"
         } else {
             qui <- NULL
             qui$statistic <- NA
@@ -131,7 +131,7 @@ test_segregation_of_a_marker <- function(x, marker) {
     }
     #impossible to test: dominant and co-dominant mixed in the same marker
     #however, it will not work with "qui <- NA"; using NULL instead
-    else if (grepl("M.X",x$segr.type[marker])) { 
+    else if (grepl("M.X",x$segr.type[marker])) {
         qui <- NULL
         qui$statistic <- NA
         qui$p.value <- NA
@@ -153,15 +153,15 @@ test_segregation_of_a_marker <- function(x, marker) {
 ##' and then tests it.
 ##'
 ##' @param x an object of class \code{onemap}, with data and additional information.
-##' 
-##' @return an object of class onemap.segreg.test, which is a list with marker name,
+##'
+##' @return an object of class onemap_segreg_test, which is a list with marker name,
 ##' H0 hypothesis being tested, the chi-square statistics, the associated p-values
 ##' and the \% of individuals genotyped. To see the object, it is necessary to print
 ##' it.
-##' 
+##'
 ##' @examples
-##' data(example.out) # Loads a fake outcross dataset installed with onemap
-##' Chi <- test_segregation(example.out) # Performs the chi-square test for all markers
+##' data(example_out) # Loads a fake outcross dataset installed with onemap
+##' Chi <- test_segregation(example_out) # Performs the chi-square test for all markers
 ##' print(Chi) # Shows the results
 ##'
 ##' @export
@@ -172,7 +172,7 @@ test_segregation <- function(x) {
                       test_segregation_of_a_marker(onemap.object, marker),
                       onemap.object=x))
                                         # sapply iterates from 1 to x$n.mar; x is fixed (onemap object with data)
-        class(y) <- c("onemap.segreg.test")
+        class(y) <- c("onemap_segreg_test")
         invisible(y) #returns y without showing it
     }
     else stop("This is not a onemap object with raw data")
@@ -183,21 +183,22 @@ test_segregation <- function(x) {
 ##'
 ##' It shows the results of Chisquare tests performed for all markers in a onemap object
 ##' of cross type outcross, backcross, F2 intercross or recombinant inbred lines.
-##' 
-##' @param x an object of class onemap.segreg.test
+##'
+##' @param x an object of class onemap_segreg_test
 ##'
 ##' @param ... currently ignored
-##' 
+##'
 ##' @return a dataframe with marker name, H0 hypothesis, chi-square statistics,
 ##' p-values, and % of individuals genotyped.
-##' 
+##'
 ##' @examples
-##' data(example.out) # Loads a fake outcross dataset installed with onemap
-##' Chi <- test_segregation(example.out) # Performs the chi-square test for all markers
+##' data(example_out) # Loads a fake outcross dataset installed with onemap
+##' Chi <- test_segregation(example_out) # Performs the chi-square test for all markers
 ##' print(Chi) # Shows the results
 ##'
+##' @method print onemap_segreg_test
 ##' @export
-print.onemap.segreg.test <- function(x,...) {
+print.onemap_segreg_test <- function(x,...) {
     Z <- data.frame(Marker=x$Marker,
                     H0=unlist(x$Results.of.tests[1,]),
                     Chi.square=unlist(x$Results.of.tests[2,]),
@@ -209,26 +210,26 @@ print.onemap.segreg.test <- function(x,...) {
 ##'
 
 ##' Plot p-values for chi-square tests of expected segregation
-##' 
+##'
 ##' Draw a graphic showing the p-values (re-scaled to -log10(p-values)) associated with the
 ##' chi-square tests for the expected segregation patterns for all markers in a dataset.
 ##' It includes a vertical line showing the threshold for declaring statistical significance
 ##' if Bonferroni's correction is considered, as well as the percentage of markers that
 ##' will be discarded if this criterion is used.
 ##'
-##' @param x an object of class onemap.segreg.test (produced by onemap's function
+##' @param x an object of class onemap_segreg_test (produced by onemap's function
 ##' test_segregation()), i. e., after performing segregation tests
 ##' @param order a variable to define if p-values will be ordered in the plot
 ##'
 ##' @param ... currently ignored
-##' 
+##'
 ##' @return a ggplot graphic
 ##'
 ##' @import ggplot2
-##' 
+##'
 ##' @examples
-##' data(fake.bc.onemap) # load OneMap's fake dataset for a backcross population
-##' BC.seg <- test_segregation(fake.bc.onemap) # Applies chi-square tests
+##' data(fake_bc_onemap) # load OneMap's fake dataset for a backcross population
+##' BC.seg <- test_segregation(fake_bc_onemap) # Applies chi-square tests
 ##' print(BC.seg) # Shows the results
 ##' plot(BC.seg) # Plot the graph, ordering the p-values
 ##' plot(BC.seg, order=FALSE) # Plot the graph showing the results keeping the order in the dataset
@@ -237,8 +238,8 @@ print.onemap.segreg.test <- function(x,...) {
 ##' g <- plot(BC.seg)
 ##' ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
 ##'
-##' data(example.out) # load OneMap's fake dataset for an outcrossing population
-##' Out.seg <- test_segregation(example.out) # Applies chi-square tests
+##' data(example_out) # load OneMap's fake dataset for an outcrossing population
+##' Out.seg <- test_segregation(example_out) # Applies chi-square tests
 ##' print(Out.seg) # Shows the results
 ##' plot(Out.seg) # Plot the graph, ordering the p-values
 ##' plot(Out.seg, order=FALSE) # Plot the graph showing the results keeping the order in the dataset
@@ -246,9 +247,9 @@ print.onemap.segreg.test <- function(x,...) {
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' g <- plot(Out.seg)
 ##' ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
-##' 
+##'
 ##' @export
-plot.onemap.segreg.test <- function(x, order=TRUE,...) {
+plot.onemap_segreg_test <- function(x, order=TRUE,...) {
                                         # Create a data frame
     Z <- data.frame(Marker=x$Marker,
                     X.square=unlist(x$Results.of.tests[2,]),
@@ -279,21 +280,21 @@ plot.onemap.segreg.test <- function(x, order=TRUE,...) {
 ##'
 ##' It shows the alpha value to be used in each chi-square segregation test, in order to achieve
 ##' a given global type I error. To do so, it uses Bonferroni's criteria.
-##' 
-##' @param x an object of class onemap.segreg.test
-##' @param global.alpha the global alpha that 
-##' 
+##'
+##' @param x an object of class onemap_segreg_test
+##' @param global.alpha the global alpha that
+##'
 ##' @return the alpha value for each test (numeric)
-##' 
+##'
 ##' @examples
-##' data(fake.bc.onemap) # Loads a fake backcross dataset installed with onemap
-##' Chi <- test_segregation(fake.bc.onemap) # Performs the chi-square test for all markers
+##' data(fake_bc_onemap) # Loads a fake backcross dataset installed with onemap
+##' Chi <- test_segregation(fake_bc_onemap) # Performs the chi-square test for all markers
 ##' print(Chi) # Shows the results of the Chi-square tests
 ##' Bonferroni_alpha (Chi) # Shows the individual alpha level to be used
 ##'
 ##' @export
 Bonferroni_alpha <- function(x, global.alpha=0.05) {
-    if (!is(x,"onemap.segreg.test")) stop("This is not an object of class onemap.segreg.test")
+    if (!is(x,"onemap_segreg_test")) stop("This is not an object of class onemap_segreg_test")
     alpha.Bonf <- global.alpha/length(x$Marker)
     return(alpha.Bonf)
 }
@@ -304,20 +305,20 @@ Bonferroni_alpha <- function(x, global.alpha=0.05) {
 ##' A function to shows which marker have segregation distortion if Bonferroni's correction is
 ##' applied for the Chi-square tests of mendelian segregation.
 ##'
-##' @param x an object of class onemap.segreg.test
+##' @param x an object of class onemap_segreg_test
 ##' @param distorted a TRUE/FALSE variable to show distorted or non-distorted markers
-##' 
+##'
 ##' @return a vector with marker names, according to the option for "distorted"
-##' 
+##'
 ##' @examples
-##' data(fake.bc.onemap) # Loads a fake backcross dataset installed with onemap
-##' Chi <- test_segregation(fake.bc.onemap) # Performs the chi-square test for all markers
+##' data(fake_bc_onemap) # Loads a fake backcross dataset installed with onemap
+##' Chi <- test_segregation(fake_bc_onemap) # Performs the chi-square test for all markers
 ##' select_segreg(Chi) # To show non-distorted markers
 ##' select_segreg(Chi, distorted=TRUE) # To show markers with segregation distortion
 ##'
 ##' @export
 select_segreg <- function(x, distorted=FALSE) {
-    if (!is(x,"onemap.segreg.test")) stop("This is not an object of class onemap.segreg.test")
+    if (!is(x,"onemap_segreg_test")) stop("This is not an object of class onemap_segreg_test")
     Z <- data.frame(Marker=x$Marker,
                     p.value=unlist(x$Results.of.tests[3,]))
     if (distorted==FALSE) Z <- subset(Z, p.value>=Bonferroni_alpha(x))

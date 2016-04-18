@@ -8,23 +8,23 @@
 R is a language and environment for statistical computing and
 graphics. To download R, please visit the [Comprehensive R Archive
 Network](http://cran.r-project.org). You do not need to be an expert
-on it to be able to build you linkage map using `OneMap`.
+on it to be able to build your linkage map using _OneMap_.
 
 Although we prefer and recommend the Linux version, in this tutorial
 it is assumed that the user is running Windows. Users of R under Linux
-or Mac OS should have no difficult in following this tutorial.
+or Mac OS should have no difficulty following this tutorial.
 
 We would like to recommend that new users, instead of using plain R,
 use it through the fantastic software
 [RStudio](http://www.rstudio.com/). With this package, there is no
-noticeable difference between the operation system you are using.
+noticeable difference between operating systems.
 
 As advertised on the website, _RStudio is an integrated development
 environment (IDE) for R. It includes a console, syntax-highlighting
 editor that supports direct code execution, as well as tools for
-plotting, history, debugging and workspace management_. In another
+plotting, history, debugging and workspace management_. In other
 words, it offers a number of facilities for your convenience that will
-make your live easier, specially if you never use R before.
+make your life easier, specially if you have never used R before.
 
 So, go ahead and download and install R and RStudio. The window on the
 left is where you type the R commands you want.
@@ -34,19 +34,19 @@ left is where you type the R commands you want.
 In the left window, you can see a _greater than_ sign (``>''), which
 means that R is waiting for a command. We call this a _prompt_. 
 
-Let us start with a simple example adding two numbers. Type `2+3` at the
+Let us start with a simple example adding two numbers. Type `2 + 3` at the
 prompt then type the _Enter_ key. You will see the result directly on
 the screen.
 
 ```{r }
-2+3
+2 + 3
 ```
 
 You can store this result into a variable for future use, applying the
 assignment operator _ <- _ (_less than_ sign and _ minus_ altogether):
 
 ```{r }
-x <- 2+3
+x <- 2 + 3
 ```
 
 The result of the calculation was stored into the variable _x_. You
@@ -56,11 +56,11 @@ can access this result typing _x_ at the prompt:
 x
 ```
 
-You can also use the variable _x_ into another calculations. For
+You can also use the variable _x_ into other calculations. For
 example:
 
 ```{r } 
-x+4 
+x + 4
 ```
 
 So, play a little just to start understanding what is going on.
@@ -82,10 +82,10 @@ values of a function are called _arguments_.
 
 In the previous example, we provided only one argument ($6.7$) to the
 function. Sometimes a function has more than one argument. For
-example, to obtain the logarithm of $6.7$ on base $4$, you can use:
+example, to obtain the logarithm of $6.7$ to base $4$, you can use:
 
 ```{r }
-log(6.7, base=4)
+log(6.7, base = 4)
 ```
 
 It is possible to calculate the natural logarithm of a set of numbers
@@ -118,7 +118,7 @@ function such its syntax, its arguments and some usage examples.
 
 There are many other ways of getting help, of course. For example, from RStudio,
 click _Help_ on the menu. For doing searches on the internet, it is
-better first go to [http://rseek.org/](http://rseek.org/), since R
+better to first go to [http://rseek.org/](http://rseek.org/), since R
 is a very common letter to include in searches.  
 
 ## Packages
@@ -133,16 +133,17 @@ example data files that have been bundled together (Adler, 2010).
 
 For example, let us assume that you need to convert a set of
 recombination fractions into centimorgan distance using the Kosambi
-mapping function. One possible way to do this is by using the basic R
+mapping function. One possible way to do this is by using basic R
 to write a function to calculate the distances. Another way is use the
 _OneMap_ package. To install it you can type:
 
 ```{r, eval=FALSE}
+setRepositories(ind = 1:2)
 install.packages("onemap")
 ``` 
 
-You also can use the console menus on RStudio. On the bottom window on
-right, select **Packages**, then **Install** and finally select
+You also can use the console menus on RStudio. On the bottom window to
+the right, select **Packages**, then **Install** and finally select
 _OneMap_ (select CRAN as your repository). Yes, it is that easy!
 
 Returning to the console, you need to load _OneMap_ by typing:
@@ -178,7 +179,7 @@ kosambi(rf)
 ```
 
 You can also obtain help on the function _kosambi_ using the
-question mark in the same way it was done before:
+question mark in the same way as done before:
 
 ```{r, eval=FALSE}
 ?kosambi
@@ -217,16 +218,16 @@ Directory_, pointing to where you saved the file _test.txt_.
 Now let us read the file _test.txt_ into R and store it in a variable
 named _dat_. To do this, we can use using the R function _read.table_.
 The first argument is the name of the file; the second one indicates
-if the file contains a header, i. e. if the first line of the file
+if the file contains a header, that is, if the first line of the file
 contains the names of the variables (which is true for our example):
 
 ```{r }
-dat <- read.table(file="test.txt", header=TRUE)
+dat <- read.table(file = "test.txt", header = TRUE)
 dat
 ``` 
 
-The second line, with _dat_, is necessary to ask R to return the
-results of the object _dat_ (i. e., the data itself). Inspecting the
+The second line, with _dat_, is necessary to ask R to print the
+contents of the object _dat_ (i. e., the data itself). Inspecting the
 object _dat_ you can see a table with 12 rows and two columns. The
 names of the columns are _x_ and _y_. We can access the
 variables in columns using the dollar sign followed by the column
@@ -252,7 +253,7 @@ variables in the dataset. If you want to export these information to a
 file you can use the function _write.table_:
 
 ```{r, eval=FALSE}
-write.table(x=summary(dat), file="testsum.txt", quote=FALSE)
+write.table(x = summary(dat), file = "test_sum.txt", quote = FALSE)
 ``` 
 
 The first argument is the output of the _summary_ function. Note that
@@ -261,13 +262,13 @@ second argument is the name of the file in which the summary will be
 written. Notice that this will happen in the _working directory_,
 previously set through RStudio menus. The third argument eliminates
 double quotes from the output file. After running the command, you can
-look for the file _testsum.txt_ in the working directory you defined
+look for the file _test\_sum.txt_ in the working directory you defined
 before.
 
 ## Classes and methods
 
 In R, every object belongs to a **_class_**. This is a simple concept
-that you must remember. For example, the object mentioned above _dat_
+that you must remember. For example, the _dat_ object mentioned above
 belongs to class _data.frame_. We can obtain this information using
 the function _class_:
 
@@ -280,7 +281,7 @@ class of the object _dat_ and applied a specific procedure developed
 for class _data.frame_, which in this case involves the computation of
 some descriptive statistics.
 
-This procedure is named _method_. However, another classes of objects
+This procedure is named _method_. However, other classes of objects
 can be used as arguments to function _summary_ and the result will be
 different!
 
@@ -289,37 +290,37 @@ response variable, and column _x_ as the independent one. This can be done
 with the function _lm()_:
 
 ```{r }
-ft.mod <- lm(dat$y~dat$x)
-ft.mod
+ft_mod <- lm(dat$y ~ dat$x)
+ft_mod
 ``` 
 
-This function  is used to fit linear models and, by default, returns
+This function is used to fit linear models and, by default, prints
 just a formula and the coefficients of the linear regression. Object
-_ft.mod_ have class _lm_:
+_ft\_mod_ is of class _lm_:
 
 ```{r }
-class(ft.mod)
+class(ft_mod)
 ``` 
 
 So, if we use function _summary_ to obtain more information about the
 fitted model, the result will be:
 
 ```{r }
-summary(ft.mod)
+summary(ft_mod)
 ``` 
 
-In this case, function _summary_ recognizes _ft.mod_ as an object of
+In this case, function _summary_ recognizes _ft\_mod_ as an object of
 class _lm_ and applies a method which shows information about the
 fitted model, such as the distribution of the residuals, regression
-coefficients, t-tests, and the coefficient of determination ($r^2$),
+coefficients, t-tests, and the coefficient of determination ($R^2$),
 etc.
 
-Thus, it is possible to use the same function in different classes of
+Thus, it is possible to use the same function on different classes of
 object to obtain different results. This concept is very important in
 _OneMap_ and you must remember it to use the package. For example, in
-other vignettes, it will be showed that depending on the class of the
-dataset, which can be _outcross_, _f2.onemap_, _bc.onemap_,
-_riself.onemap_ and _risib.onemap_, a certain set of procedures will
+other vignettes, we will show that depending on the class of the
+dataset, which can be _outcross_, _f2_, _backcross_,
+_riself_ and _risib_, a certain set of procedures will
 be applied. Not by coincidence, these classes correspond to all types
 of populations that can be analyzed. The advantage of this approach is
 that you do not need to change the function to do a specific analysis;
@@ -328,18 +329,18 @@ it will recognize the object type and will adapt accordingly.
 
 ## Saving your work
 
-Finally, you need how to save your work to come back to it in another
+Finally, you may need to save your work to come back to it in another
 working session. But before we explain how to do that, let us explain
 a few other concepts.
 
-We can save your **_R Script_**, which is the file that has all R
-instructions you typed so far. So, you load the them and run all
-instructions again to have the same results. This is easy, just click
+You can save your **_R Script_**, which is the file that has all R
+instructions you typed so far. You can later load them and run all
+instructions again to get the same results. This is easy: just click
 _File_, _Save As_, and choose a directory and a name (usually with the
 extension .R, such as Example1.R, etc).
 
 A different thing is to save your **R Session**, with all objects you
-created so far (called _R Workspace_). This is not the same, since
+created so far (called _R Workspace_). This is not the same, because
 once you load the workspace, you will have all the objects already
 loaded, not requiring you to do everything again, i. e, running your
 script. This will help you to save a lot of time, since some of the

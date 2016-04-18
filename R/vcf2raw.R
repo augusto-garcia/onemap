@@ -68,7 +68,7 @@
 ##' variant site, defines the proportion of parent samples that must be of the
 ##' same genotype for it to be assigned to the corresponding parent.
 ##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com}
-##' @seealso \code{read.onemap} for a description of the OneMap file format.
+##' @seealso \code{read_onemap} for a description of the OneMap file format.
 ##' @keywords IO
 ##' @examples
 ##'

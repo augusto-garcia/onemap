@@ -8,12 +8,12 @@
 crosses: full-sib, RILs, F2 and backcrosses. It was developed by
 Gabriel R A Margarido, Marcelo Mollinari and A Augusto F Garcia.
 
-It has been available on CRAN from several years
+It has been available on CRAN for several years
 (http://cran.r-project.org/web/packages/onemap/index.html). Its last
 version was updated on 2013-09-09. CRAN has OneMap's stable version,
-which is recommend for most users.
+which is recommended for most users.
 
-This github page has his version under development. New functions will
+This github page has its version under development. New functions will
 be added (experimental work) and, once it is done, we will synchronize
 the repositories and add it to CRAN.
 
@@ -21,7 +21,7 @@ We are working very hard to release a new stable version allowing
 users to analyze data sets with markers based on sequencing
 technologies, such as Illumina, GBS, etc.
 
-`OneMap` comprises by a set of functions that allows users to build a
+`OneMap` comprises a set of functions that allows users to build a
 linkage map. Some functions are used internally by the package, and
 should not be used directly.
 
@@ -32,6 +32,7 @@ should not be used directly.
 It is easy, just type (within R):
 
 ```R
+setRepositories(ind = 1:2)
 install.packages("onemap", dependencies=TRUE)
 ```
 
@@ -51,7 +52,7 @@ Then, go back to `R` and install `OneMap` as mentioned above.
 
 You also can use the console menus: _Packages -> Install
 package(s)_. After clicking, a box will pop-up asking you to choose
-the CRAN mirror. Choose the location nearest you. Then, another box
+the CRAN mirror. Choose the location nearest to you. Then, another box
 will pop-up asking you to choose the package you want to install.
 Select _onemap_ then click _OK_. The package will be
 automatically installed on your computer.
@@ -96,7 +97,7 @@ install_github("augusto-garcia/onemap")
 
 You can read _OneMap_ tutorials going to the vignettes of the
 installed package, or clicking below. Please, start with the overview,
-that will guide you through another chapters.
+that will guide you through other chapters.
 
 1. [Overview](http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Overview.html)
 

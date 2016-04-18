@@ -8,7 +8,7 @@ Description: Analysis of molecular marker data from model (backcrosses,
     analysis by simultaneously estimating linkage and linkage
     phases (genetic map construction). All analysis are based on
     multipoint approaches using hidden Markov models.
-Date: May, 2015
+Date: April, 2016
 Authors@R: c(person("Gabriel", "Margarido", role = "aut", email =
         "gramarga@usp.br"), person("Marcelo", "Mollinari", role =
         c("aut", "cre"), email = "mmollina@usp.br"), person("Karl",
@@ -38,4 +38,4 @@ Repository: CRAN
 Packaged: 2013-09-09 16:55:07 UTC; mmollina
 NeedsCompilation: yes
 Date/Publication: 2013-09-09 20:03:53
-RoxygenNote: 5.0.1.9000
+RoxygenNote: 5.0.1

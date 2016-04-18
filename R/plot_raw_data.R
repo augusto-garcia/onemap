@@ -39,35 +39,35 @@ globalVariables(c("Type", "segr.type"))
 ##'     segregation pattern. Only used for outcross populations.
 ##'
 ##' @param ... currently ignored
-##' 
+##'
 ##' @return a ggplot graphic
 ##'
 ##' @import ggplot2
 ##'
 ##' @examples
-##' data(fake.bc.onemap) # Loads a fake backcross dataset installed with onemap
-##' plot(fake.bc.onemap) # This will show you the graph
+##' data(fake_bc_onemap) # Loads a fake backcross dataset installed with onemap
+##' plot(fake_bc_onemap) # This will show you the graph
 ##'
 ##' # You can store the graphic in an object, then save it with a number of properties
 ##' # For details, see the help of ggplot2's function ggsave()
-##' g <- plot(fake.bc.onemap)
+##' g <- plot(fake_bc_onemap)
 ##' ggsave("MyRawData_bc.jpg", g, width=7, height=4, dpi=600)
 ##'
-##' data(fake.f2.onemap) # Loads a fake backcross dataset installed with onemap
-##' plot(fake.f2.onemap) # This will show you the graph
+##' data(fake_f2_onemap) # Loads a fake backcross dataset installed with onemap
+##' plot(fake_f2_onemap) # This will show you the graph
 ##'
 ##' # You can store the graphic in an object, then save it with a number of properties
 ##' # For details, see the help of ggplot2's function ggsave()
-##' g <- plot(fake.f2.onemap)
+##' g <- plot(fake_f2_onemap)
 ##' ggsave("MyRawData_f2.jpg", g, width=7, height=4, dpi=600)
 ##'
-##' data(example.out) # Loads a fake full-sib dataset installed with onemap
-##' plot(example.out) # This will show you the graph for all markers
-##' plot(example.out, all=FALSE) # This will show you the graph splitted for marker types
+##' data(example_out) # Loads a fake full-sib dataset installed with onemap
+##' plot(example_out) # This will show you the graph for all markers
+##' plot(example_out, all=FALSE) # This will show you the graph splitted for marker types
 ##'
 ##' # You can store the graphic in an object, then save it.
 ##' # For details, see the help of ggplot2's function ggsave()
-##' g <- plot(example.out, all=FALSE)
+##' g <- plot(example_out, all=FALSE)
 ##' ggsave("MyRawData_out.jpg", g, width=9, height=4, dpi=600)
 ##'
 ##' @export
@@ -125,7 +125,7 @@ plot.onemap <- function(x, all=TRUE, ...) {
                                    values=c("#00A08A", "#5BBCD6",  "#F2AD00", "#F98400", "#FF0000"))
         if (x$n.mar>20)
             g <- g + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
-        
+
         if (all==TRUE) g
         else g <- g + facet_grid( . ~ Mk.type) + theme(axis.text.x=element_text(size=5))
     }
@@ -139,7 +139,7 @@ plot.onemap <- function(x, all=TRUE, ...) {
         }
         if (x$n.mar>20) g <- g + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
     }
-    
+
     return(g)
 }
 ##'
@@ -152,7 +152,7 @@ plot.onemap <- function(x, all=TRUE, ...) {
 ##' with long format
 ##'
 ##' @param x an object of classes \code{onemap} and \code{outcross}, with data and additional information
-##' 
+##'
 ##' @return a dataframe
 ##'
 create_dataframe_for_plot_outcross <- function(x) {
@@ -229,7 +229,7 @@ create_dataframe_for_plot_outcross <- function(x) {
 
 
 ##' Draw a graphic showing the number of markers of each segregation pattern.
-##' 
+##'
 ##' The function receives an object of class \code{onemap}.
 ##' For outcrossing populations, it can show detailed information (all 18 possible categories),
 ##' or a simplified version.
@@ -243,20 +243,20 @@ create_dataframe_for_plot_outcross <- function(x) {
 ##' @import ggplot2
 ##'
 ##' @examples
-##' data(example.out) #Outcrossing data
-##' plot_by_segreg_type(example.out)
-##' plot_by_segreg_type(example.out, subcateg=FALSE)
+##' data(example_out) #Outcrossing data
+##' plot_by_segreg_type(example_out)
+##' plot_by_segreg_type(example_out, subcateg=FALSE)
 ##'
-##' data(fake.bc.onemap)
-##' plot_by_segreg_type(fake.bc.onemap)
+##' data(fake_bc_onemap)
+##' plot_by_segreg_type(fake_bc_onemap)
 ##'
-##' data(fake.f2.onemap)
-##' plot_by_segreg_type(fake.f2.onemap)
+##' data(fake_f2_onemap)
+##' plot_by_segreg_type(fake_f2_onemap)
 ##'
 ##' # You can store the graphic in an object, then save it.
 ##' # For details, see the help of ggplot2's function ggsave()
-##' data(example.out) #Outcrossing data
-##' g <- plot_by_segreg_type(example.out)
+##' data(example_out) #Outcrossing data
+##' g <- plot_by_segreg_type(example_out)
 ##' ggsave("SegregationTypes.jpg", g, width=7, height=4, dpi=600)
 ##'
 ##' @export

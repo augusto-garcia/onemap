@@ -16,16 +16,16 @@
 
 #' New dataset based on bins
 #'
-#' Creates a new dataset based on \code{onemap.bin} object
+#' Creates a new dataset based on \code{onemap_bin} object
 #'
-#' Given a \code{onemap.bin} object,
+#' Given a \code{onemap_bin} object,
 #' creates a new data set where the redundant markers are
 #' collapsed into bins and represented by the marker with the lower
 #' amount of missing data among those on the bin.
 #'
 #' @aliases create_data_bins
 #' @param input.obj an object of class \code{onemap}.
-#' @param bins an object of class \code{onemap.bin}.
+#' @param bins an object of class \code{onemap_bin}.
 #'
 #' @return an object of class \code{onemap}.
 #' @author Marcelo Mollinari, \email{mmollina@@usp.br}
@@ -44,8 +44,8 @@ create_data_bins <- function(input.obj, bins)
   if(class(input.obj)[1] != "onemap")
     stop(deparse(substitute(input.obj))," is not an object of class 'onemap'")
     
-  if(is.na(match("onemap.bin", class(bins))))
-    stop(deparse(substitute(bins))," is not an object of class 'onemap.bin'")
+  if(is.na(match("onemap_bin", class(bins))))
+    stop(deparse(substitute(bins))," is not an object of class 'onemap_bin'")
     
   if (input.obj$n.mar<2) stop("there must be at least two markers to proceed with analysis")
 

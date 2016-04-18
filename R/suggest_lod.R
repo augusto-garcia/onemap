@@ -28,14 +28,14 @@
 ##'
 ##' This can be seen as just an initial approximation to help users to select a LOD Score for two
 ##' point tests.
-##' 
+##'
 ##' @param x an object of class \code{onemap}
-##' 
+##'
 ##' @return the suggested LOD to be used for testing linkage
-##' 
+##'
 ##' @examples
-##' data(fake.bc.onemap) # Loads a fake backcross dataset installed with onemap
-##' suggest_lod(fake.bc.onemap) # An value that should be used to start the analysis
+##' data(fake_bc_onemap) # Loads a fake backcross dataset installed with onemap
+##' suggest_lod(fake_bc_onemap) # An value that should be used to start the analysis
 ##'
 ##' @export
 suggest_lod <- function(x) {
