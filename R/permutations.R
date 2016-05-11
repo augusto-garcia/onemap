@@ -3,7 +3,7 @@
 # Package: onemap                                                     #
 #                                                                     #
 # File: permutations.R                                                #
-# Contains: permt.tot, perm.pars                                      #
+# Contains: permt.tot, perm_pars                                      #
 #                                                                     #
 # Written Marcelo Mollinari                                           #
 #                                                                     #
@@ -14,11 +14,11 @@
 #######################################################################
 
 #N! combination
-perm.tot <- function(v){
+perm_tot <- function(v){
   n <- length(v)
   result <- v 
   if (n>1){
-    M <- perm.tot(v[2:n]) 
+    M <- perm_tot(v[2:n]) 
     result <- cbind(v[1],M) 
     if (n>2){
       for (i in 2:(n-1)){
@@ -33,11 +33,11 @@ perm.tot <- function(v){
 }
 
 #N!/2 combination
-perm.pars <- function(v){
+perm_pars <- function(v){
   n <- length(v)
   result <- v 
   if (n>2){
-    Mt <- perm.tot(v[2:n]) 
+    Mt <- perm_tot(v[2:n]) 
     result <- cbind(v[1],Mt) 
     f <- floor(n/2)
     c <- ceiling(n/2)
@@ -48,7 +48,7 @@ perm.pars <- function(v){
       }
     }
     if (c>f){ 
-      Ms <- perm.pars(v[2:n]) 
+      Ms <- perm_pars(v[2:n]) 
       if (n>3) {N <- cbind(Ms[,1:f],v[1],Ms[,c:(n-1)])} 
       else {N <- cbind(Ms[1:f],v[1],Ms[c:(n-1)])}   
       result <- rbind(result,N) 

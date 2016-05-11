@@ -81,7 +81,7 @@ bool is_val_in_arr(int value, int *array, int arr_length){
  ****************************************/
 void get_parents_idx(int n_parent1, int idx_parent1[],
                      int n_parent2, int idx_parent2[],
-                     bcf_hdr_t *vcf_hdr, char **parent1, char **parent2) {
+                                                   bcf_hdr_t *vcf_hdr, char **parent1, char **parent2) {
   int i, s, n_samples = bcf_hdr_nsamples(vcf_hdr);
 
   for (i = 0; i < n_parent1; i++) {
@@ -128,10 +128,10 @@ int get_cross_type(char** cross) {
   if(!strcmp(*cross, "outcross")) {
     type = cross_out;
   }
-  else if(!strcmp(*cross, "backcross")) {
+  else if(!strcmp(*cross, "f2 backcross")) {
     type = cross_bc;
   }
-  else if(!strcmp(*cross, "riself") || !strcmp(*cross, "risib")) {
+  else if(!strcmp(*cross, "ri self") || !strcmp(*cross, "ri sib")) {
     type = cross_ril;
   }
   else if(!strcmp(*cross, "f2 intercross")) {
@@ -296,7 +296,7 @@ void vcf2raw(char **filename, char **out_filename, char **cross, int *n_parent1,
     free(seq_names);
     error("Could not correctly parse sequence names in VCF file. Is the input file tabix indexed?\n");
   }
-  
+
   // Map parent names to sample indices
   int idx_parent1[*n_parent1];
   int idx_parent2[*n_parent2];
@@ -317,7 +317,7 @@ void vcf2raw(char **filename, char **out_filename, char **cross, int *n_parent1,
       }
     }
   }
-  
+
   // Minimum count to assign parent genotype
   int min_class_parent1 = (int)ceil(*min_class * *n_parent1);
   int min_class_parent2 = (int)ceil(*min_class * *n_parent2);
@@ -329,6 +329,9 @@ void vcf2raw(char **filename, char **out_filename, char **cross, int *n_parent1,
   FILE *temp_f;
   char temp_filename[] = "tmp_raw_XXXXXX";
   int temp_fd;
+  /**************************************************************
+   * mkstemp MAY BE CAUSING PROBLEM IN INSTALLATIONS WITH MINGW *
+   **************************************************************/
   temp_fd = mkstemp(temp_filename);
   if (temp_fd == -1) {
     error("Could not open temporary output file.\n");
@@ -365,73 +368,75 @@ void vcf2raw(char **filename, char **out_filename, char **cross, int *n_parent1,
 
   while ((record = bcf_sweep_fwd(in_vcf)) && marker_count < MAX_VARIANTS) {
     // We only consider biallelic SNP and INDEL markers
-    int var_type = bcf_get_variant_types(record);
-    if ((var_type == VCF_SNP || var_type == VCF_INDEL) && record->n_allele == 2) {
-      int nGTs = bcf_get_format_int32(vcf_hdr, record, "GT", &GTs, &nGT_arr);
-      // We only consider diploid variants (number of alleles in genotypes == 2)
-      nGTs /= n_samples;
-      if (nGTs == 2) {
+    if (record->n_allele == 2) {
+      int var_type = bcf_get_variant_types(record);
 
-        bcf_fmt_t *fmt_ptr = bcf_get_fmt(vcf_hdr, record, "GT");
+      if (var_type == VCF_SNP || var_type == VCF_INDEL) {
+        int nGTs = bcf_get_format_int32(vcf_hdr, record, "GT", &GTs, &nGT_arr);
+        // We only consider diploid variants (number of alleles in genotypes == 2)
+        nGTs /= n_samples;
+        if (nGTs == 2) {
+          bcf_fmt_t *fmt_ptr = bcf_get_fmt(vcf_hdr, record, "GT");
 
-        // First, check which parents are heterozygous or homozygous (REF or ALT allele)
-        bool is_het_parent1 = false, is_hom_ref_parent1 = false, is_hom_alt_parent1 = false;
-        get_consensus_parent_gt(fmt_ptr, *n_parent1, idx_parent1, min_class_parent1, &is_het_parent1,
-                                &is_hom_ref_parent1, &is_hom_alt_parent1);
-        bool is_het_parent2 = false, is_hom_ref_parent2 = false, is_hom_alt_parent2 = false;
-        get_consensus_parent_gt(fmt_ptr, *n_parent2, idx_parent2, min_class_parent2, &is_het_parent2,
-                                &is_hom_ref_parent2, &is_hom_alt_parent2);
+          // First, check which parents are heterozygous or homozygous (REF or ALT allele)
+          bool is_het_parent1 = false, is_hom_ref_parent1 = false, is_hom_alt_parent1 = false;
+          get_consensus_parent_gt(fmt_ptr, *n_parent1, idx_parent1, min_class_parent1, &is_het_parent1,
+                                  &is_hom_ref_parent1, &is_hom_alt_parent1);
+          bool is_het_parent2 = false, is_hom_ref_parent2 = false, is_hom_alt_parent2 = false;
+          get_consensus_parent_gt(fmt_ptr, *n_parent2, idx_parent2, min_class_parent2, &is_het_parent2,
+                                  &is_hom_ref_parent2, &is_hom_alt_parent2);
 
-        // Convert to appropriate marker type
-        char marker_type[MARKER_TYPE_LEN];
-        int type = get_marker_type(marker_type, cross_type,
-                                   is_het_parent1, is_hom_ref_parent1, is_hom_alt_parent1,
-                                   is_het_parent2, is_hom_ref_parent2, is_hom_alt_parent2);
+          // Convert to appropriate marker type
+          char marker_type[MARKER_TYPE_LEN];
+          int type = get_marker_type(marker_type, cross_type,
+                                     is_het_parent1, is_hom_ref_parent1, is_hom_alt_parent1,
+                                     is_het_parent2, is_hom_ref_parent2, is_hom_alt_parent2);
 
-        const char * const(*type_ptr)[GT_TYPES_LEN];
-        bool valid_marker = true;
-        switch(type)
-        {
-        case marker_B3:
-        case marker_F2_ref:
-          type_ptr = &B3_F2_ref;
-          break;
-        case marker_F2_alt:
-          type_ptr = &B3_F2_alt;
-          break;
-        case marker_D_ref:
-        case marker_BC_ref:
-          type_ptr = &D_BC_ref;
-          break;
-        case marker_D_alt:
-        case marker_BC_alt:
-          type_ptr = &D_BC_alt;
-          break;
-        case marker_RI_ref:
-          type_ptr = &RI_ref;
-          break;
-        case marker_RI_alt:
-          type_ptr = &RI_alt;
-          break;
-        default:
-          valid_marker = false;
-        }
-
-        if (valid_marker) {
-          // Store CHROM and POS fields for valid markers
-          chrom[marker_count] = record->rid;
-          pos[marker_count] = record->pos + 1;
-
-          // Check if marker name exists; if negative, create one
-          char *marker_name = record->d.id;
-          if (!strcmp(marker_name, ".")) {
-            sprintf(marker_name, "%s.%d", seq_names[chrom[marker_count]], pos[marker_count]);
+          const char * const(*type_ptr)[GT_TYPES_LEN];
+          bool valid_marker = true;
+          switch(type)
+          {
+          case marker_B3:
+          case marker_F2_ref:
+            type_ptr = &B3_F2_ref;
+            break;
+          case marker_F2_alt:
+            type_ptr = &B3_F2_alt;
+            break;
+          case marker_D_ref:
+          case marker_BC_ref:
+            type_ptr = &D_BC_ref;
+            break;
+          case marker_D_alt:
+          case marker_BC_alt:
+            type_ptr = &D_BC_alt;
+            break;
+          case marker_RI_ref:
+            type_ptr = &RI_ref;
+            break;
+          case marker_RI_alt:
+            type_ptr = &RI_alt;
+            break;
+          default:
+            valid_marker = false;
           }
 
-          // Output variant in ONEMAP format to temporary file
-          print_record(temp_f, marker_name, marker_type, fmt_ptr, n_progeny, idx_progeny, type_ptr);
+          if (valid_marker) {
+            // Store CHROM and POS fields for valid markers
+            chrom[marker_count] = record->rid;
+            pos[marker_count] = record->pos + 1;
 
-          marker_count++;
+            // Check if marker name exists; if negative, create one
+            char *marker_name = record->d.id;
+            if (!strcmp(marker_name, ".")) {
+              sprintf(marker_name, "%s.%d", seq_names[chrom[marker_count]], pos[marker_count]);
+            }
+
+            // Output variant in ONEMAP format to temporary file
+            print_record(temp_f, marker_name, marker_type, fmt_ptr, n_progeny, idx_progeny, type_ptr);
+
+            marker_count++;
+          }
         }
       }
     }
@@ -453,7 +458,7 @@ void vcf2raw(char **filename, char **out_filename, char **cross, int *n_parent1,
     fprintf(final_f, "\t%s", cur_sample_name);
   }
   fprintf(final_f, "\n");
-  
+
   // Copy marker data from temporary file to final file
   rewind(temp_f);
   char buf[BUFSIZ];
@@ -477,13 +482,13 @@ void vcf2raw(char **filename, char **out_filename, char **cross, int *n_parent1,
   }
 
   // Clean-up
+  fclose(temp_f);
+  close(temp_fd);
+  fclose(final_f);
+
   free(chrom);
   free(pos);
 
   free(GTs);
   bcf_sweep_destroy(in_vcf);
-
-  fclose(temp_f);
-  close(temp_fd);
-  fclose(final_f);
 }

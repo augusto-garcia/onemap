@@ -24,8 +24,8 @@ no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
 recombination frequencies between markers in the sequence. \code{-1} means
 that there are no estimated recombination frequencies.}
 \item{seq.like}{log-likelihood of the corresponding linkage map.}
-\item{data.name}{name of the object of class \code{outcross} with the raw
-data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
+\item{data.name}{name of the object of class \code{onemap} with the raw
+data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
 2-point analyses.}
 }
 \description{
@@ -44,13 +44,13 @@ same in both parents. Hidden Markov chain codes adapted from Broman et al.
 }
 \examples{
 
-  data(example.out)
-  twopt <- rf.2pts(example.out)
+  data(example_out)
+  twopt <- rf_2pts(example_out)
 
-  markers <- make.seq(twopt,c(30,12,3,14,2)) # correct phases
+  markers <- make_seq(twopt,c(30,12,3,14,2)) # correct phases
   map(markers)
 
-  markers <- make.seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
+  markers <- make_seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
   map(markers)
 
 }
@@ -80,7 +80,7 @@ Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage mapping of
 sex-specific differences. \emph{Genetical Research} 79: 85-96
 }
 \seealso{
-\code{\link[onemap]{make.seq}}
+\code{\link[onemap]{make_seq}}
 }
 \keyword{utilities}
 

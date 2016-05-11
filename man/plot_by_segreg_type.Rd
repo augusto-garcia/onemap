@@ -21,20 +21,20 @@ For outcrossing populations, it can show detailed information (all 18 possible c
 or a simplified version.
 }
 \examples{
-data(example.out) #Outcrossing data
-plot_by_segreg_type(example.out)
-plot_by_segreg_type(example.out, subcateg=FALSE)
+data(example_out) #Outcrossing data
+plot_by_segreg_type(example_out)
+plot_by_segreg_type(example_out, subcateg=FALSE)
 
-data(fake.bc.onemap)
-plot_by_segreg_type(fake.bc.onemap)
+data(fake_bc_onemap)
+plot_by_segreg_type(fake_bc_onemap)
 
-data(fake.f2.onemap)
-plot_by_segreg_type(fake.f2.onemap)
+data(fake_f2_onemap)
+plot_by_segreg_type(fake_f2_onemap)
 
 # You can store the graphic in an object, then save it.
 # For details, see the help of ggplot2's function ggsave()
-data(example.out) #Outcrossing data
-g <- plot_by_segreg_type(example.out)
+data(example_out) #Outcrossing data
+g <- plot_by_segreg_type(example_out)
 ggsave("SegregationTypes.jpg", g, width=7, height=4, dpi=600)
 
 }

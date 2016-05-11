@@ -27,8 +27,8 @@ for the corresponding best orders.} \item{best.ord.phase}{a \code{matrix}
 with linkage phases for the best orders.} \item{best.ord.like}{a
 \code{vector} with log-likelihood values for the best orders.}
 \item{best.ord.LOD}{a \code{vector} with LOD Score values for the best
-orders.} \item{data.name}{name of the object of class \code{outcross} with
-the raw data.} \item{twopt}{name of the object of class \code{rf.2pts} with
+orders.} \item{data.name}{name of the object of class \code{onemap} with
+the raw data.} \item{twopt}{name of the object of class \code{rf_2pts} with
 the 2-point analyses.}
 }
 \description{
@@ -54,16 +54,16 @@ same in both parents. Hidden Markov chain codes adapted from Broman et al.
 
 \dontrun{
   #outcrossing example
-  data(example.out)
-  twopt <- rf.2pts(example.out)
-  markers <- make.seq(twopt,c(12,14,15,26,28))
+  data(example_out)
+  twopt <- rf_2pts(example_out)
+  markers <- make_seq(twopt,c(12,14,15,26,28))
   (markers.comp <- compare(markers))
   (markers.comp <- compare(markers,verbose=TRUE))
 
   #F2 example
-  data(fake.f2.onemap)
-  twopt <- rf.2pts(fake.f2.onemap)
-  markers <- make.seq(twopt,c(17,26,29,30,44,46,55)) 
+  data(fake_f2_onemap)
+  twopt <- rf_2pts(fake_f2_onemap)
+  markers <- make_seq(twopt,c(17,26,29,30,44,46,55))
   (markers.comp <- compare(markers))
   (markers.comp <- compare(markers,verbose=TRUE))
 
@@ -100,8 +100,8 @@ Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage mapping of
 sex-specific differences. \emph{Genetical Research} 79: 85-96
 }
 \seealso{
-\code{\link[onemap]{marker.type}} for details about segregation
-types and \code{\link[onemap]{make.seq}}.
+\code{\link[onemap]{marker_type}} for details about segregation
+types and \code{\link[onemap]{make_seq}}.
 }
 \keyword{utilities}
 

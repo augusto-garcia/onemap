@@ -30,8 +30,8 @@ no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
 recombination frequencies between markers in the sequence. \code{-1} means
 that there are no estimated recombination frequencies.}
 \item{seq.like}{log-likelihood of the corresponding linkage map.}
-\item{data.name}{name of the object of class \code{outcross} with the raw
-data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
+\item{data.name}{name of the object of class \code{onemap} with the raw
+data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
 2-point analyses.}
 }
 \description{
@@ -53,19 +53,19 @@ constructed using the multipoint approach (function
 
 \dontrun{
   ##outcross example
-  data(example.out)
-  twopt <- rf.2pts(example.out)
-  all.mark <- make.seq(twopt,"all")
-  groups <- group(all.mark)
-  LG1 <- make.seq(groups,1)
+  data(example_out)
+  twopt <- rf_2pts(example_out)
+  all_mark <- make_seq(twopt,"all")
+  groups <- group(all_mark)
+  LG1 <- make_seq(groups,1)
   LG1.rec <- record(LG1)
 
   ##F2 example
-  data(fake.f2.onemap)
-  twopt <- rf.2pts(fake.f2.onemap)
-  all.mark <- make.seq(twopt,"all")
-  groups <- group(all.mark)
-  LG1 <- make.seq(groups,1)
+  data(fake_f2_onemap)
+  twopt <- rf_2pts(fake_f2_onemap)
+  all_mark <- make_seq(twopt,"all")
+  groups <- group(all_mark)
+  LG1 <- make_seq(groups,1)
   LG1.rec <- record(LG1)
   LG1.rec
 }
@@ -84,7 +84,7 @@ novel method for ordering loci on a genetic linkage map. \emph{Theoretical
 and Applied Genetics} 112: 30-40.
 }
 \seealso{
-\code{\link[onemap]{make.seq}} and \code{\link[onemap]{map}}
+\code{\link[onemap]{make_seq}} and \code{\link[onemap]{map}}
 }
 \keyword{utilities}
 

@@ -20,7 +20,7 @@ analysis should be performed. If \code{NULL} the analisys is performed
 for all chromosomes.}
 }
 \value{
-An object of class \code{onemap.bin}, which is a list containing the
+An object of class \code{onemap_bin}, which is a list containing the
 following components: \item{bins}{a list containing the bins. Each element of
 the list is a table whose lines indicate the name of the marker, the bin in
 which that particular marker was allocated and the percentage of missing data.

@@ -44,12 +44,12 @@
 ##' recombination frequencies between markers in the sequence. \code{-1} means
 ##' that there are no estimated recombination frequencies.}
 ##' \item{seq.like}{log-likelihood of the corresponding linkage map.}
-##' \item{data.name}{name of the object of class \code{outcross} with the raw
-##' data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
+##' \item{data.name}{name of the object of class \code{onemap} with the raw
+##' data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
 ##' 2-point analyses.}
 ##' @author Adapted from Karl Broman (package 'qtl') by Gabriel R A Margarido,
 ##' \email{gramarga@@usp.br} and Marcelo Mollinari, \email{mmollina@@gmail.com}
-##' @seealso \code{\link[onemap]{make.seq}}
+##' @seealso \code{\link[onemap]{make_seq}}
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
 ##' 1.09-43
@@ -72,13 +72,13 @@
 ##' @keywords utilities
 ##' @examples
 ##'
-##'   data(example.out)
-##'   twopt <- rf.2pts(example.out)
+##'   data(example_out)
+##'   twopt <- rf_2pts(example_out)
 ##'
-##'   markers <- make.seq(twopt,c(30,12,3,14,2)) # correct phases
+##'   markers <- make_seq(twopt,c(30,12,3,14,2)) # correct phases
 ##'   map(markers)
 ##'
-##'   markers <- make.seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
+##'   markers <- make_seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
 ##'   map(markers)
 ##'
 map <- function(input.seq,tol=10E-5, verbose=FALSE)
@@ -118,7 +118,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE)
                                 tol=tol)
       if(class(get(input.seq$data.name, pos=1))[2] == "riself" ||
          class(get(input.seq$data.name, pos=1))[2] == "risib")
-          final.map$rf<-adjust.rf.ril(final.map$rf,
+          final.map$rf<-adjust_rf_ril(final.map$rf,
                                       type=class(get(input.seq$data.name, pos=1))[2],
                                       expand = FALSE)
       return(structure(list(seq.num=seq.num,
@@ -139,12 +139,12 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE)
         ## linkage map is started with the first two markers in the sequence
         ## gather two-point information for this pair
         phase.init <- vector("list",1)
-	list.init <- phases(make.seq(get(input.seq$twopt,pos = -1),seq.num[1:2],twopt=input.seq$twopt))
+	list.init <- phases(make_seq(get(input.seq$twopt,pos = 1),seq.num[1:2],twopt=input.seq$twopt))
         phase.init[[1]] <- list.init$phase.init[[1]]
-        Ph.Init <- comb.ger(phase.init)
+        Ph.Init <- comb_ger(phase.init)
         for(j in 1:nrow(Ph.Init)) {
             ## call to 'map' function with predefined linkage phase
-            temp <- map(make.seq(get(input.seq$twopt),seq.num[1:2],phase=Ph.Init[j],twopt=input.seq$twopt))
+            temp <- map(make_seq(get(input.seq$twopt),seq.num[1:2],phase=Ph.Init[j],twopt=input.seq$twopt))
             results[[1]][j] <- temp$seq.phases
             results[[2]][j] <- temp$seq.like
         }
@@ -156,13 +156,13 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE)
                 results <- list(rep(NA,4),rep(-Inf,4))
                 ## gather two-point information
                 phase.init <- vector("list",mrk)
-                list.init <- phases(make.seq(get(input.seq$twopt),c(seq.num[mrk],seq.num[mrk+1]),twopt=input.seq$twopt))
+                list.init <- phases(make_seq(get(input.seq$twopt),c(seq.num[mrk],seq.num[mrk+1]),twopt=input.seq$twopt))
                 phase.init[[mrk]] <- list.init$phase.init[[1]]
                 for(j in 1:(mrk-1)) phase.init[[j]] <- seq.phase[j]
-                Ph.Init <- comb.ger(phase.init)
+                Ph.Init <- comb_ger(phase.init)
                 for(j in 1:nrow(Ph.Init)) {
                     ## call to 'map' function with predefined linkage phases
-                    temp <- map(make.seq(get(input.seq$twopt),seq.num[1:(mrk+1)],phase=Ph.Init[j,],twopt=input.seq$twopt))
+                    temp <- map(make_seq(get(input.seq$twopt),seq.num[1:(mrk+1)],phase=Ph.Init[j,],twopt=input.seq$twopt))
                     results[[1]][j] <- temp$seq.phases[mrk]
                     results[[2]][j] <- temp$seq.like
                 }
@@ -170,7 +170,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE)
             }
         }
         ## one last call to map function, with the final map
-        map(make.seq(get(input.seq$twopt),seq.num,phase=seq.phase,twopt=input.seq$twopt))
+        map(make_seq(get(input.seq$twopt),seq.num,phase=seq.phase,twopt=input.seq$twopt))
     }
   else {
       ## if the linkage phases are provided but the recombination fractions have

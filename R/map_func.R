@@ -3,7 +3,7 @@
 # Package: onemap                                                     #
 #                                                                     #
 # File: map_func.R                                                    #
-# Contains: haldane, kosambi, set.map.fun                             #
+# Contains: haldane, kosambi, set_map_fun                             #
 #                                                                     #
 # Written by Gabriel Rodrigues Alves Margarido and Marcelo Mollinari  #
 # copyright (c) 2007-9, Gabriel R A Margarido                         #
@@ -56,7 +56,7 @@ function(rcmb) {
 ##' Kosambi, D. D. (1944) The estimation of map distance from recombination
 ##' values. \emph{Annuaire of Eugenetics} 12: 172-175.
 ##' @keywords arith
-set.map.fun<-
+set_map_fun<-
   function(type=c("kosambi", "haldane")){
     type<-match.arg(type,c("kosambi", "haldane"))
     if(type=="haldane") assign(".map.fun",  "haldane", envir = .onemapEnv)

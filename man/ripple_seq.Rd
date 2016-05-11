@@ -45,22 +45,22 @@ there are many partially informative markers.
 
 \dontrun{
  #Outcross example
-  data(example.out)
-  twopt <- rf.2pts(example.out)
-  markers <- make.seq(twopt,c(27,16,20,4,19,21,23,9,24,29))
+  data(example_out)
+  twopt <- rf_2pts(example_out)
+  markers <- make_seq(twopt,c(27,16,20,4,19,21,23,9,24,29))
   markers.map <- map(markers)
   ripple_seq(markers.map)
 
 #F2 example
- data(fake.f2.onemap)
- twopt <- rf.2pts(fake.f2.onemap)
- all.mark <- make.seq(twopt,"all")
- groups <- group(all.mark)
- LG3 <- make.seq(groups,3)
- LG3.ord <- order.seq(LG3, subset.search = "twopt", twopt.alg = "rcd", touchdown=TRUE)
+ data(fake_f2_onemap)
+ twopt <- rf_2pts(fake_f2_onemap)
+ all_mark <- make_seq(twopt,"all")
+ groups <- group(all_mark)
+ LG3 <- make_seq(groups,3)
+ LG3.ord <- order_seq(LG3, subset.search = "twopt", twopt.alg = "rcd", touchdown=TRUE)
  LG3.ord
- make.seq(LG3.ord) # get safe sequence
- ord.1<-make.seq(LG3.ord,"force") # get forced sequence
+ make_seq(LG3.ord) # get safe sequence
+ ord.1<-make_seq(LG3.ord,"force") # get forced sequence
  ripple_seq(ord.1, ws=5)
 }
 
@@ -96,9 +96,9 @@ Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage mapping of
 sex-specific differences. \emph{Genetical Research} 79: 85-96
 }
 \seealso{
-\code{\link[onemap]{make.seq}},
+\code{\link[onemap]{make_seq}},
     \code{\link[onemap]{compare}}, \code{\link[onemap]{try_seq}}
-    and \code{\link[onemap]{order.seq}}.
+    and \code{\link[onemap]{order_seq}}.
 }
 \keyword{utilities}
 

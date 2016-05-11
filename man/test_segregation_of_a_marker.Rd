@@ -15,13 +15,15 @@ test_segregation_of_a_marker(x, marker)
 a list with the H0 hypothesis being tested, the chi-square statistics,
 the associated p-values, and the \% of individuals genotyped.
 
+It returns \code{NA} if the numbers of expected and observed classes are
+different or if dominant and co-dominant coding is mixed in the same marker.
 
 ##'@examples
-data(fake.bc.onemap) # Loads a fake backcross dataset installed with onemap
-test_segregation_of_a_marker(fake.bc.onemap,1)
+data(fake_bc_onemap) # Loads a fake backcross dataset installed with onemap
+test_segregation_of_a_marker(fake_bc_onemap,1)
 
-data(example.out) # Loads a fake outcross dataset installed with onemap
-test_segregation_of_a_marker(example.out,1)
+data(example_out) # Loads a fake outcross dataset installed with onemap
+test_segregation_of_a_marker(example_out,1)
 }
 \description{
 Applies the chi-square test to check if markers are following the

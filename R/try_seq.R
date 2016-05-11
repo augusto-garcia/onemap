@@ -37,7 +37,7 @@
 ##' representation of the \code{LOD} vector (see \code{Value}
 ##' section). The red triangle indicates the best position where the
 ##' new marker \code{mrk} should be placed; iii) the right bottom
-##' figure is the non-interactive \code{\link[onemap]{rf.graph.table}}
+##' figure is the non-interactive \code{\link[onemap]{rf_graph_table}}
 ##' function for the new genetic map. It plots a matrix of pairwise
 ##' recombination fractions (under the diagonal) and LOD Scores (upper
 ##' the diagonal) using a color scale.
@@ -73,12 +73,12 @@
 ##'     Score is based on the best combination of linkage phases for
 ##'     each map.}  \item{try.ord}{a \code{matrix} with the orders of
 ##'     all linkage maps.}  \item{data.name}{name of the object of
-##'     class \code{outcross} with the raw data.} \item{twopt}{name of
-##'     the object of class \code{rf.2pts} with the 2-point analyses.}
+##'     class \code{onemap} with the raw data.} \item{twopt}{name of
+##'     the object of class \code{rf_2pts} with the 2-point analyses.}
 ##'
 ##' @author Marcelo Mollinari, \email{mmollina@@usp.br}
 ##'
-##' @seealso \code{\link[onemap]{make.seq}} and
+##' @seealso \code{\link[onemap]{make_seq}} and
 ##'     \code{\link[onemap]{compare}}.
 ##'
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S.,
@@ -113,11 +113,11 @@
 ##'
 ##' \dontrun{
 ##'   #outcrossing example
-##'   data(example.out)
-##'   twopt <- rf.2pts(example.out)
-##'   markers <- make.seq(twopt,c(2,3,12,14))
+##'   data(example_out)
+##'   twopt <- rf_2pts(example_out)
+##'   markers <- make_seq(twopt,c(2,3,12,14))
 ##'   markers.comp <- compare(markers)
-##'   base.map <- make.seq(markers.comp,1)
+##'   base.map <- make_seq(markers.comp,1)
 ##'
 ##'   extend.map <- try_seq(base.map,30)
 ##'   extend.map
@@ -125,17 +125,17 @@
 ##'   print(extend.map,4) # second best position
 ##'
 ##'   #F2 example
-##'   data(fake.f2.onemap)
-##'   twopt <- rf.2pts(fake.f2.onemap)
-##'   all.mark <- make.seq(twopt,"all")
-##'   groups <- group(all.mark)
-##'   LG3 <- make.seq(groups,3)
-##'   LG3.ord <- order.seq(LG3, subset.search = "twopt", twopt.alg = "rcd", touchdown=TRUE)
+##'   data(fake_f2_onemap)
+##'   twopt <- rf_2pts(fake_f2_onemap)
+##'   all_mark <- make_seq(twopt,"all")
+##'   groups <- group(all_mark)
+##'   LG3 <- make_seq(groups,3)
+##'   LG3.ord <- order_seq(LG3, subset.search = "twopt", twopt.alg = "rcd", touchdown=TRUE)
 ##'   LG3.ord
-##'   safe.map<-make.seq(LG3.ord,"safe")
+##'   safe.map<-make_seq(LG3.ord,"safe")
 ##'   extend.map <- try_seq(safe.map,64)
 ##'   extend.map
-##'   (new.map<-make.seq(extend.map,14)) # best position
+##'   (new.map<-make_seq(extend.map,14)) # best position
 ##'
 ##'   #Display diagnostic graphics
 ##'   try_seq(safe.map,64,draw.try=TRUE) #best position (default)
@@ -183,7 +183,7 @@ try_seq_inbred<- function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,verbo
     if(verbose) cat("TRY", 1,": ", c(mrk,input.seq$seq.num),"\n")
     else cat(format(mrk,width=num.max) , "-->", format(colnames(get(input.seq$data.name, pos=1)$geno)[mrk], width=mark.max), ": .")
     flush.console()
-    seq.temp<-make.seq(get(input.seq$twopt), arg=try.ord)
+    seq.temp<-make_seq(get(input.seq$twopt), arg=try.ord)
     seq.temp$twopt<-input.seq$twopt
     rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
     ## estimate parameters for all possible linkage phases for this order
@@ -206,7 +206,7 @@ try_seq_inbred<- function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,verbo
             cat("TRY", i+1, ": ", try.ord[i+1,], "\n")
         else cat(".")
         flush.console()
-        seq.temp<-make.seq(get(input.seq$twopt), arg=try.ord[i+1,])
+        seq.temp<-make_seq(get(input.seq$twopt), arg=try.ord[i+1,])
         seq.temp$twopt<-input.seq$twopt
         rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
         ## estimate parameters for all possible linkage phases for this order
@@ -273,13 +273,13 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,ver
 
 ### positioning before the given sequence
                                         # get two-point information
-    list.init <- phases(make.seq(get(input.seq$twopt),c(mrk,input.seq$seq.num[1]),twopt=input.seq$twopt))
+    list.init <- phases(make_seq(get(input.seq$twopt),c(mrk,input.seq$seq.num[1]),twopt=input.seq$twopt))
     rf.init[[1]] <- list.init$rf.init[[1]]
     for(j in 1:(length(input.seq$seq.num)-1)) rf.init[[j+1]] <- input.seq$seq.rf[j]
     phase.init[[1]] <- list.init$phase.init[[1]]
     for(j in 1:(length(input.seq$seq.num)-1)) phase.init[[j+1]] <- input.seq$seq.phases[j]
-    Ph.Init <- comb.ger(phase.init)
-    Rf.Init <- comb.ger(rf.init)
+    Ph.Init <- comb_ger(phase.init)
+    Rf.Init <- comb_ger(rf.init)
     mark.max<-max(nchar(colnames(get(input.seq$data.name, pos=1)$geno)))
     num.max<-nchar(ncol(get(input.seq$data.name, pos=1)$geno))
 
@@ -291,7 +291,7 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,ver
 
     if(nrow(Ph.Init)>1){
         ##Removing ambigous phases
-        rm.ab<-rem.amb.ph(M=Ph.Init, w=input.seq, seq.num=c(mrk,input.seq$seq.num))
+        rm.ab<-rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=c(mrk,input.seq$seq.num))
         Ph.Init <- Ph.Init[rm.ab,]
         Rf.Init <- Rf.Init[rm.ab,]
         if(class(Ph.Init) == "numeric" || class(Ph.Init) == "integer"){
@@ -321,7 +321,7 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,ver
 ### positioning between markers of the given sequence
     for(i in 1:(length(input.seq$seq.num)-1)) {
                                         # get two-point information
-        list.init <- phases(make.seq(get(input.seq$twopt),c(input.seq$seq.num[i],mrk,input.seq$seq.num[i+1]),twopt=input.seq$twopt))
+        list.init <- phases(make_seq(get(input.seq$twopt),c(input.seq$seq.num[i],mrk,input.seq$seq.num[i+1]),twopt=input.seq$twopt))
         if(i!=1) {
             for(k in 1:(i-1)) {
                 rf.init[[k]] <- input.seq$seq.rf[k]
@@ -338,8 +338,8 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,ver
                 phase.init[[k]] <- input.seq$seq.phases[k-1]
             }
         }
-        Ph.Init <- comb.ger(phase.init)
-        Rf.Init <- comb.ger(rf.init)
+        Ph.Init <- comb_ger(phase.init)
+        Rf.Init <- comb_ger(rf.init)
 
                                         # create intermediate orders
         try.ord <- rbind(try.ord,c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)]))
@@ -349,7 +349,7 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,ver
 
         if(nrow(Ph.Init)>1){
             ##Removing ambigous phases
-            rm.ab<-rem.amb.ph(M=Ph.Init, w=input.seq, seq.num=c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)]))
+            rm.ab<-rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)]))
             Ph.Init <- Ph.Init[rm.ab,]
             Rf.Init <- Rf.Init[rm.ab,]
             if(class(Ph.Init) == "numeric" || class(Ph.Init) == "integer"){
@@ -379,13 +379,13 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,ver
 
 ### positioning after the given sequence
                                         # get two-point information
-    list.init <- phases(make.seq(get(input.seq$twopt),c(input.seq$seq.num[length(input.seq$seq.num)],mrk),twopt=input.seq$twopt))
+    list.init <- phases(make_seq(get(input.seq$twopt),c(input.seq$seq.num[length(input.seq$seq.num)],mrk),twopt=input.seq$twopt))
     rf.init[[(length(input.seq$seq.num))]] <- list.init$rf.init[[1]]
     for(j in 1:(length(input.seq$seq.num)-1)) rf.init[[j]] <- input.seq$seq.rf[j]
     phase.init[[(length(input.seq$seq.num))]] <- list.init$phase.init[[1]]
     for(j in 1:(length(input.seq$seq.num)-1)) phase.init[[j]] <- input.seq$seq.phases[j]
-    Ph.Init <- comb.ger(phase.init)
-    Rf.Init <- comb.ger(rf.init)
+    Ph.Init <- comb_ger(phase.init)
+    Rf.Init <- comb_ger(rf.init)
 
                                         # create last order
     try.ord <- rbind(try.ord,c(input.seq$seq.num,mrk))
@@ -394,7 +394,7 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,ver
     flush.console()
     if(nrow(Ph.Init)>1){
         ##Removing ambigous phases
-        rm.ab<-rem.amb.ph(M=Ph.Init, w=input.seq, seq.num=c(input.seq$seq.num,mrk))
+        rm.ab<-rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=c(input.seq$seq.num,mrk))
         Ph.Init <- Ph.Init[rm.ab,]
         Rf.Init <- Rf.Init[rm.ab,]
         if(class(Ph.Init) == "numeric" || class(Ph.Init)=="integer"){
@@ -445,8 +445,8 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,draw.try=FALSE,pos= NULL,ver
 ##' @param ... currently ignored
 ##' @return \code{NULL}
 ##' @keywords internal
+##' @method print try
 ##' @export
-##'
 print.try <- function(x,j=NULL,...) {
     phases.char <- c("CC","CR","RC","RR")
     marker <- x$try.ord[1,1]
@@ -550,7 +550,7 @@ draw.try<-function(base.input, try.input, pos=NULL){
     if(is.null(pos)){
         op<-par(xpd=TRUE)
         points(try.dist[which.max(try.input$LOD)],0, pch=17, col=2, cex=1.5)
-        new.map<-make.seq(try.input,which.max(try.input$LOD))
+        new.map<-make_seq(try.input,which.max(try.input$LOD))
         new.dist<-cumsum(c(0, kosambi(new.map$seq.rf)))
         new.dist.len<-length(new.dist)
         plot(x=new.dist, rep(1,new.dist.len), pch="|", xlab="New Genetic Map", ylab="", axes=FALSE, type="n", main=paste("Adding marker ",try.input$try.ord[1,1]," (", colnames(get(try.input$data.name,pos=1)$geno)[try.input$try.ord[1,1]],")", sep=""))
@@ -564,7 +564,7 @@ draw.try<-function(base.input, try.input, pos=NULL){
   else{
       op<-par(xpd=TRUE, las=2)
       points(try.dist[pos],0, pch=17, col=2, cex=1.5)
-      new.map<-make.seq(try.input,pos)
+      new.map<-make_seq(try.input,pos)
       new.dist<-cumsum(c(0, kosambi(new.map$seq.rf)))
       new.dist.len<-length(new.dist)
       plot(x=new.dist, rep(1,new.dist.len), xlab="New Genetic Map", ylab="", axes=FALSE, type="n", main=paste("Adding marker ",try.input$try.ord[1,1]," (", colnames(get(try.input$data.name,pos=1)$geno)[try.input$try.ord[1,1]],")", sep=""))
@@ -575,7 +575,7 @@ draw.try<-function(base.input, try.input, pos=NULL){
       text(x=new.dist[1]-(max(new.dist)/40), y=0 ,"Distance",  adj=c(1,0.2))
       par(op)
   }
-    rf.graph.table(input.seq=new.map,
+    rf_graph_table(input.seq=new.map,
                    axis.cex = 0.75,
                    main ="",
                    inter = FALSE,

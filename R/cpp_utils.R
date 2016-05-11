@@ -3,7 +3,7 @@
 # Package: onemap                                                     #
 #                                                                     #
 # File: cpp_utils.R                                                   #
-# Contains: get.bins                                                  #
+# Contains: get_bins                                                  #
 # These functions are for internal use only                           #
 #                                                                     #
 # Written Marcelo Mollinari                                           #
@@ -15,7 +15,7 @@
 #######################################################################
 
 # This function calls C++ routine to find markers with redundant information
-get.bins <- function(geno, exact=TRUE)
+get_bins <- function(geno, exact=TRUE)
 {
   bins<-.Call("get_bins",
               geno,
@@ -129,11 +129,11 @@ est_map_hmm_bc<-function(geno, rf.vec=NULL, verbose=TRUE, tol=1e-6)
 ##'     represent individuals.
 ##'
 ##' @param type a vector indicating the type of marker. For more
-##'     information see \code{\link[onemap]{read.onemap}}
+##'     information see \code{\link[onemap]{read_onemap}}
 ##'
 ##' @param phase a vector indicating the linkage phases between
 ##'     markers. For more information see
-##'     \code{\link[onemap]{make.seq}}
+##'     \code{\link[onemap]{make_seq}}
 ##'
 ##' @param rf.vec a vector containing the recombination fraction
 ##'     initial values

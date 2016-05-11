@@ -3,7 +3,7 @@
 ## Package: onemap                                                     ##
 ##                                                                     ##
 ## File: group.R                                                       ##
-## Contains: check.linkage, group, print.group                         ##
+## Contains: check_linkage, group, print.group                         ##
 ##                                                                     ##
 ## Written by Gabriel Rodrigues Alves Margarido and Marcelo Mollinari  ##
 ## copyright (c) 2007-9, Gabriel R A Margarido and Marcelo Mollinari   ##
@@ -17,16 +17,16 @@
 ## Function to assign markers to linkage groups
 
 ##' Assign markers to linkage groups
-##' 
+##'
 ##' Identifies linkage groups of markers, using results from two-point
 ##' (pairwise) analysis and the \emph{transitive} property of linkage.
-##' 
+##'
 ##' If the arguments specifying thresholds used to group markers, i.e., minimum
 ##' LOD Score and maximum recombination fraction, are \code{NULL} (default),
 ##' the values used are those contained in object \code{input.seq}. If not
 ##' using \code{NULL}, the new values override the ones in object
 ##' \code{input.seq}.
-##' 
+##'
 ##' @aliases group
 ##' @param input.seq an object of class \code{sequence}.
 ##' @param LOD a (positive) real number used as minimum LOD score
@@ -49,31 +49,31 @@
 ##'     is assigned.}
 ##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com} and
 ##'     Marcelo Mollinari, \email{mmollina@@usp.br}
-##' @seealso \code{\link[onemap]{rf.2pts}} and
-##'     \code{\link[onemap]{make.seq}}
+##' @seealso \code{\link[onemap]{rf_2pts}} and
+##'     \code{\link[onemap]{make_seq}}
 ##' @references Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993)
 ##'     Constructing genetic linkage maps with MAPMAKER/EXP Version
 ##'     3.0: a tutorial and reference manual. \emph{A Whitehead
 ##'     Institute for Biomedical Research Technical Report}.
 ##' @keywords misc
 ##' @examples
-##' 
-##'   data(example.out)
-##'   twopts <- rf.2pts(example.out)
-##'   
-##'   all.data <- make.seq(twopts,"all")
+##'
+##'   data(example_out)
+##'   twopts <- rf_2pts(example_out)
+##'
+##'   all.data <- make_seq(twopts,"all")
 ##'   link_gr <- group(all.data)
 ##'   link_gr
 ##'   print(link_gr, details=FALSE) #omit the names of the markers
-##' 
+##'
 group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
 {
     ## checking for correct object
-    if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")    
+    if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
     ## determining thresholds
-    if (is.null(LOD)) 
+    if (is.null(LOD))
         LOD <- get(input.seq$twopt, pos=1)$LOD
-    if (is.null(max.rf)) 
+    if (is.null(max.rf))
         max.rf <- get(input.seq$twopt, pos=1)$max.rf
     cl<-class(get(input.seq$data.name))[2]
     geno<-get(input.seq$data.name)$geno[,input.seq$seq.num]
@@ -87,7 +87,7 @@ group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
         g<-tp$unlk[1]
         s<-tp$unlk
         j<-1
-        tp<-check.linkage(i=g[j], s=s, cl=cl, geno=geno, st=st, max.rf=max.rf, LOD=LOD)
+        tp<-check_linkage(i=g[j], s=s, cl=cl, geno=geno, st=st, max.rf=max.rf, LOD=LOD)
         gt<-tp$lk
         if(length(gt) > 0)
         {
@@ -99,7 +99,7 @@ group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
                         cat(".")
                         if(j %% 60 == 0) cat("\n\t   ")
                     }
-                tp<-check.linkage(i=g[j+1], s=tp$unlk, cl=cl, geno=geno, st=st, max.rf=max.rf, LOD=LOD)
+                tp<-check_linkage(i=g[j+1], s=tp$unlk, cl=cl, geno=geno, st=st, max.rf=max.rf, LOD=LOD)
                 gt<-tp$lk
                 g<-c(g,gt)
                 j<-j+1
@@ -120,9 +120,9 @@ group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
 ##' Show the results of grouping procedure
 ##'
 ##' It shows the linkage groups as well as the unlinked markers.
-##' 
+##'
 ##' @aliases print.group
-##' @param x an object of class onemap.segreg.test
+##' @param x an object of class onemap_segreg_test
 ##'
 ##' @param detailed logical. If \code{TRUE} the markers in each
 ##'     linkage group are printed.
@@ -130,18 +130,17 @@ group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
 ##' @param ... currently ignored
 ##' @return \code{NULL}
 ##' @keywords internal
+##' @method print group
 ##' @export
-##'
-
 print.group <-
     function(x, detailed=TRUE,...) {
         ## checking for correct object
         if(!any(class(x)=="group")) stop(deparse(substitute(x))," is not an object of class 'group'")
-        
+
         cat("  This is an object of class 'group'\n")
         cat(paste("  It was generated from the object \"", x$input.name,
                   "\"\n\n",sep=""))
-        
+
         ## criteria
         cat("  Criteria used to assign markers to groups:\n")
         cat("    LOD =", x$LOD, ", Maximum recombination fraction =",
@@ -150,9 +149,9 @@ print.group <-
         ## printing summary
         cat("\n  No. markers:           ", x$n.mar, "\n")
         cat("  No. groups:            ", x$n.groups, "\n")
-        cat("  No. linked markers:    ", sum(!is.na(x$groups)), "\n")
-        cat("  No. unlinked markers:  ", sum(x$groups==0), "\n")
-        
+        cat("  No. linked markers:    ", sum(x$groups > 0), "\n")
+        cat("  No. unlinked markers:  ", sum(x$groups == 0), "\n")
+
         if (detailed) {
             ## printing detailed results (markers in each linkage group)
             cat("\n  Printing groups:")
@@ -169,7 +168,7 @@ print.group <-
 
 
 ##Checks if a marker i is linked with markers in a vector s
-check.linkage<-function(i, s, cl, geno, st=NULL, max.rf, LOD)
+check_linkage<-function(i, s, cl, geno, st=NULL, max.rf, LOD)
 {
     s<-s[is.na(match(s,i))]
     if(cl=="outcross")
@@ -193,7 +192,7 @@ check.linkage<-function(i, s, cl, geno, st=NULL, max.rf, LOD)
         r<-est_rf_bc(geno = geno[,c(i,s)], mrk = 1, type = 1, nind = nrow(geno))
         sig<-r[1,] <= max.rf & r[2,] >=LOD
     }
-    
+
     else if(cl=="risib")
     {
         r<-est_rf_bc(geno = geno[,c(i,s)], mrk = 1, type = 1, nind = nrow(geno))

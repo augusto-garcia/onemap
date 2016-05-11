@@ -9,16 +9,16 @@ create_data_bins(input.obj, bins)
 \arguments{
 \item{input.obj}{an object of class \code{onemap}.}
 
-\item{bins}{an object of class \code{onemap.bin}.}
+\item{bins}{an object of class \code{onemap_bin}.}
 }
 \value{
 an object of class \code{onemap}.
 }
 \description{
-Creates a new dataset based on \code{onemap.bin} object
+Creates a new dataset based on \code{onemap_bin} object
 }
 \details{
-Given a \code{onemap.bin} object,
+Given a \code{onemap_bin} object,
 creates a new data set where the redundant markers are
 collapsed into bins and represented by the marker with the lower
 amount of missing data among those on the bin.

@@ -19,20 +19,20 @@
 
 
 ##' Recombination Counting and Ordering
-##' 
+##'
 ##' Implements the marker ordering algorithm \emph{Recombination Counting and
 ##' Ordering} (\cite{Van Os et al., 2005}).
-##' 
+##'
 ##' \emph{Recombination Counting and Ordering} (\emph{RECORD}) is an algorithm
 ##' for marker ordering in linkage groups. It is not an exhaustive search
 ##' method and, therefore, is not computationally intensive. However, it does
 ##' not guarantee that the best order is always found. The only requirement is
 ##' a matrix with recombination fractions between markers.
-##' 
+##'
 ##' After determining the order with \emph{RECORD}, the final map is
 ##' constructed using the multipoint approach (function
 ##' \code{\link[onemap]{map}}).
-##' 
+##'
 ##' @param input.seq an object of class \code{sequence}.
 ##' @param times integer. Number of replicates of the RECORD procedure.
 ##' @param LOD minimum LOD-Score threshold used when constructing the pairwise
@@ -50,69 +50,69 @@
 ##' recombination frequencies between markers in the sequence. \code{-1} means
 ##' that there are no estimated recombination frequencies.}
 ##' \item{seq.like}{log-likelihood of the corresponding linkage map.}
-##' \item{data.name}{name of the object of class \code{outcross} with the raw
-##' data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
+##' \item{data.name}{name of the object of class \code{onemap} with the raw
+##' data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
 ##' 2-point analyses.}
 ##' @author Marcelo Mollinari, \email{mmollina@@usp.br}
-##' @seealso \code{\link[onemap]{make.seq}} and \code{\link[onemap]{map}}
+##' @seealso \code{\link[onemap]{make_seq}} and \code{\link[onemap]{map}}
 ##' @references Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia,
 ##' A. A. F. (2009) Evaluation of algorithms used to order markers on genetics
 ##' maps. \emph{Heredity} 103: 494-502.
-##' 
+##'
 ##' Van Os, H., Stam, P., Visser, R.G.F. and Van Eck, H.J. (2005) RECORD: a
 ##' novel method for ordering loci on a genetic linkage map. \emph{Theoretical
 ##' and Applied Genetics} 112: 30-40.
 ##' @keywords utilities
 ##' @examples
-##' 
+##'
 ##' \dontrun{
 ##'   ##outcross example
-##'   data(example.out)
-##'   twopt <- rf.2pts(example.out)
-##'   all.mark <- make.seq(twopt,"all")
-##'   groups <- group(all.mark)
-##'   LG1 <- make.seq(groups,1)
+##'   data(example_out)
+##'   twopt <- rf_2pts(example_out)
+##'   all_mark <- make_seq(twopt,"all")
+##'   groups <- group(all_mark)
+##'   LG1 <- make_seq(groups,1)
 ##'   LG1.rec <- record(LG1)
-##' 
+##'
 ##'   ##F2 example
-##'   data(fake.f2.onemap)
-##'   twopt <- rf.2pts(fake.f2.onemap)
-##'   all.mark <- make.seq(twopt,"all")
-##'   groups <- group(all.mark)
-##'   LG1 <- make.seq(groups,1)
+##'   data(fake_f2_onemap)
+##'   twopt <- rf_2pts(fake_f2_onemap)
+##'   all_mark <- make_seq(twopt,"all")
+##'   groups <- group(all_mark)
+##'   LG1 <- make_seq(groups,1)
 ##'   LG1.rec <- record(LG1)
 ##'   LG1.rec
 ##' }
-##' 
+##'
 record<-function(input.seq, times=10, LOD=0, max.rf=0.5, tol=10E-5){
     ## checking for correct object
     if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is
     not an object of class 'sequence'")
     n.mrk <- length(input.seq$seq.num)
-    
-    ## create reconmbination fraction matrix 
-    
+
+    ## create reconmbination fraction matrix
+
     if(class(get(input.seq$twopt))[2]=="outcross")
-        r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)     
+        r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
     else
-        r<-get_mat_rf_in(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)     
+        r<-get_mat_rf_in(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
     r[is.na(r)]<-0.5
     diag(r)<-0
-    
+
     ##RECORD algorithm
     X<-r*get(input.seq$data.name, pos=1)$n.ind ## Obtaining X multiplying the MLE of the recombination
     ## fraction by the number of individuals
-    
+
     COUNT<-function(X, sequence){ ## See eq. 1 on the paper (Van Os et al., 2005)
         return(sum(diag(X[sequence[-length(sequence)],sequence[-1]]),na.rm=TRUE))
     }
     ## For two markers
     if(n.mrk==2)
-        return(map(make.seq(get(input.seq$twopt),input.seq$seq.num[1:2],twopt=input.seq$twopt), tol=10E-5))
-    
+        return(map(make_seq(get(input.seq$twopt),input.seq$seq.num[1:2],twopt=input.seq$twopt), tol=10E-5))
+
     ## For three markers (calculation of 3 possible orders: 3!/2)
     else if(n.mrk==3) {
-        all.perm<-perm.pars(1:3)
+        all.perm<-perm_pars(1:3)
         m.old<-Inf
         for(k in 1:nrow(all.perm)){
             m.new<-COUNT(X, all.perm[k,])
@@ -120,7 +120,7 @@ record<-function(input.seq, times=10, LOD=0, max.rf=0.5, tol=10E-5){
                 result.new <- all.perm[k,]; m.old<-m.new
         }
     }
-    
+
     ## For more than three markers (RECORD algorithm itself)
   else{
       marks<-c(1:n.mrk)
@@ -135,7 +135,7 @@ record<-function(input.seq, times=10, LOD=0, max.rf=0.5, tol=10E-5){
               for(j in seq(1,(length(partial)), by = 2)){
                   partial.temp<-partial
                   partial.temp[j]<-next.mark
-                  temp.new<-COUNT(X, partial.temp[is.na(partial.temp)==FALSE])  
+                  temp.new<-COUNT(X, partial.temp[is.na(partial.temp)==FALSE])
                   if(temp.new<temp) {
                       result<-partial.temp[is.na(partial.temp)==FALSE]
                       temp<-temp.new
@@ -149,7 +149,7 @@ record<-function(input.seq, times=10, LOD=0, max.rf=0.5, tol=10E-5){
           for(j in seq(1,(length(partial)), by = 2)){
               partial.temp<-partial
               partial.temp[j]<-next.mark
-              temp.new<-COUNT(X, partial.temp[ is.na(partial.temp)==FALSE])  
+              temp.new<-COUNT(X, partial.temp[ is.na(partial.temp)==FALSE])
               if(temp.new<temp) {
                   result<-partial.temp[ is.na(partial.temp)==FALSE]
                   temp<-temp.new
@@ -184,7 +184,7 @@ record<-function(input.seq, times=10, LOD=0, max.rf=0.5, tol=10E-5){
                     result<-perm.order
                     temp<-COUNT.temp
                 }
-            }      
+            }
           }
               }
           }
@@ -195,8 +195,8 @@ record<-function(input.seq, times=10, LOD=0, max.rf=0.5, tol=10E-5){
       }
   }
     ## end of RECORD algorithm
-    cat("\norder obtained using RECORD algorithm:\n\n", input.seq$seq.num[avoid.reverse(result.new)], "\n\ncalculating multipoint map using tol", tol, ".\n\n")
-    map(make.seq(get(input.seq$twopt),input.seq$seq.num[avoid.reverse(result.new)],twopt=input.seq$twopt), tol=tol)
+    cat("\norder obtained using RECORD algorithm:\n\n", input.seq$seq.num[avoid_reverse(result.new)], "\n\ncalculating multipoint map using tol", tol, ".\n\n")
+    map(make_seq(get(input.seq$twopt),input.seq$seq.num[avoid_reverse(result.new)],twopt=input.seq$twopt), tol=tol)
 }
 
 ##end of file

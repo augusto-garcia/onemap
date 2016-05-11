@@ -45,10 +45,10 @@ using \code{NULL}, the new values override the ones in object
 }
 \examples{
 
-  data(example.out)
-  twopts <- rf.2pts(example.out)
-  
-  all.data <- make.seq(twopts,"all")
+  data(example_out)
+  twopts <- rf_2pts(example_out)
+
+  all.data <- make_seq(twopts,"all")
   link_gr <- group(all.data)
   link_gr
   print(link_gr, details=FALSE) #omit the names of the markers
@@ -65,8 +65,8 @@ Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993)
     Institute for Biomedical Research Technical Report}.
 }
 \seealso{
-\code{\link[onemap]{rf.2pts}} and
-    \code{\link[onemap]{make.seq}}
+\code{\link[onemap]{rf_2pts}} and
+    \code{\link[onemap]{make_seq}}
 }
 \keyword{misc}
 

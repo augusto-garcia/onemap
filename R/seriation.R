@@ -3,7 +3,7 @@
 ## Package: onemap                                                     ##
 ##                                                                     ##
 ## File: seriation.R                                                   ##
-## Contains: seriation, ser.ord, Cindex                                ##
+## Contains: seriation, ser_ord, Cindex                                ##
 ##                                                                     ##
 ## Written by Gabriel Rodrigues Alves Margarido                        ##
 ## copyright (c) 2007-9, Gabriel R A Margarido                         ##
@@ -18,16 +18,16 @@
 
 
 ##' Seriation
-##' 
+##'
 ##' Implements the marker ordering algorithm \emph{Seriation} (\cite{Buetow &
 ##' Chakravarti, 1987}).
-##' 
+##'
 ##' \emph{Seriation} is an algorithm for marker ordering in linkage groups. It
 ##' is not an exhaustive search method and, therefore, is not computationally
 ##' intensive. However, it does not guarantee that the best order is always
 ##' found. The only requirement is a matrix with recombination fractions
 ##' between markers.
-##' 
+##'
 ##' NOTE: When there are to many pairs of markers with the same value in the
 ##' recombination fraction matrix, it can result in ties during the ordination
 ##' process and the \emph{Seriation} algorithm may not work properly. This is
@@ -35,11 +35,11 @@
 ##' of type \code{D1} and \code{D2}. When this occurs, the function shows the
 ##' following error message: \code{There are too many ties in the ordination
 ##' process - please, consider using another ordering algorithm}.
-##' 
+##'
 ##' After determining the order with \emph{Seriation}, the final map is
 ##' constructed using the multipoint approach (function
 ##' \code{\link[onemap]{map}}).
-##' 
+##'
 ##' @param input.seq an object of class \code{sequence}.
 ##' @param LOD minimum LOD-Score threshold used when constructing the pairwise
 ##' recombination fraction matrix.
@@ -56,62 +56,62 @@
 ##' recombination frequencies between markers in the sequence. \code{-1} means
 ##' that there are no estimated recombination frequencies.}
 ##' \item{seq.like}{log-likelihood of the corresponding linkage map.}
-##' \item{data.name}{name of the object of class \code{outcross} with the raw
-##' data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
+##' \item{data.name}{name of the object of class \code{onemap} with the raw
+##' data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
 ##' 2-point analyses.}
 ##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com}
-##' @seealso \code{\link[onemap]{make.seq}}, \code{\link[onemap]{map}}
+##' @seealso \code{\link[onemap]{make_seq}}, \code{\link[onemap]{map}}
 ##' @references Buetow, K. H. and Chakravarti, A. (1987) Multipoint gene
 ##' mapping using seriation. I. General methods. \emph{American Journal of
 ##' Human Genetics} 41: 180-188.
-##' 
+##'
 ##' Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia, A. A. F.
 ##' (2009) Evaluation of algorithms used to order markers on genetics maps.
 ##' \emph{Heredity} 103: 494-502.
 ##' @keywords utilities
 ##' @examples
-##' 
+##'
 ##' \dontrun{
 ##'   ##outcross example
-##'   data(example.out)
-##'   twopt <- rf.2pts(example.out)
-##'   all.mark <- make.seq(twopt,"all")
-##'   groups <- group(all.mark)
-##'   LG3 <- make.seq(groups,3)
+##'   data(example_out)
+##'   twopt <- rf_2pts(example_out)
+##'   all_mark <- make_seq(twopt,"all")
+##'   groups <- group(all_mark)
+##'   LG3 <- make_seq(groups,3)
 ##'   LG3.ser <- seriation(LG3)
-##' 
+##'
 ##'   ##F2 example
-##'   data(fake.f2.onemap)
-##'   twopt <- rf.2pts(fake.f2.onemap)
-##'   all.mark <- make.seq(twopt,"all")
-##'   groups <- group(all.mark)
-##'   LG1 <- make.seq(groups,1)
+##'   data(fake_f2_onemap)
+##'   twopt <- rf_2pts(fake_f2_onemap)
+##'   all_mark <- make_seq(twopt,"all")
+##'   groups <- group(all_mark)
+##'   LG1 <- make_seq(groups,1)
 ##'   LG1.ser <- seriation(LG1)
 ##'   LG1.ser
 ##' }
-##' 
+##'
 seriation<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5)
 {
     ## checking for correct object
     if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is
     not an object of class 'sequence'")
     n.mrk <- length(input.seq$seq.num)
-    
-    ## create reconmbination fraction matrix 
-    
+
+    ## create reconmbination fraction matrix
+
     if(class(get(input.seq$twopt))[2]=="outcross")
-        r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)     
+        r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
     else
-        r<-get_mat_rf_in(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)     
+        r<-get_mat_rf_in(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
     r[is.na(r)]<-0.5
     diag(r)<-0
-    
+
     ## SERIATION algorithm
     n.mrk<-ncol(r)
     orders <- array(0,dim=c(n.mrk,n.mrk))
     CI <- numeric(n.mrk)
     for (i in 1:n.mrk) {
-        orders[i,] <- ser.ord(r,i)
+        orders[i,] <- ser_ord(r,i)
         CI[i] <- Cindex(orders[i,],r)
     }
     best <- which(CI==CI[which.min(CI)])
@@ -123,12 +123,12 @@ seriation<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5)
 
     ## end of SERIATION algorithm
     cat("\norder obtained using SERIATION algorithm:\n\n", input.seq$seq.num[complete], "\n\ncalculating multipoint map using tol = ", tol, ".\n\n")
-    map(make.seq(get(input.seq$twopt),input.seq$seq.num[complete],twopt=input.seq$twopt), tol=tol)
+    map(make_seq(get(input.seq$twopt),input.seq$seq.num[complete],twopt=input.seq$twopt), tol=tol)
 }
 
 ##Provides an order given the recombination
-##fraction matrix and the starting marker. 
-ser.ord <- function(r,i) {
+##fraction matrix and the starting marker.
+ser_ord <- function(r,i) {
     n.mrk <- ncol(r)
     x <- 1:n.mrk
     unres1 <- 0
@@ -197,7 +197,7 @@ ser.ord <- function(r,i) {
           else if (unres2[1]==2) {
               if (r[e,m1] < r[e,m2]) { order <- c(e,esq,order,m1,m2,dir); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres2 <- 0 }
             else if (r[e,m1] > r[e,m2]) { order <- c(e,esq,order,m2,m1,dir); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres2 <- 0 }
-            else { esq <- c(e,esq); x[e] <- NaN }	
+            else { esq <- c(e,esq); x[e] <- NaN }
           }
           }
         else if (r[pri,e] > r[ult,e] || rand==2) {
@@ -209,7 +209,7 @@ ser.ord <- function(r,i) {
           else if (unres2[1]==2) {
               if (r[e,m1] < r[e,m2]) { order <- c(esq,order,m2,m1,dir,e); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres2 <- 0 }
             else if (r[e,m1] > r[e,m2]) { order <- c(esq,order,m1,m2,dir,e); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres2 <- 0 }
-            else { dir <- c(dir,e); x[e] <- NaN }	
+            else { dir <- c(dir,e); x[e] <- NaN }
           }
         }
       }
@@ -305,7 +305,7 @@ ser.ord <- function(r,i) {
       }
     }
     }
-    return(avoid.reverse(order))
+    return(avoid_reverse(order))
 }
 
 ##Continuity Index

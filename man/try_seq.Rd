@@ -39,8 +39,8 @@ An object of class \code{try}, which is a list containing
     Score is based on the best combination of linkage phases for
     each map.}  \item{try.ord}{a \code{matrix} with the orders of
     all linkage maps.}  \item{data.name}{name of the object of
-    class \code{outcross} with the raw data.} \item{twopt}{name of
-    the object of class \code{rf.2pts} with the 2-point analyses.}
+    class \code{onemap} with the raw data.} \item{twopt}{name of
+    the object of class \code{rf_2pts} with the 2-point analyses.}
 }
 \description{
 For a given linkage map, tries do add an additional unpositioned
@@ -61,7 +61,7 @@ between and at the end of the base map. Actually, it is a graphic
 representation of the \code{LOD} vector (see \code{Value}
 section). The red triangle indicates the best position where the
 new marker \code{mrk} should be placed; iii) the right bottom
-figure is the non-interactive \code{\link[onemap]{rf.graph.table}}
+figure is the non-interactive \code{\link[onemap]{rf_graph_table}}
 function for the new genetic map. It plots a matrix of pairwise
 recombination fractions (under the diagonal) and LOD Scores (upper
 the diagonal) using a color scale.
@@ -70,11 +70,11 @@ the diagonal) using a color scale.
 
 \dontrun{
   #outcrossing example
-  data(example.out)
-  twopt <- rf.2pts(example.out)
-  markers <- make.seq(twopt,c(2,3,12,14))
+  data(example_out)
+  twopt <- rf_2pts(example_out)
+  markers <- make_seq(twopt,c(2,3,12,14))
   markers.comp <- compare(markers)
-  base.map <- make.seq(markers.comp,1)
+  base.map <- make_seq(markers.comp,1)
 
   extend.map <- try_seq(base.map,30)
   extend.map
@@ -82,17 +82,17 @@ the diagonal) using a color scale.
   print(extend.map,4) # second best position
 
   #F2 example
-  data(fake.f2.onemap)
-  twopt <- rf.2pts(fake.f2.onemap)
-  all.mark <- make.seq(twopt,"all")
-  groups <- group(all.mark)
-  LG3 <- make.seq(groups,3)
-  LG3.ord <- order.seq(LG3, subset.search = "twopt", twopt.alg = "rcd", touchdown=TRUE)
+  data(fake_f2_onemap)
+  twopt <- rf_2pts(fake_f2_onemap)
+  all_mark <- make_seq(twopt,"all")
+  groups <- group(all_mark)
+  LG3 <- make_seq(groups,3)
+  LG3.ord <- order_seq(LG3, subset.search = "twopt", twopt.alg = "rcd", touchdown=TRUE)
   LG3.ord
-  safe.map<-make.seq(LG3.ord,"safe")
+  safe.map<-make_seq(LG3.ord,"safe")
   extend.map <- try_seq(safe.map,64)
   extend.map
-  (new.map<-make.seq(extend.map,14)) # best position
+  (new.map<-make_seq(extend.map,14)) # best position
 
   #Display diagnostic graphics
   try_seq(safe.map,64,draw.try=TRUE) #best position (default)
@@ -137,7 +137,7 @@ Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage
     79: 85-96
 }
 \seealso{
-\code{\link[onemap]{make.seq}} and
+\code{\link[onemap]{make_seq}} and
     \code{\link[onemap]{compare}}.
 }
 \keyword{utilities}

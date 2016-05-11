@@ -7,7 +7,7 @@
 select_segreg(x, distorted = FALSE)
 }
 \arguments{
-\item{x}{an object of class onemap.segreg.test}
+\item{x}{an object of class onemap_segreg_test}
 
 \item{distorted}{a TRUE/FALSE variable to show distorted or non-distorted markers}
 }
@@ -19,8 +19,8 @@ A function to shows which marker have segregation distortion if Bonferroni's cor
 applied for the Chi-square tests of mendelian segregation.
 }
 \examples{
-data(fake.bc.onemap) # Loads a fake backcross dataset installed with onemap
-Chi <- test_segregation(fake.bc.onemap) # Performs the chi-square test for all markers
+data(fake_bc_onemap) # Loads a fake backcross dataset installed with onemap
+Chi <- test_segregation(fake_bc_onemap) # Performs the chi-square test for all markers
 select_segreg(Chi) # To show non-distorted markers
 select_segreg(Chi, distorted=TRUE) # To show markers with segregation distortion
 

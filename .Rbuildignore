@@ -1,6 +1,6 @@
 todo
 copying
-^\.travis.yml$
+^\.travis\.yml$
 ^.*\.Rproj$
 ^NEWS\.md$
 

@@ -16,10 +16,10 @@
 
 ##' Compare all possible orders (exhaustive search) for a given sequence of
 ##' markers
-##' 
+##'
 ##' For a given sequence with \eqn{n}{n} markers, computes the multipoint
 ##' likelihood of all \eqn{\frac{n!}{2}}{n!/2} possible orders.
-##' 
+##'
 ##' Since the number \eqn{\frac{n!}{2}}{n!/2} is large even for moderate values
 ##' of \eqn{n}{n}, this function is to be used only for sequences with
 ##' relatively few markers. If markers were genotyped in an outcross population,
@@ -33,7 +33,7 @@
 ##' (2002b) (Eqs. 7a to 11), assuming that the recombination fraction is the
 ##' same in both parents. Hidden Markov chain codes adapted from Broman et al.
 ##' (2008) were used.
-##' 
+##'
 ##' @param input.seq an object of class \code{sequence}.
 ##' @param n.best the number of best orders to store in object (defaults to
 ##' 50).
@@ -48,53 +48,53 @@
 ##' with linkage phases for the best orders.} \item{best.ord.like}{a
 ##' \code{vector} with log-likelihood values for the best orders.}
 ##' \item{best.ord.LOD}{a \code{vector} with LOD Score values for the best
-##' orders.} \item{data.name}{name of the object of class \code{outcross} with
-##' the raw data.} \item{twopt}{name of the object of class \code{rf.2pts} with
+##' orders.} \item{data.name}{name of the object of class \code{onemap} with
+##' the raw data.} \item{twopt}{name of the object of class \code{rf_2pts} with
 ##' the 2-point analyses.}
 ##' @author Marcelo Mollinari, \email{mmollina@@usp.br}
-##' @seealso \code{\link[onemap]{marker.type}} for details about segregation
-##' types and \code{\link[onemap]{make.seq}}.
+##' @seealso \code{\link[onemap]{marker_type}} for details about segregation
+##' types and \code{\link[onemap]{make_seq}}.
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
 ##' 1.09-43
-##' 
+##'
 ##' Jiang, C. and Zeng, Z.-B. (1997). Mapping quantitative trait loci with
 ##' dominant and missing markers in various crosses from two inbred lines.
 ##' \emph{Genetica} 101: 47-58.
-##' 
+##'
 ##' Lander, E. S., Green, P., Abrahamson, J., Barlow, A., Daly, M. J., Lincoln,
 ##' S. E. and Newburg, L. (1987) MAPMAKER: An interactive computer package for
 ##' constructing primary genetic linkage maps of experimental and natural
 ##' populations. \emph{Genomics} 1: 174-181.
-##' 
+##'
 ##' Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia, A.  A. F.
 ##' (2009) Evaluation of algorithms used to order markers on genetics maps.
 ##' _Heredity_ 103: 494-502.
-##' 
+##'
 ##' Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002a) Simultaneous maximum
 ##' likelihood estimation of linkage and linkage phases in outcrossing species.
 ##' \emph{Theoretical Population Biology} 61: 349-363.
-##' 
+##'
 ##' Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage mapping of
 ##' sex-specific differences. \emph{Genetical Research} 79: 85-96
 ##' @keywords utilities
 ##' @examples
-##' 
+##'
 ##' \dontrun{
 ##'   #outcrossing example
-##'   data(example.out)
-##'   twopt <- rf.2pts(example.out)
-##'   markers <- make.seq(twopt,c(12,14,15,26,28))
+##'   data(example_out)
+##'   twopt <- rf_2pts(example_out)
+##'   markers <- make_seq(twopt,c(12,14,15,26,28))
 ##'   (markers.comp <- compare(markers))
 ##'   (markers.comp <- compare(markers,verbose=TRUE))
-##' 
+##'
 ##'   #F2 example
-##'   data(fake.f2.onemap)
-##'   twopt <- rf.2pts(fake.f2.onemap)
-##'   markers <- make.seq(twopt,c(17,26,29,30,44,46,55)) 
+##'   data(fake_f2_onemap)
+##'   twopt <- rf_2pts(fake_f2_onemap)
+##'   markers <- make_seq(twopt,c(17,26,29,30,44,46,55))
 ##'   (markers.comp <- compare(markers))
 ##'   (markers.comp <- compare(markers,verbose=TRUE))
-##' 
+##'
 ##' }
 ##'
 ##'
@@ -117,7 +117,7 @@ compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
         cat("WARNING: this operation may take a VERY long time\n")
     flush.console()
     if(length(input.seq$seq.num) > 10) {
-        cat("\nIt is not wisely trying to use 'compare' with more than 10 markers \n")
+        cat("\nIt is not wise trying to use 'compare' with more than 10 markers \n")
         ANSWER <- readline("Are you sure you want to proceed? [y or n]\n")
         while(substr(ANSWER, 1, 1) != "n" & substr(ANSWER, 1, 1) != "y")
             ANSWER <- readline("\nPlease answer: 'y' or 'n' \n")
@@ -133,18 +133,18 @@ compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
         best.ord.rf <- matrix(NA,(n.best+1),length(input.seq$seq.num)-1)
         best.ord.phase <- matrix(NA,(n.best+1),length(input.seq$seq.num)-1)
         best.ord.like <- best.ord.LOD <- rep(-Inf,(n.best+1))
-        
+
         ## 'phases' gathers information from two-point analyses
         list.init <- phases(input.seq)
-        
-        ## 'perm.pars' generates all n!/2 orders
-        all.ord <- perm.pars(input.seq$seq.num)
+
+        ## 'perm_pars' generates all n!/2 orders
+        all.ord <- perm_pars(input.seq$seq.num)
         cat("\nComparing",nrow(all.ord),"orders:     \n\n")
-        if (verbose){ 
+        if (verbose){
             for(i in 1:nrow(all.ord)){
                 ## print output for each order
                 cat("Order", i, ":", all.ord[i,], "\n")
-                flush.console()  
+                flush.console()
                 ## get initial values for the HMM
                 all.match <- match(all.ord[i,],input.seq$seq.num)
                 for(j in 1:(length(input.seq$seq.num)-1)){
@@ -152,16 +152,16 @@ compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
                         rf.init[[j]] <- list.init$rf.init[[acum(all.match[j]-2)+all.match[j+1]]]
                         phase.init[[j]] <- list.init$phase.init[[acum(all.match[j]-2)+all.match[j+1]]]
                     }
-          else {
-              rf.init[[j]] <- list.init$rf.init[[acum(all.match[j+1]-2)+all.match[j]]]
-              phase.init[[j]] <- list.init$phase.init[[acum(all.match[j+1]-2)+all.match[j]]]
-          }
-                }    
-                Ph.Init <- comb.ger(phase.init)
-                Rf.Init <- comb.ger(rf.init)
+                    else {
+                        rf.init[[j]] <- list.init$rf.init[[acum(all.match[j+1]-2)+all.match[j]]]
+                        phase.init[[j]] <- list.init$phase.init[[acum(all.match[j+1]-2)+all.match[j]]]
+                    }
+                }
+                Ph.Init <- comb_ger(phase.init)
+                Rf.Init <- comb_ger(rf.init)
                 if(nrow(Ph.Init)>1){
                     ##Removing ambigous phases
-                    rm.ab<-rem.amb.ph(M=Ph.Init, w=input.seq, seq.num=all.ord[i,])
+                    rm.ab<-rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=all.ord[i,])
                     Ph.Init <- Ph.Init[rm.ab,]
                     Rf.Init <- Rf.Init[rm.ab,]
                     if(class(Ph.Init)=="integer"){
@@ -181,7 +181,7 @@ compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
                     best.ord.rf[(n.best+1),] <- final.map$rf
                     best.ord.phase[(n.best+1),] <- Ph.Init[j,]
                     best.ord.like[(n.best+1)] <- final.map$loglike
-                    
+
                     ## arrange orders according to the likelihood
                     like.order <- order(best.ord.like, decreasing=TRUE)
                     best.ord <- best.ord[like.order,]
@@ -195,7 +195,7 @@ compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
         count <- 0
         pb <- txtProgressBar(style=3)
         setTxtProgressBar(pb, 0)
-        
+
         ## nc<-NA
         ## out.pr <- seq(from=1,to=nrow(all.ord), length.out=20)
         cat("    ")
@@ -206,7 +206,7 @@ compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
             ##      nc<-round(i*100/nrow(all.ord))
             ##      cat(nc,"%", sep="")
             ##      flush.console()
-            ##    }      
+            ##    }
             ## get initial values for the HMM
             all.match <- match(all.ord[i,],input.seq$seq.num)
             for(j in 1:(length(input.seq$seq.num)-1)){
@@ -218,12 +218,12 @@ compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
               rf.init[[j]] <- list.init$rf.init[[acum(all.match[j+1]-2)+all.match[j]]]
               phase.init[[j]] <- list.init$phase.init[[acum(all.match[j+1]-2)+all.match[j]]]
           }
-            }    
-            Ph.Init <- comb.ger(phase.init)
-            Rf.Init <- comb.ger(rf.init)
+            }
+            Ph.Init <- comb_ger(phase.init)
+            Rf.Init <- comb_ger(rf.init)
             if(nrow(Ph.Init)>1){
                 ##Removing ambigous phases
-                rm.ab<-rem.amb.ph(M=Ph.Init, w=input.seq, seq.num=all.ord[i,])
+                rm.ab<-rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=all.ord[i,])
                 Ph.Init <- Ph.Init[rm.ab,]
                 Rf.Init <- Rf.Init[rm.ab,]
                 if(class(Ph.Init)=="integer"){
@@ -243,13 +243,13 @@ compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
                 best.ord.rf[(n.best+1),] <- final.map$rf
                 best.ord.phase[(n.best+1),] <- Ph.Init[j,]
                 best.ord.like[(n.best+1)] <- final.map$loglike
-                
+
                 ## arrange orders according to the likelihood
                 like.order <- order(best.ord.like, decreasing=TRUE)
                 best.ord <- best.ord[like.order,]
                 best.ord.rf <- best.ord.rf[like.order,]
                 best.ord.phase <- best.ord.phase[like.order,]
-                best.ord.like <- sort(best.ord.like, decreasing=TRUE)       
+                best.ord.like <- sort(best.ord.like, decreasing=TRUE)
             }
             count<-count+1
             setTxtProgressBar(pb, count/nrow(all.ord))
@@ -265,7 +265,7 @@ compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
                        best.ord.LOD = best.ord.LOD,
                        data.name=input.seq$data.name,
                        twopt=input.seq$twopt), class = "compare")
-        
+
     }
 }
 
@@ -290,7 +290,7 @@ compare_inbred<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
     else
     {
         ## allocating variables
-        all.ord <- perm.pars(input.seq$seq.num)
+        all.ord <- perm_pars(input.seq$seq.num)
         rf.init <- matrix(NA,nrow(all.ord),length(input.seq$seq.num)-1)
         best.ord <- matrix(NA,(n.best+1),length(input.seq$seq.num))
         best.ord.rf <- matrix(NA,(n.best+1),length(input.seq$seq.num)-1)
@@ -308,9 +308,9 @@ compare_inbred<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
             ## print output for each order
             if (verbose) cat("Order", i, ":", all.ord[i,], "\n")
             flush.console()
-            seq.temp<-make.seq(get(input.seq$twopt), arg=all.ord[i,])
+            seq.temp<-make_seq(get(input.seq$twopt), arg=all.ord[i,])
             seq.temp$twopt<-input.seq$twopt
-            rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)             
+            rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
             final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
                                       rf.vec=rf.temp,
                                       verbose=FALSE,
@@ -339,14 +339,15 @@ compare_inbred<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
                        best.ord.like = best.ord.like,
                        best.ord.LOD = best.ord.LOD,
                        data.name=input.seq$data.name,
-                       twopt=input.seq$twopt), class = "compare")   
+                       twopt=input.seq$twopt), class = "compare")
     }
 }
 
 ## print method for object class 'compare'
 print.compare <- function(x,...) {
         FLAG<-0
-        if(!any(class(get(x$data.name, pos=1)) == "outcross")) FLAG<-1   
+        if(!is(get(x$data.name, pos=1), "outcross")) FLAG<-1
+
         phases.char <- c("CC","CR","RC","RR")
         n.ord <- max(which(head(x$best.ord.LOD,-1) != -Inf))
         unique.orders <- unique(x$best.ord[1:n.ord,])
@@ -381,7 +382,7 @@ print.compare <- function(x,...) {
                 }
                 cat(paste(rep("-",leng.print),collapse=""))
                 cat("\n")
-            }   
+            }
         }
     else if(FLAG==1){ ## other
         for (i in 1:n.ord.nest) {
@@ -390,6 +391,6 @@ print.compare <- function(x,...) {
         cat(paste(rep("-",leng.print),collapse=""))
         cat("\n")
     }
-    else stop ("Should not get here!") 
+    else stop ("Should not get here!")
 }
 ## end of file
