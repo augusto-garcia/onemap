@@ -162,7 +162,7 @@ print.group <-
                 #cat(x$marnames[x$seq.num[which(x$groups==i)]], "\n")
                 cat(x$marnames[which(x$groups==i)], "\n")
             }
-            if (any(is.na(x$groups))) {
+            if (any(x$groups==0)) {
                 cat("\n  Unlinked markers:", length(which(x$groups==0)) ," markers\n    ")
                 #cat(x$marnames[x$seq.num[which(is.na(x$groups))]], "\n")
                 cat(x$marnames[which(x$groups==0)], "\n") 
