@@ -9,7 +9,7 @@
 ## copyright (c) 2007-9, Gabriel R A Margarido and Marcelo Mollinari   ##
 ##                                                                     ##
 ## First version: 11/07/2007                                           ##
-## Last update: 01/14/2016                                             ##
+## Last update: 21/06/2016                                             ##
 ## License: GNU General Public License version 2 (June, 1991) or later ##
 ##                                                                     ##
 #######################################################################
@@ -77,9 +77,9 @@ group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
         max.rf <- get(input.seq$twopt, pos=1)$max.rf
     cl<-class(get(input.seq$data.name))[2]
     geno<-get(input.seq$data.name)$geno[,input.seq$seq.num]
-    st<-get(input.seq$data.name)$segr.type.num
+    st<-get(input.seq$data.name)$segr.type.num[input.seq$seq.num]
     groups<-rep(0, length(input.seq$seq.num))
-    tp<-list(unlk=input.seq$seq.num)
+    tp<-list(unlk=1:length(input.seq$seq.num))
     i<-1
     if(verbose) cat("   Selecting markers: \n")
     while(length(tp$unlk) > 0)
@@ -157,11 +157,11 @@ print.group <-
             cat("\n  Printing groups:")
             for (i in 1:x$n.groups) {
                 cat("\n  Group", i, ":", length(which(x$groups==i)) , "markers\n    ")
-                cat(x$marnames[x$seq.num[which(x$groups==i)]], "\n")
+                cat(x$marnames[which(x$groups==i)], "\n")
             }
-            if (any(is.na(x$groups))) {
-                cat("\n  Unlinked markers:", length(which(is.na(x$groups))) ," markers\n    ")
-                cat(x$marnames[x$seq.num[which(is.na(x$groups))]], "\n")
+            if (any(x$groups==0)) {
+                cat("\n  Unlinked markers:", length(which(x$groups==0)) ," markers\n    ")
+                cat(x$marnames[which(x$groups==0)], "\n") 
             }
         }
     }
