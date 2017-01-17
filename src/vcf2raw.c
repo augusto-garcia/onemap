@@ -1,6 +1,6 @@
 /*
  OneMap: software for genetic mapping in outcrossing species
- Copyright (C) 2007-2015 Gabriel R A Margarido and Marcelo Mollinari
+ Copyright (C) 2007-2017 Gabriel R A Margarido and Marcelo Mollinari
 
  This file is part of OneMap.
 
@@ -30,7 +30,7 @@
  Departamento de Genética - São Paulo, Brazil
  Contact: gramarga@usp.br
  First version: 10/2015
- Last update: 12/2015
+ Last update: 01/2017
  */
 
 #include <stdio.h>
@@ -327,17 +327,7 @@ void vcf2raw(char **filename, char **out_filename, char **cross, int *n_parent1,
 
   // We need to write to a temporary file, because the number of markers in the header is unknown
   FILE *temp_f;
-  char temp_filename[] = "tmp_raw_XXXXXX";
-  int temp_fd;
-  /**************************************************************
-   * mkstemp MAY BE CAUSING PROBLEM IN INSTALLATIONS WITH MINGW *
-   **************************************************************/
-  temp_fd = mkstemp(temp_filename);
-  if (temp_fd == -1) {
-    error("Could not open temporary output file.\n");
-  }
-  unlink(temp_filename);
-  temp_f = fdopen(temp_fd, "w+");
+  temp_f = tmpfile();
   if (temp_f == NULL) {
     error("Could not open temporary output file.\n");
   }
@@ -479,11 +469,11 @@ void vcf2raw(char **filename, char **out_filename, char **cross, int *n_parent1,
     for (i = 1; i < marker_count; i++) {
       fprintf(final_f, " %d", pos[i]);
     }
+    fprintf(final_f, "\n");
   }
 
   // Clean-up
   fclose(temp_f);
-  close(temp_fd);
   fclose(final_f);
 
   free(chrom);
