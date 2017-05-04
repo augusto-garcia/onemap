@@ -92,7 +92,7 @@ be found at the tutorial distributed along with this package.
 \examples{
 
   \dontrun{
-    outcr_data <- read_onemap(dir="work_directory", file="data_file.txt", cross="outcross")
+    outcr_data <- read_onemap(dir="work_directory", inputfile="data_file.txt")
   }
 
 }
