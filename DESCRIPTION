@@ -27,7 +27,9 @@ Imports:
     reshape2 (>= 1.4.1),
     spam (>= 1.4-0),
     maps (>= 3.1.1),
-    stringr (>= 1.2.0)
+    stringr (>= 1.2.0),
+    Rhtslib (>= 1.8.0),
+    zlibbioc (>= 1.22.0)
 Suggests:
     qtl (>= 1.36-6),
     knitr (>= 1.10)
@@ -42,3 +44,4 @@ Packaged: 2013-09-09 16:55:07 UTC; mmollina
 NeedsCompilation: yes
 Date/Publication: 2013-09-09 20:03:53
 RoxygenNote: 5.0.1
+biocViews:
