@@ -20,7 +20,7 @@ LinkingTo: Rcpp (>= 0.10.5), Rhtslib, zlibbioc
 Depends:
     tcltk (>= 3.2.0),
     tkrplot (>= 0.0-23),
-    ggplot2 (>= 1.0.1),
+    ggplot2 (>= 2.2.1),
     R (>= 3.2.0)
 Imports:
     fields (>= 8.3-5),
