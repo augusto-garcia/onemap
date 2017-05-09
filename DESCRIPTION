@@ -24,7 +24,8 @@ Imports:
     tkrplot (>= 0.0-23),
     ggplot2 (>= 2.2.1),
     fields (>= 8.3-5),
-    reshape2 (>= 1.4.1)
+    reshape2 (>= 1.4.1),
+    spam (>= 1.4-0)
 Suggests:
     qtl (>= 1.36-6),
     knitr (>= 1.10)
