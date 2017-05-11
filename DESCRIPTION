@@ -16,7 +16,7 @@ Authors@R: c(person("Gabriel", "Margarido", role = "aut", email =
         person("Augusto", "Garcia", role = c("aut", "ctb"), email =
         "augusto.garcia@usp.br"))
 Author: Gabriel Margarido [aut]
-LinkingTo: Rcpp (>= 0.10.5), Rhtslib, zlibbioc
+LinkingTo: Rcpp (>= 0.10.5)
 Depends:
      R (>= 3.4.0)
 Imports:
@@ -25,9 +25,6 @@ Imports:
     ggplot2 (>= 2.2.1),
     fields (>= 8.3-5),
     reshape2 (>= 1.4.1),
-    spam (>= 1.4-0),
-    maps (>= 3.1.1),
-    stringr (>= 1.2.0),
     Rhtslib (>= 1.8.0),
     zlibbioc (>= 1.22.0)
 Suggests:
