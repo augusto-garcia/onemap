@@ -16,7 +16,7 @@ Authors@R: c(person("Gabriel", "Margarido", role = "aut", email =
         person("Augusto", "Garcia", role = c("aut", "ctb"), email =
         "augusto.garcia@usp.br"))
 Author: Gabriel Margarido [aut]
-LinkingTo: Rcpp (>= 0.10.5)
+LinkingTo: Rcpp (>= 0.10.5), Rhtslib, zlibbioc
 Depends:
      R (>= 3.4.0)
 Imports:
