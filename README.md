@@ -75,17 +75,7 @@ library(devtools)
 This will allow you to automatically build and install packages from
 github. If you use Windows, first install
 [Rtools](https://cran.r-project.org/bin/windows/Rtools/). If you are facing problems with Rtools installation, try to do it by selecting *Run as Admnistrator* option with right mouse button. On a Mac,
-you will need Xcode (available on the App Store). On Linux, you are
-good to go.
-
-Dependencies: you also need to install `r-cran-tkrplot` (see above)
-and a few packages from Bioconductor (try http:// if https:// URLs are not supported):
-
-```R
-source("https://bioconductor.org/biocLite.R")
-biocLite("Rhtslib")
-biocLite("zlibbioc")
-```
+you will need Xcode (available on the App Store). On Linux, you may need to install `r-cran-tkrplot` (see above).
 
 Then, to install `OneMap` from github (this very repo):
 
