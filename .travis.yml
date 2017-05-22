@@ -3,7 +3,7 @@ cache: packages
 
 r:
   - release
-  - bioc-release
+r: bioc-release
 
 addons:
   apt:
