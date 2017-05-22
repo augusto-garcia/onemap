@@ -14,3 +14,10 @@
 # onemap 2.0.6
 
 * (To be included)
+
+# onemap 2.0.7
+
+* Updating .travis.yml for the newer standards
+* Updating README in order to solve Windows user's issues.
+* Updating dependencies and NAMESPACE for newer standards (R-3.4.0)
+* Updating dependencies within Bioconductor packages
