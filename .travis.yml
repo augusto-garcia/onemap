@@ -9,9 +9,6 @@ addons:
     packages:
       - r-cran-tkrplot
       - tk-dev
-bioc_packages:
- - Rhtslib
- - zlibbioc
 
 r_build_args: --no-build-vignettes
 r_check_args: --no-vignettes

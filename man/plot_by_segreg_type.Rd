@@ -35,7 +35,7 @@ plot_by_segreg_type(fake_f2_onemap)
 # For details, see the help of ggplot2's function ggsave()
 data(example_out) #Outcrossing data
 g <- plot_by_segreg_type(example_out)
-ggsave("SegregationTypes.jpg", g, width=7, height=4, dpi=600)
+ggplot2::ggsave("SegregationTypes.jpg", g, width=7, height=4, dpi=600)
 
 }
 

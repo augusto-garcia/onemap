@@ -25,9 +25,6 @@ Imports:
     ggplot2 (>= 2.2.1),
     fields (>= 8.3-5),
     reshape2 (>= 1.4.1),
-    spam (>= 1.4-0),
-    maps (>= 3.1.1),
-    stringr (>= 1.2.0),
     Rhtslib (>= 1.8.0),
     zlibbioc (>= 1.22.0)
 Suggests:
