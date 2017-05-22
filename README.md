@@ -78,14 +78,7 @@ github. If you use Windows, first install
 you will need Xcode (available on the App Store). On Linux, you are
 good to go.
 
-Dependencies: you also need to install `r-cran-tkrplot` (see above)
-and a few packages from Bioconductor (try http:// if https:// URLs are not supported):
-
-```R
-source("https://bioconductor.org/biocLite.R")
-biocLite("Rhtslib")
-biocLite("zlibbioc")
-```
+Dependencies: you also need to install `r-cran-tkrplot` (see above).
 
 Then, to install `OneMap` from github (this very repo):
 
