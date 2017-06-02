@@ -60,7 +60,7 @@ test_segregation_of_a_marker <- function(x, marker) {
             qui <- NULL
             qui$statistic <- NA
             qui$p.value <- NA
-            H0 <- NA
+            H0 <- "1:2:1"
         }
     }
     else if (grepl("C.A",x$segr.type[marker]) | grepl("D.B",x$segr.type[marker])) {
@@ -71,7 +71,7 @@ test_segregation_of_a_marker <- function(x, marker) {
             qui <- NULL
             qui$statistic <- NA
             qui$p.value <- NA
-            H0 <- NA
+            H0 <- "3:1"
         }
     }
     else if (grepl("A.H",x$segr.type[marker]) | grepl("A.B",x$segr.type[marker])) {
@@ -82,7 +82,7 @@ test_segregation_of_a_marker <- function(x, marker) {
             qui <- NULL
             qui$statistic <- NA
             qui$p.value <- NA
-            H0 <- NA
+            H0 <- "1:1"
         }
     }
     else if (grepl("A",x$segr.type[marker])) {
@@ -93,7 +93,7 @@ test_segregation_of_a_marker <- function(x, marker) {
             qui <- NULL
             qui$statistic <- NA
             qui$p.value <- NA
-            H0 <- NA
+            H0 <- "1:1:1:1"
         }
     }
     else if (grepl("B",x$segr.type[marker])) {
@@ -104,7 +104,7 @@ test_segregation_of_a_marker <- function(x, marker) {
             qui <- NULL
             qui$statistic <- NA
             qui$p.value <- NA
-            H0 <- NA
+            H0 <- "1:2:1"
         }
     }
     else if (grepl("C",x$segr.type[marker])) {
@@ -115,7 +115,7 @@ test_segregation_of_a_marker <- function(x, marker) {
             qui <- NULL
             qui$statistic <- NA
             qui$p.value <- NA
-            H0 <- NA
+            H0 <- "3:1"
         }
     }
     else if (grepl("D",x$segr.type[marker])) {
@@ -126,7 +126,7 @@ test_segregation_of_a_marker <- function(x, marker) {
             qui <- NULL
             qui$statistic <- NA
             qui$p.value <- NA
-            H0 <- NA
+            H0 <- "1:1"
         }
     }
     #impossible to test: dominant and co-dominant mixed in the same marker
