@@ -12,7 +12,7 @@
 ## copyright (c) 2015 Antonio Augusto Franco Garcia                    ##
 ##                                                                     ##
 ## First version: 2015/04/18                                           ##
-## Last update: 2016/01/14                                             ##
+## Last update: 2017/06/02                                             ##
 ## License: GNU General Public License version 3 or later              ##
 ##                                                                     ##
 #######################################################################
@@ -45,6 +45,7 @@ globalVariables(c("Marker", "p.value"))
 ##' data(example_out) # Loads a fake outcross dataset installed with onemap
 ##' test_segregation_of_a_marker(example_out,1)
 test_segregation_of_a_marker <- function(x, marker) {
+    options(warn=-1) #Supress warnings from function chisq.test - when cell have < 5 elements
     ## Segregation pattern for each marker type
     p.a <- rep(1/4, 4); p.b <- c(1/4, 1/2, 1/4); p.c <- c(3/4, 1/4); p.d <- rep(1/2, 2)
     ## Counting each category, removing missing data (coded as 0)
