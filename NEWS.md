@@ -21,3 +21,7 @@
 * Updating README in order to solve Windows user's issues.
 * Updating dependencies and NAMESPACE for newer standards (R-3.4.0)
 * Updating dependencies within Bioconductor packages
+
+# onemap 2.0.8
+
+* Fixing chi-square segregation tests for markers with missing classes
