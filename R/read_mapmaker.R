@@ -5,12 +5,13 @@
 ##  File: read_mapmaker.R                                               #
 ##  Contains: read_mapmaker                                             #
 ##                                                                      #
-##  Written by Marcelo Mollinari                                        #
+##  Written by Marcelo Mollinari with minor modifications by Cristiane  #
+##  Taniguti                                                            #
 ##  Adapted from read.cross.mm (found in the R package qtl)             #
 ##  copyright (c) 2000-6, Karl W Broman                                 #
 ##                                                                      #
 ##  First version: 09/27/2009                                           #
-##  Last update:   01/14/2016                                           #
+##  Last update:   06/20/2017                                           #
 ##  License: GNU General Public License version 3 (June, 2007) or later #
 ##                                                                      #
 #########################################################################
@@ -251,8 +252,8 @@ read_mapmaker<-function (dir, file)
         }
         mkt<-apply(geno, 2, function(x) prod(unique(x), na.rm=TRUE))
         segr.type[mkt==2 | mkt==3 | mkt==6]<-"A.H.B"
-        segr.type[mkt==12]<-"C.A"
-        segr.type[mkt==5]<-"D.B"
+        segr.type[mkt==12]<-"D.B"
+        segr.type[mkt==5]<-"C.A"
         mkt.rest<-which(segr.type=="")
         for(i in mkt.rest)
         {
