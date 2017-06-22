@@ -8,11 +8,11 @@
 ## print.onemap_segreg_test, Bonferroni_alpha, select_segreg           ##
 ##                                                                     ##
 ## Written by Antonio Augusto Franco Garcia with minor modifications   ##
-## by Marcelo Mollinari                                                ##
+## by Marcelo Mollinari and Cristiane Taniguti                         ##
 ## copyright (c) 2015 Antonio Augusto Franco Garcia                    ##
 ##                                                                     ##
 ## First version: 2015/04/18                                           ##
-## Last update: 2017/06/02                                             ##
+## Last update: 2017/06/20                                             ##
 ## License: GNU General Public License version 3 or later              ##
 ##                                                                     ##
 #######################################################################
@@ -34,9 +34,6 @@ globalVariables(c("Marker", "p.value"))
 ##'
 ##' @return a list with the H0 hypothesis being tested, the chi-square statistics,
 ##' the associated p-values, and the \% of individuals genotyped.
-##'
-##' It returns \code{NA} if the numbers of expected and observed classes are
-##' different or if dominant and co-dominant coding is mixed in the same marker.
 ##'
 ##' ##'@examples
 ##' data(fake_bc_onemap) # Loads a fake backcross dataset installed with onemap
@@ -60,9 +57,15 @@ test_segregation_of_a_marker <- function(x, marker) {
             qui <- chisq.test(c(c1,c2,c3), p=p.b, correct = FALSE)
             H0 <- "1:2:1"
     }
-    else if (grepl("C.A",x$segr.type[marker]) | grepl("D.B",x$segr.type[marker])) {
+    else if (grepl("C.A",x$segr.type[marker])) {
           if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
-          if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
+          if (is.element(5,x$geno[,marker])) c2 <- count[names(count)==5] else c2 <- 0
+          qui <- chisq.test(as.vector(c(c1,c2)), p=rev(p.c), correct = FALSE)
+          H0 <- "3:1"
+      }
+    else if (grepl("D.B",x$segr.type[marker])) {
+          if (is.element(3,x$geno[,marker])) c1 <- count[names(count)==3] else c1 <- 0
+          if (is.element(4,x$geno[,marker])) c2 <- count[names(count)==4] else c2 <- 0
           qui <- chisq.test(as.vector(c(c1,c2)), p=rev(p.c), correct = FALSE)
           H0 <- "3:1"
     }
@@ -76,7 +79,7 @@ test_segregation_of_a_marker <- function(x, marker) {
           if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
           if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
           if (is.element(3,x$geno[,marker])) c3 <- count[names(count)==3] else c3 <- 0
-          if (is.element(4,x$geno[,marker])) c4 <- count[names(count)==3] else c4 <- 0
+          if (is.element(4,x$geno[,marker])) c4 <- count[names(count)==4] else c4 <- 0
           qui <- chisq.test(as.vector(c(c1,c2,c3,c4)), p=p.a, correct = FALSE)
           H0 <- "1:1:1:1"
     }
