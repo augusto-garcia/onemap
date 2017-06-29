@@ -373,24 +373,25 @@ create_dataframe_for_plot_outcross <- function(x) {
 ##'
 ##' @export
 plot_by_segreg_type <- function(x, subcateg=TRUE) {
-    # Create a dataframe, indicating the category and subcategory
-    df <- data.frame(segr.type=factor(x$segr.type),Type=999)
-    t <- c("A","B","C","D1","D2")
-    for (i in t){
-        if (length(grep(i, x$segr.type))>0)
-            df[grep(i, x$segr.type),]$Type <- i
-    }
-    # Plot the graphic, with option for subcategory for outcross
-    if (is(x, "outcross") && subcateg==TRUE){
-        g <- ggplot(data=df, aes(x=Type, fill=segr.type))
-        g <- g + geom_bar()
-        g <- g + xlab("Segregation Type") + ylab("Count")
-    }
-    else {
-        g <- ggplot(data=df, aes(x=Type, fill="orange"))
-        g <- g + geom_bar()
-        g <- g + xlab("Segregation Type") + ylab("Count") + theme(legend.position="none")
-    }
-    return(g)
+  # Create a dataframe, indicating the category and subcategory
+  df <- data.frame(segr.type=factor(x$segr.type),Type=999)
+  t <- c("A","B","C","D1","D2", "A.H", "A.H.B", "C.A", "D.B")
+  for (i in t){
+    if (length(grep(i, x$segr.type))>0)
+      df[grep(i, x$segr.type),]$Type <- i
+  }
+  # Plot the graphic, with option for subcategory for outcross
+  if (subcateg==TRUE){
+    g <- ggplot(data=df, aes(x=Type, fill=segr.type))
+    g <- g + geom_bar()
+    g <- g + xlab("Segregation Type") + ylab("Count")
+  }
+  else {
+    g <- ggplot(data=df, aes(x=Type, fill="orange"))
+    g <- g + geom_bar()
+    g <- g + xlab("Segregation Type") + ylab("Count") + theme(legend.position="none")
+  }
+  return(g)
 }
+
 #####
