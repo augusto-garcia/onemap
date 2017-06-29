@@ -212,8 +212,17 @@ plot.onemap <- function(x, all=TRUE, ...) {
     g <- g + geom_tile()
     g <- g + xlab("Individual") + ylab("Marker")
     if (is(x, "outcross")) {
-      g <- g + scale_fill_discrete(name="Genotypes")
-        if (x$n.mar>20)
+      if(length(which(df.OM$geno=="-")) != 0){
+        g <- g + scale_fill_manual(name="Genotypes",
+                                   values = c("black",'#e31a1c','#1f78b4','#6a3d9a','#33a02c','#ff7f00',
+                                              '#b2df8a','#fb9a99','#fdbf6f','#a6cee3'))
+
+      } else {
+        g <- g + scale_fill_manual(name="Genotypes",
+                                   values =c('#e31a1c','#1f78b4','#6a3d9a','#33a02c','#ff7f00',
+                                             '#b2df8a','#fb9a99','#fdbf6f','#cab2d6','#a6cee3'))
+      }
+      if (x$n.mar>20)
             g <- g + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
 
         if (all==TRUE) g
