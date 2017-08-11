@@ -143,7 +143,7 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", rm.repeated =
   names(new_seqs) <- names_seqs
   mk_names <- dimnames(input.2pts$analysis[[1]])[[1]]
 
-  if(!identical(repeated_mks, integer(0))) {
+  if(!identical(repeated_mks, numeric(0))) {
     cat("There are one or more markers that grouped in more than one sequence")
 
     # List with repeated markers
@@ -163,11 +163,14 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", rm.repeated =
                      sequences=new_seqs, repeated=repeated_mks_list,
                      unlinked= unlinked), class = "group_seq")
     } else {
-      new_seqs_unique <- list()
+      new_seqs_unique_temp <- new_seqs_unique <- list()
       for(i in 1:length(seqs.int)) {
         if(identical(pos_repeated[[i]], integer(0))) {
-          new_seqs_unique[[i]] <- mks_new_seqs[[i]]
-        } else { new_seqs_unique[[i]] <- mks_new_seqs[[i]][-pos_repeated[[i]]] }
+          new_seqs_unique[[i]] <- new_seqs[[i]]
+        } else {
+          new_seqs_unique_temp[[i]] <- mks_new_seqs[[i]][-pos_repeated[[i]]]
+          new_seqs_unique[[i]] <- make_seq(input.2pts, new_seqs_unique_temp[[i]])
+          new_seqs_unique[[i]]$twopt <- deparse(substitute(input.2pts))}
       }
       names(new_seqs_unique) <- names_seqs
       structure(list(data.name= input.2pts$data.name, twopt=deparse(substitute(input.2pts)),
@@ -186,6 +189,7 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", rm.repeated =
                    unlinked= unlinked), class = "group_seq")
   }
 }
+
 
 ##' Show the results of grouping markers to preexisting sequence
 ##'
