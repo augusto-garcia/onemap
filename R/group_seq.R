@@ -197,11 +197,13 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", rm.repeated =
 ##' @param detailed logical. If \code{TRUE} the markers in each
 ##'     linkage group sequence are printed.
 ##'
+##' @param ... currently ignored
+##'
 ##' @return \code{NULL}
 ##' @keywords internal
 ##' @method print group_seq
 ##' @export
-print.group_seq <- function(x, detailed=TRUE) {
+print.group_seq <- function(x, detailed=TRUE,...) {
 
   ## checking for correct object
   if(!any(class(x)=="group_seq")) stop(deparse(substitute(x))," is not an object of class 'group_seq'")
