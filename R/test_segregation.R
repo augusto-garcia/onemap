@@ -202,6 +202,7 @@ print.onemap_segreg_test <- function(x,...) {
 ##' @import ggplot2
 ##'
 ##' @examples
+##' \dontrun{
 ##' data(fake_bc_onemap) # load OneMap's fake dataset for a backcross population
 ##' BC.seg <- test_segregation(fake_bc_onemap) # Applies chi-square tests
 ##' print(BC.seg) # Shows the results
@@ -221,6 +222,7 @@ print.onemap_segreg_test <- function(x,...) {
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' g <- plot(Out.seg)
 ##' ggplot2::ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
+##'}
 ##'
 ##' @export
 plot.onemap_segreg_test <- function(x, order=TRUE,...) {
