@@ -133,7 +133,7 @@ try_seq<-function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
 
 ## Try to map a marker into every possible position between markers
 ## in a given map (for crosses derived from inbred lines)
-ttry_seq_inbred <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
+try_seq_inbred <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
 {
   # checking for correct objects
   if(!any(class(input.seq)=="sequence"))
