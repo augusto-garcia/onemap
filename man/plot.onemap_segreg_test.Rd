@@ -25,6 +25,7 @@ if Bonferroni's correction is considered, as well as the percentage of markers t
 will be discarded if this criterion is used.
 }
 \examples{
+\dontrun{
 data(fake_bc_onemap) # load OneMap's fake dataset for a backcross population
 BC.seg <- test_segregation(fake_bc_onemap) # Applies chi-square tests
 print(BC.seg) # Shows the results
@@ -44,5 +45,6 @@ plot(Out.seg, order=FALSE) # Plot the graph showing the results keeping the orde
 # For details, see the help of ggplot2's function ggsave()
 g <- plot(Out.seg)
 ggplot2::ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
+}
 
 }
