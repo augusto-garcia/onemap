@@ -7,8 +7,7 @@ functions}
 \usage{
 order_seq(input.seq, n.init = 5, subset.search = c("twopt", "sample"),
   subset.n.try = 30, subset.THRES = 3, twopt.alg = c("rec", "rcd", "ser",
-  "ug"), THRES = 3, touchdown = FALSE, draw.try = FALSE, wait = 0,
-  tol = 0.1)
+  "ug"), THRES = 3, touchdown = FALSE, tol = 0.1)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}
@@ -41,13 +40,6 @@ step is run only once, with the value of \code{THRES}. If \code{TRUE},
 \code{try_seq} runs with \code{THRES} and then once more, with
 \code{THRES-1}. The latter calculations take longer, but usually are able
 to map more markers.}
-
-\item{draw.try}{if \code{TRUE}, a diagnostic graphic for each
-\code{try_seq} step is displayed. See \code{Details} section in
-\code{\link[onemap]{try_seq}} function.}
-
-\item{wait}{the minimum time interval in seconds to display the diagnostic
-graphic for each \code{try_seq} step. Defaults to 0.00}
 
 \item{tol}{tolerance number for the C routine, i.e., the value used to
 evaluate convergence of the EM algorithm.}
@@ -132,17 +124,8 @@ resulting in a map with all markers positioned.
 
   rbind(ord.1$seq.num, ord.2$seq.num) # probably, the same order for
   this dataset
-
-  #Now showing diagnostic graphics for each try_seq step.
-  LG3.ord.dg <- order_seq(LG3, subset.search = "sample", touchdown=TRUE,
-                          draw.try=TRUE, wait=3)
-
 }
 
-}
-\author{
-Gabriel R A Margarido, \email{gramarga@usp.br} and Marcelo
-Mollinari, \email{mmollina@gmail.com}
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
@@ -176,5 +159,8 @@ sex-specific differences. \emph{Genetical Research} 79: 85-96
 \code{\link[onemap]{make_seq}}, \code{\link[onemap]{compare}} and
 \code{\link[onemap]{try_seq}}.
 }
+\author{
+Gabriel R A Margarido, \email{gramarga@usp.br} and Marcelo
+Mollinari, \email{mmollina@gmail.com}
+}
 \keyword{utilities}
-
