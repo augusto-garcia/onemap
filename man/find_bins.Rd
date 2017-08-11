@@ -40,13 +40,12 @@ Within each bin, the pairwise recombination fraction between markers is zero.
   (bins<-find_bins(fake.big.data.f2, exact=FALSE))}
 
 }
-\author{
-Marcelo Mollinari, \email{mmollina@usp.br}
-}
 \seealso{
 \code{\link[onemap]{create_data_bins}}
+}
+\author{
+Marcelo Mollinari, \email{mmollina@usp.br}
 }
 \keyword{bins}
 \keyword{dimension}
 \keyword{reduction}
-

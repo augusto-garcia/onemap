@@ -60,4 +60,3 @@ Provides a simple draw of a genetic map.
 Marcelo Mollinari, \email{mmollina@usp.br}
 }
 \keyword{rqtl}
-

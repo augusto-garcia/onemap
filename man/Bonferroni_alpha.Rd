@@ -25,4 +25,3 @@ print(Chi) # Shows the results of the Chi-square tests
 Bonferroni_alpha (Chi) # Shows the individual alpha level to be used
 
 }
-

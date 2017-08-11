@@ -71,9 +71,6 @@ same in both parents. Hidden Markov chain codes adapted from Broman et al.
 
 
 }
-\author{
-Marcelo Mollinari, \email{mmollina@usp.br}
-}
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
@@ -103,5 +100,7 @@ sex-specific differences. \emph{Genetical Research} 79: 85-96
 \code{\link[onemap]{marker_type}} for details about segregation
 types and \code{\link[onemap]{make_seq}}.
 }
+\author{
+Marcelo Mollinari, \email{mmollina@usp.br}
+}
 \keyword{utilities}
-

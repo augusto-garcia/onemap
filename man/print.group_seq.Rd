@@ -4,13 +4,15 @@
 \alias{print.group_seq}
 \title{Show the results of grouping markers to preexisting sequence}
 \usage{
-\method{print}{group_seq}(x, detailed = TRUE)
+\method{print}{group_seq}(x, detailed = TRUE, ...)
 }
 \arguments{
 \item{x}{an object of class group_seq}
 
 \item{detailed}{logical. If \code{TRUE} the markers in each
 linkage group sequence are printed.}
+
+\item{...}{currently ignored}
 }
 \value{
 \code{NULL}

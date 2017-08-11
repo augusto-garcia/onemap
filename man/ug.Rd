@@ -68,9 +68,6 @@ using the multipoint approach (function \code{\link[onemap]{map}}).
 }
 
 }
-\author{
-Marcelo Mollinari, \email{mmollina@usp.br}
-}
 \references{
 Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia,
 A. A. F. (2009) Evaluation of algorithms used to order markers on genetics
@@ -82,5 +79,7 @@ Tan, Y. and Fu, Y. (2006) A novel method for estimating linkage maps.
 \seealso{
 \code{\link[onemap]{make_seq}}, \code{\link[onemap]{map}}
 }
+\author{
+Marcelo Mollinari, \email{mmollina@usp.br}
+}
 \keyword{utilities}
-

@@ -47,9 +47,6 @@ ab x oo \tab 1:1 \cr D1.12 \tab bo x aa \tab 1:1 \cr D1.13 \tab ao x oo
 
 
 }
-\author{
-Gabriel R A Margarido, \email{gramarga@gmail.com}
-}
 \references{
 Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002)
 Simultaneous maximum likelihood estimation of linkage and linkage phases in
@@ -58,6 +55,8 @@ outcrossing species. \emph{Theoretical Population Biology} 61: 349-363.
 \seealso{
 \code{\link[onemap]{make_seq}}
 }
+\author{
+Gabriel R A Margarido, \email{gramarga@gmail.com}
+}
 \keyword{manip}
 \keyword{utilities}
-

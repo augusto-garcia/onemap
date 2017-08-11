@@ -57,4 +57,3 @@ g <- plot(example_out, all=FALSE)
 ggplot2::ggsave("MyRawData_out.jpg", g, width=9, height=4, dpi=600)
 
 }
-

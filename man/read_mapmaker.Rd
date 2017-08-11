@@ -53,10 +53,6 @@ can contain phenotypic data, but it will not be used in the analysis.
   }
 
 }
-\author{
-Adapted from Karl Broman (package \pkg{qtl}) by Marcelo Mollinari,
-\email{mmollina@usp.br}
-}
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
@@ -71,5 +67,8 @@ Report}.
 \code{fake_bc_onemap} and \code{fake_f2_onemap} directory in the
 package source.
 }
+\author{
+Adapted from Karl Broman (package \pkg{qtl}) by Marcelo Mollinari,
+\email{mmollina@usp.br}
+}
 \keyword{IO}
-

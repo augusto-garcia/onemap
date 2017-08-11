@@ -62,9 +62,6 @@ write.cross(dat1, format="qtlcart", filestem="fake_f2_onemap")
 }
 
 }
-\author{
-Marcelo Mollinari, \email{mmollina@usp.br}
-}
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
@@ -73,5 +70,7 @@ Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 Wang S., Basten, C. J. and Zeng Z.-B. (2010) Windows QTL Cartographer 2.5.
 Department of Statistics, North Carolina State University, Raleigh, NC.
 }
+\author{
+Marcelo Mollinari, \email{mmollina@usp.br}
+}
 \keyword{rqtl}
-

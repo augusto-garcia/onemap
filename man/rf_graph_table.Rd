@@ -94,4 +94,3 @@ data for that marker.
 Marcelo Mollinari, \email{mmollina@gmail.com}
 }
 \keyword{utilities}
-

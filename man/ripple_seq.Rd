@@ -66,10 +66,6 @@ there are many partially informative markers.
 
 
 }
-\author{
-Gabriel R A Margarido, \email{gramarga@gmail.com} and
-    Marcelo Mollinari, \email{mmollina@usp.br}
-}
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
@@ -100,5 +96,8 @@ sex-specific differences. \emph{Genetical Research} 79: 85-96
     \code{\link[onemap]{compare}}, \code{\link[onemap]{try_seq}}
     and \code{\link[onemap]{order_seq}}.
 }
+\author{
+Gabriel R A Margarido, \email{gramarga@gmail.com} and
+    Marcelo Mollinari, \email{mmollina@usp.br}
+}
 \keyword{utilities}
-

@@ -9,7 +9,7 @@ markers other markers from \code{rf_2pts} object. The results from two-point
 grouping, as \code{group} function.}
 \usage{
 group_seq(input.2pts, seqs = "CHROM", unlink.mks = "all",
-  rm.repeated = FALSE, LOD = NULL, max.rf = NULL)
+  rm.repeated = TRUE, LOD = NULL, max.rf = NULL)
 }
 \arguments{
 \item{input.2pts}{an object of class \code{rf_2pts}.}

@@ -77,9 +77,6 @@ constructed using the multipoint approach (function
 }
 
 }
-\author{
-Gabriel R A Margarido, \email{gramarga@gmail.com}
-}
 \references{
 Buetow, K. H. and Chakravarti, A. (1987) Multipoint gene
 mapping using seriation. I. General methods. \emph{American Journal of
@@ -92,5 +89,7 @@ Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia, A. A. F.
 \seealso{
 \code{\link[onemap]{make_seq}}, \code{\link[onemap]{map}}
 }
+\author{
+Gabriel R A Margarido, \email{gramarga@gmail.com}
+}
 \keyword{utilities}
-

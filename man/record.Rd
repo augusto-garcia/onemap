@@ -71,9 +71,6 @@ constructed using the multipoint approach (function
 }
 
 }
-\author{
-Marcelo Mollinari, \email{mmollina@usp.br}
-}
 \references{
 Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia,
 A. A. F. (2009) Evaluation of algorithms used to order markers on genetics
@@ -86,5 +83,7 @@ and Applied Genetics} 112: 30-40.
 \seealso{
 \code{\link[onemap]{make_seq}} and \code{\link[onemap]{map}}
 }
+\author{
+Marcelo Mollinari, \email{mmollina@usp.br}
+}
 \keyword{utilities}
-

@@ -80,9 +80,6 @@ using the multipoint approach (function \code{\link[onemap]{map}}).
 }
 
 }
-\author{
-Gabriel R A Margarido, \email{gramarga@gmail.com}
-}
 \references{
 Basten, C. J., Weir, B. S. and Zeng, Z.-B. (2005) \emph{QTL
 Cartographer Version 1.17: A Reference Manual and Tutorial for QTL
@@ -98,5 +95,7 @@ Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia, A. A. F.
 \seealso{
 \code{\link[onemap]{make_seq}}, \code{\link[onemap]{map}}
 }
+\author{
+Gabriel R A Margarido, \email{gramarga@gmail.com}
+}
 \keyword{utilities}
-

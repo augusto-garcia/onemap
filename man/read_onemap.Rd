@@ -96,9 +96,6 @@ be found at the tutorial distributed along with this package.
   }
 
 }
-\author{
-Gabriel R A Margarido, \email{gramarga@gmail.com}
-}
 \references{
 Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993)
 Constructing genetic linkage maps with MAPMAKER/EXP Version 3.0: a tutorial
@@ -113,5 +110,7 @@ likelihood estimation of linkage and linkage phases in outcrossing species.
 \code{\link[onemap]{combine_onemap}} and the \code{example}
 directory in the package source.
 }
+\author{
+Gabriel R A Margarido, \email{gramarga@gmail.com}
+}
 \keyword{IO}
-

@@ -4,15 +4,17 @@
 \alias{select_segreg}
 \title{Show markers with/without segregation distortion}
 \usage{
-select_segreg(x, distorted = FALSE)
+select_segreg(x, distorted = FALSE, numbers = FALSE)
 }
 \arguments{
 \item{x}{an object of class onemap_segreg_test}
 
 \item{distorted}{a TRUE/FALSE variable to show distorted or non-distorted markers}
+
+\item{numbers}{a TRUE/FALSE variable to show the numbers or the names of the markers}
 }
 \value{
-a vector with marker names, according to the option for "distorted"
+a vector with marker names or numbers, according to the option for "distorted" and "numbers"
 }
 \description{
 A function to shows which marker have segregation distortion if Bonferroni's correction is
@@ -23,6 +25,6 @@ data(fake_bc_onemap) # Loads a fake backcross dataset installed with onemap
 Chi <- test_segregation(fake_bc_onemap) # Performs the chi-square test for all markers
 select_segreg(Chi) # To show non-distorted markers
 select_segreg(Chi, distorted=TRUE) # To show markers with segregation distortion
+select_segreg(Chi, distorted=TRUE, numbers=TRUE) # To show the numbers of the markers with segregation distortion
 
 }
-

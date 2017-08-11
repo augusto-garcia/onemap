@@ -46,4 +46,3 @@ g <- plot(Out.seg)
 ggplot2::ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
 
 }
-

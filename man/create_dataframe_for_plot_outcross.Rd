@@ -17,4 +17,3 @@ An internal function that prepares a dataframe suitable for
 drawing a graphic of raw data using ggplot2, i. e., a data frame
 with long format
 }
-
