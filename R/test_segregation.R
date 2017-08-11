@@ -12,7 +12,7 @@
 ## copyright (c) 2015 Antonio Augusto Franco Garcia                    ##
 ##                                                                     ##
 ## First version: 2015/04/18                                           ##
-## Last update: 2017/06/20                                             ##
+## Last update: 2017/08/02                                             ##
 ## License: GNU General Public License version 3 or later              ##
 ##                                                                     ##
 #######################################################################
@@ -281,23 +281,26 @@ Bonferroni_alpha <- function(x, global.alpha=0.05) {
 ##'
 ##' @param x an object of class onemap_segreg_test
 ##' @param distorted a TRUE/FALSE variable to show distorted or non-distorted markers
+##' @param numbers a TRUE/FALSE variable to show the numbers or the names of the markers
 ##'
-##' @return a vector with marker names, according to the option for "distorted"
+##' @return a vector with marker names or numbers, according to the option for "distorted" and "numbers"
 ##'
 ##' @examples
 ##' data(fake_bc_onemap) # Loads a fake backcross dataset installed with onemap
 ##' Chi <- test_segregation(fake_bc_onemap) # Performs the chi-square test for all markers
 ##' select_segreg(Chi) # To show non-distorted markers
 ##' select_segreg(Chi, distorted=TRUE) # To show markers with segregation distortion
+##' select_segreg(Chi, distorted=TRUE, numbers=TRUE) # To show the numbers of the markers with segregation distortion
 ##'
 ##' @export
-select_segreg <- function(x, distorted=FALSE) {
+select_segreg <- function(x, distorted=FALSE, numbers=FALSE) {
     if (!is(x,"onemap_segreg_test")) stop("This is not an object of class onemap_segreg_test")
     Z <- data.frame(Marker=x$Marker,
                     p.value=unlist(x$Results.of.tests[3,]))
     if (distorted==FALSE) Z <- subset(Z, p.value>=Bonferroni_alpha(x))
     else Z <- subset(Z, p.value<Bonferroni_alpha(x))
-    return(as.vector(Z[,1]))
+    if (numbers==TRUE) return(which(segreg_test$Marker %in% as.vector(Z[,1])))
+    else return(as.vector(Z[,1]))
 }
 ##'
 
