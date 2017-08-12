@@ -10,9 +10,6 @@
 \alias{compare_outcross}
 \alias{Cindex}
 \alias{diplo}
-\alias{draw_order}
-\alias{draw_rf_inter}
-\alias{draw.try}
 \alias{est_map_hmm_f2}
 \alias{est_map_hmm_bc}
 \alias{est_rf_bc}
@@ -57,9 +54,6 @@ compare_inbred(input.seq, n.best, tol, verbose = FALSE)
 compare_outcross(input.seq, n.best, tol, verbose)
 Cindex(order,r)
 diplo(w, seq.num, seq.phases)
-draw_order(map.input)
-draw_rf_inter(info.graph, scale, cex)
-draw.try(base.input, try.input, pos=NULL)
 est_rf_out(geno, mrk, seg_type, nind, verbose)
 est_rf_f2(geno, mrk, seg_type, nind, verbose)
 est_rf_bc(geno, mrk,  nind, type, verbose)
