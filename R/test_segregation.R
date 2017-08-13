@@ -301,7 +301,7 @@ select_segreg <- function(x, distorted=FALSE, numbers=FALSE) {
                     p.value=unlist(x$Results.of.tests[3,]))
     if (distorted==FALSE) Z <- subset(Z, p.value>=Bonferroni_alpha(x))
     else Z <- subset(Z, p.value<Bonferroni_alpha(x))
-    if (numbers==TRUE) return(which(segreg_test$Marker %in% as.vector(Z[,1])))
+    if (numbers==TRUE) return(which(x$Marker %in% as.vector(Z[,1])))
     else return(as.vector(Z[,1]))
 }
 ##'

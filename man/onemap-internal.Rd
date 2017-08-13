@@ -10,6 +10,9 @@
 \alias{compare_outcross}
 \alias{Cindex}
 \alias{diplo}
+\alias{draw_order}
+\alias{draw_rf_inter}
+\alias{draw.try}
 \alias{est_map_hmm_f2}
 \alias{est_map_hmm_bc}
 \alias{est_rf_bc}
@@ -74,8 +77,8 @@ return_geno(segr.type, link.phases)
 ripple_seq_inbred(input.seq, ws, ext.w, LOD, tol)
 ripple_seq_outcross(input.seq, ws, LOD, tol)
 ser_ord(r,i)
-try_seq_inbred(input.seq, mrk, tol, draw.try, pos, verbose)
-try_seq_outcross(input.seq, mrk, tol, draw.try, pos, verbose)
+try_seq_inbred(input.seq, mrk, tol, pos, verbose)
+try_seq_outcross(input.seq, mrk, tol, pos, verbose)
 \method{print}{compare}(x, \dots)
 \method{print}{onemap}(x, \dots)
 \method{print}{onemap_bin}(x, \dots)
