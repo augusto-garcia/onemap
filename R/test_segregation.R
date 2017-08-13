@@ -220,8 +220,8 @@ print.onemap_segreg_test <- function(x,...) {
 ##' plot(Out.seg, order=FALSE) # Plot the graph showing the results keeping the order in the dataset
 ##' # You can store the graphic in an object, then save it.
 ##' # For details, see the help of ggplot2's function ggsave()
-##' # g <- plot(Out.seg)
-##' # ggplot2::ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
+##' g <- plot(Out.seg)
+##' ggplot2::ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
 ##'
 ##'
 ##' @export
