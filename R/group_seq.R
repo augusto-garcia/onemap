@@ -14,10 +14,13 @@
 ##                                                                     ##
 #######################################################################
 
-##' Function to assign markers to preexisting linkage groups
+## Function to assign markers to preexisting linkage groups
 
-##' Identifies linkage groups of markers, combining input \code{sequences} objects with
-##' markers other markers from \code{rf_2pts} object. The results from two-point
+##' Assign markers to preexisting linkage groups
+##'
+##'
+##' Identifies linkage groups of markers combining input \code{sequences} objects with
+##' unlinked markers from \code{rf_2pts} object. The results from two-point
 ##' (pairwise) analysis and the \emph{transitive} property of linkage are used for
 ##' grouping, as \code{group} function.
 ##'
@@ -42,9 +45,23 @@
 ##' (threshold) to declare linkage.
 ##' @param max.rf a real number (usually smaller than 0.5) used as
 ##' maximum recombination fraction to declare linkage.
-##' @return A list containing the following components:\item{sequences}{a
-##' list of objects of class \code{sequence}}. \item{repeated}{a list with the
-##' repeated markers numbers by sequence.}
+##' @return Returns an object of class \code{group_seq}, which is a list
+##'     containing the following components: \item{data.name}{name of
+##'     the object of class \code{onemap} that contains the raw
+##'     data.} \item{twopt}{name of the object of class \code{rf.2ts}
+##'     used as input, i.e., containing information used to assign
+##'     markers to linkage groups.} \item{mk.names}{marker names,
+##'     according to the input file.} \item{input.seqs}{list with the numbers
+##'     of the markers in each inputted sequence}  \item{input.unlink.mks}{numbers of
+##'     the unlinked markers in inputted sequence} \item{out.seqs}{list with the
+##'     numbers of the markers in each outputted sequence} \item{n.unlinked}{number
+##'     of markers that remained unlinked} \item{n.repeated}{number of markers which
+##'     repeated in more than one group} \item{n.mar}{total number of markers evaluated}
+##'     \item{LOD}{minimum LOD Score to declare linkage.} \item{max.rf}{maximum
+##'     recombination fraction to declare linkage.} \item{sequences}{list of outputted
+##'     sequences} \item{repeated}{list with the number of the markers that are repeated
+##'     in each outputted sequence} \item{unlinked}{number of the markers which remained
+##'     unlinked}
 ##' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
 ##' @seealso \code{\link[onemap]{make_seq}} and \code{\link[onemap]{group}}
 ##'
