@@ -1,9 +1,30 @@
-<!--
-%\VignetteEngine{knitr::docco_linear}
-%\VignetteIndexEntry{Outcrossing populations}
--->
+---
+title: "Outcrossing Populations"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::readthedown:
+    highlight: kate
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Outcrossing Populations}
+---
 
-# Outcrossing  populations
+
+```{r knitr_init, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=FALSE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
+```
 
 ```{r, globalsetup, echo=FALSE, results='hide', cache=FALSE}
 #opts_chunk$set(cache=TRUE, autodep=TRUE)
@@ -24,7 +45,7 @@ understand its functionality and start using it. You do not need to be
 an expert in R to build your linkage map, but some concepts are
 necessary and will help you through the process.
 
-## Creating the data file
+# Creating the data file
 
 This step may be quite difficult, because the data file is not very
 simple and some errors can occur while reading it. The input file
@@ -113,7 +134,7 @@ you installed it) to see how this file should be. You can see where
 system.file(package = "onemap")
 ``` 
 
-## Create data file from VCF file
+# Create data file from VCF file
 
 If you are working with biallelic markers, as SNPs and indels (marker types B3.7, D1.10 or D2.15), in VCF (Variant Call Format) files, you can use the function `vcf2raw` to convert the genotype information from the VCF file to `OneMap` format `.raw`. Moreover, the function keeps chromosome and position information for each marker at the end of raw file.
 
@@ -130,7 +151,7 @@ After running the function, the `OneMap` imput file `vcf_example_out.raw` genera
 
 The function will not convert non-informative markers (if both parents are homozygotes). Therefore, you can have smaller number of markers in your `.raw` file compared to `vcf` file. In our example, there is one non-informative marker, identified as `SNP15`.
 
-## Importing data
+# Importing data
 
 Once the input file is created, the data can be loaded and saved into an R
 `onemap` object. The function used to import data is named `read_onemap`. Its usage is quite simple:
@@ -230,7 +251,7 @@ plot(vcf_example_out, all = FALSE)
 
 The black cells here are indicating missing genotypes for those markers and individuals.
 
-## Combining `OneMap` datasets
+# Combining `OneMap` datasets
 
 If you have more than one dataset of markers, all from the same cross type, you can use the function `combine_onemap` to merge them into only one `onemap` object.
 
@@ -256,7 +277,7 @@ Plotting markers genotypes from the outputted `onemap` object, we can see that t
 plot(comb_example)
 ```
 
-## Find redundant markers
+# Find redundant markers
 
 It is possible that there are redundant markers in your dataset, specially when dealing with too many markers. Redundant markers have the same genotypic informations that others markers, usually because didn't happen recombination events between each other. They will not increase informations to the map, but will increase computational effort during the map building. Therefore, it is a good pratice to remove them to build the map and, once the map is already builded, they can be added again.
 
@@ -278,7 +299,7 @@ bins_example
 
 The arguments for `create_data_bins` function are the `onemap` object and the object created by `find_bins` function.
 
-## Testing segregation pattern
+# Testing segregation pattern
 
 
 For the map building process it is also important to know which markers have deviations in the expecteded segregation pattern. It can be a good pratice to remove them from the map building process, because they can adversely affect the map building, and, once the map is builded, they can be inserted.
@@ -326,7 +347,7 @@ You can also see the results graphically by:
 plot(segreg_test)
 ```
 
-## Strategies for this tutorial example
+# Strategies for this tutorial example
 
 Now, we start the map building analysis. In this example we follow two different strategies:
 
@@ -336,9 +357,9 @@ Now, we start the map building analysis. In this example we follow two different
 
 First, we will apply the strategy using only recombinations informations. In a second part of this tutorial we show a way to use also reference genome informations. At the and of our analysis we will be able to compare this two strategies drawing the resulted genetic maps.
 
-## Using only recombinations informations
+# Using only recombinations informations
 
-### Estimating two-point recombination fractions
+## Estimating two-point recombination fractions
 
 To start the map building analysis, the first step is estimating the recombination
 fraction between all pairs of markers, using two-point tests. 
@@ -390,7 +411,7 @@ denotes repulsion phase in both parents. Value `rf` is the maximum
 likelihood estimate of the recombination fraction, with its corresponding
 LOD Score.
 
-### Assigning markers to linkage groups
+## Assigning markers to linkage groups
 
 Once the recombination fractions and linkage phases for all pairs of
 markers have been estimated and tested, markers can be assigned to
@@ -468,7 +489,7 @@ LGs <- group(mark_no_dist, LOD = LOD_sug, max.rf = 0.4)
 LGs
 ``` 
 
-### Genetic mapping of linkage group 3
+## Genetic mapping of linkage group 3
 
 Once marker assignment to linkage groups is finished, the mapping step
 can take place. First of all, you must set the mapping function that
@@ -619,7 +640,7 @@ secondary diagonal, the recombination fraction values should increase.
 
 Looking at the matrix, it is possible to see a gap between markers `M22` and `M18` (numbers 21 and 17). In some cases, gaps could indicate that the group must be divided at this position, but here `SNP14` also show linkage with `M8`, which points that probabily it is only a gap. Adding more markers to this groups could fill this gap.
 
-### Genetic mapping of linkage group 2
+## Genetic mapping of linkage group 2
 
 Now, let us map the markers in linkage group number 2.
 
@@ -913,7 +934,7 @@ LG2_final <- LG2_test_50
 LG2_final
 ```
 
-### Genetic mapping of linkage group 1
+## Genetic mapping of linkage group 1
 
 Finally, linkage group 1 (the largest one) will be analyzed. Extract markers:
 
@@ -1014,7 +1035,7 @@ There are some differences between the results. Seriation did not
 provide good results in this case. See Mollinari et al. (2009) for an
 evaluation of these methods.
 
-## Using the recombinations and the reference genome informations
+# Using the recombinations and the reference genome informations
 
 In our example, we have reference genome chromosome and position informations for some of the markers, here we will examplify one method of using this informations to help build the genetic map.
 
@@ -1028,7 +1049,7 @@ CHR3 <- make_seq(twopts, "3")
 
 ```
 
-### Adding markers with no reference genome informations
+## Adding markers with no reference genome informations
 
 According to `CHROM` informations we have three defined linkage groups, now we can try to group the markers without chromossome informations to them using recombination informations. For this, we can use the function `group_seq`:
 
@@ -1080,7 +1101,7 @@ Now we can order the markers in each group as we made before in ([Genetic mappin
 
 To order those groups, first we will use `order_seq` function to access a preliminary order and after, we will edit some markers position or remove some of them according with they color pattern in `rf_graph_table` graphic, and other parameters as likelihood and map size. 
 
-### Genetic mapping of linkage group 1 (with reference genome informations)
+## Genetic mapping of linkage group 1 (with reference genome informations)
 
 ```{r, results='hide'}
 CHR1_ord <- order_seq(CHR_mks$sequences$CHR1)
@@ -1149,7 +1170,7 @@ Checking for better orders:
 ripple_seq(CHR1_final)
 ```
 
-### Genetic mapping of linkage group 2 (with reference genome informations)
+## Genetic mapping of linkage group 2 (with reference genome informations)
 
 ```{r, results='hide'}
 CHR2_ord <- order_seq(CHR_mks$sequences$CHR2)
@@ -1170,7 +1191,7 @@ As did before, we will not change markers positions of this group.
 CHR2_final <- CHR2_frame
 ```
 
-### Genetic mapping of linkage group 3 (with reference genome informations)
+## Genetic mapping of linkage group 3 (with reference genome informations)
 
 ```{r, results='hide'}
 CHR3_ord <- order_seq(CHR_mks$sequences$CHR3)
@@ -1223,7 +1244,7 @@ Checking for better orders:
 ripple_seq(CHR3_final)
 ```
 
-## Drawing the genetic maps
+# Drawing the genetic maps
 
 Once all linkage groups were obtained using both strategies, we can draw a simple map for each strategy using the function `draw_map`. 
 
@@ -1277,7 +1298,7 @@ user with any appropriate software. There are several free software
 that can be used, such as `MapChart` (Voorrips, 2002).
 
 
-## Map estimation for an arbitrary order
+# Map estimation for an arbitrary order
 
 If, for any reason, one wants to estimate parameters for a given
 linkage map (_e.g._, for other orders on published papers), it is
@@ -1328,8 +1349,15 @@ Removing markers 3, 4, 5, 12 and 30 from `any_seq`:
 
 After that, the map needs to be re-estimated.
 
+# Session Info
 
-## References
+```{r}
+sessionInfo()
+```
+
+
+
+# References
 
 Buetow, K. H., Chakravarti, A. Multipoint gene mapping using
 seriation. I. General methods. **_American Journal of Human
