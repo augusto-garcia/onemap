@@ -1,26 +1,35 @@
 ---
 title: "Outcrossing Populations"
 date: "`r Sys.Date()`"
-output:
-  rmdformats::readthedown:
-    highlight: kate
+author: "[Statistical Genetics Lab](http://statgen.esalq.usp.br) <br/> Department of Genetics <br/> Luiz de Queiroz College of Agriculture <br/> University of São Paulo"
+output: 
+  prettydoc::html_pretty:
+    theme: leonids
+    css: ../css/statgen.css
+    highlight: github
 vignette: >
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Outcrossing Populations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
-
-```{r knitr_init, echo=FALSE, cache=FALSE}
+```{r global options, echo=FALSE, cache=FALSE}
 library(knitr)
 library(rmdformats)
+library(prettydoc)
 
 ## Global options
 options(max.print="75")
 opts_knit$set(width=75)
-```
 
-```{r, globalsetup, echo=FALSE, results='hide', cache=FALSE}
-#opts_chunk$set(cache=TRUE, autodep=TRUE)
+## Edited From ggplot2 rmd vignette options
+knitr::opts_chunk$set(collapse = TRUE,
+                      comment = "#>", 
+                      fig.width = 4, 
+                      fig.height = 4, 
+                      fig.align = "center",
+                      cache=TRUE, 
+                      autodep=TRUE)
 ```
 
 ```{r, echo=FALSE, results='hide'}
