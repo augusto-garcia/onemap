@@ -1,36 +1,29 @@
 ---
 title: "Outcrossing Populations"
-date: "`r Sys.Date()`"
 author: "[Statistical Genetics Lab](http://statgen.esalq.usp.br) <br/> Department of Genetics <br/> Luiz de Queiroz College of Agriculture <br/> University of São Paulo"
-output: 
-  prettydoc::html_pretty:
-    theme: leonids
-    css: ../css/statgen.css
-    highlight: github
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Outcrossing Populations}
+  %\VignetteIndexEntry{Outcrosssing Populations}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r global options, echo=FALSE, cache=FALSE}
+```{r knitr_init, echo=FALSE, cache=FALSE}
 library(knitr)
-library(rmdformats)
-library(prettydoc)
+library(rmarkdown)
 
-## Global options
-options(max.print="75")
-opts_knit$set(width=75)
-
-## Edited From ggplot2 rmd vignette options
 knitr::opts_chunk$set(collapse = TRUE,
-                      comment = "#>", 
-                      fig.width = 4, 
-                      fig.height = 4, 
+                      comment = "#>",
+                      fig.width = 6,
+                      fig.height = 6,
                       fig.align = "center",
-                      cache=TRUE, 
-                      autodep=TRUE)
+                      dev = "png",
+                      dpi = 36,
+                      cache = TRUE)
+
 ```
+
 
 ```{r, echo=FALSE, results='hide'}
 library(onemap)
@@ -128,7 +121,7 @@ common mistake made by users, so please be careful**.
 
 The input file must be saved in text format, with extensions like
 `.raw`. It is a good idea to open the text file called
-`example_out.raw` (available with `OneMap` and saved in the directory
+`example_out.raw` (available in `extdata` with `OneMap` and saved in the directory
 you installed it) to see how this file should be. You can see where
 `OneMap` is installed using the command
 
@@ -143,6 +136,7 @@ If you are working with biallelic markers, as SNPs and indels (marker types B3.7
 To see how the function works, there is a short example of VCF file called `vcf_example_out.vcf` saved in the directory you installed the `OneMap`. This file is already sorted, compressed and tabix indexed as require by the function. If you need to sort your file, we suggest the `vcf-sort` perl script from `vcftools` program. The functions `bgzip` and `indexTabix` from `Rsamtools` package can be used to compress and add tabix index.
 
 ```{r, eval=FALSE, message='hide'}
+library(onemap)
 vcf2raw(input = system.file("extdata/vcf_example_out.vcf.gz", package = "onemap"),
         output = "vcf_example_out.raw", parent1 = "P1", parent2 = "P2", cross = "outcross")
 ```
@@ -253,18 +247,16 @@ plot(vcf_example_out, all = FALSE)
 
 The black cells here are indicating missing genotypes for those markers and individuals.
 
-# Combining `OneMap` datasets
+# Combining `OneMap` objects
 
 If you have more than one dataset of markers, all from the same cross type, you can use the function `combine_onemap` to merge them into only one `onemap` object.
 
-In our example, we have two datasets: 
+In our example, we have two `onemap` objects: 
 
-* first: `example_out` with 29 markers and 100 individuals
+* first: `example_out` with 30 markers and 100 individuals
 * second: `vcf_example_out` with 24 biallelic markers and 92 individuals.
 
 The `combine_function` recognizes the correspondent individuals by the ID, thus, it is important define exactly same IDs to respective individuals in both `raw` files. Compared with the first file, the second file do not have markers informations for 8 individuals. The `combine_onemap` will complete those informations with NA.
-
-In our examples, we have only genotypic information, but the function can also merge the phenotipic information if it exists.
 
 ```{r}
 comb_example <- combine_onemap(example_out, vcf_example_out)
@@ -349,22 +341,13 @@ You can also see the results graphically by:
 plot(segreg_test)
 ```
 
-# Strategies for this tutorial example
 
-Now, we start the map building analysis. In this example we follow two different strategies:
-
-* Using only recombinations informations.
-
-* Using the recombinations and also the reference genome informations, once our example have `CHROM` and `POS` informations for some of the markers.
-
-First, we will apply the strategy using only recombinations informations. In a second part of this tutorial we show a way to use also reference genome informations. At the and of our analysis we will be able to compare this two strategies drawing the resulted genetic maps.
-
-# Using only recombinations informations
-
-## Estimating two-point recombination fractions
+# Estimating two-point recombination fractions
 
 To start the map building analysis, the first step is estimating the recombination
-fraction between all pairs of markers, using two-point tests. 
+fraction between all pairs of markers, using two-point tests.  At this point, you should pay no attention if
+markers show segregation distortion or not, that is, simply use all of
+them.
 
 The function `rf_2pts` uses as default values of LOD Score `3` and maximum recombination fraction `0.50`. You can change this values according with your dataset. Also, you can use the function `suggest_lod` to calculate a suggested LOD score considering that multiple tests are being performed.
 
@@ -412,6 +395,18 @@ and 2, respectively, and repulsion in the other, and `RR`
 denotes repulsion phase in both parents. Value `rf` is the maximum
 likelihood estimate of the recombination fraction, with its corresponding
 LOD Score.
+
+# Strategies for this tutorial example
+
+In this example we follow two different strategies:
+
+* Using only recombinations informations.
+
+* Using the recombinations and also the reference genome informations, once our example have `CHROM` and `POS` informations for some of the markers.
+
+First, we will apply the strategy using only recombinations informations. In a second part of this tutorial we show a way to use also reference genome informations. At the and of our analysis we will be able to compare this two strategies drawing the resulted genetic maps.
+
+# Using only recombinations informations
 
 ## Assigning markers to linkage groups
 
