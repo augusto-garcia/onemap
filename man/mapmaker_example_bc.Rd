@@ -1,11 +1,11 @@
-\name{fake_bc_onemap}
+\name{mapmaker_example_bc}
 \docType{data}
-\alias{fake_bc_onemap}
+\alias{mapmaker_example_bc}
 \title{Simulated data from a backcross population}
 \description{
   Simulated data set from a backcross population.
 }  
-\usage{data(fake_bc_onemap)}
+\usage{data(mapmaker_example_bc)}
 \format{
   An object of class \code{onemap}. 
 }
@@ -15,10 +15,10 @@
   to use \code{onemap} output as \code{R\\qtl} input.
 }
 \examples{
-data(fake_bc_onemap)
+data(mapmaker_example_bc)
 
 # perform two-point analyses
-twopts <- rf_2pts(fake_bc_onemap)
+twopts <- rf_2pts(mapmaker_example_bc)
 twopts
 }
 \author{Marcelo Mollinari, \email{mmollina@usp.br}}

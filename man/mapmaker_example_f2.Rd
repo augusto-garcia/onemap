@@ -1,11 +1,11 @@
-\name{fake_f2_onemap}
+\name{mapmaker_example_f2}
 \docType{data}
-\alias{fake_f2_onemap}
+\alias{mapmaker_example_f2}
 \title{Simulated data from a F2 population}
 \description{
   Simulated data set from a F2 population.
 }  
-\usage{data(fake_f2_onemap)}
+\usage{data(mapmaker_example_f2)}
 \format{
   An object of class \code{onemap}.
 }
@@ -17,10 +17,10 @@
   for the analysis in the tutorial that comes with OneMap.
 }
 \examples{
-data(fake_f2_onemap)
+data(mapmaker_example_f2)
 
 # perform two-point analyses
-twopts <- rf_2pts(fake_f2_onemap)
+twopts <- rf_2pts(mapmaker_example_f2)
 twopts
 }
 \author{Marcelo Mollinari, \email{mmollina@usp.br}}

@@ -221,7 +221,7 @@ The function will not convert non-informative markers (if parents genotypes are 
 # Importing data
 
 
-# From `MAPMAKER/EXP` file
+## From `MAPMAKER/EXP` file
 
 Once you created your data file with raw data, you can use `OneMap`
 function `read_mapmaker` to import it to `OneMap`:
@@ -315,7 +315,7 @@ This file contains 25 other markers for 192 of the individuals in `onemap_exampl
 vcf_example_f2
 ```
 
-## Visualization of raw data
+# Visualization of raw data
 
 Before building your linkage map, you should take a look at your
 data set. First, notice that by reading the raw data into `OneMap`, an
@@ -387,7 +387,7 @@ Plotting markers genotypes from the outputted `onemap` object, we can see that t
 plot(comb_example)
 ```
 
-## Segregation tests
+# Segregation tests
 
 Now, it should be interesting to see if markers are segregating
 following what is expected by Mendel's law. You first need to use
@@ -479,7 +479,7 @@ dist
 
 ```
 
-## Estimating two-point recombination fractions
+# Estimating two-point recombination fractions
 
 After visualizing raw data and checking for segregation distortion, let
 us now estimate recombination fractions between all pairs of markers
@@ -545,9 +545,9 @@ In this example we follow two different strategies:
 
 First, we will apply the strategy using only recombinations informations. In a second part of this tutorial we show a way to use also reference genome informations. At the and of our analysis we will be able to compare this two strategies drawing the resulted genetic maps.
 
-# Using only recombinations informations
+## Using only recombinations informations
 
-## Assigning markers to linkage groups
+### Assigning markers to linkage groups
 
 To assign markers to linkage groups, first use the function `make_seq`
 to create a (un-ordered) sequence with all markers:
@@ -623,7 +623,7 @@ Notice the class of object `LGs_f2`:
 class(LGs_f2)
 ```
 
-## Ordering markers within linkage groups
+### Ordering markers within linkage groups
 
 After assignin markers to linkage groups, the next step is to
 order the markers within each group.
@@ -642,7 +642,7 @@ To use Kosambi's function:
 set_map_fun(type = "kosambi")
 ```
 
-### Linkage group 2
+#### Linkage group 2
 
 We will start our analysis using the smallest linkage group (group 2).
 To do so, you must `extract` it from the object of class `group`. Let
@@ -833,7 +833,7 @@ This is based on multipoint estimation of recombination
 fractions, using hidden Markov models.
 
 
-### Linkage group 1
+#### Linkage group 1
 
 Let us analyze linkage group 1. Extract markers from object `LGs`:
 
@@ -875,7 +875,7 @@ LG1_f2_final
 This is the final version of the map for this linkage group.
 
 
-### Linkage group 3
+#### Linkage group 3
 
 Extract markers from object `LGs_f2`:
 
@@ -916,7 +916,7 @@ Print it:
 LG3_f2_final
 ```
 
-## Plotting the recombination fraction matrix
+# Plotting the recombination fraction matrix
 
 It is possible to plot the recombination fraction matrix and LOD
 Scores based on a color scale using the function `rf_graph_table`.
@@ -1013,7 +1013,7 @@ rf_graph_table(LG2_f2_final)
 rf_graph_table(LG2_f2_final, inter = FALSE)
 ```
 
-# Using the recombinations and the reference genome informations
+## Using the recombinations and the reference genome informations
 
 In our example, we have reference genome chromosome and position informations for some of the markers, here we will examplify one method of using this informations to help build the genetic map.
 
@@ -1027,7 +1027,7 @@ CHR3 <- make_seq(twopts_f2, "3")
 
 ```
 
-## Adding markers with no reference genome informations
+### Adding markers with no reference genome informations
 
 According to `CHROM` informations we have three defined linkage groups, now we can try to group the markers without chromossome informations to them using recombination informations. For this, we can use the function `group_seq`:
 
@@ -1079,7 +1079,7 @@ Now we can order the markers in each group as we made before ([Ordering markers 
 
 To order those groups, first we will use `order_seq` function to access a preliminary order and after, we will edit some markers position or remove some of them according with they color pattern in `rf_graph_table` graphic, and other parameters as likelihood and map size. 
 
-## Linkage group 1
+#### Linkage group 1
 
 ```{r, results='hide'}
 CHR1_ord <- order_seq(CHR_mks$sequences$CHR1)
@@ -1100,17 +1100,17 @@ The group is similar to that builded before with only recombinations information
 CHR1_test_seq <- drop_marker(CHR1_frame, 58)
 CHR1_test_map <- map(CHR1_test_seq)
 CHR1_add58_seq <- try_seq(CHR1_test_map, 58)
-CHR1_add58 <- make_seq(CHR1_add10_seq, 20) # marker 10 was placed at the same position as before
+CHR1_add58 <- make_seq(CHR1_add10_seq, 20) # marker 58 was placed at the same position as before
 ```
 
 ```{r, echo=FALSE, results='hide'}
 CHR1_test_seq <- drop_marker(CHR1_frame, 58)
 CHR1_test_map <- onemap::map(CHR1_test_seq)
 CHR1_add58_seq <- try_seq(CHR1_test_map, 58)
-CHR1_add58 <- make_seq(CHR1_add10_seq, 20) # marker 10 was placed at the same position as before
+CHR1_add58 <- make_seq(CHR1_add58_seq, 20) # marker 58 was placed at the same position as before
 ```
 
-Comparing with and without marker 10:
+Comparing with and without marker 58:
 
 ```{r}
 CHR1_test_map
@@ -1125,21 +1125,21 @@ rf_graph_table(CHR1_test_map, inter = FALSE)
 ```
 
 ```{r}
-CHR1_add10
+CHR1_add58
 ```
 
 ```{r, eval=FALSE}
-rf_graph_table(CHR1_add10)
+rf_graph_table(CHR1_add58)
 ```
 
 ```{r, echo=FALSE}
-rf_graph_table(CHR1_add10, inter = FALSE)
+rf_graph_table(CHR1_add58, inter = FALSE)
 ```
 
-Based in those results, we decide to not include marker 10 in our map.
+Based in those results, we decide to keep marker 58 in our map.
 
 ```{r}
-CHR1_final <- CHR1_test_map
+CHR1_final <- CHR1_add58
 ```
 
 Checking for better orders:
@@ -1148,7 +1148,7 @@ Checking for better orders:
 ripple_seq(CHR1_final)
 ```
 
-## Linkage group 2
+#### Linkage group 2
 
 ```{r, results='hide'}
 CHR2_ord <- order_seq(CHR_mks$sequences$CHR2)
@@ -1163,13 +1163,62 @@ rf_graph_table(CHR2_frame)
 rf_graph_table(CHR2_frame, inter=FALSE)
 ```
 
-As did before, we will not change markers positions of this group.
+The marker `20` presented a color pattern different of expected.
 
-```{r}
-CHR2_final <- CHR2_frame
+```{r, eval=FALSE}
+CHR2_test_seq <- drop_marker(CHR2_frame, 20)
+CHR2_test_map <- map(CHR2_test_seq)
+CHR2_add20_seq <- try_seq(CHR2_test_map, 20)
+CHR2_add20 <- make_seq(CHR2_add20_seq, 20) # marker 20 was placed at the same position as before
 ```
 
-## Linkage group 3 
+```{r, echo=FALSE, results='hide'}
+CHR2_test_seq <- drop_marker(CHR2_frame, 20)
+CHR2_test_map <- onemap::map(CHR2_test_seq)
+CHR2_add20_seq <- try_seq(CHR2_test_map, 20)
+CHR2_add20 <- make_seq(CHR2_add20_seq, 20) # marker 20 was placed at the same position as before
+```
+
+Comparing with and without marker 58:
+
+```{r}
+CHR2_test_map
+```
+
+```{r, eval=FALSE}
+rf_graph_table(CHR1_test_map)
+```
+
+```{r, echo=FALSE}
+rf_graph_table(CHR2_test_map, inter = FALSE)
+```
+
+```{r}
+CHR2_add20
+```
+
+```{r, eval=FALSE}
+rf_graph_table(CHR2_add20)
+```
+
+```{r, echo=FALSE}
+rf_graph_table(CHR2_add20, inter = FALSE)
+```
+
+Based in those results, we decide to not include marker 20 in our map.
+
+```{r}
+CHR2_final <- CHR2_test_map
+```
+
+Checking for better orders:
+
+```{r}
+ripple_seq(CHR2_final)
+```
+
+
+#### Linkage group 3 
 
 ```{r, results='hide'}
 CHR3_ord <- order_seq(CHR_mks$sequences$CHR3)
@@ -1184,13 +1233,15 @@ rf_graph_table(CHR3_frame)
 rf_graph_table(CHR3_frame, inter=FALSE)
 ```
 
-Here, marker `22`, `26` and `28` have color pattern too different of the expected, removing them could influentiate in other markers ordering. Then we will remove them and search for a new order.
+Here, marker `32` have color pattern too different of the expected, removing it could influentiate in other markers ordering. Then, we will remove it and search for a new order.
 
 ```{r, results='hide'}
-CHR3_test_seq <- drop_marker(CHR3_frame, c(22,26, 28))
+CHR3_test_seq <- drop_marker(CHR3_frame, 32)
 CHR3_test_ord <- order_seq(CHR3_test_seq)
 CHR3_test_map <- make_seq(CHR3_test_ord, "force")
 ```
+
+The order did not change.
 
 ```{r, eval=FALSE}
 rf_graph_table(CHR3_test_map)
@@ -1200,19 +1251,15 @@ rf_graph_table(CHR3_test_map)
 rf_graph_table(CHR3_test_map, inter = FALSE)
 ```
 
-Trying to add markers `22`, `26` and `28` again.
+Trying to add the marker again.
 
 ```{r, results='hide'}
-CHR3_add22_seq <- try_seq(CHR3_test_map, 22)
-CHR3_add22 <- make_seq(CHR3_add22_seq, 6) # Marker 22 removed of the map
-CHR3_add26_seq <- try_seq(CHR3_test_map, 26)
-CHR3_add26 <- make_seq(CHR3_add26_seq, 1) # Marker 26 was better positioned
-CHR3_add28_seq <- try_seq(CHR3_add26, 28)
-CHR3_add28 <- make_seq(CHR3_add28_seq, 12) # Marker 28 increase the map size disproportionately, it was removed from the map
+CHR3_add32_seq <- try_seq(CHR3_test_map, 32)
+CHR3_add32 <- make_seq(CHR3_add32_seq, 13) # Marker 32 keeped in the map
 ```
 
 ```{r}
-CHR3_final <- CHR3_add26
+CHR3_final <- CHR3_add32
 rf_graph_table(CHR3_final, inter = FALSE)
 ```
 
@@ -1223,9 +1270,7 @@ ripple_seq(CHR3_final)
 ```
 
 
-
-
-## Map estimation for an arbitrary order
+# Map estimation for an arbitrary order
 
 If you have some information about the order of the markers, for
 example, from a reference genome or previously published paper, you can
@@ -1236,10 +1281,16 @@ the following markers are ordered in this sequence: `M47`, `M38`, `M59`,
 `M16`, `M62`, `M21`, `M20`, `M48` and `M22`. In this case, select them
 from the two point analysis, and use function `map`:
 
-```{r, subset_twopoint}
+```{r, subset_twopoint, eval=FALSE}
 LG3seq_f2 <- make_seq(twopts_f2, c(47, 38, 59, 16, 62, 21, 20, 48, 22))
 (LG3seq_f2_map <- map(LG3seq_f2))
 ```
+
+```{r, echo=FALSE}
+LG3seq_f2 <- make_seq(twopts_f2, c(47, 38, 59, 16, 62, 21, 20, 48, 22))
+(LG3seq_f2_map <- onemap::map(LG3seq_f2))
+```
+
 
 To see the correspondence between marker names and numbers, use
 function `marker_type`:
@@ -1262,7 +1313,7 @@ Removing markers `M59` and `21` from `LG3seq_f2_map`:
 (LG3seq_f2_map <- drop_marker(LG3seq_f2_map, c(59, 21)))
 ```
 
-## Drawing the genetic map
+# Drawing the genetic map
 
 We can draw a genetic map for all linkage groups using the function
 `draw_map`. First we have to create a list of ordered linkage groups:
@@ -1283,6 +1334,14 @@ We also can draw a map for a specific linkage group:
 draw_map(LG1_f2_final, names = TRUE, grid = TRUE, cex.mrk = 0.7)
 ``` 
 
+Let's use this function to overview the maps builded by different strategies in this tutorial:
+
+```{r}
+map_list_all <- list(LG1_f2_final, CHR1_final, LG2_f2_final, CHR3_final, CHR2_final, LG3_f2_final)
+draw_map(map_list_all, names = TRUE, grid = TRUE, cex.mrk = 0.7)
+
+```
+
 Function `draw_map` draws a very simple graphic representation of the
 genetic map. However, once the distances are estimated, better map figures
 can be drawn by the user with any appropriate software. There are
@@ -1290,114 +1349,7 @@ several free software that can be used, such as
 [MapChart](https://www.wageningenur.nl/en/show/Mapchart.htm)
 (Voorrips, 2002).
 
-
-## Exporting data to R/qtl and QTL Cartographer
-
-Possibly one of the most important applications for a genetic map is
-its use in QTL mapping studies. In populations such as RILs, F2s and
-backcrosses, there are many software options for doing this analysis.
-Here, we illustrate how to export the genetic map from `OneMap` to the
-widely used and excellent packages [`R/qtl`](http://www.rqtl.org/)
-(Broman et al., 2008) and
-[`Windows QTL Cartographer`](http://statgen.ncsu.edu/qtlcart/WQTLCart.htm)
-(Wang et al., 2010).
-
-Using the function `write_map`, let us export the list `maps_list`,
-defined in the previous section, to a file named `onemap_example_f2.map`:
-
-```{r, write_map}
-write_map(maps_list, "onemap_example_f2.map")
-```
-
-Notice that the file will be written on the `working directory`,
-unless specified by the second argument.
-
-Now, let us install the `R/qtl` package:
-
-```{r, install_qtl, eval=FALSE}
-install.packages("qtl")
-``` 
-
-Choose the nearest server location and proceed with the installation.
-Then, load `R/qtl`:
-
-```{r, load_qtl}
-library(qtl)
-``` 
-
-To read the data in `R/qtl` we will use the `MAPMAKER/EXP` format. Two
-files are needed: the first one is a file with information about the
-estimated map (`onemap_example_f2.map` in our case); the second one is
-the raw file written in `MAPMAKER/EXP` style, which was used in the
-beginning of this example and has marker and phenotypic information
-for the QTL analysis. The simulated data `onemap_example_f2` contains
-that information. The location of the raw file can be obtained using:
-
-```{r, where_is_raw}
-raw_file <- paste(system.file("extdata", package = "onemap"),
-                  "onemap_example_f2.raw", sep = "/")
-
-```
-
-Now we can read the data using the `R/qtl` function `read.cross}:
-```{r, read_data_in_qtl}
-fake_f2_qtl <- read.cross("mm", file = raw_file, mapfile = "onemap_example_f2.map")
-``` 
-
-The first argument specifies the format of the data. In our case we
-used `mm` which stands for MAPMAKER. The second argument (`file`)
-indicates the raw file in `MAPMAKER/EXP` format and the third argument
-`mapfile` indicates the map file that was produced by `OneMap`.
-
-Then we can proceed with the analysis. `R/qtl` has several
-functions to check the map. For example, re-estimating the genetic map
-within `R/qtl`:
-
-```{r, map_in_qtl}
-newmap <- est.map(fake_f2_qtl, tol = 1e-6, map.function = "kosambi")
-``` 
-
-A comparison of the output of `R/qtl` and `OneMap` can be obtained with: 
-
-```{r, compare_qtl_onemap}
-plot.map(fake_f2_qtl, newmap)
-```
-
-For each of the three chromosomes, the left vertical line
-represents the map estimated by `OneMap` and the right vertical line
-represents the map estimated by `R/qtl`. The lines linking these two
-maps indicates marker positions. Thus, we can see that these
-two maps are almost identical, with minor differences in only one
-or two distances between markers.
-
-Finally, we can run an interval mapping analysis for these data using
-the `R/qtl` function called `scanone` (for details, see [`R/qtl`
-Manual](http://cran.r-project.org/web/packages/qtl/qtl.pdf):
-
-```{r, IM_qtl}
-fake_f2_qtl <- calc.genoprob(fake_f2_qtl, step = 2)
-out_em <- scanone(fake_f2_qtl, method = "em")
-out_hk <- scanone(fake_f2_qtl, method = "hk")
-plot(out_em, out_hk, col = c("blue", "red"))
-``` 
-
-Here we performed an interval mapping using two methods: mixture
-models with EM algorithm and Haley-Knott regression. The blue lines
-indicate the first model and the red lines indicate the latter.
-
-We can use `R/qtl` to generate `QTL Cartographer` input files.
-  
-```{r}
-write.cross(fake_f2_qtl, format = "qtlcart", filestem = "fake_f2_qtl")
-```
-
-Again, the file will be written on the _working directory_, unless you
-specify differently in the `filestem` argument. The files produced this
-way are ready to be used in `Windows QTL Cartographer` for mapping QTL
-using a number of different models.
-
-
-## Final remarks
+# Final remarks
 
 At this point it should be clear that any potential `OneMap` user must
 have some knowledge about genetic mapping and also the R language,
@@ -1410,9 +1362,7 @@ in genetic mapping in outcrossing or inbred-based populations. Any
 suggestions and critics are welcome.
 
 
-## References
-
-
+# References
 
 Adler, J. **_R in a Nutshell_** A Desktop Quick Reference, 2009.
 
