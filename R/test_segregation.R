@@ -36,8 +36,8 @@ globalVariables(c("Marker", "p.value"))
 ##' the associated p-values, and the \% of individuals genotyped.
 ##'
 ##' ##'@examples
-##' data(fake_bc_onemap) # Loads a fake backcross dataset installed with onemap
-##' test_segregation_of_a_marker(fake_bc_onemap,1)
+##' data(mapmaker_example_bc) # Loads a fake backcross dataset installed with onemap
+##' test_segregation_of_a_marker(mapmaker_example_bc,1)
 ##'
 ##' data(example_out) # Loads a fake outcross dataset installed with onemap
 ##' test_segregation_of_a_marker(example_out,1)
@@ -203,8 +203,8 @@ print.onemap_segreg_test <- function(x,...) {
 ##'
 ##' @examples
 ##'
-##' data(fake_bc_onemap) # load OneMap's fake dataset for a backcross population
-##' BC.seg <- test_segregation(fake_bc_onemap) # Applies chi-square tests
+##' data(mapmaker_example_bc) # load OneMap's fake dataset for a backcross population
+##' BC.seg <- test_segregation(mapmaker_example_bc) # Applies chi-square tests
 ##' print(BC.seg) # Shows the results
 ##' plot(BC.seg) # Plot the graph, ordering the p-values
 ##' plot(BC.seg, order=FALSE) # Plot the graph showing the results keeping the order in the dataset
@@ -263,8 +263,8 @@ plot.onemap_segreg_test <- function(x, order=TRUE,...) {
 ##' @return the alpha value for each test (numeric)
 ##'
 ##' @examples
-##' data(fake_bc_onemap) # Loads a fake backcross dataset installed with onemap
-##' Chi <- test_segregation(fake_bc_onemap) # Performs the chi-square test for all markers
+##' data(mapmaker_example_bc) # Loads a fake backcross dataset installed with onemap
+##' Chi <- test_segregation(mapmaker_example_bc) # Performs the chi-square test for all markers
 ##' print(Chi) # Shows the results of the Chi-square tests
 ##' Bonferroni_alpha (Chi) # Shows the individual alpha level to be used
 ##'
@@ -288,8 +288,8 @@ Bonferroni_alpha <- function(x, global.alpha=0.05) {
 ##' @return a vector with marker names or numbers, according to the option for "distorted" and "numbers"
 ##'
 ##' @examples
-##' data(fake_bc_onemap) # Loads a fake backcross dataset installed with onemap
-##' Chi <- test_segregation(fake_bc_onemap) # Performs the chi-square test for all markers
+##' data(mapmaker_example_bc) # Loads a fake backcross dataset installed with onemap
+##' Chi <- test_segregation(mapmaker_example_bc) # Performs the chi-square test for all markers
 ##' select_segreg(Chi) # To show non-distorted markers
 ##' select_segreg(Chi, distorted=TRUE) # To show markers with segregation distortion
 ##' select_segreg(Chi, distorted=TRUE, numbers=TRUE) # To show the numbers of the markers with segregation distortion

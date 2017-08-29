@@ -106,8 +106,8 @@
 ##'   print(extend.map,4) # second best position
 ##'
 ##'   #F2 example
-##'   data(fake_f2_onemap)
-##'   twopt <- rf_2pts(fake_f2_onemap)
+##'   data(mapmaker_example_f2)
+##'   twopt <- rf_2pts(mapmaker_example_f2)
 ##'   all_mark <- make_seq(twopt,"all")
 ##'   groups <- group(all_mark)
 ##'   LG3 <- make_seq(groups,3)

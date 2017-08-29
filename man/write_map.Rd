@@ -25,8 +25,8 @@ This function is avaliable only for backcross, F2 and RILs.
 \examples{
 
 \dontrun{
-data(fake_f2_onemap)
-twopt<-rf_2pts(fake_f2_onemap)
+data(mapmaker_example_f2)
+twopt<-rf_2pts(mapmaker_example_f2)
 lg<-group(make_seq(twopt, "all"))
 
 ##"pre-allocate" an empty list of length lg$n.groups (3, in this case)
@@ -41,23 +41,23 @@ lg<-group(make_seq(twopt, "all"))
     maps.list[[i]]<-make_seq(map.cur, "force")
   }
 
-##write maps.list to "fake_f2_onemap.map" file
-write_map(map.list, "fake_f2_onemap.map")
+##write maps.list to "mapmaker_example_f2.map" file
+write_map(map.list, "mapmaker_example_f2.map")
 
 ##Using R/qtl
 ##you must install the package  'qtl'
 ##install.packages("qtl")
 
 require(qtl)
-file<-paste(system.file("example",package="onemap"),"fake_f2_onemap.raw", sep="/")
-dat1 <- read.cross("mm", file=file, mapfile="fake_f2_onemap.map")
+file<-paste(system.file("example",package="onemap"),"mapmaker_example_f2.raw", sep="/")
+dat1 <- read.cross("mm", file=file, mapfile="mapmaker_example_f2.map")
 newmap <- est.map(dat1, tol=1e-6, map.function="kosambi")
 
 (logliks <- sapply(newmap, attr, "loglik"))
 plot.map(dat1, newmap)
 
 ##Using R/qtl to generate QTL Cartographer input files (.map and .cro)
-write.cross(dat1, format="qtlcart", filestem="fake_f2_onemap")
+write.cross(dat1, format="qtlcart", filestem="mapmaker_example_f2")
 
 }
 

@@ -53,7 +53,7 @@
 ##' individual. Currently ignored.}
 ##' @author Adapted from Karl Broman (package \pkg{qtl}) by Marcelo Mollinari,
 ##' \email{mmollina@@usp.br}
-##' @seealso \code{fake_bc_onemap} and \code{fake_f2_onemap} directory in the
+##' @seealso \code{mapmaker_example_bc} and \code{mapmaker_example_f2} directory in the
 ##' package source.
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
@@ -68,9 +68,9 @@
 ##'
 ##'   \dontrun{
 ##'     map_data <-read_mapmaker(dir="work_directory",file="data_file.txt")
-##'     #Checking 'fake_f2_onemap'
-##'     data(fake_f2_onemap)
-##'     names(fake_f2_onemap)
+##'     #Checking 'mapmaker_example_f2'
+##'     data(mapmaker_example_f2)
+##'     names(mapmaker_example_f2)
 ##'   }
 ##'
 read_mapmaker<-function (dir, file)

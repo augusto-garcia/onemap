@@ -50,8 +50,8 @@
 ##'   markers.ex <- make_seq(twopts,c(3,6,8,12,16,25))
 ##'   marker_type(markers.ex) # segregation type for some markers
 ##'
-##'   data(fake_f2_onemap)
-##'   twopts <- rf_2pts(fake_f2_onemap)
+##'   data(onemap_example_f2)
+##'   twopts <- rf_2pts(onemap_example_f2)
 ##'   all_mrk<-make_seq(twopts, "all")
 ##'   lgs<-group(all_mrk)
 ##'   lg1<-make_seq(lgs,1)

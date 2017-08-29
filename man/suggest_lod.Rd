@@ -28,7 +28,7 @@ This can be seen as just an initial approximation to help users to select a LOD 
 point tests.
 }
 \examples{
-data(fake_bc_onemap) # Loads a fake backcross dataset installed with onemap
-suggest_lod(fake_bc_onemap) # An value that should be used to start the analysis
+data(mapmaker_example_bc) # Loads a fake backcross dataset installed with onemap
+suggest_lod(mapmaker_example_bc) # An value that should be used to start the analysis
 
 }

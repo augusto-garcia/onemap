@@ -107,8 +107,8 @@ resulting in a map with all markers positioned.
   make_seq(LG2.ord,"force") # get forced sequence
 
   #F2 example
-  data(fake_f2_onemap)
-  twopt <- rf_2pts(fake_f2_onemap)
+  data(onemap_example_f2)
+  twopt <- rf_2pts(onemap_example_f2)
   all_mark <- make_seq(twopt,"all")
   groups <- group(all_mark)
   LG3 <- make_seq(groups,3)

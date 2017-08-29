@@ -47,9 +47,9 @@ can contain phenotypic data, but it will not be used in the analysis.
 
   \dontrun{
     map_data <-read_mapmaker(dir="work_directory",file="data_file.txt")
-    #Checking 'fake_f2_onemap'
-    data(fake_f2_onemap)
-    names(fake_f2_onemap)
+    #Checking 'mapmaker_example_f2'
+    data(mapmaker_example_f2)
+    names(mapmaker_example_f2)
   }
 
 }
@@ -64,7 +64,7 @@ manual. \emph{A Whitehead Institute for Biomedical Research Technical
 Report}.
 }
 \seealso{
-\code{fake_bc_onemap} and \code{fake_f2_onemap} directory in the
+\code{mapmaker_example_bc} and \code{mapmaker_example_f2} directory in the
 package source.
 }
 \author{

@@ -306,7 +306,7 @@ vcf_example_f2 <- read_onemap(inputfile= system.file("extdata/vcf_example_f2.raw
 This data is also available together with `OneMap` package:
 
 ```{r}
-data(onemap_example_f2)
+data(vcf_example_f2)
 ```
 
 This file contains 25 other markers for 192 of the individuals in `onemap_example_f2`:
