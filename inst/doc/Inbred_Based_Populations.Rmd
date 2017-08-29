@@ -1013,6 +1013,217 @@ rf_graph_table(LG2_f2_final)
 rf_graph_table(LG2_f2_final, inter = FALSE)
 ```
 
+# Using the recombinations and the reference genome informations
+
+In our example, we have reference genome chromosome and position informations for some of the markers, here we will examplify one method of using this informations to help build the genetic map.
+
+With the `CHROM` informations in the input file, you can identify markers belonging to some chromosome using the function `make_seq` with the `rf_2pts` object. For example, assign the string `"1"` for the second argument to get chromosome 1 makers. The output sequence will be automatically ordered by `POS` informations.
+
+```{r}
+CHR1 <- make_seq(twopts_f2, "1")
+CHR1
+CHR2 <- make_seq(twopts_f2, "2")
+CHR3 <- make_seq(twopts_f2, "3")
+
+```
+
+## Adding markers with no reference genome informations
+
+According to `CHROM` informations we have three defined linkage groups, now we can try to group the markers without chromossome informations to them using recombination informations. For this, we can use the function `group_seq`:
+
+```{r}
+CHR_mks <- group_seq(input.2pts = twopts_f2, seqs = "CHROM", unlink.mks = mark_all_f2,
+                      rm.repeated = TRUE)
+```
+
+The function works as the function `group`, but considering preexisting sequences. Setting `seqs` argument with the string `"CHROM"`, it will considered the preexisting sequences according to `CHROM` information. You can also indicate others preexisting sequences if it make sense for your study. For that, you should inform a list with objects of class `sequences`, as the example:
+
+```{r, eval=FALSE}
+CHR_mks <- group_seq(input.2pts = twopts_f2, seqs = list(CHR1=CHR1, CHR2=CHR2, CHR3=CHR3), 
+                      unlink.mks = mark_all_f2, rm.repeated = TRUE)
+```
+
+In this case, the command had the same effect of the previous, because we indicate chromossome sequences, but others sequences can be used.
+
+The `unlink.mks` argument receive a object of class `sequence`, this define which markers will be tested to group with the sequences in `seqs`. In our example, we will indicate only the markers with no segregation distortion, using the sequence `mark_no_dist`. It is also possible to use the string `"all"` to test all the remining markers at the `rf_2pts` object. 
+
+In some cases, the same marker can group to more than one sequence, those markers will be considered `repeated`. We can choose if we want to remove or not (`TRUE/FALSE`) them of the output sequences, with the argument `rm.repeated`. Anyway, their numbers will be informed at the list `repeateds` in the output object. 
+In the example case, there are no repeated markers. However, if they exists, it could indicate that their groups actually constitute the same group. Also, genotyping erros can generate repeated markers. Anyway, they deserves better investigations. 
+
+We can access detailed information about the results just printing:
+
+```{r}
+CHR_mks
+```
+
+Also, we can access the numbers of repeated markers with:
+
+```{r}
+CHR_mks$repeated
+```
+
+The same way, we can access the output sequences:
+
+```{r}
+CHR_mks$sequences$CHR1
+# or
+CHR_mks$sequences[[1]]
+```
+
+For this function, optional arguments are `LOD` and `max.rf`, which
+define thresholds to be used when assigning markers to linkage groups.
+If none provided (default), criteria previously defined for the object
+`rf_2pts` are used.
+
+Now we can order the markers in each group as we made before ([Ordering markers within linkage groups](#Ordering markers within linkage groups)). As showed, we can choose different approaches to order the markers. 
+
+To order those groups, first we will use `order_seq` function to access a preliminary order and after, we will edit some markers position or remove some of them according with they color pattern in `rf_graph_table` graphic, and other parameters as likelihood and map size. 
+
+## Linkage group 1
+
+```{r, results='hide'}
+CHR1_ord <- order_seq(CHR_mks$sequences$CHR1)
+CHR1_frame <- make_seq(CHR1_ord, "force")
+```
+
+```{r, eval=FALSE}
+rf_graph_table(CHR1_frame)
+```
+
+```{r, echo=FALSE}
+rf_graph_table(CHR1_frame, inter=FALSE)
+```
+
+The group is similar to that builded before with only recombinations informations. We will better explore differences in a latter step. Only marker `58` do not follow exactly the expected color pattern, then we will try to repositioned it.
+
+```{r, eval=FALSE}
+CHR1_test_seq <- drop_marker(CHR1_frame, 58)
+CHR1_test_map <- map(CHR1_test_seq)
+CHR1_add58_seq <- try_seq(CHR1_test_map, 58)
+CHR1_add58 <- make_seq(CHR1_add10_seq, 20) # marker 10 was placed at the same position as before
+```
+
+```{r, echo=FALSE, results='hide'}
+CHR1_test_seq <- drop_marker(CHR1_frame, 58)
+CHR1_test_map <- onemap::map(CHR1_test_seq)
+CHR1_add58_seq <- try_seq(CHR1_test_map, 58)
+CHR1_add58 <- make_seq(CHR1_add10_seq, 20) # marker 10 was placed at the same position as before
+```
+
+Comparing with and without marker 10:
+
+```{r}
+CHR1_test_map
+```
+
+```{r, eval=FALSE}
+rf_graph_table(CHR1_test_map)
+```
+
+```{r, echo=FALSE}
+rf_graph_table(CHR1_test_map, inter = FALSE)
+```
+
+```{r}
+CHR1_add10
+```
+
+```{r, eval=FALSE}
+rf_graph_table(CHR1_add10)
+```
+
+```{r, echo=FALSE}
+rf_graph_table(CHR1_add10, inter = FALSE)
+```
+
+Based in those results, we decide to not include marker 10 in our map.
+
+```{r}
+CHR1_final <- CHR1_test_map
+```
+
+Checking for better orders:
+
+```{r}
+ripple_seq(CHR1_final)
+```
+
+## Linkage group 2
+
+```{r, results='hide'}
+CHR2_ord <- order_seq(CHR_mks$sequences$CHR2)
+CHR2_frame <- make_seq(CHR2_ord, "force")
+```
+
+```{r, eval=FALSE}
+rf_graph_table(CHR2_frame)
+```
+
+```{r, echo=FALSE}
+rf_graph_table(CHR2_frame, inter=FALSE)
+```
+
+As did before, we will not change markers positions of this group.
+
+```{r}
+CHR2_final <- CHR2_frame
+```
+
+## Linkage group 3 
+
+```{r, results='hide'}
+CHR3_ord <- order_seq(CHR_mks$sequences$CHR3)
+CHR3_frame <- make_seq(CHR3_ord, "force")
+```
+
+```{r, eval=FALSE}
+rf_graph_table(CHR3_frame)
+```
+
+```{r, echo=FALSE}
+rf_graph_table(CHR3_frame, inter=FALSE)
+```
+
+Here, marker `22`, `26` and `28` have color pattern too different of the expected, removing them could influentiate in other markers ordering. Then we will remove them and search for a new order.
+
+```{r, results='hide'}
+CHR3_test_seq <- drop_marker(CHR3_frame, c(22,26, 28))
+CHR3_test_ord <- order_seq(CHR3_test_seq)
+CHR3_test_map <- make_seq(CHR3_test_ord, "force")
+```
+
+```{r, eval=FALSE}
+rf_graph_table(CHR3_test_map)
+```
+
+```{r, echo=FALSE}
+rf_graph_table(CHR3_test_map, inter = FALSE)
+```
+
+Trying to add markers `22`, `26` and `28` again.
+
+```{r, results='hide'}
+CHR3_add22_seq <- try_seq(CHR3_test_map, 22)
+CHR3_add22 <- make_seq(CHR3_add22_seq, 6) # Marker 22 removed of the map
+CHR3_add26_seq <- try_seq(CHR3_test_map, 26)
+CHR3_add26 <- make_seq(CHR3_add26_seq, 1) # Marker 26 was better positioned
+CHR3_add28_seq <- try_seq(CHR3_add26, 28)
+CHR3_add28 <- make_seq(CHR3_add28_seq, 12) # Marker 28 increase the map size disproportionately, it was removed from the map
+```
+
+```{r}
+CHR3_final <- CHR3_add26
+rf_graph_table(CHR3_final, inter = FALSE)
+```
+
+Checking for better orders:
+
+```{r}
+ripple_seq(CHR3_final)
+```
+
+
+
 
 ## Map estimation for an arbitrary order
 
