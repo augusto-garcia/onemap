@@ -250,7 +250,7 @@ particular data set is distributed along with the package, you can
 load it typing
 
 ```{r, load_data}
-data(mapmaker_example_f2)
+data("mapmaker_example_f2")
 ``` 
 
 To see what this data set is about, type
@@ -285,7 +285,7 @@ onemap_example_f2 <- read_onemap(inputfile= system.file("extdata/onemap_example_
 Or, because this particular data are available together with `OneMap` package:
 
 ```{r}
-data(onemap_example_f2)
+data("onemap_example_f2")
 ```
 
 To see what this data set is about, type
@@ -306,7 +306,7 @@ vcf_example_f2 <- read_onemap(inputfile= system.file("extdata/vcf_example_f2.raw
 This data is also available together with `OneMap` package:
 
 ```{r}
-data(vcf_example_f2)
+data("vcf_example_f2")
 ```
 
 This file contains 25 other markers for 192 of the individuals in `onemap_example_f2`:

@@ -24,8 +24,6 @@ knitr::opts_chunk$set(collapse = TRUE,
 
 ```
 
-# Introduction to R
-
 R is a language and environment for statistical computing and
 graphics. To download R, please visit the [Comprehensive R Archive
 Network](http://cran.r-project.org). You do not need to be an expert
@@ -50,7 +48,7 @@ make your life easier, specially if you have never used R before.
 So, go ahead and download and install R and RStudio. The window on the
 left is where you type the R commands you want.
 
-## Getting started
+# Getting started
 
 In the left window, you can see a _greater than_ sign (``>''), which
 means that R is waiting for a command. We call this a _prompt_. 
@@ -86,7 +84,7 @@ x + 4
 
 So, play a little just to start understanding what is going on.
 
-## Functions
+# Functions
 
 Another fundamental aspect in R is the usage of _functions_. A
 function is a predefined routine used to do specific calculations. For
@@ -123,7 +121,7 @@ log(y)
 Notice that _y_ is a vector, that is the argument to the function
 _log()_.
 
-## Getting help
+# Getting help
 
 Every R function has a help page which can be accessed using a
 question mark before the name of the function. For example, to get
@@ -142,7 +140,7 @@ click _Help_ on the menu. For doing searches on the internet, it is
 better to first go to [http://rseek.org/](http://rseek.org/), since R
 is a very common letter to include in searches.  
 
-## Packages
+# Packages
 
 Although R has a huge amount of internal functions, for doing very
 specific computations (like constructing genetic linkage maps), it is
@@ -206,7 +204,7 @@ question mark in the same way as done before:
 ?kosambi
 ```
 
-## Importing and exporting data
+# Importing and exporting data
 
 So far, we entered the variables in R by typing them directly into the
 console. However, in real situations we usually **read these values
@@ -286,7 +284,7 @@ double quotes from the output file. After running the command, you can
 look for the file _test\_sum.txt_ in the working directory you defined
 before.
 
-## Classes and methods
+# Classes and methods
 
 In R, every object belongs to a **_class_**. This is a simple concept
 that you must remember. For example, the _dat_ object mentioned above
@@ -348,7 +346,7 @@ that you do not need to change the function to do a specific analysis;
 it will recognize the object type and will adapt accordingly.
 
 
-## Saving your work
+# Saving your work
 
 Finally, you may need to save your work to come back to it in another
 working session. But before we explain how to do that, let us explain

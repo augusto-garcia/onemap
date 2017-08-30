@@ -29,7 +29,6 @@
 # onemap 2.1.0000
 
 * Bug fix in function test_segregation for F2 cross
-* Bug fix in function read_mapmaker to read dominant markers from f2 cross
 * Fix in example f2
 * Codif_data changed to deal with dominant markers for F2
 * Warnings removed and labels added to outcross plot
@@ -42,6 +41,8 @@
 * New functions group_seq and print.group_seq
 * Functions draw.try and draw_order are now defuncts
 * Vignette for outcrossing updated
+* F2 vcf example file are available
+* Vignette for inbred updated
 
 
 
