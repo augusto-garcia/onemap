@@ -1,10 +1,28 @@
-<!--
-%\VignetteEngine{knitr::docco_linear}
-%\VignetteIndexEntry{Overview}
--->
+---
+title: "Overview"
+author: "[Statistical Genetics Lab](http://statgen.esalq.usp.br) <br/> Department of Genetics <br/> Luiz de Queiroz College of Agriculture <br/> University of São Paulo"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Overview}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 
+```{r knitr_init, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmarkdown)
 
-# Overview
+knitr::opts_chunk$set(collapse = TRUE,
+                      comment = "#>",
+                      fig.width = 6,
+                      fig.height = 6,
+                      fig.align = "center",
+                      dev = "png",
+                      dpi = 36,
+                      cache = TRUE)
+
+```
 
 _OneMap_ is an environment for constructing linkage maps in several
 experimental crosses, including outcrossing (full-sib families derived

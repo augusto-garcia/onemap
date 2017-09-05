@@ -14,9 +14,6 @@ set_map_fun(type = c("kosambi", "haldane"))
 Defines the function that should be used to display the genetic map through
 the analysis.
 }
-\author{
-Marcelo Mollinari, \email{mmollina@usp.br}
-}
 \references{
 Haldane, J. B. S. (1919) The combination of linkage values and
 the calculation of distance between the loci of linked factors.
@@ -28,5 +25,7 @@ values. \emph{Annuaire of Eugenetics} 12: 172-175.
 \seealso{
 \code{\link[onemap]{kosambi}} and \code{\link[onemap]{haldane}}
 }
+\author{
+Marcelo Mollinari, \email{mmollina@usp.br}
+}
 \keyword{arith}
-

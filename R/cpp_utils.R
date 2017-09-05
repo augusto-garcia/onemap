@@ -3,7 +3,8 @@
 # Package: onemap                                                     #
 #                                                                     #
 # File: cpp_utils.R                                                   #
-# Contains: get_bins                                                  #
+# Contains: get_bins est_rf_out est_rf_f2 est_rf_bc est_map_hmm_f2    #
+#  est_map_hmm_bc est_map_hmm_out                                     #
 # These functions are for internal use only                           #
 #                                                                     #
 # Written Marcelo Mollinari                                           #
@@ -97,7 +98,7 @@ est_map_hmm_f2<-function(geno, rf.vec=NULL, verbose=TRUE, tol=1e-6)
              as.numeric(verbose),
              as.numeric(tol),
              PACKAGE = "onemap" )
-    names(r)<-c("rf", "loglike") 
+    names(r)<-c("rf", "loglike")
     return(r)
 }
 
@@ -112,11 +113,11 @@ est_map_hmm_bc<-function(geno, rf.vec=NULL, verbose=TRUE, tol=1e-6)
              as.numeric(verbose),
              as.numeric(tol),
              PACKAGE = "onemap" )
-    names(r)<-c("rf", "loglike") 
+    names(r)<-c("rf", "loglike")
     return(r)
 }
 
-# 
+#
 
 
 ##' C++ routine for multipoint analysis in outcrossing populations
@@ -124,7 +125,7 @@ est_map_hmm_bc<-function(geno, rf.vec=NULL, verbose=TRUE, tol=1e-6)
 ##' It calls C++ routine that implements the methodology of Hidden
 ##' Markov Models (HMM) to construct multipoint linkage maps in
 ##' outcrossing species
-##' 
+##'
 ##' @param geno matrix of genotypes. Rows represent marker and columns
 ##'     represent individuals.
 ##'
@@ -139,10 +140,10 @@ est_map_hmm_bc<-function(geno, rf.vec=NULL, verbose=TRUE, tol=1e-6)
 ##'     initial values
 ##'
 ##' @param verbose If \code{TRUE}, print tracing information.
-##' 
+##'
 ##' @param tol tolerance for the C routine, i.e., the value used to
 ##'     evaluate convergence.
-##' 
+##'
 ##' @return a list containing the re-estimated vector of recombination
 ##'     fractions and the logarithm of the likelihood
 ##'
@@ -161,7 +162,7 @@ est_map_hmm_out<-function(geno, type,  phase, rf.vec=NULL, verbose=TRUE, tol=1e-
            as.numeric(verbose),
            as.numeric(tol),
            PACKAGE = "onemap")
-  names(r)<-c("rf", "loglike") 
+  names(r)<-c("rf", "loglike")
   return(r)
 }
 #end of the file

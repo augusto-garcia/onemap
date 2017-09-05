@@ -81,11 +81,10 @@ fields denoted \code{CHROM} and \code{POS}.
   }
 
 }
-\author{
-Gabriel R A Margarido, \email{gramarga@gmail.com}
-}
 \seealso{
 \code{read_onemap} for a description of the OneMap file format.
 }
+\author{
+Gabriel R A Margarido, \email{gramarga@gmail.com}
+}
 \keyword{IO}
-

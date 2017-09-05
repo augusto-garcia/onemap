@@ -54,10 +54,6 @@ using \code{NULL}, the new values override the ones in object
   print(link_gr, details=FALSE) #omit the names of the markers
 
 }
-\author{
-Gabriel R A Margarido, \email{gramarga@gmail.com} and
-    Marcelo Mollinari, \email{mmollina@usp.br}
-}
 \references{
 Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993)
     Constructing genetic linkage maps with MAPMAKER/EXP Version
@@ -68,5 +64,8 @@ Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993)
 \code{\link[onemap]{rf_2pts}} and
     \code{\link[onemap]{make_seq}}
 }
+\author{
+Gabriel R A Margarido, \email{gramarga@gmail.com} and
+    Marcelo Mollinari, \email{mmollina@usp.br}
+}
 \keyword{misc}
-

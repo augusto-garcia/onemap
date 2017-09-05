@@ -5,8 +5,7 @@
 \title{Try to map a marker into every possible position between markers
 in a given map}
 \usage{
-try_seq(input.seq, mrk, tol = 0.1, draw.try = FALSE, pos = NULL,
-  verbose = FALSE)
+try_seq(input.seq, mrk, tol = 0.1, pos = NULL, verbose = FALSE)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence} with a
@@ -17,9 +16,6 @@ input file.}
 
 \item{tol}{tolerance for the C routine, i.e., the value used to
 evaluate convergence.}
-
-\item{draw.try}{if \code{TRUE}, a diagnostic graphic is
-displayed. See \code{Details} section.}
 
 \item{pos}{defines in which position the new marker \code{mrk}
 should be placed for the diagnostic graphic. If \code{NULL}
@@ -48,24 +44,6 @@ marker.  This function estimates parameters for all possible maps
 including the new marker in all posible positions, while keeping
 the original linkage map unaltered.
 }
-\details{
-The diagnostic graphic is made of three figures: i) the top figure
-represents the new genetic map obtained with the insertion of the
-new marker \code{mrk} on position \code{pos}. If \code{pos = NULL}
-(default), the marker is placed on the best position i.e. the one
-which results LOD = 0.00, which is indicated by a red triangle;
-ii) the left bottom figure represents the base map (contained in
-\code{input.seq}) on x-axis and the LOD-Scores of the linkage maps
-obtained with the new marker \code{mrk} tested at the beginning,
-between and at the end of the base map. Actually, it is a graphic
-representation of the \code{LOD} vector (see \code{Value}
-section). The red triangle indicates the best position where the
-new marker \code{mrk} should be placed; iii) the right bottom
-figure is the non-interactive \code{\link[onemap]{rf_graph_table}}
-function for the new genetic map. It plots a matrix of pairwise
-recombination fractions (under the diagonal) and LOD Scores (upper
-the diagonal) using a color scale.
-}
 \examples{
 
 \dontrun{
@@ -82,8 +60,8 @@ the diagonal) using a color scale.
   print(extend.map,4) # second best position
 
   #F2 example
-  data(fake_f2_onemap)
-  twopt <- rf_2pts(fake_f2_onemap)
+  data(mapmaker_example_f2)
+  twopt <- rf_2pts(mapmaker_example_f2)
   all_mark <- make_seq(twopt,"all")
   groups <- group(all_mark)
   LG3 <- make_seq(groups,3)
@@ -93,20 +71,8 @@ the diagonal) using a color scale.
   extend.map <- try_seq(safe.map,64)
   extend.map
   (new.map<-make_seq(extend.map,14)) # best position
-
-  #Display diagnostic graphics
-  try_seq(safe.map,64,draw.try=TRUE) #best position (default)
-  try_seq(safe.map,64,draw.try=TRUE,pos=13) #second best position
-  try_seq(safe.map,64,draw.try=TRUE,pos=4) #wrong position
-
-  #Trying to position an unliked marker
-  try_seq(safe.map,66,draw.try=TRUE) #note the inconsistencies in the graphic
-
 }
 
-}
-\author{
-Marcelo Mollinari, \email{mmollina@usp.br}
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S.,
@@ -140,5 +106,7 @@ Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage
 \code{\link[onemap]{make_seq}} and
     \code{\link[onemap]{compare}}.
 }
+\author{
+Marcelo Mollinari, \email{mmollina@usp.br}
+}
 \keyword{utilities}
-

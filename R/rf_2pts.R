@@ -6,10 +6,11 @@
 ## Contains: rf_2pts, print.rf_2pts                                    ##
 ##                                                                     ##
 ## Written by Gabriel Rodrigues Alves Margarido and Marcelo Mollinari  ##
+## with minor changes by Cristiane Taniguti
 ## copyright (c) 2007-15, Gabriel R A Margarido and Marcelo Mollinari  ##
 ##                                                                     ##
 ## First version: 11/07/2007                                           ##
-## Last update: 01/27/2016                                             ##
+## Last update: 07/06/2017                                             ##
 ## License: GNU General Public License version 2 (June, 1991) or later ##
 ##                                                                     ##
 #########################################################################
@@ -71,7 +72,8 @@ rf_2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE) {
     else if(("risib" %in% class(input.obj)))
         r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=2, verbose = verbose)
     structure(list(data.name=as.character(sys.call())[2], n.mar=input.obj$n.mar, LOD=LOD, max.rf=max.rf,
-                   input=input.obj$input, analysis=r), class = c("rf_2pts", class(input.obj)[2]))
+                   input=input.obj$input, CHROM = input.obj$CHROM, POS= input.obj$POS, analysis=r),
+              class = c("rf_2pts", class(input.obj)[2]))
 }
 
 ##' Print method for object class 'rf_2pts'

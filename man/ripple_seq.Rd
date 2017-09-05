@@ -52,8 +52,8 @@ there are many partially informative markers.
   ripple_seq(markers.map)
 
 #F2 example
- data(fake_f2_onemap)
- twopt <- rf_2pts(fake_f2_onemap)
+ data(onemap_example_f2)
+ twopt <- rf_2pts(onemap_example_f2)
  all_mark <- make_seq(twopt,"all")
  groups <- group(all_mark)
  LG3 <- make_seq(groups,3)
@@ -65,10 +65,6 @@ there are many partially informative markers.
 }
 
 
-}
-\author{
-Gabriel R A Margarido, \email{gramarga@gmail.com} and
-    Marcelo Mollinari, \email{mmollina@usp.br}
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
@@ -100,5 +96,8 @@ sex-specific differences. \emph{Genetical Research} 79: 85-96
     \code{\link[onemap]{compare}}, \code{\link[onemap]{try_seq}}
     and \code{\link[onemap]{order_seq}}.
 }
+\author{
+Gabriel R A Margarido, \email{gramarga@gmail.com} and
+    Marcelo Mollinari, \email{mmollina@usp.br}
+}
 \keyword{utilities}
-
