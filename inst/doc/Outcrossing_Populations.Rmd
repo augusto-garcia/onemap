@@ -1,26 +1,27 @@
 ---
 title: "Outcrossing Populations"
+author: "[Statistical Genetics Lab](http://statgen.esalq.usp.br) <br/> Department of Genetics <br/> Luiz de Queiroz College of Agriculture <br/> University of São Paulo"
 date: "`r Sys.Date()`"
-output:
-  rmdformats::readthedown:
-    highlight: kate
+output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Outcrossing Populations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
-
 
 ```{r knitr_init, echo=FALSE, cache=FALSE}
 library(knitr)
-library(rmdformats)
+library(rmarkdown)
 
-## Global options
-options(max.print="75")
-opts_knit$set(width=75)
-```
+knitr::opts_chunk$set(collapse = TRUE,
+                      comment = "#>",
+                      fig.width = 6,
+                      fig.height = 6,
+                      fig.align = "center",
+                      dev = "png",
+                      dpi = 36,
+                      cache = TRUE)
 
-```{r, globalsetup, echo=FALSE, results='hide', cache=FALSE}
-#opts_chunk$set(cache=TRUE, autodep=TRUE)
 ```
 
 ```{r, echo=FALSE, results='hide'}
@@ -180,7 +181,7 @@ Because this particular data set is distributed along with the
 package, as an alternative you can load it typing
 
 ```{r}
-data(example_out)
+data("example_out")
 ``` 
 
 Loading the data creates an object of class `onemap`, which will
@@ -227,8 +228,13 @@ vcf_example_out <- read_onemap("C:/workingdirectory", "vcf_example_out.raw")
 Or, because it is also a data set from the package:
 
 ```{r}
-data(vcf_example_out)
+data("vcf_example_out")
 ``` 
+
+```{r, echo=FALSE}
+vcf_example_out <- read_onemap(inputfile = system.file("extdata/vcf_example_out.raw", package = "onemap"))
+``` 
+
 
 And you can see the informations about this new object with:
 

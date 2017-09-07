@@ -175,7 +175,7 @@ Because this particular data set is distributed along with the
 package, as an alternative you can load it typing
 
 ```{r}
-data(example_out)
+data("example_out")
 ``` 
 
 Loading the data creates an object of class `onemap`, which will
@@ -222,7 +222,7 @@ vcf_example_out <- read_onemap("C:/workingdirectory", "vcf_example_out.raw")
 Or, because it is also a data set from the package:
 
 ```{r}
-data(vcf_example_out)
+data("vcf_example_out")
 ``` 
 
 And you can see the informations about this new object with:
