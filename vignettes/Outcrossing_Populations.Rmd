@@ -39,6 +39,11 @@ understand its functionality and start using it. You do not need to be
 an expert in R to build your linkage map, but some concepts are
 necessary and will help you through the process.
 
+There is a github `OneMap` version which is constantly improved, we strong
+recommend all users to try [this version](https://github.com/augusto-garcia/onemap). 
+In `augusto-garcia/onemap` github page you can find instructions to install the package 
+from github and also more fancy tutorials.
+
 # Creating the data file
 
 This step may be quite difficult, because the data file is not very
@@ -675,7 +680,7 @@ let us create a framework of ordered markers using `compare` for the
 most informative ones:
 
 ```{r, results='hide'}
-LG2_init <- make_seq(twopts, c(4, 19, 23, 48,49,50))
+LG2_init <- make_seq(twopts, c(4, 20, 24, 49,50,51))
 ``` 
 
 Now, the first argument to `make_seq` is an object of class `rf_2pts`,
@@ -708,7 +713,7 @@ The graphic shows that there are two groups of markers, once `M20` and `M4` are 
 Next, let us try to map the remaining markers, one at a time. Fist, we will try to add the remaining most informative markers. Starting with `SNP25`:
 
 ```{r, results='hide'}
-LG2_extend <- try_seq(LG2_frame, 51)
+LG2_extend <- try_seq(LG2_frame, 52)
 ```
 
 ```{r}
@@ -728,7 +733,7 @@ Note that the first allele arrangement is the most likely one.
 It should be pointed out that the framework created by the function
 `compare` (with `M20`, `M4`, `SNP24`, `SNP23`, `M24` and `SNP22`) could be in
 reverse order (`SNP22`, `M24`, `SNP23`, `SNP24`, `M4` and `M20`) and still represent the
-  same map. Thus, positioning of markers with the `try_seq` command can be
+  same map.Thus, positioning of markers with the `try_seq` command can be
 different in your computer. For example, here marker `SNP25` was better
 placed at position 7; however if you obtain a reversed order, marker
 `SNP25` would be better placed in position 1. In both cases the best
@@ -753,7 +758,7 @@ rf_graph_table(LG2_test)
 rf_graph_table(LG2_test, inter=FALSE)
 ```
 
-We can see that `SNP25` (or marker 51) was positioned at the end of the sequence and the colour pattern shows that it is strongly linked with its neighbors, indicating that it is well positioned, then we will maintain this marker at this position:
+We can see that `SNP25` (or marker 52) was positioned at the end of the sequence and the colour pattern shows that it is strongly linked with its neighbors, indicating that it is well positioned, then we will maintain this marker at this position:
 
 ```{r}
 LG2_frame <- LG2_test
@@ -762,25 +767,25 @@ LG2_frame <- LG2_test
 Adding other markers, one by one (output not shown):
 
 ```{r, results='hide'}
-LG2_extend <- try_seq(LG2_frame, 8)
+LG2_extend <- try_seq(LG2_frame, 9)
 LG2_frame <- make_seq(LG2_extend, 3)
-LG2_extend <- try_seq(LG2_frame, 15)
+LG2_extend <- try_seq(LG2_frame, 16)
 LG2_frame <- make_seq(LG2_extend, 1)
-LG2_extend <- try_seq(LG2_frame, 20)
+LG2_extend <- try_seq(LG2_frame, 21)
 LG2_frame <- make_seq(LG2_extend, 4)
-LG2_extend <- try_seq(LG2_frame, 22)
+LG2_extend <- try_seq(LG2_frame, 23)
 LG2_frame <- make_seq(LG2_extend, 5)
-LG2_extend <- try_seq(LG2_frame, 26)
+LG2_extend <- try_seq(LG2_frame, 27)
 LG2_frame <- make_seq(LG2_extend, 1)
-LG2_extend <- try_seq(LG2_frame, 28)
+LG2_extend <- try_seq(LG2_frame, 29)
 LG2_frame <- make_seq(LG2_extend, 12)
-LG2_extend <- try_seq(LG2_frame, 44)
-LG2_frame <- make_seq(LG2_extend, 7)
 LG2_extend <- try_seq(LG2_frame, 45)
-LG2_frame <- make_seq(LG2_extend, 6)
+LG2_frame <- make_seq(LG2_extend, 7)
 LG2_extend <- try_seq(LG2_frame, 46)
 LG2_frame <- make_seq(LG2_extend, 6)
 LG2_extend <- try_seq(LG2_frame, 47)
+LG2_frame <- make_seq(LG2_extend, 6)
+LG2_extend <- try_seq(LG2_frame, 48)
 LG2_final <- make_seq(LG2_extend, 6)
 ``` 
 
@@ -818,13 +823,13 @@ Check the final order:
 LG2_ord
 ```
 
-Note that markers `8`, `15`, `28`, `45`, `46`, `47`, `50` and `51` could not be safely mapped to a single
+Note that markers `9`, `16`, `29`, `46`, `47`, `48`, `51` and `52` could not be safely mapped to a single
 position (`LOD Score > THRES` in absolute value). The output displays
 the `safe` order and the most likely positions for markers not mapped,
 where `***` indicates the most likely position and `*` corresponds to
 other plausible positions.
 
-To get the safe order (_i.e._, without markers `8`, `15`, `28`, `45`, `46`, `47`, `50` and `51`), use
+To get the safe order (_i.e._, without markers `9`, `16`, `29`, `46`, `47`, `48`, `51` and `52`), use
 
 ```{r}
 LG2_safe <- make_seq(LG2_ord, "safe")
@@ -835,16 +840,6 @@ and to get the order with all markers, use
 ```{r}
 LG2_all <- make_seq(LG2_ord, "force")
 LG2_all
-```
-
-Checking graphically:
-
-```{r, eval=FALSE}
-rf_graph_table(LG2_all)
-```
-
-```{r, echo=FALSE}
-rf_graph_table(LG2_all, inter = FALSE)
 ```
 
 Notice that, for this linkage group, the `forced` map obtained with
@@ -865,7 +860,7 @@ LG2_ord <- order_seq(LG2, n.init = 5, THRES = 3, touchdown = TRUE)
 LG2_ord
 ```
 
-For this particular sequence, the `touchdown` step could map safely markers `45` and `51`, but this depends on the specific dataset.
+For this particular sequence, the `touchdown` step could map safely markers `46` and `52`, but this depends on the specific dataset.
 
 Finally, to check for alternative orders (because we did not use
 exhaustive search), use the `ripple_seq` function:
@@ -891,23 +886,19 @@ If there were an alternative order more likely than the original, one
 should check the difference between these orders (and linkage phases). 
 
 In some cases, even if there are no better alternative order suggested by `ripple_seq`, the graphic showed color pattern different of the expected. Then, we can remove 
-doubtful markers (for this groups markers `22` and `50`) and try to positioned them again. First, we use the function `drop_marker` to remove selected marker of our sequence.
+doubtful markers (for this groups markers `23` and `51`) and try to positioned them again. First, we use the function `drop_marker` to remove selected marker of our sequence.
 
 ```{r}
-LG2_test_seq <- drop_marker(LG2_all, c(22,50))
+LG2_test_seq <- drop_marker(LG2_all, c(23,51))
 ```
 
 The function will provide a sequence with the same order of the estimated map (`LG2_all`). After, we should estimate the map again using this predefined order. For this we use the `map` function:
 
-```{r, eval=FALSE}
+```{r}
 (LG2_test_map <- map(LG2_test_seq))
 ```
 
-```{r, echo=FALSE}
-(LG2_test_map <- onemap::map(LG2_test_seq))
-```
-
-Now we have the map without markers `22` and `50`. 
+Now we have the map without markers `23` and `51`. 
 
 ```{r, eval=FALSE}
 rf_graph_table(LG2_test_map)
@@ -920,16 +911,16 @@ rf_graph_table(LG2_test_map, inter=FALSE)
 We use `try_seq` function to positioned them again:
 
 ```{r}
-LG2_test_seq <- try_seq(LG2_test_map, 50)
-LG2_test_50 <- make_seq(LG2_test_seq, 15)
-LG2_test_seq <- try_seq(LG2_test_map, 22)
-LG2_test_50_22 <- make_seq(LG2_test_seq, 6)
+LG2_test_seq <- try_seq(LG2_test_map, 51)
+LG2_test_51 <- make_seq(LG2_test_seq, 15)
+LG2_test_seq <- try_seq(LG2_test_51, 23)
+LG2_test_51_23 <- make_seq(LG2_test_seq, 6)
 ```
 
-Markers 22 and 50 was positioned at the same position as before. We will remove marker 22 of our map, because it color pattern are too different of expected. Then, our final map is:
+Markers 23 and 51 was positioned at the same position as before. We will remove marker 23 of our map, because it color pattern are too different of expected. Then, our final map is:
 
 ```{r}
-LG2_final <- LG2_test_50
+LG2_final <- LG2_test_51
 LG2_final
 ```
 
@@ -947,7 +938,7 @@ Construct the linkage map, by automatically using try algorithm:
 LG1_ord <- order_seq(LG1, n.init = 6, touchdown = TRUE)
 ```
 
-Notice that the second round of `try_seq` added markers `9`, `30`, `31`, `34`, `35`, `39` and `41`.
+Notice that the second round of `try_seq` added markers `10`, `31`, `32`, `35`, `36`, `40` and `42`.
 
 ```{r}
 LG1_ord
@@ -978,14 +969,9 @@ No better order was observed.
 
 As we made for LG2, we can remove some doubtful markers accordinly with the graphic, try to positioned them again and decide if and where we will maintain them.
 
-```{r, eval=FALSE}
-LG1_test_seq <- drop_marker(LG1_frame, c(9,10,27,41))
+```{r}
+LG1_test_seq <- drop_marker(LG1_frame, c(10,11,28,42))
 LG1_test_map <- map(LG1_test_seq)
-```
-
-```{r, echo=FALSE}
-LG1_test_seq <- drop_marker(LG1_frame, c(9,10,27,41))
-LG1_test_map <- onemap::map(LG1_test_seq)
 ```
 
 ```{r, eval=FALSE}
@@ -997,16 +983,15 @@ rf_graph_table(LG1_test_map, inter=FALSE)
 ```
 
 ```{r, results='hide'}
-LG1_extend <- try_seq(LG1_test_map,9)
-LG1_test <- make_seq(LG1_extend,15) # We choose to remove this marker
 LG1_extend <- try_seq(LG1_test_map,10)
+LG1_test <- make_seq(LG1_extend,15) # We choose to remove this marker
+LG1_extend <- try_seq(LG1_test_map,11)
 LG1_test <- make_seq(LG1_extend,22) # We choose to remove this marker
-LG1_extend <- try_seq(LG1_test_map,27)
+LG1_extend <- try_seq(LG1_test_map,28)
 LG1_test <- make_seq(LG1_extend,15) 
-LG1_extend <- try_seq(LG1_test,41)
+LG1_extend <- try_seq(LG1_test,42)
 LG1_final <- make_seq(LG1_extend,17) 
 ```
-
 
 Print it:
 ```{r}
@@ -1108,56 +1093,31 @@ CHR1_frame <- make_seq(CHR1_ord, "force")
 ```
 
 ```{r, eval=FALSE}
-rf_graph_table(CHR1_frame)
+rf_graph_table(CHR1_frame) # graphic not showed
 ```
 
-```{r, echo=FALSE}
-rf_graph_table(CHR1_frame, inter=FALSE)
-```
+The group is similar to that builded before with only recombinations informations. We will better explore differences in a latter step. Only marker `11` do not follow exactly the expected color pattern, then we will try to repositioned it.
 
-The group is similar to that builded before with only recombinations informations. We will better explore differences in a latter step. Only marker `10` do not follow exactly the expected color pattern, then we will try to repositioned it.
-
-```{r, eval=FALSE}
-CHR1_test_seq <- drop_marker(CHR1_frame, 10)
+```{r}
+CHR1_test_seq <- drop_marker(CHR1_frame, 11)
 CHR1_test_map <- map(CHR1_test_seq)
-CHR1_add10_seq <- try_seq(CHR1_test_map, 10)
-CHR1_add10 <- make_seq(CHR1_add10_seq, 25) # marker 10 was placed at the same position as before
+CHR1_add11_seq <- try_seq(CHR1_test_map, 11)
+CHR1_add11 <- make_seq(CHR1_add11_seq, 25) # marker 11 was placed at the same position as before
 ```
 
-```{r, echo=FALSE, results='hide'}
-CHR1_test_seq <- drop_marker(CHR1_frame, 10)
-CHR1_test_map <- onemap::map(CHR1_test_seq)
-CHR1_add10_seq <- try_seq(CHR1_test_map, 10)
-CHR1_add10 <- make_seq(CHR1_add10_seq, 25) # marker 10 was placed at the same position as before
-```
-
-Comparing with and without marker 10:
+Based in those results, we decide to not include marker 11 in our map.
 
 ```{r}
 CHR1_test_map
 ```
 
 ```{r, eval=FALSE}
-rf_graph_table(CHR1_test_map)
+rf_graph_table(CHR1_test_map) 
 ```
 
 ```{r, echo=FALSE}
-rf_graph_table(CHR1_test_map, inter = FALSE)
+rf_graph_table(CHR1_test_map, inter = FALSE) 
 ```
-
-```{r}
-CHR1_add10
-```
-
-```{r, eval=FALSE}
-rf_graph_table(CHR1_add10)
-```
-
-```{r, echo=FALSE}
-rf_graph_table(CHR1_add10, inter = FALSE)
-```
-
-Based in those results, we decide to not include marker 10 in our map.
 
 ```{r}
 CHR1_final <- CHR1_test_map
@@ -1177,11 +1137,7 @@ CHR2_frame <- make_seq(CHR2_ord, "force")
 ```
 
 ```{r, eval=FALSE}
-rf_graph_table(CHR2_frame)
-```
-
-```{r, echo=FALSE}
-rf_graph_table(CHR2_frame, inter=FALSE)
+rf_graph_table(CHR2_frame) # graphic not showed
 ```
 
 As did before, we will not change markers positions of this group.
@@ -1198,42 +1154,35 @@ CHR3_frame <- make_seq(CHR3_ord, "force")
 ```
 
 ```{r, eval=FALSE}
-rf_graph_table(CHR3_frame)
+rf_graph_table(CHR3_frame) # graphic not showed
 ```
 
-```{r, echo=FALSE}
-rf_graph_table(CHR3_frame, inter=FALSE)
-```
 
-Here, marker `22`, `26` and `28` have color pattern too different of the expected, removing them could influentiate in other markers ordering. Then we will remove them and search for a new order.
+Here, marker `23`, `27` and `29` have color pattern too different of the expected, removing them could influentiate in other markers ordering. Then we will remove them and search for a new order.
 
 ```{r, results='hide'}
-CHR3_test_seq <- drop_marker(CHR3_frame, c(22,26, 28))
+CHR3_test_seq <- drop_marker(CHR3_frame, c(23,27, 29))
 CHR3_test_ord <- order_seq(CHR3_test_seq)
 CHR3_test_map <- make_seq(CHR3_test_ord, "force")
 ```
 
 ```{r, eval=FALSE}
-rf_graph_table(CHR3_test_map)
+rf_graph_table(CHR3_test_map) #graphic not showed
 ```
 
-```{r, echo=FALSE}
-rf_graph_table(CHR3_test_map, inter = FALSE)
-```
-
-Trying to add markers `22`, `26` and `28` again.
+Trying to add markers `23`, `27` and `29` again.
 
 ```{r, results='hide'}
-CHR3_add22_seq <- try_seq(CHR3_test_map, 22)
-CHR3_add22 <- make_seq(CHR3_add22_seq, 6) # Marker 22 removed of the map
-CHR3_add26_seq <- try_seq(CHR3_test_map, 26)
-CHR3_add26 <- make_seq(CHR3_add26_seq, 1) # Marker 26 was better positioned
-CHR3_add28_seq <- try_seq(CHR3_add26, 28)
-CHR3_add28 <- make_seq(CHR3_add28_seq, 12) # Marker 28 increase the map size disproportionately, it was removed from the map
+CHR3_add23_seq <- try_seq(CHR3_test_map, 23)
+CHR3_add23 <- make_seq(CHR3_add23_seq, 5) # Marker 23 removed of the map
+CHR3_add27_seq <- try_seq(CHR3_test_map, 26)
+CHR3_add27 <- make_seq(CHR3_add27_seq, 1) # Marker 27 was better positioned
+CHR3_add29_seq <- try_seq(CHR3_add27, 28)
+CHR3_add29 <- make_seq(CHR3_add29_seq, 1) # Marker 29 increase the map size disproportionately, it was removed from the map
 ```
 
 ```{r}
-CHR3_final <- CHR3_add26
+CHR3_final <- CHR3_add27
 rf_graph_table(CHR3_final, inter = FALSE)
 ```
 
@@ -1304,14 +1253,9 @@ linkage map (_e.g._, for other orders on published papers), it is
 possible to define a sequence and use the `map` function. For example,
 for markers `M30`, `M12`, `M3`, `M14` and `M2`, in this order, use
   
-```{r, eval=FALSE}
+```{r}
 any_seq <- make_seq(twopts, c(30, 12, 3, 14, 2))
 (any_seq_map <- map(any_seq))
-``` 
-
-```{r, echo=FALSE}
-any_seq <- make_seq(twopts, c(30, 12, 3, 14, 2))
-(any_seq_map <- onemap::map(any_seq))
 ``` 
 
 This is a subset of the first linkage group. When used this way, the `map`
@@ -1325,11 +1269,6 @@ markers:
 ```{r, eval=FALSE}
 any_seq <- make_seq(twopts, c(30, 12, 3, 14, 2), phase = c(4, 1, 4, 3))
 (any_seq_map <- map(any_seq))
-``` 
-
-```{r, echo=FALSE}
-any_seq <- make_seq(twopts, c(30, 12, 3, 14, 2), phase = c(4, 1, 4, 3))
-(any_seq_map <- onemap::map(any_seq))
 ``` 
 
 If one needs to add or drop markers from a predefined sequence,
@@ -1353,7 +1292,6 @@ After that, the map needs to be re-estimated.
 ```{r}
 sessionInfo()
 ```
-
 
 
 # References

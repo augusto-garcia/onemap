@@ -41,6 +41,11 @@ vignette
 You do not need to be an expert in R to build your linkage map, but
 some concepts are necessary and will help you through the process.
 
+There is a github `OneMap` version which is constantly improved, we strong
+recommend all users to try [this version](https://github.com/augusto-garcia/onemap). 
+In `augusto-garcia/onemap` github page you can find instructions to install the package 
+from github and also more fancy tutorials.
+
 # Creating the data file
 
 For F2s, backcrosses and RILs, two input formats are accepted. The user can choose between the standard {\sl OneMap} file format or the same raw file used by
@@ -938,6 +943,7 @@ group:
 (LG3_f2_wrong <- map(temp_seq))
 ``` 
 
+
 Examining the results, we can see there is a big gap at the end of
 linkage group 3 (between markers `M50` and `M38`, as expected.
 
@@ -980,7 +986,7 @@ them on the map.
 Because we have enough evidence that marker `M38` is misplaced, let us
 drop this marker and try to map it using the function `try_seq`:
   
-```{r, try_M38, width=9, height=9}
+```{r, width=9, height=9}
 temp_seq <- drop_marker(LG3_f2_wrong, 38)
 temp_map <- map(temp_seq)
 (temp_try <- try_seq(temp_map, 38))
@@ -1087,25 +1093,14 @@ CHR1_frame <- make_seq(CHR1_ord, "force")
 ```
 
 ```{r, eval=FALSE}
-rf_graph_table(CHR1_frame)
-```
-
-```{r, echo=FALSE}
-rf_graph_table(CHR1_frame, inter=FALSE)
+rf_graph_table(CHR1_frame) # graphic not showed
 ```
 
 The group is similar to that builded before with only recombinations informations. We will better explore differences in a latter step. Only marker `58` do not follow exactly the expected color pattern, then we will try to repositioned it.
 
-```{r, eval=FALSE}
+```{r}
 CHR1_test_seq <- drop_marker(CHR1_frame, 58)
 CHR1_test_map <- map(CHR1_test_seq)
-CHR1_add58_seq <- try_seq(CHR1_test_map, 58)
-CHR1_add58 <- make_seq(CHR1_add10_seq, 20) # marker 58 was placed at the same position as before
-```
-
-```{r, echo=FALSE, results='hide'}
-CHR1_test_seq <- drop_marker(CHR1_frame, 58)
-CHR1_test_map <- onemap::map(CHR1_test_seq)
 CHR1_add58_seq <- try_seq(CHR1_test_map, 58)
 CHR1_add58 <- make_seq(CHR1_add58_seq, 20) # marker 58 was placed at the same position as before
 ```
@@ -1117,11 +1112,7 @@ CHR1_test_map
 ```
 
 ```{r, eval=FALSE}
-rf_graph_table(CHR1_test_map)
-```
-
-```{r, echo=FALSE}
-rf_graph_table(CHR1_test_map, inter = FALSE)
+rf_graph_table(CHR1_test_map) # graphic not showed
 ```
 
 ```{r}
@@ -1156,25 +1147,14 @@ CHR2_frame <- make_seq(CHR2_ord, "force")
 ```
 
 ```{r, eval=FALSE}
-rf_graph_table(CHR2_frame)
-```
-
-```{r, echo=FALSE}
-rf_graph_table(CHR2_frame, inter=FALSE)
+rf_graph_table(CHR2_frame) # graphic not showed
 ```
 
 The marker `20` presented a color pattern different of expected.
 
-```{r, eval=FALSE}
+```{r}
 CHR2_test_seq <- drop_marker(CHR2_frame, 20)
 CHR2_test_map <- map(CHR2_test_seq)
-CHR2_add20_seq <- try_seq(CHR2_test_map, 20)
-CHR2_add20 <- make_seq(CHR2_add20_seq, 20) # marker 20 was placed at the same position as before
-```
-
-```{r, echo=FALSE, results='hide'}
-CHR2_test_seq <- drop_marker(CHR2_frame, 20)
-CHR2_test_map <- onemap::map(CHR2_test_seq)
 CHR2_add20_seq <- try_seq(CHR2_test_map, 20)
 CHR2_add20 <- make_seq(CHR2_add20_seq, 20) # marker 20 was placed at the same position as before
 ```
@@ -1198,12 +1178,9 @@ CHR2_add20
 ```
 
 ```{r, eval=FALSE}
-rf_graph_table(CHR2_add20)
+rf_graph_table(CHR2_add20)  # graphic not showed
 ```
 
-```{r, echo=FALSE}
-rf_graph_table(CHR2_add20, inter = FALSE)
-```
 
 Based in those results, we decide to not include marker 20 in our map.
 
@@ -1226,12 +1203,9 @@ CHR3_frame <- make_seq(CHR3_ord, "force")
 ```
 
 ```{r, eval=FALSE}
-rf_graph_table(CHR3_frame)
+rf_graph_table(CHR3_frame) # graphic not showed
 ```
 
-```{r, echo=FALSE}
-rf_graph_table(CHR3_frame, inter=FALSE)
-```
 
 Here, marker `32` have color pattern too different of the expected, removing it could influentiate in other markers ordering. Then, we will remove it and search for a new order.
 
@@ -1242,14 +1216,6 @@ CHR3_test_map <- make_seq(CHR3_test_ord, "force")
 ```
 
 The order did not change.
-
-```{r, eval=FALSE}
-rf_graph_table(CHR3_test_map)
-```
-
-```{r, echo=FALSE}
-rf_graph_table(CHR3_test_map, inter = FALSE)
-```
 
 Trying to add the marker again.
 
@@ -1281,16 +1247,10 @@ the following markers are ordered in this sequence: `M47`, `M38`, `M59`,
 `M16`, `M62`, `M21`, `M20`, `M48` and `M22`. In this case, select them
 from the two point analysis, and use function `map`:
 
-```{r, subset_twopoint, eval=FALSE}
+```{r}
 LG3seq_f2 <- make_seq(twopts_f2, c(47, 38, 59, 16, 62, 21, 20, 48, 22))
 (LG3seq_f2_map <- map(LG3seq_f2))
 ```
-
-```{r, echo=FALSE}
-LG3seq_f2 <- make_seq(twopts_f2, c(47, 38, 59, 16, 62, 21, 20, 48, 22))
-(LG3seq_f2_map <- onemap::map(LG3seq_f2))
-```
-
 
 To see the correspondence between marker names and numbers, use
 function `marker_type`:
@@ -1361,6 +1321,11 @@ We do hope that `OneMap` is useful to researchers interested
 in genetic mapping in outcrossing or inbred-based populations. Any
 suggestions and critics are welcome.
 
+# Session Info
+
+```{r}
+sessionInfo()
+```
 
 # References
 
@@ -1368,7 +1333,7 @@ Adler, J. **_R in a Nutshell_** A Desktop Quick Reference, 2009.
 
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B. **_qtl:
 Tools for analyzing QTL experiments_** R package version
-1.09-43, 2008. [http://www.rqtl.org/](http://www.rqtl.org/)
+1.09-43, 2008.
 
 Buetow, K. H., Chakravarti, A. Multipoint gene mapping using
 seriation. I. General methods. **_American Journal of Human

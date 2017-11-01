@@ -52,6 +52,7 @@ data for that marker.
 }
 \examples{
 
+\dontrun{
 ##outcross example
   data(example_out)
   twopt <- rf_2pts(example_out)
@@ -61,7 +62,7 @@ data for that marker.
   LG1.rcd <- rcd(LG1)
   rf_graph_table(LG1.rcd, inter=FALSE)
 
-\dontrun{
+
   ##Now, using interactive Tcl-Tk
   rf_graph_table(LG1.rcd, scale=2, inter=TRUE)
 

@@ -4,7 +4,7 @@
 \alias{plot.onemap_segreg_test}
 \title{Plot p-values for chi-square tests of expected segregation}
 \usage{
-plot.onemap_segreg_test(x, order = TRUE, ...)
+\method{plot}{onemap_segreg_test}(x, order = TRUE, ...)
 }
 \arguments{
 \item{x}{an object of class onemap_segreg_test (produced by onemap's function

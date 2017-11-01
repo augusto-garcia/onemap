@@ -1,13 +1,16 @@
 ## ----knitr_init, echo=FALSE, cache=FALSE---------------------------------
 library(knitr)
-library(rmdformats)
+library(rmarkdown)
 
-## Global options
-options(max.print="75")
-opts_knit$set(width=75)
+knitr::opts_chunk$set(collapse = TRUE,
+                      comment = "#>",
+                      fig.width = 6,
+                      fig.height = 6,
+                      fig.align = "center",
+                      dev = "png",
+                      dpi = 36,
+                      cache = TRUE)
 
-## ---- globalsetup, echo=FALSE, results='hide', cache=FALSE---------------
-#opts_chunk$set(cache=TRUE, autodep=TRUE)
 
 ## ---- echo=FALSE, results='hide'-----------------------------------------
 library(onemap)
@@ -29,7 +32,7 @@ library(onemap)
 example_out <- read_onemap(inputfile = system.file("extdata/example_out.raw", package = "onemap"))
 
 ## ------------------------------------------------------------------------
-data(example_out)
+data("example_out")
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  example_out
@@ -50,7 +53,10 @@ plot_by_segreg_type(example_out)
 #  vcf_example_out <- read_onemap("C:/workingdirectory", "vcf_example_out.raw")
 
 ## ------------------------------------------------------------------------
-data(vcf_example_out)
+data("vcf_example_out")
+
+## ---- echo=FALSE---------------------------------------------------------
+vcf_example_out <- read_onemap(inputfile = system.file("extdata/vcf_example_out.raw", package = "onemap"))
 
 ## ------------------------------------------------------------------------
 vcf_example_out
@@ -188,7 +194,7 @@ LG2_rcd
 marker_type(LG2)
 
 ## ---- results='hide'-----------------------------------------------------
-LG2_init <- make_seq(twopts, c(4, 19, 23, 48,49,50))
+LG2_init <- make_seq(twopts, c(4, 20, 24, 49,50,51))
 
 ## ---- results='hide'-----------------------------------------------------
 LG2_comp <- compare(LG2_init)
@@ -203,7 +209,7 @@ LG2_frame <- make_seq(LG2_comp)
 rf_graph_table(LG2_frame, inter = FALSE)
 
 ## ---- results='hide'-----------------------------------------------------
-LG2_extend <- try_seq(LG2_frame, 51)
+LG2_extend <- try_seq(LG2_frame, 52)
 
 ## ------------------------------------------------------------------------
 LG2_extend
@@ -224,25 +230,25 @@ rf_graph_table(LG2_test, inter=FALSE)
 LG2_frame <- LG2_test
 
 ## ---- results='hide'-----------------------------------------------------
-LG2_extend <- try_seq(LG2_frame, 8)
+LG2_extend <- try_seq(LG2_frame, 9)
 LG2_frame <- make_seq(LG2_extend, 3)
-LG2_extend <- try_seq(LG2_frame, 15)
+LG2_extend <- try_seq(LG2_frame, 16)
 LG2_frame <- make_seq(LG2_extend, 1)
-LG2_extend <- try_seq(LG2_frame, 20)
+LG2_extend <- try_seq(LG2_frame, 21)
 LG2_frame <- make_seq(LG2_extend, 4)
-LG2_extend <- try_seq(LG2_frame, 22)
+LG2_extend <- try_seq(LG2_frame, 23)
 LG2_frame <- make_seq(LG2_extend, 5)
-LG2_extend <- try_seq(LG2_frame, 26)
+LG2_extend <- try_seq(LG2_frame, 27)
 LG2_frame <- make_seq(LG2_extend, 1)
-LG2_extend <- try_seq(LG2_frame, 28)
+LG2_extend <- try_seq(LG2_frame, 29)
 LG2_frame <- make_seq(LG2_extend, 12)
-LG2_extend <- try_seq(LG2_frame, 44)
-LG2_frame <- make_seq(LG2_extend, 7)
 LG2_extend <- try_seq(LG2_frame, 45)
-LG2_frame <- make_seq(LG2_extend, 6)
+LG2_frame <- make_seq(LG2_extend, 7)
 LG2_extend <- try_seq(LG2_frame, 46)
 LG2_frame <- make_seq(LG2_extend, 6)
 LG2_extend <- try_seq(LG2_frame, 47)
+LG2_frame <- make_seq(LG2_extend, 6)
+LG2_extend <- try_seq(LG2_frame, 48)
 LG2_final <- make_seq(LG2_extend, 6)
 
 ## ---- eval=FALSE---------------------------------------------------------
@@ -264,12 +270,6 @@ LG2_safe <- make_seq(LG2_ord, "safe")
 LG2_all <- make_seq(LG2_ord, "force")
 LG2_all
 
-## ---- eval=FALSE---------------------------------------------------------
-#  rf_graph_table(LG2_all)
-
-## ---- echo=FALSE---------------------------------------------------------
-rf_graph_table(LG2_all, inter = FALSE)
-
 ## ---- results='hide'-----------------------------------------------------
 LG2_ord <- order_seq(LG2, n.init = 5, THRES = 3, touchdown = TRUE)
 
@@ -280,13 +280,10 @@ LG2_ord
 ripple_seq(LG2_all, ws = 4, LOD = LOD_sug)
 
 ## ------------------------------------------------------------------------
-LG2_test_seq <- drop_marker(LG2_all, c(22,50))
+LG2_test_seq <- drop_marker(LG2_all, c(23,51))
 
-## ---- eval=FALSE---------------------------------------------------------
-#  (LG2_test_map <- map(LG2_test_seq))
-
-## ---- echo=FALSE---------------------------------------------------------
-(LG2_test_map <- onemap::map(LG2_test_seq))
+## ------------------------------------------------------------------------
+(LG2_test_map <- map(LG2_test_seq))
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  rf_graph_table(LG2_test_map)
@@ -295,13 +292,13 @@ LG2_test_seq <- drop_marker(LG2_all, c(22,50))
 rf_graph_table(LG2_test_map, inter=FALSE)
 
 ## ------------------------------------------------------------------------
-LG2_test_seq <- try_seq(LG2_test_map, 50)
-LG2_test_50 <- make_seq(LG2_test_seq, 15)
-LG2_test_seq <- try_seq(LG2_test_map, 22)
-LG2_test_50_22 <- make_seq(LG2_test_seq, 6)
+LG2_test_seq <- try_seq(LG2_test_map, 51)
+LG2_test_51 <- make_seq(LG2_test_seq, 15)
+LG2_test_seq <- try_seq(LG2_test_51, 23)
+LG2_test_51_23 <- make_seq(LG2_test_seq, 6)
 
 ## ------------------------------------------------------------------------
-LG2_final <- LG2_test_50
+LG2_final <- LG2_test_51
 LG2_final
 
 ## ------------------------------------------------------------------------
@@ -325,13 +322,9 @@ rf_graph_table(LG1_frame, inter = FALSE)
 ## ------------------------------------------------------------------------
 ripple_seq(LG1_frame)
 
-## ---- eval=FALSE---------------------------------------------------------
-#  LG1_test_seq <- drop_marker(LG1_frame, c(9,10,27,41))
-#  LG1_test_map <- map(LG1_test_seq)
-
-## ---- echo=FALSE---------------------------------------------------------
-LG1_test_seq <- drop_marker(LG1_frame, c(9,10,27,41))
-LG1_test_map <- onemap::map(LG1_test_seq)
+## ------------------------------------------------------------------------
+LG1_test_seq <- drop_marker(LG1_frame, c(10,11,28,42))
+LG1_test_map <- map(LG1_test_seq)
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  rf_graph_table(LG1_test_map)
@@ -340,13 +333,13 @@ LG1_test_map <- onemap::map(LG1_test_seq)
 rf_graph_table(LG1_test_map, inter=FALSE)
 
 ## ---- results='hide'-----------------------------------------------------
-LG1_extend <- try_seq(LG1_test_map,9)
-LG1_test <- make_seq(LG1_extend,15) # We choose to remove this marker
 LG1_extend <- try_seq(LG1_test_map,10)
+LG1_test <- make_seq(LG1_extend,15) # We choose to remove this marker
+LG1_extend <- try_seq(LG1_test_map,11)
 LG1_test <- make_seq(LG1_extend,22) # We choose to remove this marker
-LG1_extend <- try_seq(LG1_test_map,27)
+LG1_extend <- try_seq(LG1_test_map,28)
 LG1_test <- make_seq(LG1_extend,15) 
-LG1_extend <- try_seq(LG1_test,41)
+LG1_extend <- try_seq(LG1_test,42)
 LG1_final <- make_seq(LG1_extend,17) 
 
 ## ------------------------------------------------------------------------
@@ -395,22 +388,13 @@ CHR1_ord <- order_seq(CHR_mks$sequences$CHR1)
 CHR1_frame <- make_seq(CHR1_ord, "force")
 
 ## ---- eval=FALSE---------------------------------------------------------
-#  rf_graph_table(CHR1_frame)
+#  rf_graph_table(CHR1_frame) # graphic not showed
 
-## ---- echo=FALSE---------------------------------------------------------
-rf_graph_table(CHR1_frame, inter=FALSE)
-
-## ---- eval=FALSE---------------------------------------------------------
-#  CHR1_test_seq <- drop_marker(CHR1_frame, 10)
-#  CHR1_test_map <- map(CHR1_test_seq)
-#  CHR1_add10_seq <- try_seq(CHR1_test_map, 10)
-#  CHR1_add10 <- make_seq(CHR1_add10_seq, 25) # marker 10 was placed at the same position as before
-
-## ---- echo=FALSE, results='hide'-----------------------------------------
-CHR1_test_seq <- drop_marker(CHR1_frame, 10)
-CHR1_test_map <- onemap::map(CHR1_test_seq)
-CHR1_add10_seq <- try_seq(CHR1_test_map, 10)
-CHR1_add10 <- make_seq(CHR1_add10_seq, 25) # marker 10 was placed at the same position as before
+## ------------------------------------------------------------------------
+CHR1_test_seq <- drop_marker(CHR1_frame, 11)
+CHR1_test_map <- map(CHR1_test_seq)
+CHR1_add11_seq <- try_seq(CHR1_test_map, 11)
+CHR1_add11 <- make_seq(CHR1_add11_seq, 25) # marker 11 was placed at the same position as before
 
 ## ------------------------------------------------------------------------
 CHR1_test_map
@@ -419,16 +403,7 @@ CHR1_test_map
 #  rf_graph_table(CHR1_test_map)
 
 ## ---- echo=FALSE---------------------------------------------------------
-rf_graph_table(CHR1_test_map, inter = FALSE)
-
-## ------------------------------------------------------------------------
-CHR1_add10
-
-## ---- eval=FALSE---------------------------------------------------------
-#  rf_graph_table(CHR1_add10)
-
-## ---- echo=FALSE---------------------------------------------------------
-rf_graph_table(CHR1_add10, inter = FALSE)
+rf_graph_table(CHR1_test_map, inter = FALSE) 
 
 ## ------------------------------------------------------------------------
 CHR1_final <- CHR1_test_map
@@ -441,10 +416,7 @@ CHR2_ord <- order_seq(CHR_mks$sequences$CHR2)
 CHR2_frame <- make_seq(CHR2_ord, "force")
 
 ## ---- eval=FALSE---------------------------------------------------------
-#  rf_graph_table(CHR2_frame)
-
-## ---- echo=FALSE---------------------------------------------------------
-rf_graph_table(CHR2_frame, inter=FALSE)
+#  rf_graph_table(CHR2_frame) # graphic not showed
 
 ## ------------------------------------------------------------------------
 CHR2_final <- CHR2_frame
@@ -454,32 +426,26 @@ CHR3_ord <- order_seq(CHR_mks$sequences$CHR3)
 CHR3_frame <- make_seq(CHR3_ord, "force")
 
 ## ---- eval=FALSE---------------------------------------------------------
-#  rf_graph_table(CHR3_frame)
-
-## ---- echo=FALSE---------------------------------------------------------
-rf_graph_table(CHR3_frame, inter=FALSE)
+#  rf_graph_table(CHR3_frame) # graphic not showed
 
 ## ---- results='hide'-----------------------------------------------------
-CHR3_test_seq <- drop_marker(CHR3_frame, c(22,26, 28))
+CHR3_test_seq <- drop_marker(CHR3_frame, c(23,27, 29))
 CHR3_test_ord <- order_seq(CHR3_test_seq)
 CHR3_test_map <- make_seq(CHR3_test_ord, "force")
 
 ## ---- eval=FALSE---------------------------------------------------------
-#  rf_graph_table(CHR3_test_map)
-
-## ---- echo=FALSE---------------------------------------------------------
-rf_graph_table(CHR3_test_map, inter = FALSE)
+#  rf_graph_table(CHR3_test_map) #graphic not showed
 
 ## ---- results='hide'-----------------------------------------------------
-CHR3_add22_seq <- try_seq(CHR3_test_map, 22)
-CHR3_add22 <- make_seq(CHR3_add22_seq, 6) # Marker 22 removed of the map
-CHR3_add26_seq <- try_seq(CHR3_test_map, 26)
-CHR3_add26 <- make_seq(CHR3_add26_seq, 1) # Marker 26 was better positioned
-CHR3_add28_seq <- try_seq(CHR3_add26, 28)
-CHR3_add28 <- make_seq(CHR3_add28_seq, 12) # Marker 28 increase the map size disproportionately, it was removed from the map
+CHR3_add23_seq <- try_seq(CHR3_test_map, 23)
+CHR3_add23 <- make_seq(CHR3_add23_seq, 5) # Marker 23 removed of the map
+CHR3_add27_seq <- try_seq(CHR3_test_map, 26)
+CHR3_add27 <- make_seq(CHR3_add27_seq, 1) # Marker 27 was better positioned
+CHR3_add29_seq <- try_seq(CHR3_add27, 28)
+CHR3_add29 <- make_seq(CHR3_add29_seq, 1) # Marker 29 increase the map size disproportionately, it was removed from the map
 
 ## ------------------------------------------------------------------------
-CHR3_final <- CHR3_add26
+CHR3_final <- CHR3_add27
 rf_graph_table(CHR3_final, inter = FALSE)
 
 ## ------------------------------------------------------------------------
@@ -508,21 +474,13 @@ draw_map(CHR3_comp, names = TRUE, grid = TRUE, cex.mrk = 0.7)
 ## ------------------------------------------------------------------------
 draw_map(CHR1_final, names = TRUE, grid = TRUE, cex.mrk = 0.7)
 
-## ---- eval=FALSE---------------------------------------------------------
-#  any_seq <- make_seq(twopts, c(30, 12, 3, 14, 2))
-#  (any_seq_map <- map(any_seq))
-
-## ---- echo=FALSE---------------------------------------------------------
+## ------------------------------------------------------------------------
 any_seq <- make_seq(twopts, c(30, 12, 3, 14, 2))
-(any_seq_map <- onemap::map(any_seq))
+(any_seq_map <- map(any_seq))
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  any_seq <- make_seq(twopts, c(30, 12, 3, 14, 2), phase = c(4, 1, 4, 3))
 #  (any_seq_map <- map(any_seq))
-
-## ---- echo=FALSE---------------------------------------------------------
-any_seq <- make_seq(twopts, c(30, 12, 3, 14, 2), phase = c(4, 1, 4, 3))
-(any_seq_map <- onemap::map(any_seq))
 
 ## ------------------------------------------------------------------------
 (any_seq <- add_marker(any_seq, 4:8))

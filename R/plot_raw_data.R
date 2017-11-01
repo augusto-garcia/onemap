@@ -19,6 +19,7 @@
 
 globalVariables(c("ind", "variable", "value"))
 globalVariables(c("Type", "segr.type"))
+globalVariables(c("marker", "geno"))
 
 ##' Draw a graphic of raw data for any OneMap population
 ##'
@@ -46,6 +47,8 @@ globalVariables(c("Type", "segr.type"))
 ##' @import ggplot2
 ##'
 ##' @examples
+##' 
+##' \dontrun{
 ##' data(mapmaker_example_bc) # Loads a fake backcross dataset installed with onemap
 ##' plot(mapmaker_example_bc) # This will show you the graph
 ##'
@@ -70,7 +73,7 @@ globalVariables(c("Type", "segr.type"))
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' g <- plot(example_out, all=FALSE)
 ##' ggplot2::ggsave("MyRawData_out.jpg", g, width=9, height=4, dpi=600)
-##'
+##'}
 ##' @export
 plot.onemap <- function(x, all=TRUE, ...) {
     # Creating the data frame
@@ -367,9 +370,9 @@ create_dataframe_for_plot_outcross <- function(x) {
 ##'
 ##' # You can store the graphic in an object, then save it.
 ##' # For details, see the help of ggplot2's function ggsave()
-##' data(example_out) #Outcrossing data
-##' g <- plot_by_segreg_type(example_out)
-##' ggplot2::ggsave("SegregationTypes.jpg", g, width=7, height=4, dpi=600)
+##' # data(example_out) #Outcrossing data
+##' # g <- plot_by_segreg_type(example_out)
+##' # ggplot2::ggsave("SegregationTypes.jpg", g, width=7, height=4, dpi=600)
 ##'
 ##' @export
 plot_by_segreg_type <- function(x, subcateg=TRUE) {
