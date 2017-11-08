@@ -243,13 +243,13 @@ LG2_frame <- make_seq(LG2_extend, 1)
 LG2_extend <- try_seq(LG2_frame, 29)
 LG2_frame <- make_seq(LG2_extend, 12)
 LG2_extend <- try_seq(LG2_frame, 45)
-LG2_frame <- make_seq(LG2_extend, 7)
+LG2_frame <- make_seq(LG2_extend, 8)
 LG2_extend <- try_seq(LG2_frame, 46)
-LG2_frame <- make_seq(LG2_extend, 6)
+LG2_frame <- make_seq(LG2_extend, 7)
 LG2_extend <- try_seq(LG2_frame, 47)
-LG2_frame <- make_seq(LG2_extend, 6)
+LG2_frame <- make_seq(LG2_extend, 7)
 LG2_extend <- try_seq(LG2_frame, 48)
-LG2_final <- make_seq(LG2_extend, 6)
+LG2_final <- make_seq(LG2_extend, 10)
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  rf_graph_table(LG2_final)
@@ -351,11 +351,11 @@ LG1_final
 ## ---- echo=FALSE---------------------------------------------------------
 rf_graph_table(LG1_final, inter=FALSE)
 
-## ------------------------------------------------------------------------
-LG1_ser <- seriation(LG1)
-LG1_rcd <- rcd(LG1)
-LG1_rec <- record(LG1)
-LG1_ug  <- ug(LG1)
+## ---- eval=FALSE---------------------------------------------------------
+#  LG1_ser <- seriation(LG1)
+#  LG1_rcd <- rcd(LG1)
+#  LG1_rec <- record(LG1)
+#  LG1_ug  <- ug(LG1)
 
 ## ------------------------------------------------------------------------
 CHR1 <- make_seq(twopts, "1")

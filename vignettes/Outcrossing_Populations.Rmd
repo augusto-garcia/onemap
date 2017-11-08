@@ -261,7 +261,7 @@ If you have more than one dataset of markers, all from the same cross type, you 
 
 In our example, we have two datasets: 
 
-* first: `example_out` with 29 markers and 100 individuals
+* first: `example_out` with 30 markers and 100 individuals
 * second: `vcf_example_out` with 24 biallelic markers and 92 individuals.
 
 The `combine_function` recognizes the correspondent individuals by the ID, thus, it is important define exactly same IDs to respective individuals in both `raw` files. Compared with the first file, the second file do not have markers informations for 8 individuals. The `combine_onemap` will complete those informations with NA.
@@ -636,13 +636,13 @@ rf_graph_table(LG3_final, inter = FALSE)
 
 The recombination fractions are plotted below the diagonal and the LOD Scores are plotted above the diagonal. The color scale varies from red (small distances or big LODs) to dark blue. This color scale follows the `rainbow` color palette with `start` argument equal to 0 and `end` argument equal to 0.65. White cells indicate combinations of markers for which the recombination fractions cannot be estimated (D1 and D2).
 
-If you change the `inter` argument to `TRUE`,  you can see some information about cells corresponding to two markers (off the secondary diagonal) just clicking on them. For example, clicking on the cell corresponding to markers numbers 7 and 12, you can see their names (`M8` and `M13` ), types (`A.4` and `B1.5`), recombination fraction (`rf = 0.02662`) and LOD Scores for each possible linkage phase. Clicking on a cell on the diagonal, some information about the corresponding marker is shown, including percent of missing data. This is quite useful in helping to interpret the results.
+If you change the `inter` argument to `TRUE`,  you can see some information about cells corresponding to two markers (off the secondary diagonal) just clicking on them. For example, clicking on the cell corresponding to markers numbers 8 and 13, you can see their names (`M8` and `M13` ), types (`B3.7` and `C.8`), recombination fraction (`rf = 0.02662`) and LOD Scores for each possible linkage phase. Clicking on a cell on the diagonal, some information about the corresponding marker is shown, including percent of missing data. This is quite useful in helping to interpret the results.
 
 The `rf_graph_table` can also be used to check the order of markers
 based on the monotonicity of the matrix: as we get away from the
 secondary diagonal, the recombination fraction values should increase.
 
-Looking at the matrix, it is possible to see a gap between markers `M22` and `M18` (numbers 21 and 17). In some cases, gaps could indicate that the group must be divided at this position, but here `SNP14` also show linkage with `M8`, which points that probabily it is only a gap. Adding more markers to this groups could fill this gap.
+Looking at the matrix, it is possible to see a gap between markers `M22` and `M18` (numbers 22 and 18). In some cases, gaps could indicate that the group must be divided at this position, but here `SNP14` (number 43) also show linkage with `M8`, which points that probabily it is only a gap. Adding more markers to this groups could fill this gap.
 
 ## Genetic mapping of linkage group 2
 
@@ -655,7 +655,7 @@ LG2 <- make_seq(LGs, 2)
 LG2
 ``` 
 
-Note that there are 10 markers in this group, so it is infeasible to
+Note that there are more than 10 markers in this group, so it is infeasible to
 use the `compare` function with all of them because it will take a very
 long time to proceed.
 
@@ -708,7 +708,7 @@ rf_graph_table(LG2_frame)
 rf_graph_table(LG2_frame, inter = FALSE)
 ```
 
-The graphic shows that there are two groups of markers, once `M20` and `M4` are far from the other markers. This markers could be in different linkage groups or they are distant in the same group. Adding more markers will give more informations to solve this issue.
+The graphic shows that there are two groups of markers, once `M20` and `M4` are far from the other markers. These markers could be in different linkage groups or they are distant in the same group. Adding more markers will give more informations to solve this issue.
 
 Next, let us try to map the remaining markers, one at a time. Fist, we will try to add the remaining most informative markers. Starting with `SNP25`:
 
@@ -720,7 +720,7 @@ LG2_extend <- try_seq(LG2_frame, 52)
 LG2_extend
 ``` 
 
-Based on the LOD Scores, marker SNP25 is probably better located after `SNP22`. Detailed results can be seen with
+Based on the LOD Scores, marker SNP25 is probably better located after `SNP22` (number 49). Detailed results can be seen with
 
 ```{r}
 print(LG2_extend, 7)
@@ -758,7 +758,7 @@ rf_graph_table(LG2_test)
 rf_graph_table(LG2_test, inter=FALSE)
 ```
 
-We can see that `SNP25` (or marker 52) was positioned at the end of the sequence and the colour pattern shows that it is strongly linked with its neighbors, indicating that it is well positioned, then we will maintain this marker at this position:
+We can see that `SNP25` (or marker 52) was positioned at the end of the sequence and the color pattern shows that it is strongly linked with its neighbors, indicating that it is well positioned, then we will maintain this marker at this position:
 
 ```{r}
 LG2_frame <- LG2_test
@@ -780,13 +780,13 @@ LG2_frame <- make_seq(LG2_extend, 1)
 LG2_extend <- try_seq(LG2_frame, 29)
 LG2_frame <- make_seq(LG2_extend, 12)
 LG2_extend <- try_seq(LG2_frame, 45)
-LG2_frame <- make_seq(LG2_extend, 7)
+LG2_frame <- make_seq(LG2_extend, 8)
 LG2_extend <- try_seq(LG2_frame, 46)
-LG2_frame <- make_seq(LG2_extend, 6)
+LG2_frame <- make_seq(LG2_extend, 7)
 LG2_extend <- try_seq(LG2_frame, 47)
-LG2_frame <- make_seq(LG2_extend, 6)
+LG2_frame <- make_seq(LG2_extend, 7)
 LG2_extend <- try_seq(LG2_frame, 48)
-LG2_final <- make_seq(LG2_extend, 6)
+LG2_final <- make_seq(LG2_extend, 10)
 ``` 
 
 Checking graphically:
@@ -874,7 +874,7 @@ We should do this to any of the orders we found, either using
 subsets (windows) of four markers will be permutated sequentially
 (`4!` orders for each window), to search for other plausible orders.
 The `LOD` argument means that only orders with LOD Score smaller than
-3.67 will be printed.
+3.68 will be printed.
 
 The output shows sequences of four numbers, because `ws = 4`. They are
 followed by an `OK` if there is no alternative order with LOD
@@ -1008,7 +1008,7 @@ rf_graph_table(LG1_final, inter=FALSE)
 
 As an option, different algorithms to order markers could be applied: 
 
-```{r}
+```{r, eval=FALSE}
 LG1_ser <- seriation(LG1)
 LG1_rcd <- rcd(LG1)
 LG1_rec <- record(LG1)
