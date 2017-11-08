@@ -12,7 +12,7 @@
 ## copyright (c) 2015 Antonio Augusto Franco Garcia                    ##
 ##                                                                     ##
 ## First version: 2015/04/18                                           ##
-## Last update: 2017/08/02                                             ##
+## Last update: 2017/11/08                                             ##
 ## License: GNU General Public License version 3 or later              ##
 ##                                                                     ##
 #######################################################################
@@ -53,7 +53,7 @@ test_segregation_of_a_marker <- function(x, marker) {
     if (grepl("A.H.B",x$segr.type[marker])) {
             if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
             if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
-            if (is.element(1,x$geno[,marker])) c3 <- count[names(count)==3] else c3 <- 0
+            if (is.element(3,x$geno[,marker])) c3 <- count[names(count)==3] else c3 <- 0
             qui <- chisq.test(c(c1,c2,c3), p=p.b, correct = FALSE)
             H0 <- "1:2:1"
     }
