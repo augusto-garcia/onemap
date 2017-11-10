@@ -1,46 +1,39 @@
 Package: onemap
-Title: Software for constructing genetic maps in experimental crosses:
-    full-sib, RILs, F2 and backcrosses
-Version: 2.1.0000
+Title: Construction of Genetic Maps in Experimental Crosses: Full-Sib,
+        RILs, F2 and Backcrosses
+Version: 2.1.1001
 Description: Analysis of molecular marker data from model (backcrosses,
     F2 and recombinant inbred lines) and non-model systems (i. e.
     outcrossing species). For the later, it allows statistical
     analysis by simultaneously estimating linkage and linkage
-    phases (genetic map construction). All analysis are based on
-    multipoint approaches using hidden Markov models.
-Date: June, 2017
+    phases (genetic map construction) according to Wu et al. (2002)
+    <doi:10.1006/tpbi.2002.1577>. All analysis are based on multipoint 
+    approaches using hidden Markov models.
+Date: 2017-10-17
 Authors@R: c(person("Gabriel", "Margarido", role = "aut", email =
         "gramarga@usp.br"), person("Marcelo", "Mollinari", role =
-        c("aut", "cre"), email = "mmollina@usp.br"), person("Karl",
+        "aut", email = "mmollina@usp.br"), person("Karl",
         "Broman", role = "ctb", email = "kbroman@biostat.wisc.edu"),
         person("Rodrigo", "Amadeu", role = "ctb", email = "rodrigo.amadeu@usp.br"),
-        person("Cristiane", "Taniguti", role="ctb", email="chtaniguti@usp.br"),
+        person("Cristiane", "Taniguti", role=c("ctb", "cre"), email="chtaniguti@usp.br"),
         person("Augusto", "Garcia", role = c("aut", "ctb"), email =
         "augusto.garcia@usp.br"))
-Author: Gabriel Margarido [aut]
+Author: Gabriel Margarido [aut], Marcelo Mollinari [aut], Karl
+        Broman [ctb], Rodrigo Amadeu [ctb], Cristiane Taniguti [ctb, cre], Augusto Garcia [aut, ctb]
 LinkingTo: Rcpp (>= 0.10.5), Rhtslib (>= 1.8.0), zlibbioc (>= 1.22.0)
-Depends:
-     R (>= 3.4.0)
-Imports:
-    tcltk (>= 3.2.0),
-    tkrplot (>= 0.0-23),
-    ggplot2 (>= 2.2.1),
-    fields (>= 8.3-5),
-    reshape2 (>= 1.4.1)
-Suggests:
-    qtl (>= 1.36-6),
-    knitr (>= 1.10),
-    rmarkdown,
-    prettydoc
-VignetteBuilder: knitr,rmarkdown, prettydoc
+Depends: R (>= 3.4.0)
+Imports: tcltk (>= 3.2.0), tkrplot (>= 0.0-23), ggplot2 (>= 2.2.1),
+        fields (>= 8.3-5), reshape2 (>= 1.4.1), Rcpp (>= 0.10.5),
+        graphics, methods, stats, utils, maps
+Suggests: qtl (>= 1.36-6), knitr (>= 1.10), rmarkdown
+VignetteBuilder: knitr
 Encoding: UTF-8
 License: GPL-3
 URL: https://github.com/augusto-garcia/onemap
 BugReports: https://github.com/augusto-garcia/onemap/wiki
-Maintainer: Marcelo Mollinari <mmollina@usp.br>
+Maintainer: Cristiane Taniguti <chtaniguti@usp.br>
 Repository: CRAN
-Packaged: 2013-09-09 16:55:07 UTC; mmollina
+Packaged: 2017-10-18 22:25:43 UTC; cris
 NeedsCompilation: yes
-Date/Publication: 2013-09-09 20:03:53
+Date/Publication: 2017-10-18 22:48:07 UTC
 RoxygenNote: 6.0.1
-biocViews:

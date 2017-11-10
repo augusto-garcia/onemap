@@ -12,7 +12,7 @@
 ## copyright (c) 2015 Antonio Augusto Franco Garcia                    ##
 ##                                                                     ##
 ## First version: 2015/04/18                                           ##
-## Last update: 2017/08/02                                             ##
+## Last update: 2017/11/08                                             ##
 ## License: GNU General Public License version 3 or later              ##
 ##                                                                     ##
 #######################################################################
@@ -53,7 +53,7 @@ test_segregation_of_a_marker <- function(x, marker) {
     if (grepl("A.H.B",x$segr.type[marker])) {
             if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
             if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
-            if (is.element(1,x$geno[,marker])) c3 <- count[names(count)==3] else c3 <- 0
+            if (is.element(3,x$geno[,marker])) c3 <- count[names(count)==3] else c3 <- 0
             qui <- chisq.test(c(c1,c2,c3), p=p.b, correct = FALSE)
             H0 <- "1:2:1"
     }
@@ -288,11 +288,16 @@ Bonferroni_alpha <- function(x, global.alpha=0.05) {
 ##' @return a vector with marker names or numbers, according to the option for "distorted" and "numbers"
 ##'
 ##' @examples
-##' data(mapmaker_example_bc) # Loads a fake backcross dataset installed with onemap
-##' Chi <- test_segregation(mapmaker_example_bc) # Performs the chi-square test for all markers
-##' select_segreg(Chi) # To show non-distorted markers
-##' select_segreg(Chi, distorted=TRUE) # To show markers with segregation distortion
-##' select_segreg(Chi, distorted=TRUE, numbers=TRUE) # To show the numbers of the markers with segregation distortion
+##' # Loads a fake backcross dataset installed with onemap
+##' data(mapmaker_example_bc)
+##' # Performs the chi-square test for all markers
+##' Chi <- test_segregation(mapmaker_example_bc)
+##' # To show non-distorted markers
+##' select_segreg(Chi)
+##' # To show markers with segregation distortion
+##' select_segreg(Chi, distorted=TRUE)
+##' # To show the numbers of the markers with segregation distortion
+##' select_segreg(Chi, distorted=TRUE, numbers=TRUE)
 ##'
 ##' @export
 select_segreg <- function(x, distorted=FALSE, numbers=FALSE) {
