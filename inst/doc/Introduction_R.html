@@ -12,7 +12,7 @@
 
 <meta name="author" content="Statistical Genetics Lab   Department of Genetics   Luiz de Queiroz College of Agriculture   University of São Paulo" />
 
-<meta name="date" content="2017-08-30" />
+<meta name="date" content="2017-11-08" />
 
 <title>Introduction to R</title>
 
@@ -70,13 +70,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Introduction to R</h1>
 <h4 class="author"><em><a href="http://statgen.esalq.usp.br">Statistical Genetics Lab</a> <br /> Department of Genetics <br /> Luiz de Queiroz College of Agriculture <br /> University of São Paulo</em></h4>
-<h4 class="date"><em>2017-08-30</em></h4>
+<h4 class="date"><em>2017-11-08</em></h4>
 
 
 
-<p>R is a language and environment for statistical computing and graphics. To download R, please visit the <a href="http://cran.r-project.org">Comprehensive R Archive Network</a>. You do not need to be an expert on it to be able to build your linkage map using <em>OneMap</em>.</p>
+<p>R is a language and environment for statistical computing and graphics. To download R, please visit the <a href="https://cran.r-project.org">Comprehensive R Archive Network</a>. You do not need to be an expert on it to be able to build your linkage map using <em>OneMap</em>.</p>
 <p>Although we prefer and recommend the Linux version, in this tutorial it is assumed that the user is running Windows. Users of R under Linux or Mac OS should have no difficulty following this tutorial.</p>
-<p>We would like to recommend that new users, instead of using plain R, use it through the fantastic software <a href="http://www.rstudio.com/">RStudio</a>. With this package, there is no noticeable difference between operating systems.</p>
+<p>We would like to recommend that new users, instead of using plain R, use it through the fantastic software <a href="https://www.rstudio.com/">RStudio</a>. With this package, there is no noticeable difference between operating systems.</p>
 <p>As advertised on the website, <em>RStudio is an integrated development environment (IDE) for R. It includes a console, syntax-highlighting editor that supports direct code execution, as well as tools for plotting, history, debugging and workspace management</em>. In other words, it offers a number of facilities for your convenience that will make your life easier, specially if you have never used R before.</p>
 <p>So, go ahead and download and install R and RStudio. The window on the left is where you type the R commands you want.</p>
 <div id="getting-started" class="section level1">
@@ -158,20 +158,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>To read these data set into R, first, you have to set the working directory. Go to <em>Session</em>, then <em>Set Working Directory</em>, and <em>Choose Directory</em>, pointing to where you saved the file <em>test.txt</em>.</p>
 <p>Now let us read the file <em>test.txt</em> into R and store it in a variable named <em>dat</em>. To do this, we can use using the R function <em>read.table</em>. The first argument is the name of the file; the second one indicates if the file contains a header, that is, if the first line of the file contains the names of the variables (which is true for our example):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="dt">file =</span> <span class="st">&quot;test.txt&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>)
-dat
-<span class="co">#&gt;        x     y</span>
-<span class="co">#&gt; 1   2.13  4.50</span>
-<span class="co">#&gt; 2   4.48  1.98</span>
-<span class="co">#&gt; 3  10.95  9.29</span>
-<span class="co">#&gt; 4  10.03 16.25</span>
-<span class="co">#&gt; 5  12.72 27.38</span>
-<span class="co">#&gt; 6  24.63 22.60</span>
-<span class="co">#&gt; 7  22.57 36.87</span>
-<span class="co">#&gt; 8  29.78 31.73</span>
-<span class="co">#&gt; 9  19.54 10.42</span>
-<span class="co">#&gt; 10  7.86 14.68</span>
-<span class="co">#&gt; 11 11.75  8.68</span>
-<span class="co">#&gt; 12 23.71 37.39</span></code></pre></div>
+dat</code></pre></div>
 <p>The second line, with <em>dat</em>, is necessary to ask R to print the contents of the object <em>dat</em> (i. e., the data itself). Inspecting the object <em>dat</em> you can see a table with 12 rows and two columns. The names of the columns are <em>x</em> and <em>y</em>. We can access the variables in columns using the dollar sign followed by the column name:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat$x
 <span class="co">#&gt;  [1]  2.13  4.48 10.95 10.03 12.72 24.63 22.57 29.78 19.54  7.86 11.75</span>

@@ -33,8 +33,8 @@ plot_by_segreg_type(mapmaker_example_f2)
 
 # You can store the graphic in an object, then save it.
 # For details, see the help of ggplot2's function ggsave()
-data(example_out) #Outcrossing data
-g <- plot_by_segreg_type(example_out)
-ggplot2::ggsave("SegregationTypes.jpg", g, width=7, height=4, dpi=600)
+# data(example_out) #Outcrossing data
+# g <- plot_by_segreg_type(example_out)
+# ggplot2::ggsave("SegregationTypes.jpg", g, width=7, height=4, dpi=600)
 
 }

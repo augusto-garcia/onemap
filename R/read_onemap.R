@@ -181,6 +181,9 @@ read_onemap <- function (dir, inputfile) {
   if (length(l) != (2 + n.ind) * n.mar) {
     stop("Incomplete or extra genotype information.", call. = TRUE)
   }
+  if (length(unique(l[1,])) != length(l[1,])) {
+    stop("There are markers with the same name.", call. = TRUE)
+  }
 
   ## Get marker names
   bad_lines <- which(substr(l[1,], 1, 1) != "*")

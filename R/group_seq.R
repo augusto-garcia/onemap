@@ -3,7 +3,7 @@
 ## Package: onemap                                                     ##
 ##                                                                     ##
 ## File: group_seq.R                                                   ##
-## Contains: group, print.group_seq                                    ##
+## Contains: group_seq, print.group_seq                                ##
 ##                                                                     ##
 ## Written by Cristiane Taniguti                                       ##
 ## copyright (c) 2007-9, Gabriel R A Margarido and Marcelo Mollinari   ##
@@ -160,7 +160,7 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", rm.repeated =
   names(new_seqs) <- names_seqs
   mk_names <- dimnames(input.2pts$analysis[[1]])[[1]]
 
-  if(!identical(repeated_mks, numeric(0))) {
+  if(!(identical(repeated_mks, integer(0)) || identical(repeated_mks, numeric(0)))) {
     cat("There are one or more markers that grouped in more than one sequence")
 
     # List with repeated markers

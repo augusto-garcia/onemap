@@ -16,6 +16,8 @@
 ##                                                                      #
 #########################################################################
 
+globalVariables(c("mkt.wrg"))
+
 ## Function to read data in MAPMAKER style from input file
 
 
