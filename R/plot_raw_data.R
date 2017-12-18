@@ -12,7 +12,7 @@
 ## copyright (c) 2015 Antonio Augusto Franco Garcia                    ##
 ##                                                                     ##
 ## First version: 2015/03/31                                           ##
-## Last update: 2017/06/26                                             ##
+## Last update: 2017/12/18                                             ##
 ## License: GNU General Public License version 3 or later              ##
 ##                                                                     ##
 #########################################################################
@@ -184,9 +184,9 @@ plot.onemap <- function(x, all=TRUE, ...) {
         else if (all(levels(df.OM$geno)==c("1","2")))
             labels.OM <- c("AA","AB")
     } else if (is(x, "riself") || is(x, "risib")) {
-        if (suppressWarnings(all(levels(df.OM$geno)==c("0","1","2"))))
+        if (suppressWarnings(all(levels(df.OM$geno)==c("0","1","3"))))
             labels.OM <- c("-","AA","BB")
-        else if (all(levels(df.OM$geno)==c("1","2")))
+        else if (all(levels(df.OM$geno)==c("1","3")))
             labels.OM <- c("AA","BB")
     } else if (is(x, "f2")) {
         if (suppressWarnings(all(levels(df.OM$geno)==c("0","1","2","3","4","5"))))
