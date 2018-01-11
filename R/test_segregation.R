@@ -36,8 +36,8 @@ globalVariables(c("Marker", "p.value"))
 ##' the associated p-values, and the \% of individuals genotyped.
 ##'
 ##' ##'@examples
-##' data(mapmaker_example_bc) # Loads a fake backcross dataset installed with onemap
-##' test_segregation_of_a_marker(mapmaker_example_bc,1)
+##' data(example_bc) # Loads a fake backcross dataset installed with onemap
+##' test_segregation_of_a_marker(example_bc,1)
 ##'
 ##' data(example_out) # Loads a fake outcross dataset installed with onemap
 ##' test_segregation_of_a_marker(example_out,1)
@@ -81,7 +81,7 @@ test_segregation_of_a_marker <- function(x, marker) {
       qui <- chisq.test(as.vector(c(c1,c2)), p=p.d, correct = FALSE)
       H0 <- "1:1"
     }
-    else if (grepl("A",x$segr.type[marker])) {
+    else if (grepl("A",x$segr.type[marker]) & class(x)[2]=="outcross") {
           if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
           if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
           if (is.element(3,x$geno[,marker])) c3 <- count[names(count)==3] else c3 <- 0
@@ -89,20 +89,20 @@ test_segregation_of_a_marker <- function(x, marker) {
           qui <- chisq.test(as.vector(c(c1,c2,c3,c4)), p=p.a, correct = FALSE)
           H0 <- "1:1:1:1"
     }
-    else if (grepl("B",x$segr.type[marker])) {
+    else if (grepl("B",x$segr.type[marker]) & class(x)[2]=="outcross") {
             if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
             if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
             if (is.element(3,x$geno[,marker])) c3 <- count[names(count)==3] else c3 <- 0
             qui <- chisq.test(as.vector(c(c1,c2,c3)), p=p.b, correct = FALSE)
             H0 <- "1:2:1"
     }
-    else if (grepl("C",x$segr.type[marker])) {
+    else if (grepl("C",x$segr.type[marker]) & class(x)[2]=="outcross") {
           if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
           if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
           qui <- chisq.test(as.vector(c(c1,c2)), p=p.c, correct = FALSE)
           H0 <- "3:1"
     }
-    else if (grepl("D",x$segr.type[marker])) {
+    else if (grepl("D",x$segr.type[marker]) & class(x)[2]=="outcross") {
           if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
           if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
           qui <- chisq.test(as.vector(c(c1,c2)), p=p.d, correct = FALSE)
@@ -209,8 +209,8 @@ print.onemap_segreg_test <- function(x,...) {
 ##'
 ##' @examples
 ##'
-##' data(mapmaker_example_bc) # load OneMap's fake dataset for a backcross population
-##' BC.seg <- test_segregation(mapmaker_example_bc) # Applies chi-square tests
+##' data(example_bc) # load OneMap's fake dataset for a backcross population
+##' BC.seg <- test_segregation(example_bc) # Applies chi-square tests
 ##' print(BC.seg) # Shows the results
 ##' plot(BC.seg) # Plot the graph, ordering the p-values
 ##' plot(BC.seg, order=FALSE) # Plot the graph showing the results keeping the order in the dataset
@@ -269,8 +269,8 @@ plot.onemap_segreg_test <- function(x, order=TRUE,...) {
 ##' @return the alpha value for each test (numeric)
 ##'
 ##' @examples
-##' data(mapmaker_example_bc) # Loads a fake backcross dataset installed with onemap
-##' Chi <- test_segregation(mapmaker_example_bc) # Performs the chi-square test for all markers
+##' data(example_bc) # Loads a fake backcross dataset installed with onemap
+##' Chi <- test_segregation(example_bc) # Performs the chi-square test for all markers
 ##' print(Chi) # Shows the results of the Chi-square tests
 ##' Bonferroni_alpha (Chi) # Shows the individual alpha level to be used
 ##'
@@ -295,9 +295,9 @@ Bonferroni_alpha <- function(x, global.alpha=0.05) {
 ##'
 ##' @examples
 ##' # Loads a fake backcross dataset installed with onemap
-##' data(mapmaker_example_bc)
+##' data(example_bc)
 ##' # Performs the chi-square test for all markers
-##' Chi <- test_segregation(mapmaker_example_bc)
+##' Chi <- test_segregation(example_bc)
 ##' # To show non-distorted markers
 ##' select_segreg(Chi)
 ##' # To show markers with segregation distortion

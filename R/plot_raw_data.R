@@ -49,12 +49,12 @@ globalVariables(c("marker", "geno"))
 ##' @examples
 ##' 
 ##' \dontrun{
-##' data(mapmaker_example_bc) # Loads a fake backcross dataset installed with onemap
-##' plot(mapmaker_example_bc) # This will show you the graph
+##' data(example_bc) # Loads a fake backcross dataset installed with onemap
+##' plot(example_bc) # This will show you the graph
 ##'
 ##' # You can store the graphic in an object, then save it with a number of properties
 ##' # For details, see the help of ggplot2's function ggsave()
-##' g <- plot(mapmaker_example_bc)
+##' g <- plot(example_bc)
 ##' ggplot2::ggsave("MyRawData_bc.jpg", g, width=7, height=4, dpi=600)
 ##'
 ##' data(onemap_example_f2) # Loads a fake backcross dataset installed with onemap
@@ -362,8 +362,8 @@ create_dataframe_for_plot_outcross <- function(x) {
 ##' plot_by_segreg_type(example_out)
 ##' plot_by_segreg_type(example_out, subcateg=FALSE)
 ##'
-##' data(mapmaker_example_bc)
-##' plot_by_segreg_type(mapmaker_example_bc)
+##' data(example_bc)
+##' plot_by_segreg_type(example_bc)
 ##'
 ##' data(mapmaker_example_f2)
 ##' plot_by_segreg_type(mapmaker_example_f2)
