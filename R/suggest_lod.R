@@ -34,8 +34,8 @@
 ##' @return the suggested LOD to be used for testing linkage
 ##'
 ##' @examples
-##' data(mapmaker_example_bc) # Loads a fake backcross dataset installed with onemap
-##' suggest_lod(mapmaker_example_bc) # An value that should be used to start the analysis
+##' data(example_bc) # Loads a fake backcross dataset installed with onemap
+##' suggest_lod(example_bc) # An value that should be used to start the analysis
 ##'
 ##' @export
 suggest_lod <- function(x) {

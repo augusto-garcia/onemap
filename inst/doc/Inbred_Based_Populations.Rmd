@@ -169,11 +169,13 @@ The third line contains sample IDs. Then, the genotype information is included s
 character `*` indicates the beginning of information input for a new
 marker, followed by the marker name. Next, there is a code indicating the marker type according with:
 
-| Code      | Type                         |
-|-----------|------------------------------|
-|  `A.H.B`  | Codominant marker            |
-|  `C.A`    | Dominant marker for allele B |
-|  `D.B`    | Dominant marker for allele A |
+| Code      | Type                          |
+|-----------|-------------------------------|
+|  `A.H.B`  | Codominant marker             |
+|  `C.A`    | Dominant marker for allele B  |
+|  `D.B`    | Dominant marker for allele A  |
+|  `A.H`    | Marker for backcross          | 
+|  `A.B`    | Marker for ril self/sib cross | 
 
 
 Finally, after each marker type, comes the genotype data for the

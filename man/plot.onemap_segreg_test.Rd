@@ -4,7 +4,7 @@
 \alias{plot.onemap_segreg_test}
 \title{Plot p-values for chi-square tests of expected segregation}
 \usage{
-\method{plot}{onemap_segreg_test}(x, order = TRUE, ...)
+plot.onemap_segreg_test(x, order = TRUE, ...)
 }
 \arguments{
 \item{x}{an object of class onemap_segreg_test (produced by onemap's function
@@ -26,8 +26,8 @@ will be discarded if this criterion is used.
 }
 \examples{
 
-data(mapmaker_example_bc) # load OneMap's fake dataset for a backcross population
-BC.seg <- test_segregation(mapmaker_example_bc) # Applies chi-square tests
+data(example_bc) # load OneMap's fake dataset for a backcross population
+BC.seg <- test_segregation(example_bc) # Applies chi-square tests
 print(BC.seg) # Shows the results
 plot(BC.seg) # Plot the graph, ordering the p-values
 plot(BC.seg, order=FALSE) # Plot the graph showing the results keeping the order in the dataset
