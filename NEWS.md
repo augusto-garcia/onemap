@@ -44,5 +44,10 @@
 * F2 vcf example file are available
 * Vignette for inbred updated
 
+# onemap 2.1.2
+
+* onemap_read_vcfR function
+* Examples files for rils and backcross populations 
+* Vignette for inbred and outcrossing updated
 
 

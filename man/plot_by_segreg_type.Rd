@@ -25,8 +25,8 @@ data(example_out) #Outcrossing data
 plot_by_segreg_type(example_out)
 plot_by_segreg_type(example_out, subcateg=FALSE)
 
-data(mapmaker_example_bc)
-plot_by_segreg_type(mapmaker_example_bc)
+data(example_bc)
+plot_by_segreg_type(example_bc)
 
 data(mapmaker_example_f2)
 plot_by_segreg_type(mapmaker_example_f2)

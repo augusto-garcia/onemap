@@ -125,7 +125,7 @@ common mistake made by users, so please be careful**.
 
 The input file must be saved in text format, with extensions like
 `.raw`. It is a good idea to open the text file called
-`example_out.raw` (available with `OneMap` and saved in the directory
+`onemap_example_out.raw` (available with `OneMap` and saved in the directory
 you installed it) to see how this file should be. You can see where
 `OneMap` is installed using the command
 
@@ -133,22 +133,6 @@ you installed it) to see how this file should be. You can see where
 system.file(package = "onemap")
 ``` 
 
-# Create data file from VCF file
-
-If you are working with biallelic markers, as SNPs and indels (marker types B3.7, D1.10 or D2.15), in VCF (Variant Call Format) files, you can use the function `vcf2raw` to convert the genotype information from the VCF file to `OneMap` format `.raw`. Moreover, the function keeps chromosome and position information for each marker at the end of raw file.
-
-To see how the function works, there is a short example of VCF file called `vcf_example_out.vcf` saved in the directory you installed the `OneMap`. This file is already sorted, compressed and tabix indexed as require by the function. If you need to sort your file, we suggest the `vcf-sort` perl script from `vcftools` program. The functions `bgzip` and `indexTabix` from `Rsamtools` package can be used to compress and add tabix index.
-
-```{r, eval=FALSE, message='hide'}
-vcf2raw(input = system.file("extdata/vcf_example_out.vcf.gz", package = "onemap"),
-        output = "vcf_example_out.raw", parent1 = "P1", parent2 = "P2", cross = "outcross")
-```
-
-The first argument is the path and the name of the data file. You can acess the example data using the function `system.file` as already seen above. For the second argument you can choose a name for the output `.raw` data. At the `parent1` and `parent2` arguments you should specify the parents samples IDs. They could be only one ID or, if there are replicate samples of the parents, multiple IDs for each parent. If you have replicates, you can specify a real number between 0.0 and 1.0 for the argument `min_class` to define the proportion of parents replicates that must have the same genotype for it to be assigned to the corresponding parent. At the `cross` argument you should point the cross type. You can access more information in the help page `?vcf2raw`.
-
-After running the function, the `OneMap` imput file `vcf_example_out.raw` generated will be at your working directory.
-
-The function will not convert non-informative markers (if both parents are homozygotes). Therefore, you can have smaller number of markers in your `.raw` file compared to `vcf` file. In our example, there is one non-informative marker, identified as `SNP15`.
 
 # Importing data
 
@@ -156,7 +140,7 @@ Once the input file is created, the data can be loaded and saved into an R
 `onemap` object. The function used to import data is named `read_onemap`. Its usage is quite simple:
  
 ```{r, eval=FALSE}
-example_out <- read_onemap(dir = "C:/workingdirectory", inputfile = "example_out.raw")
+example_out <- read_onemap(dir = "C:/workingdirectory", inputfile = "onemap_example_out.raw")
 ```
 
 The first argument is the directory where the input file is located,
@@ -171,7 +155,7 @@ directory to the one containing the input file, you can just type:
 
 
 ```{r, eval=FALSE}
-example_out <- read_onemap(inputfile = "example_out.raw")
+example_out <- read_onemap(inputfile = "onemap_example_out.raw")
 ``` 
 
 If no error has occurred, a message will display some basic
@@ -179,7 +163,7 @@ information about the data, such as number of individuals and number
 of markers:
 
 ```{r, echo=FALSE}
-example_out <- read_onemap(inputfile = system.file("extdata/example_out.raw", package = "onemap"))
+example_out <- read_onemap(inputfile = system.file("extdata/onemap_example_out.raw", package = "onemap"))
 ``` 
 
 Because this particular data set is distributed along with the
@@ -224,7 +208,31 @@ Also, you can see graphically the number of markers by segregattion pattern with
 plot_by_segreg_type(example_out)
 ```
 
-In the next analysis, we will also use the data from `vcf` file. You can load it in the same way as shown above:
+
+## Importing data from `VCF` file
+
+If you are working with biallelic markers, as SNPs and indels (marker types B3.7, D1.10 or D2.15), in VCF (Variant Call Format) files, there are two ways of import information from `VCF` to `OneMap`:
+
+* With the `vcf2raw` function
+
+You can use the function `vcf2raw` to convert the genotype information from the VCF file to `OneMap` format `.raw`. Moreover, the function keeps chromosome and position information for each marker at the end of raw file.
+
+To see how the function works, there is a short example of VCF file called `vcf_example_out.vcf` saved in the directory you installed the `OneMap`. This file is already sorted, compressed and tabix indexed as require by the function. If you need to sort your file, we suggest the `vcf-sort` perl script from `vcftools` program. The functions `bgzip` and `indexTabix` from `Rsamtools` package can be used to compress and add tabix index.
+
+```{r, eval=FALSE, message='hide'}
+vcf2raw(input = system.file("extdata/vcf_example_out.vcf.gz", package = "onemap"),
+        output = "vcf_example_out.raw", parent1 = "P1", parent2 = "P2", cross = "outcross")
+```
+
+The first argument is the path and the name of the data file. You can acess the example data using the function `system.file` as already seen above. For the second argument you can choose a name for the output `.raw` data. At the `parent1` and `parent2` arguments you should specify the parents samples IDs. They could be only one ID or, if there are replicate samples of the parents, multiple IDs for each parent. If you have replicates, you can specify a real number between 0.0 and 1.0 for the argument `min_class` to define the proportion of parents replicates that must have the same genotype for it to be assigned to the corresponding parent. At the `cross` argument you should point the cross type. You can access more information in the help page `?vcf2raw`.
+
+After running the function, the `OneMap` imput file `vcf_example_out.raw` generated will be at your working directory.
+
+**This function is usually fast, even with big datasets, and it is only available in the `OneMap` github version.** 
+
+The function will not convert non-informative markers (if both parents are homozygotes). Therefore, you can have smaller number of markers in your `.raw` file compared to `vcf` file. In our example, there is one non-informative marker, identified as `SNP15`.
+
+You can load it in the same way as shown above:
 
 ```{r, eval=FALSE}
 vcf_example_out <- read_onemap("C:/workingdirectory", "vcf_example_out.raw")
@@ -254,6 +262,41 @@ plot(vcf_example_out, all = FALSE)
 ```
 
 The black cells here are indicating missing genotypes for those markers and individuals.
+
+* With the `onemap_read_vcfR` function
+
+With the `onemap_read_vcfR` you can convert the object from `vcfR` package directly to `onemap`. As the `vcf2raw` function, the `onemap_read_vcfR` function keeps chromosome and position information for each marker at the end of raw file.
+
+We will use the same example file `vcf_example_out.vcf` to show how it works.
+
+First, we convert the `VCF` file to `vcfR` object:
+
+```{r, eval=FALSE}
+library(vcfR)
+vcfR.object <- read.vcfR(system.file("extdata/vcf_example_f2.vcf", package = "onemap"))
+```
+
+As described in the `vcfR` package vignette, memory use is a important consideration when using `vcfR`. Depending of your dataset, the object created can be very large and occupy a lot of memory.
+
+After, you can use `onemap_read_vcfR` function to convert this object to `onemap` object. The parameters used is the `vcfR.object` we just created, the identification of each parent (here you must define only one sample for each parent) and the cross type.
+
+```{r, eval=FALSE}
+vcf_example_out <- onemap_read_vcfR(vcfR.object = vcfR.object,
+                                   parent1 = "P1", 
+                                   parent2 = "P2", 
+                                   cross = "outcross")
+```
+
+Depending of your dataset, this function can take some time to run. As a measure, in my computer (see informations about it in the `Session Info`) it tooks 15 min to run 1 million markers. 
+
+The `onemap `object `vcf_example_out` generated is exactly the same as generated by the `vcf2raw` function combined with the `read_onemap`.
+
+After the convertion, we can save the `vcfR.object` as a `.RData` and to remove it from the workspace, once it can occupy a lot of memory and turn the other process too slow. 
+
+```{r, eval=FALSE}
+save(vcfR.object, file = "vcfR.object.RData") 
+rm(vcfR.object)
+```
 
 # Combining `OneMap` datasets
 
