@@ -70,8 +70,8 @@ using the multipoint approach (function \code{\link[onemap]{map}}).
   LG1.rcd <- rcd(LG1)
 
   #F2 example
-  data(fake_f2_onemap)
-  twopt <- rf_2pts(fake_f2_onemap)
+  data(onemap_example_f2)
+  twopt <- rf_2pts(onemap_example_f2)
   all_mark <- make_seq(twopt,"all")
   groups <- group(all_mark)
   LG1 <- make_seq(groups,1)
@@ -79,9 +79,6 @@ using the multipoint approach (function \code{\link[onemap]{map}}).
   LG1.rcd
 }
 
-}
-\author{
-Gabriel R A Margarido, \email{gramarga@gmail.com}
 }
 \references{
 Basten, C. J., Weir, B. S. and Zeng, Z.-B. (2005) \emph{QTL
@@ -98,5 +95,7 @@ Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia, A. A. F.
 \seealso{
 \code{\link[onemap]{make_seq}}, \code{\link[onemap]{map}}
 }
+\author{
+Gabriel R A Margarido, \email{gramarga@gmail.com}
+}
 \keyword{utilities}
-

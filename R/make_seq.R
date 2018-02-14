@@ -5,11 +5,12 @@
 # File: make_seq.R                                                    #
 # Contains: make_seq, print.sequence                                  #
 #                                                                     #
-# Written by Gabriel Rodrigues Alves Margarido                        #
+# Written by Gabriel Rodrigues Alves Margarido with minor change by   #
+# Cristiane Taniguti
 # copyright (c) 2009, Gabriel R A Margarido                           #
 #                                                                     #
 # First version: 02/27/2009                                           #
-# Last update: 02/11/2016                                             #
+# Last update: 07/06/2017                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -137,7 +138,18 @@ make_seq <-
              twopt <- NULL
            },
            'rf_2pts' = {
-             if (length(arg) == 1 && arg == "all") seq.num <- 1:input.obj$n.mar # generally used for grouping markers
+             if (length(arg) == 1 && is.character(arg) && arg != "all") {
+               seq.num <- which(input.obj$CHROM == arg)
+               if (length(seq.num) == 0) {
+                 stop("No markers found for reference sequence \"", arg, "\"")
+               }
+               ## Sort by position, if POS information is available
+               if (!is.null(input.obj$POS)) {
+                 seq.num <- seq.num[order(input.obj$POS[seq.num])]
+                 if (any(is.na(input.obj$POS[seq.num])))
+                   warning("Markers with missing POS information are placed at the end of the sequence.")
+               }
+             } else if (length(arg) == 1 && arg == "all") seq.num <- 1:input.obj$n.mar # generally used for grouping markers
              else if(is.vector(arg) && is.numeric(arg)) seq.num <- arg
              else stop("for an object of class 'rf_2pts', \"arg\" must be a vector of integers or the string 'all'")
              ### TODO: CHECK IF MARKERS REALLY EXIST

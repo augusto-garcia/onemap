@@ -49,8 +49,8 @@
 ##'   draw_map(maps, grid=TRUE, horizontal=TRUE)
 ##'
 ##'   #F2 example
-##'   data(fake_f2_onemap)
-##'   twopt<-rf_2pts(fake_f2_onemap)
+##'   data(onemap_example_f2)
+##'   twopt<-rf_2pts(onemap_example_f2)
 ##'   lg<-group(make_seq(twopt, "all"))
 ##'   maps<-vector("list", lg$n.groups)
 ##'   for(i in 1:lg$n.groups)

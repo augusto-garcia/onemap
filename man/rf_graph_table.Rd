@@ -52,6 +52,7 @@ data for that marker.
 }
 \examples{
 
+\dontrun{
 ##outcross example
   data(example_out)
   twopt <- rf_2pts(example_out)
@@ -61,13 +62,13 @@ data for that marker.
   LG1.rcd <- rcd(LG1)
   rf_graph_table(LG1.rcd, inter=FALSE)
 
-\dontrun{
+
   ##Now, using interactive Tcl-Tk
   rf_graph_table(LG1.rcd, scale=2, inter=TRUE)
 
   ##F2 example
-  data(fake_f2_onemap)
-  twopt <- rf_2pts(fake_f2_onemap)
+  data(onemap_example_f2)
+  twopt <- rf_2pts(onemap_example_f2)
   all_mark <- make_seq(twopt,"all")
   groups <- group(all_mark)
 
@@ -94,4 +95,3 @@ data for that marker.
 Marcelo Mollinari, \email{mmollina@gmail.com}
 }
 \keyword{utilities}
-

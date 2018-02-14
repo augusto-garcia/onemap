@@ -5,14 +5,15 @@
 # File: codif_data.R                                                  #
 # Contains: codif_data                                                #
 #                                                                     #
-# Written by Marcelo Mollinari                                        #
+# Written by Marcelo Mollinari with minor modifications by Cristiane  #
+# Taniguti                                                            #
 # copyright (c) 2009, Marcelo Mollinari                               #
 #                                                                     #
 # On Decemter 12th, 2015, Gabriel Margarido included codification     #
 # for other cross types.                                              #
 #                                                                     #
 # First version: 02/27/2009                                           #
-# Last update: 12/12/2015                                             #
+# Last update: 22/06/2017                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -137,11 +138,24 @@ codif_data <- function(geno.in, segr.type.in,
         )
       }
       else if (cross == "f2") {
-        ## We currently only consider codominant markers
-        geno.out[which(geno.in[,i]=="a"),i] <- 1
-        geno.out[which(geno.in[,i]=="ab"),i] <- 2
-        geno.out[which(geno.in[,i]=="b"),i] <- 3
-        segr.type.out[i] <- 1
+        switch(EXPR=segr.type.in[i],
+               A.H.B = {
+                 geno.out[which(geno.in[,i]=="a"),i] <- 1
+                 geno.out[which(geno.in[,i]=="ab"),i] <- 2
+                 geno.out[which(geno.in[,i]=="b"),i] <- 3
+                 segr.type.out[i] <- 1
+               },
+               D.B = {
+                 geno.out[which(geno.in[,i]=="b"),i] <- 3
+                 geno.out[which(geno.in[,i]=="d"),i] <- 4
+                 segr.type.out[i] <- 2
+               },
+               C.A = {
+                 geno.out[which(geno.in[,i]=="a"),i] <- 1
+                 geno.out[which(geno.in[,i]=="c"),i] <- 5
+                 segr.type.out[i] <- 3
+               }
+        )
       }
       else if (cross == "backcross") {
         geno.out[which(geno.in[,i]=="a"),i] <- 1

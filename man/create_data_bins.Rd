@@ -31,13 +31,12 @@ amount of missing data among those on the bin.
   (new.data <- create_data_bins(fake.big.data.f2, bins))}
 
 }
-\author{
-Marcelo Mollinari, \email{mmollina@usp.br}
-}
 \seealso{
 \code{\link[onemap]{find_bins}}
+}
+\author{
+Marcelo Mollinari, \email{mmollina@usp.br}
 }
 \keyword{bins}
 \keyword{dimension}
 \keyword{reduction}
-

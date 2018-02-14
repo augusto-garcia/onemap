@@ -25,4 +25,3 @@ Chi <- test_segregation(example_out) # Performs the chi-square test for all mark
 print(Chi) # Shows the results
 
 }
-

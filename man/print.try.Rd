@@ -26,4 +26,3 @@ methods. Currently ignored.}
 Print method for object class 'try'
 }
 \keyword{internal}
-

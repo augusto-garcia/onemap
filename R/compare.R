@@ -89,8 +89,8 @@
 ##'   (markers.comp <- compare(markers,verbose=TRUE))
 ##'
 ##'   #F2 example
-##'   data(fake_f2_onemap)
-##'   twopt <- rf_2pts(fake_f2_onemap)
+##'   data(onemap_example_f2)
+##'   twopt <- rf_2pts(onemap_example_f2)
 ##'   markers <- make_seq(twopt,c(17,26,29,30,44,46,55))
 ##'   (markers.comp <- compare(markers))
 ##'   (markers.comp <- compare(markers,verbose=TRUE))

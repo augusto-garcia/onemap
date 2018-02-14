@@ -21,3 +21,33 @@
 * Updating README in order to solve Windows user's issues.
 * Updating dependencies and NAMESPACE for newer standards (R-3.4.0)
 * Updating dependencies within Bioconductor packages
+
+# onemap 2.0.8
+
+* Fixing chi-square segregation tests for markers with missing classes
+
+# onemap 2.1.0000
+
+* Bug fix in function test_segregation for F2 cross
+* Fix in example f2
+* Codif_data changed to deal with dominant markers for F2
+* Warnings removed and labels added to outcross plot
+* plot.onemap palette changed
+* Included C.A, D.B and A.H.B types in plot by segregation
+* New argument in select_segreg
+* Function create_data_bins now keeps CHROM and POS infos
+* Possible to make sequences from CHROM and POS using 2pts object
+* Outcrossing vcf example file are available
+* New functions group_seq and print.group_seq
+* Functions draw.try and draw_order are now defuncts
+* Vignette for outcrossing updated
+* F2 vcf example file are available
+* Vignette for inbred updated
+
+# onemap 2.1.2
+
+* onemap_read_vcfR function
+* Examples files for rils and backcross populations 
+* Vignette for inbred and outcrossing updated
+
+

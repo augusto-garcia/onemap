@@ -1,13 +1,32 @@
-<!--
-%\VignetteEngine{knitr::docco_linear}
-%\VignetteIndexEntry{Introduction to R}
--->
+---
+title: "Introduction to R"
+author: "[Statistical Genetics Lab](http://statgen.esalq.usp.br) <br/> Department of Genetics <br/> Luiz de Queiroz College of Agriculture <br/> University of São Paulo"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to R}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 
-# Introduction to R
+```{r knitr_init, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmarkdown)
+
+knitr::opts_chunk$set(collapse = TRUE,
+                      comment = "#>",
+                      fig.width = 6,
+                      fig.height = 6,
+                      fig.align = "center",
+                      dev = "png",
+                      dpi = 36,
+                      cache = TRUE)
+
+```
 
 R is a language and environment for statistical computing and
 graphics. To download R, please visit the [Comprehensive R Archive
-Network](http://cran.r-project.org). You do not need to be an expert
+Network](https://cran.r-project.org). You do not need to be an expert
 on it to be able to build your linkage map using _OneMap_.
 
 Although we prefer and recommend the Linux version, in this tutorial
@@ -16,7 +35,7 @@ or Mac OS should have no difficulty following this tutorial.
 
 We would like to recommend that new users, instead of using plain R,
 use it through the fantastic software
-[RStudio](http://www.rstudio.com/). With this package, there is no
+[RStudio](https://www.rstudio.com/). With this package, there is no
 noticeable difference between operating systems.
 
 As advertised on the website, _RStudio is an integrated development
@@ -29,7 +48,7 @@ make your life easier, specially if you have never used R before.
 So, go ahead and download and install R and RStudio. The window on the
 left is where you type the R commands you want.
 
-## Getting started
+# Getting started
 
 In the left window, you can see a _greater than_ sign (``>''), which
 means that R is waiting for a command. We call this a _prompt_. 
@@ -65,7 +84,7 @@ x + 4
 
 So, play a little just to start understanding what is going on.
 
-## Functions
+# Functions
 
 Another fundamental aspect in R is the usage of _functions_. A
 function is a predefined routine used to do specific calculations. For
@@ -102,7 +121,7 @@ log(y)
 Notice that _y_ is a vector, that is the argument to the function
 _log()_.
 
-## Getting help
+# Getting help
 
 Every R function has a help page which can be accessed using a
 question mark before the name of the function. For example, to get
@@ -121,7 +140,7 @@ click _Help_ on the menu. For doing searches on the internet, it is
 better to first go to [http://rseek.org/](http://rseek.org/), since R
 is a very common letter to include in searches.  
 
-## Packages
+# Packages
 
 Although R has a huge amount of internal functions, for doing very
 specific computations (like constructing genetic linkage maps), it is
@@ -185,7 +204,7 @@ question mark in the same way as done before:
 ?kosambi
 ```
 
-## Importing and exporting data
+# Importing and exporting data
 
 So far, we entered the variables in R by typing them directly into the
 console. However, in real situations we usually **read these values
@@ -221,9 +240,15 @@ The first argument is the name of the file; the second one indicates
 if the file contains a header, that is, if the first line of the file
 contains the names of the variables (which is true for our example):
 
-```{r }
+```{r, eval=FALSE}
 dat <- read.table(file = "test.txt", header = TRUE)
 dat
+``` 
+
+```{r, echo=FALSE}
+dat <- data.frame(x = c(2.13,4.48,10.95,10.03,12.72,24.63,22.57,29.78,19.54,7.86,11.75,23.71),
+                  y= c(4.5,1.98,9.29,16.25,27.38,22.6,36.87,31.73,10.42,14.68,8.68,37.39))
+
 ``` 
 
 The second line, with _dat_, is necessary to ask R to print the
@@ -265,7 +290,7 @@ double quotes from the output file. After running the command, you can
 look for the file _test\_sum.txt_ in the working directory you defined
 before.
 
-## Classes and methods
+# Classes and methods
 
 In R, every object belongs to a **_class_**. This is a simple concept
 that you must remember. For example, the _dat_ object mentioned above
@@ -327,7 +352,7 @@ that you do not need to change the function to do a specific analysis;
 it will recognize the object type and will adapt accordingly.
 
 
-## Saving your work
+# Saving your work
 
 Finally, you may need to save your work to come back to it in another
 working session. But before we explain how to do that, let us explain

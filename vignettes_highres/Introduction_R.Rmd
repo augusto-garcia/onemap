@@ -1,0 +1,397 @@
+---
+title: "Introduction to R"
+date: "`r Sys.Date()`"
+author: "[Statistical Genetics Lab](http://statgen.esalq.usp.br) <br/> Department of Genetics <br/> Luiz de Queiroz College of Agriculture <br/> University of São Paulo"
+output:
+    rmdformats::readthedown:
+      css: readthedownstatgen.css
+---
+
+```{r knitr_init, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+
+opts_knit$set(width=75)
+```
+
+R is a language and environment for statistical computing and
+graphics. To download R, please visit the [Comprehensive R Archive
+Network](https://cran.r-project.org). You do not need to be an expert
+on it to be able to build your linkage map using _OneMap_.
+
+Although we prefer and recommend the Linux version, in this tutorial
+it is assumed that the user is running Windows. Users of R under Linux
+or Mac OS should have no difficulty following this tutorial.
+
+We would like to recommend that new users, instead of using plain R,
+use it through the fantastic software
+[RStudio](https://www.rstudio.com/). With this package, there is no
+noticeable difference between operating systems.
+
+As advertised on the website, _RStudio is an integrated development
+environment (IDE) for R. It includes a console, syntax-highlighting
+editor that supports direct code execution, as well as tools for
+plotting, history, debugging and workspace management_. In other
+words, it offers a number of facilities for your convenience that will
+make your life easier, specially if you have never used R before.
+
+So, go ahead and download and install R and RStudio. The window on the
+left is where you type the R commands you want.
+
+# Getting started
+
+In the left window, you can see a _greater than_ sign (``>''), which
+means that R is waiting for a command. We call this a _prompt_. 
+
+Let us start with a simple example adding two numbers. Type `2 + 3` at the
+prompt then type the _Enter_ key. You will see the result directly on
+the screen.
+
+```{r }
+2 + 3
+```
+
+You can store this result into a variable for future use, applying the
+assignment operator _ <- _ (_less than_ sign and _ minus_ altogether):
+
+```{r }
+x <- 2 + 3
+```
+
+The result of the calculation was stored into the variable _x_. You
+can access this result typing _x_ at the prompt:
+
+```{r }
+x
+```
+
+You can also use the variable _x_ into other calculations. For
+example:
+
+```{r } 
+x + 4
+```
+
+So, play a little just to start understanding what is going on.
+
+# Functions
+
+Another fundamental aspect in R is the usage of _functions_. A
+function is a predefined routine used to do specific calculations. For
+example, to calculate the natural logarithm of $6.7$, we can use the
+function _log_:
+
+```{r }
+log(6.7)
+```
+ 
+The function _log_ contains a group of internal procedures to
+calculate the natural logarithm of a positive real number. The input
+values of a function are called _arguments_. 
+
+In the previous example, we provided only one argument ($6.7$) to the
+function. Sometimes a function has more than one argument. For
+example, to obtain the logarithm of $6.7$ to base $4$, you can use:
+
+```{r }
+log(6.7, base = 4)
+```
+
+It is possible to calculate the natural logarithm of a set of numbers
+by defining a vector and using it as the first argument of the
+function _log_. To do so we use the function _c()_, that _combines_ a
+set of values into a vector. Thus, to calculate the logarithm of the
+numbers 6.7, 3.2, 5.4, 8.1, 4.9, 9.7 and 2.5, one can use:
+
+```{r }
+y <- c(6.7, 3.2, 5.4, 8.1, 4.9, 9.7, 2.5)
+log(y)
+```
+
+Notice that _y_ is a vector, that is the argument to the function
+_log()_.
+
+# Getting help
+
+Every R function has a help page which can be accessed using a
+question mark before the name of the function. For example, to get
+help on function _log_, you would type:
+
+```{r, eval=FALSE}
+?log
+``` 
+
+This command will open a help page in the default web browser of your
+system. The help page contains some important information about the
+function such its syntax, its arguments and some usage examples.
+
+There are many other ways of getting help, of course. For example, from RStudio,
+click _Help_ on the menu. For doing searches on the internet, it is
+better to first go to [http://rseek.org/](http://rseek.org/), since R
+is a very common letter to include in searches.  
+
+# Packages
+
+Although R has a huge amount of internal functions, for doing very
+specific computations (like constructing genetic linkage maps), it is
+necessary to add extra functionalities. These can be done by
+installing a _package_ (that, loosely speaking, will include a number
+of new functions for helping you to achieve what you are trying to
+do). A package is a collection of related functions, help files and
+example data files that have been bundled together (Adler, 2010).
+
+For example, let us assume that you need to convert a set of
+recombination fractions into centimorgan distance using the Kosambi
+mapping function. One possible way to do this is by using basic R
+to write a function to calculate the distances. Another way is use the
+_OneMap_ package. To install it you can type:
+
+```{r, eval=FALSE}
+setRepositories(ind = 1:2)
+install.packages("onemap")
+``` 
+
+You also can use the console menus on RStudio. On the bottom window to
+the right, select **Packages**, then **Install** and finally select
+_OneMap_ (select CRAN as your repository). Yes, it is that easy!
+
+Returning to the console, you need to load _OneMap_ by typing:
+
+```{r }
+library(onemap)
+``` 
+
+Some Linux users reported the error message below:
+
+```{r, eval=FALSE}
+ERROR: dependency ‘tkrplot’ is not available for package ‘onemap’
+```
+
+To fix it, in a terminal (outside R), install `r-cran-tkrplot`:
+
+```{r, eval=FALSE}
+sudo apt-get install r-cran-tkrplot
+```
+
+To finish our example, let us enter some recombination fractions, for
+example, 0.01, 0.12, 0.05, 0.11, 0.21, 0.07, and save it into a
+variable named _rf_:
+
+```{r }
+rf <- c(0.01, 0.12, 0.05, 0.11, 0.21, 0.07)
+``` 
+
+Now, let us use _OneMap_'s function _kosambi_ to do the calculation:
+
+```{r }
+kosambi(rf)
+```
+
+You can also obtain help on the function _kosambi_ using the
+question mark in the same way as done before:
+
+```{r, eval=FALSE}
+?kosambi
+```
+
+# Importing and exporting data
+
+So far, we entered the variables in R by typing them directly into the
+console. However, in real situations we usually **read these values
+from a file** or a data bank (including files on the internet). 
+
+To learn this procedure, copy and paste the following table into a
+text editor (for example, _notepad_) and save it to a file called
+_test.txt_ into any directory in your computer (such as _My
+Documents_).
+
+        x       y
+     2.13    4.50
+     4.48    1.98
+    10.95    9.29
+    10.03   16.25
+    12.72   27.38
+    24.63   22.60
+    22.57   36.87
+    29.78   31.73
+    19.54   10.42
+     7.86   14.68
+    11.75    8.68
+    23.71   37.39
+
+
+To read these data set into R, first, you have to set the working
+directory. Go to _Session_, then _Set Working Directory_, and _Choose
+Directory_, pointing to where you saved the file _test.txt_.
+
+Now let us read the file _test.txt_ into R and store it in a variable
+named _dat_. To do this, we can use using the R function _read.table_.
+The first argument is the name of the file; the second one indicates
+if the file contains a header, that is, if the first line of the file
+contains the names of the variables (which is true for our example):
+
+```{r, eval=FALSE}
+dat <- read.table(file = "test.txt", header = TRUE)
+dat
+``` 
+
+```{r, echo=FALSE}
+dat <- data.frame(x = c(2.13,4.48,10.95,10.03,12.72,24.63,22.57,29.78,19.54,7.86,11.75,23.71),
+                  y= c(4.5,1.98,9.29,16.25,27.38,22.6,36.87,31.73,10.42,14.68,8.68,37.39))
+
+``` 
+
+The second line, with _dat_, is necessary to ask R to print the
+contents of the object _dat_ (i. e., the data itself). Inspecting the
+object _dat_ you can see a table with 12 rows and two columns. The
+names of the columns are _x_ and _y_. We can access the
+variables in columns using the dollar sign followed by the column
+name:
+
+```{r }
+dat$x
+dat$y 
+``` 
+
+It is also possible to use the function _summary_ to extract some
+information about the object _dat_, or about each one of the columns
+separately:
+
+```{r }
+summary(dat)
+summary(dat$x)
+summary(dat$y)
+``` 
+
+The function _summary_ provides some descriptive statistics about the
+variables in the dataset. If you want to export these information to a
+file you can use the function _write.table_:
+
+```{r, eval=FALSE}
+write.table(x = summary(dat), file = "test_sum.txt", quote = FALSE)
+``` 
+
+The first argument is the output of the _summary_ function. Note that
+is possible to use a function as an argument of another one. The
+second argument is the name of the file in which the summary will be
+written. Notice that this will happen in the _working directory_,
+previously set through RStudio menus. The third argument eliminates
+double quotes from the output file. After running the command, you can
+look for the file _test\_sum.txt_ in the working directory you defined
+before.
+
+# Classes and methods
+
+In R, every object belongs to a **_class_**. This is a simple concept
+that you must remember. For example, the _dat_ object mentioned above
+belongs to class _data.frame_. We can obtain this information using
+the function _class_:
+
+```{r }
+class(dat)
+``` 
+
+When we used the function _summary_, it automatically recognized the
+class of the object _dat_ and applied a specific procedure developed
+for class _data.frame_, which in this case involves the computation of
+some descriptive statistics.
+
+This procedure is named _method_. However, other classes of objects
+can be used as arguments to function _summary_ and the result will be
+different!
+
+For example, let us adjust a linear (regression) model using column _y_ as the
+response variable, and column _x_ as the independent one. This can be done
+with the function _lm()_:
+
+```{r }
+ft_mod <- lm(dat$y ~ dat$x)
+ft_mod
+``` 
+
+This function is used to fit linear models and, by default, prints
+just a formula and the coefficients of the linear regression. Object
+_ft\_mod_ is of class _lm_:
+
+```{r }
+class(ft_mod)
+``` 
+
+So, if we use function _summary_ to obtain more information about the
+fitted model, the result will be:
+
+```{r }
+summary(ft_mod)
+``` 
+
+In this case, function _summary_ recognizes _ft\_mod_ as an object of
+class _lm_ and applies a method which shows information about the
+fitted model, such as the distribution of the residuals, regression
+coefficients, t-tests, and the coefficient of determination ($R^2$),
+etc.
+
+Thus, it is possible to use the same function on different classes of
+object to obtain different results. This concept is very important in
+_OneMap_ and you must remember it to use the package. For example, in
+other vignettes, we will show that depending on the class of the
+dataset, which can be _outcross_, _f2_, _backcross_,
+_riself_ and _risib_, a certain set of procedures will
+be applied. Not by coincidence, these classes correspond to all types
+of populations that can be analyzed. The advantage of this approach is
+that you do not need to change the function to do a specific analysis;
+it will recognize the object type and will adapt accordingly.
+
+
+# Saving your work
+
+Finally, you may need to save your work to come back to it in another
+working session. But before we explain how to do that, let us explain
+a few other concepts.
+
+You can save your **_R Script_**, which is the file that has all R
+instructions you typed so far. You can later load them and run all
+instructions again to get the same results. This is easy: just click
+_File_, _Save As_, and choose a directory and a name (usually with the
+extension .R, such as Example1.R, etc).
+
+A different thing is to save your **R Session**, with all objects you
+created so far (called _R Workspace_). This is not the same, because
+once you load the workspace, you will have all the objects already
+loaded, not requiring you to do everything again, i. e, running your
+script. This will help you to save a lot of time, since some of the
+analysis required to build linkage maps are time demanding.
+
+To do so, click _Session_, then _Save Workspace As_ and choose a
+directory and name. In your next session, open RStudio and then go to
+_Session_, _Load Workspace_.
+
+Alternatively, you can do that using the R function _save.image_, For
+example, if you want to save your analysis in a file named
+_myworkspace.RData_, you should use:
+
+```{r, eval=FALSE}
+save.image("myworkspace.RData")
+``` 
+
+To load:
+
+```{r, eval=FALSE}
+load("myworkspace.RData")
+``` 
+
+# References
+
+N. Matloff, The Art of R Programming. 2011. 1st ed. San Francisco, CA:
+No Starch Press, Inc., 404 pages.
+
+Adler, J. R. 2009. R in a Nutshell. A Desktop Quick Reference.
+O'Reilly Media.
+
+A tutorial by two OneMap authors: [Introduction to
+R](http://augusto-garcia.github.io/R-Introduction/)
+
+
+
