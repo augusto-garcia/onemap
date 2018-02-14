@@ -61,8 +61,8 @@ constructed using the multipoint approach (function
   LG1.rec <- record(LG1)
 
   ##F2 example
-  data(fake_f2_onemap)
-  twopt <- rf_2pts(fake_f2_onemap)
+  data(onemap_example_f2)
+  twopt <- rf_2pts(onemap_example_f2)
   all_mark <- make_seq(twopt,"all")
   groups <- group(all_mark)
   LG1 <- make_seq(groups,1)
@@ -70,9 +70,6 @@ constructed using the multipoint approach (function
   LG1.rec
 }
 
-}
-\author{
-Marcelo Mollinari, \email{mmollina@usp.br}
 }
 \references{
 Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia,
@@ -86,5 +83,7 @@ and Applied Genetics} 112: 30-40.
 \seealso{
 \code{\link[onemap]{make_seq}} and \code{\link[onemap]{map}}
 }
+\author{
+Marcelo Mollinari, \email{mmollina@usp.br}
+}
 \keyword{utilities}
-

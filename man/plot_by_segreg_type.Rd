@@ -25,17 +25,16 @@ data(example_out) #Outcrossing data
 plot_by_segreg_type(example_out)
 plot_by_segreg_type(example_out, subcateg=FALSE)
 
-data(fake_bc_onemap)
-plot_by_segreg_type(fake_bc_onemap)
+data(example_bc)
+plot_by_segreg_type(example_bc)
 
-data(fake_f2_onemap)
-plot_by_segreg_type(fake_f2_onemap)
+data(mapmaker_example_f2)
+plot_by_segreg_type(mapmaker_example_f2)
 
 # You can store the graphic in an object, then save it.
 # For details, see the help of ggplot2's function ggsave()
-data(example_out) #Outcrossing data
-g <- plot_by_segreg_type(example_out)
-ggplot2::ggsave("SegregationTypes.jpg", g, width=7, height=4, dpi=600)
+# data(example_out) #Outcrossing data
+# g <- plot_by_segreg_type(example_out)
+# ggplot2::ggsave("SegregationTypes.jpg", g, width=7, height=4, dpi=600)
 
 }
-

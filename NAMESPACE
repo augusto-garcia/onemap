@@ -4,15 +4,26 @@ useDynLib(onemap)
 import(tcltk, tkrplot, ggplot2)
 importFrom(fields, tim.colors)
 importFrom(fields, splint)
+importFrom(Rcpp, sourceCpp)
+importFrom(graphics, Axis, abline, axis, image, layout,
+             lines, mtext, par, plot, points, text, title)
+importFrom(methods, is)
+importFrom(stats, as.dist, chisq.test, cor.test, dist,
+             na.omit, qchisq)
+importFrom(utils, flush.console, head, setTxtProgressBar,
+             tail, txtProgressBar)
+
 
 ## Export all names
 exportPattern(".")
+exportPattern(map)
 
 # S3 methods
 S3method(plot, onemap)
 S3method(plot, onemap_segreg_test)
 S3method(print, compare)
 S3method(print, group)
+S3method(print, group_seq)
 S3method(print, onemap)
 S3method(print, onemap_bin)
 S3method(print, onemap_segreg_test)

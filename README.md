@@ -6,7 +6,7 @@
 
 `OneMap` is a software for constructing genetic maps in experimental
 crosses: full-sib, RILs, F2 and backcrosses. It was developed by
-Gabriel R A Margarido, Marcelo Mollinari and A Augusto F Garcia.
+Gabriel R A Margarido, Marcelo Mollinari and A Augusto F Garcia. Later on, Rodrigo R Amadeu and Cristiane H Taniguti joined the project.
 
 It has been available on CRAN for several years
 (http://cran.r-project.org/web/packages/onemap/index.html). Its last
@@ -89,10 +89,10 @@ You can read _OneMap_ tutorials going to the vignettes of the
 installed package, or clicking below. Please, start with the overview,
 that will guide you through other chapters.
 
-1. [Overview](http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Overview.html)
+1. [Overview](http://augusto-garcia.github.io/onemap/vignettes_highres/Overview.html)
 
-2. [Introduction to R](http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Introduction_R.html)
+2. [Introduction to R](http://augusto-garcia.github.io/onemap/vignettes_highres/Introduction_R.html)
 
-3. [How to build a linkage map for inbred-bases populations (F2, RIL and BC)](http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Inbred_Based_Populations.html)
+3. [How to build a linkage map for inbred-bases populations (F2, RIL and BC)](http://augusto-garcia.github.io/onemap/vignettes_highres/Inbred_Based_Populations.html)
 
-4. [How to build a linkage map for outcrossing populations](http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Outcrossing_Populations.html)
+4. [How to build a linkage map for outcrossing populations](http://augusto-garcia.github.io/onemap/vignettes_highres/Outcrossing_Populations.html)

@@ -23,4 +23,3 @@ numbers/names corresponding to any markers in the input file.}
 It shows the linkage groups as well as the unlinked markers.
 }
 \keyword{internal}
-

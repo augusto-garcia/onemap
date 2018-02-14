@@ -95,9 +95,6 @@ Makes a sequence of markers based on an object of another type.
 }
 
 }
-\author{
-Gabriel Margarido, \email{gramarga@gmail.com}
-}
 \references{
 Lander, E. S., Green, P., Abrahamson, J., Barlow, A., Daly, M.
 J., Lincoln, S. E. and Newburg, L. (1987) MAPMAKER: An interactive computer
@@ -108,5 +105,7 @@ natural populations. \emph{Genomics} 1: 174-181.
 \code{\link[onemap]{compare}}, \code{\link[onemap]{try_seq}},
 \code{\link[onemap]{order_seq}} and \code{\link[onemap]{map}}.
 }
+\author{
+Gabriel Margarido, \email{gramarga@gmail.com}
+}
 \keyword{utilities}
-

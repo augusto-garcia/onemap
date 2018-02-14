@@ -54,10 +54,6 @@ same in both parents. Hidden Markov chain codes adapted from Broman et al.
   map(markers)
 
 }
-\author{
-Adapted from Karl Broman (package 'qtl') by Gabriel R A Margarido,
-\email{gramarga@usp.br} and Marcelo Mollinari, \email{mmollina@gmail.com}
-}
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
@@ -82,5 +78,8 @@ sex-specific differences. \emph{Genetical Research} 79: 85-96
 \seealso{
 \code{\link[onemap]{make_seq}}
 }
+\author{
+Adapted from Karl Broman (package 'qtl') by Gabriel R A Margarido,
+\email{gramarga@usp.br} and Marcelo Mollinari, \email{mmollina@gmail.com}
+}
 \keyword{utilities}
-

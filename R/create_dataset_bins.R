@@ -5,11 +5,12 @@
 # File: create_dataset_bins.R                                         #
 # Contains: select_data_bins                                          #
 #                                                                     #
-# Written by Marcelo Mollinari                                        #
+# Written by Marcelo Mollinari with minor changes by Cristiane        #
+# Taniguti                                                            #
 # copyright (c) 2015, Marcelo Mollinari                               #
 #                                                                     #
 # First version: 09/2015                                              #
-# Last update: 01/14/2016                                             #
+# Last update: 07/05/2017                                             #
 # License: GNU General Public License version 3                       #
 #                                                                     #
 #######################################################################
@@ -43,10 +44,10 @@ create_data_bins <- function(input.obj, bins)
   ## checking for correct object
   if(class(input.obj)[1] != "onemap")
     stop(deparse(substitute(input.obj))," is not an object of class 'onemap'")
-    
+
   if(is.na(match("onemap_bin", class(bins))))
     stop(deparse(substitute(bins))," is not an object of class 'onemap_bin'")
-    
+
   if (input.obj$n.mar<2) stop("there must be at least two markers to proceed with analysis")
 
   nm<-names(input.obj)
@@ -65,6 +66,8 @@ create_data_bins <- function(input.obj, bins)
   #dat.temp$phase<-input.obj$phase[wrk]
   dat.temp$n.phe<-input.obj$n.phe
   dat.temp$pheno<-input.obj$pheno
+  dat.temp$CHROM <- input.obj$CHROM[wrk]
+  dat.temp$POS <- input.obj$POS[wrk]
  return(dat.temp)
 }
 

@@ -47,13 +47,12 @@ subsequent analyses, but can be overriden.
   print(twopts,c("M1","M2")) # detailed results for markers 1 and 2
 
 }
-\author{
-Gabriel R A Margarido \email{gramarga@gmail.com} and Marcelo Mollinari \email{mmollina@usp.br}
-}
 \references{
 Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002)
 Simultaneous maximum likelihood estimation of linkage and linkage phases in
 outcrossing species. \emph{Theoretical Population Biology} 61: 349-363.
 }
+\author{
+Gabriel R A Margarido \email{gramarga@gmail.com} and Marcelo Mollinari \email{mmollina@usp.br}
+}
 \keyword{utilities}
-
