@@ -22,10 +22,19 @@ Author: Gabriel Margarido [aut], Marcelo Mollinari [aut], Karl
         Broman [ctb], Rodrigo Amadeu [ctb], Cristiane Taniguti [ctb, cre], Augusto Garcia [aut, ctb]
 LinkingTo: Rcpp (>= 0.10.5), Rhtslib (>= 1.8.0), zlibbioc (>= 1.22.0)
 Depends: R (>= 3.4.0)
-Imports: tcltk (>= 3.2.0), tkrplot (>= 0.0-23), ggplot2 (>= 2.2.1),
-        fields (>= 8.3-5), reshape2 (>= 1.4.1), Rcpp (>= 0.10.5),
-        graphics, methods, stats, utils, vcfR (== 1.6.0)
-Suggests: qtl (>= 1.36-6), knitr (>= 1.10), rmarkdown
+Imports: tcltk (>= 3.2.0), 
+        tkrplot (>= 0.0-23), 
+        ggplot2 (>= 2.2.1), 
+        plotly (>= 4.7.1),
+        fields (>= 8.3-5), 
+        reshape2 (>= 1.4.1), 
+        Rcpp (>= 0.10.5),
+        vcfR (== 1.6.0),
+        graphics, 
+        methods, 
+        stats, 
+        utils
+Suggests: qtl (>= 1.36-6), knitr (>= 1.10), rmarkdown, htmlwidgets
 VignetteBuilder: knitr
 Encoding: UTF-8
 License: GPL-3
