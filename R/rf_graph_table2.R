@@ -186,20 +186,20 @@ rf_graph_table2 <- function(input.seq,
 
         ## Merging all the matrices into one df
         df.graph <- Reduce(function(x, y) merge(x, y, all=TRUE),
-                           list(melt(round(mat.rf,2), value.name="rf"),
-                                melt(round(mat.LOD,2), value.name="LOD"),
-                                melt(round(LOD$CC,2), value.name="CC"),
-                                melt(round(LOD$CR,2), value.name="CR"),
-                                melt(round(LOD$RC,2), value.name="RC"),
-                                melt(round(LOD$RR,2), value.name="RR")))
+                           list(reshape2::melt(round(mat.rf,2), value.name="rf"),
+                                reshape2::melt(round(mat.LOD,2), value.name="LOD"),
+                                reshape2::melt(round(LOD$CC,2), value.name="CC"),
+                                reshape2::melt(round(LOD$CR,2), value.name="CR"),
+                                reshape2::melt(round(LOD$RC,2), value.name="RC"),
+                                reshape2::melt(round(LOD$RR,2), value.name="RR")))
 
         colnames(df.graph)[5:8] <- paste0("LOD.",c("CC","CR","RC","RR"))
 
         
         
     }else{
-        df.graph <- merge(melt(round(mat.rf,2), value.name="rf"),
-                          melt(round(mat.LOD,2), value.name="LOD"))
+        df.graph <- merge(reshape2::melt(round(mat.rf,2), value.name="rf"),
+                          reshape2::melt(round(mat.LOD,2), value.name="LOD"))
     }
     
     colnames(df.graph)[c(1,2)] <- c("x", "y")
