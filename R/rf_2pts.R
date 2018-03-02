@@ -67,9 +67,9 @@ rf_2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE) {
         r<-est_rf_f2(geno = input.obj$geno, seg_type = input.obj$segr.type.num, nind = input.obj$n.ind, verbose = verbose)
     else if(("backcross" %in% class(input.obj)))
         r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=0, verbose = verbose)
-    else if(("riself" %in% class(input.obj)))
+    else if(("ri self" %in% class(input.obj)))
         r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=1, verbose = verbose)
-    else if(("risib" %in% class(input.obj)))
+    else if(("ri sib" %in% class(input.obj)))
         r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=2, verbose = verbose)
     structure(list(data.name=as.character(sys.call())[2], n.mar=input.obj$n.mar, LOD=LOD, max.rf=max.rf,
                    input=input.obj$input, CHROM = input.obj$CHROM, POS= input.obj$POS, analysis=r),
