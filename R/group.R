@@ -187,13 +187,13 @@ check_linkage<-function(i, s, cl, geno, st=NULL, max.rf, LOD)
         r<-est_rf_bc(geno = geno[,c(i,s)], mrk = 1, type = 0, nind = nrow(geno))
         sig<-r[1,] <= max.rf & r[2,] >=LOD
     }
-    else if(cl=="riself")
+    else if(cl=="ri self")
     {
         r<-est_rf_bc(geno = geno[,c(i,s)], mrk = 1, type = 1, nind = nrow(geno))
         sig<-r[1,] <= max.rf & r[2,] >=LOD
     }
 
-    else if(cl=="risib")
+    else if(cl=="ri sib")
     {
         r<-est_rf_bc(geno = geno[,c(i,s)], mrk = 1, type = 1, nind = nrow(geno))
         sig<-r[1,] <= max.rf & r[2,] >=LOD
