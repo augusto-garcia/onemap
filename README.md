@@ -9,17 +9,17 @@ crosses: full-sib, RILs, F2 and backcrosses. It was developed by
 Gabriel R A Margarido, Marcelo Mollinari and A Augusto F Garcia. Later on, Rodrigo R Amadeu and Cristiane H Taniguti joined the project.
 
 It has been available on CRAN for several years
-(http://cran.r-project.org/web/packages/onemap/index.html). Its last
-version was updated on 2013-09-09. CRAN has OneMap's stable version,
-which is recommended for most users.
+(https://cran.r-project.org/package=onemap). Its last version was
+updated on 2017-10-18. CRAN has OneMap's stable version, which is
+recommended for most users.
 
 This github page has its version under development. New functions will
 be added (experimental work) and, once it is done, we will synchronize
 the repositories and add it to CRAN.
 
-We are working very hard to release a new stable version allowing
-users to analyze data sets with markers based on sequencing
-technologies, such as Illumina, GBS, etc.
+We worked very hard to release a new stable version allowing users to
+analyze data sets with markers based on sequencing technologies, such
+as Illumina, GBS, etc.
 
 `OneMap` comprises a set of functions that allows users to build a
 linkage map. Some functions are used internally by the package, and
