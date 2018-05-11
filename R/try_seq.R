@@ -557,11 +557,9 @@ draw.try<-function(base.input, try.input, pos=NULL){
       par(op)
   }
     rf_graph_table(input.seq=new.map,
-                   axis.cex = 0.75,
                    main ="",
                    inter = FALSE,
-                   mrk.names = TRUE,
-                   colorkey = FALSE)
+                   mrk.axis = "numbers")
     title(main = "LOD (above diag.) and Recombination Fraction Matrix", cex.main=.9, line=15.4)
 }
 

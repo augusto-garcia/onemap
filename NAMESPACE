@@ -13,6 +13,9 @@ importFrom(stats, as.dist, chisq.test, cor.test, dist,
 importFrom(utils, flush.console, head, setTxtProgressBar,
              tail, txtProgressBar)
 importFrom(plotly, ggplotly)
+importFrom("grDevices", "rainbow")
+importFrom("stats", "rf", "setNames")
+importFrom("utils", "browseURL")
 
 ## Export all names
 exportPattern(".")
