@@ -103,9 +103,7 @@ rf_graph_table <- function(input.seq,
                              mrk.axis="names",
                              lab.xy=NULL,
                              n.colors=4){
-    ## NOTE ##
-    print("NOTE: This is a new version of this function, you can use the previous version using rf_graph_old().")
-  
+
     ## checking for correct objects
     if(!any(class(input.seq)=="sequence"))
         stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
