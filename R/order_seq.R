@@ -405,7 +405,7 @@ draw_order<-function(map.input){
   text(x=new.dist[1]-(max(new.dist)/40), y=1 ,"Markers",  adj=c(1,0.5))
   text(x=new.dist[1]-(max(new.dist)/40), y=0 ,"Distance",  adj=c(1,0.2))
   par(op)
-  rf_graph_table(map.input, inter=FALSE, axis.cex = .75, main="", colorkey = FALSE, mrk.names = TRUE)
+  rf_graph_table(map.input, inter=FALSE, main="")
   title(main = "LOD (above diag.) and Recombination Fraction Matrix", cex.main=.9, line=15.4)
 }
 ## end of file
