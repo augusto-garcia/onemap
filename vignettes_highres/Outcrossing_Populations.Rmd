@@ -17,7 +17,6 @@ options(max.print="75")
 opts_knit$set(width=75)
 ```
 
-
 ```{r, echo=FALSE, results='hide'}
 library(onemap)
 ```
@@ -242,7 +241,6 @@ data("vcf_example_out")
 vcf_example_out <- read_onemap(inputfile = system.file("extdata/vcf_example_out.raw", package = "onemap"))
 ``` 
 
-
 And you can see the informations about this new object with:
 
 ```{r}
@@ -341,7 +339,6 @@ bins_example
 The arguments for `create_data_bins` function are the `onemap` object and the object created by `find_bins` function.
 
 # Testing segregation pattern
-
 
 For the map building process it is also important to know which markers have deviations in the expecteded segregation pattern. It can be a good pratice to remove them from the map building process, because they can adversely affect the map building, and, once the map is builded, they can be inserted.
 
@@ -668,18 +665,40 @@ is, the combination in which alleles are arranged in the chromosomes, given the 
 A careful examination of the results can be done using the function `rf_graph_table` to provide graphical view:
 
 ```{r}
-rf_graph_table(LG3_final, inter = FALSE)
+rf_graph_table(LG3_final)
 ```
 
-The recombination fractions are plotted below the diagonal and the LOD Scores are plotted above the diagonal. The color scale varies from red (small distances or big LODs) to dark blue. This color scale follows the `rainbow` color palette with `start` argument equal to 0 and `end` argument equal to 0.65. White cells indicate combinations of markers for which the recombination fractions cannot be estimated (D1 and D2).
+With the default arguments, this functions plots the recombination fractions between the markers pointed in the axes. You can change the number of colors from `rainbow` pallete with the argument `n.colors`. Hot colors (more close to red) represents lower values of recombination fractions, as showed in the scale at right side of the graphic. White cells indicate combinations of markers for which the recombination fractions cannot be estimated (D1 and D2). If you want to analyze the LOD values between the markers, use `graph.LOD = TRUE`.
 
-If you change the `inter` argument to `TRUE`,  you can see some information about cells corresponding to two markers (off the secondary diagonal) just clicking on them. For example, clicking on the cell corresponding to markers numbers 8 and 13, you can see their names (`M8` and `M13` ), types (`B3.7` and `C.8`), recombination fraction (`rf = 0.02662`) and LOD Scores for each possible linkage phase. Clicking on a cell on the diagonal, some information about the corresponding marker is shown, including percent of missing data. This is quite useful in helping to interpret the results.
+```{r}
+rf_graph_table(LG3_final, graph.LOD = TRUE)
+```
+
+If you change the `inter` argument to `TRUE`,  you should also specify a output html file name in `html.file`. This html contains a iterative plolty graphic. If you hover the mouse cursor over the cells it shows some extra information about cells, as percentagem of missing data, marker name and type. The output html file is generated in your work directory and opens automatically in your internet browser.
+
+```{r, eval=FALSE}
+rf_graph_table(LG3_final, inter = TRUE, html.file = "LG3.html")
+```
+
+For example, passing on the cell corresponding to markers  M8 and M13, you can see their names (`M8` and `M13` ), types (`B3.7` and `C.8`), recombination fraction (`rf = 0.03`) and LOD Scores for each possible linkage phase. This is quite useful in helping to interpret the results.
+
+If you want to see corresponding marker numbers (not the names) in the axis just change the argument `mrk.axis` to `numbers`. It can make the next steps easier.
+
+```{r}
+rf_graph_table(LG3_final, inter = FALSE, mrk.axis = "numbers")
+```
 
 The `rf_graph_table` can also be used to check the order of markers
 based on the monotonicity of the matrix: as we get away from the
 secondary diagonal, the recombination fraction values should increase.
 
-Looking at the matrix, it is possible to see a gap between markers `M22` and `M18` (numbers 22 and 18). In some cases, gaps could indicate that the group must be divided at this position, but here `SNP14` (number 43) also show linkage with `M8`, which points that probabily it is only a gap. Adding more markers to this groups could fill this gap.
+Looking at the matrix, it is possible to see a gap between markers `M7` and `M18` (numbers 7 and 18). In some cases, gaps could indicate that the group must be divided at this position, but here `SNP18` (number 43) also show linkage with `M8`, which points that probabily it is only a gap. Adding more markers to this groups could fill this gap.
+
+Changing other arguments of the function you can add/remove labels of the axes ('lab.xy') and add a title to the graph ('main').
+
+```{r}
+rf_graph_table(LG3_final, main = "LG3", inter = FALSE, n.colors = 7, lab.xy = c("markers", "markers"))
+```
 
 ## Genetic mapping of linkage group 2
 
@@ -736,13 +755,8 @@ LG2_frame <- make_seq(LG2_comp)
 
 Also, we can obtain a useful diagnostic graphic using the function `rf_graph_table`.
 
-```{r, eval=FALSE}
-rf_graph_table(LG2_frame)
-```
-
-
-```{r, echo=FALSE}
-rf_graph_table(LG2_frame, inter = FALSE)
+```{r}
+rf_graph_table(LG2_frame, mrk.axis = "numbers")
 ```
 
 The graphic shows that there are two groups of markers, once `M20` and `M4` are far from the other markers. These markers could be in different linkage groups or they are distant in the same group. Adding more markers will give more informations to solve this issue.
@@ -766,7 +780,6 @@ print(LG2_extend, 7)
 The second argument indicates the position where to place the marker.
 Note that the first allele arrangement is the most likely one.
 
-
 It should be pointed out that the framework created by the function
 `compare` (with `M20`, `M4`, `SNP24`, `SNP23`, `M24` and `SNP22`) could be in
 reverse order (`SNP22`, `M24`, `SNP23`, `SNP24`, `M4` and `M20`) and still represent the
@@ -787,12 +800,8 @@ argument is the position on the map (according to the scale on the
 right of the output) and the last argument indicates linkage phases
 (defaults to 1, higher nested LOD).
 
-```{r, eval=FALSE}
-rf_graph_table(LG2_test)
-```
-
-```{r, echo=FALSE}
-rf_graph_table(LG2_test, inter=FALSE)
+```{r}
+rf_graph_table(LG2_test, mrk.axis = "numbers")
 ```
 
 We can see that `SNP25` (or marker 52) was positioned at the end of the sequence and the color pattern shows that it is strongly linked with its neighbors, indicating that it is well positioned, then we will maintain this marker at this position:
@@ -828,12 +837,8 @@ LG2_final <- make_seq(LG2_extend, 10)
 
 Checking graphically:
 
-```{r, eval=FALSE}
+```{r}
 rf_graph_table(LG2_final)
-```
-
-```{r, echo=FALSE}
-rf_graph_table(LG2_final, inter=FALSE)
 ```
 
 The process of adding markers sequentially can be automated with the
@@ -899,6 +904,10 @@ LG2_ord
 
 For this particular sequence, the `touchdown` step could map safely markers `46` and `52`, but this depends on the specific dataset.
 
+```{r}
+rf_graph_table(LG2_all, mrk.axis = "numbers")
+```
+
 Finally, to check for alternative orders (because we did not use
 exhaustive search), use the `ripple_seq` function:
 
@@ -923,10 +932,10 @@ If there were an alternative order more likely than the original, one
 should check the difference between these orders (and linkage phases). 
 
 In some cases, even if there are no better alternative order suggested by `ripple_seq`, the graphic showed color pattern different of the expected. Then, we can remove 
-doubtful markers (for this groups markers `23` and `51`) and try to positioned them again. First, we use the function `drop_marker` to remove selected marker of our sequence.
+doubtful markers (for this groups markers `23` and `29`) and try to positioned them again. First, we use the function `drop_marker` to remove selected marker of our sequence.
 
 ```{r}
-LG2_test_seq <- drop_marker(LG2_all, c(23,51))
+LG2_test_seq <- drop_marker(LG2_all, c(23,29))
 ```
 
 The function will provide a sequence with the same order of the estimated map (`LG2_all`). After, we should estimate the map again using this predefined order. For this we use the `map` function:
@@ -937,28 +946,28 @@ The function will provide a sequence with the same order of the estimated map (`
 
 Now we have the map without markers `23` and `51`. 
 
-```{r, eval=FALSE}
-rf_graph_table(LG2_test_map)
-```
-
-```{r, echo=FALSE}
-rf_graph_table(LG2_test_map, inter=FALSE)
+```{r}
+rf_graph_table(LG2_test_map, mrk.axis = "numbers")
 ```
 
 We use `try_seq` function to positioned them again:
 
 ```{r}
-LG2_test_seq <- try_seq(LG2_test_map, 51)
-LG2_test_51 <- make_seq(LG2_test_seq, 15)
-LG2_test_seq <- try_seq(LG2_test_51, 23)
-LG2_test_51_23 <- make_seq(LG2_test_seq, 6)
+LG2_test_seq <- try_seq(LG2_test_map, 23)
+LG2_test_23 <- make_seq(LG2_test_seq, 6)
+LG2_test_seq <- try_seq(LG2_test_23, 29)
+LG2_test_23_29 <- make_seq(LG2_test_seq, 12)
+
+rf_graph_table(LG2_test_23_29, mrk.axis = "numbers")
 ```
 
-Markers 23 and 51 was positioned at the same position as before. We will remove marker 23 of our map, because it color pattern are too different of expected. Then, our final map is:
+Marker 23 keeped its previous position, but marker 29 was re-positioned, configuring now a gap between markers 47 and 50. We removed marker 29 of our map, because it color pattern are too different of expected. Then, our final map is:
 
 ```{r}
-LG2_final <- LG2_test_51
+LG2_final <- LG2_test_23
 LG2_final
+
+rf_graph_table(LG2_final, mrk.axis = "numbers")
 ```
 
 ## Genetic mapping of linkage group 1
@@ -989,12 +998,8 @@ Now, get the order with all markers:
 
 Check the map graphically:
 
-```{r, eval=FALSE}
-rf_graph_table(LG1_frame)
-```
-
-```{r, echo=FALSE}
-rf_graph_table(LG1_frame, inter = FALSE)
+```{r}
+rf_graph_table(LG1_frame, mrk.axis = "numbers")
 ```
 
 Check for alternative orders:
@@ -1011,22 +1016,18 @@ LG1_test_seq <- drop_marker(LG1_frame, c(10,11,28,42))
 LG1_test_map <- map(LG1_test_seq)
 ```
 
-```{r, eval=FALSE}
-rf_graph_table(LG1_test_map)
-```
-
-```{r, echo=FALSE}
-rf_graph_table(LG1_test_map, inter=FALSE)
+```{r}
+rf_graph_table(LG1_test_map, mrk.axis = "numbers")
 ```
 
 ```{r, results='hide'}
 LG1_extend <- try_seq(LG1_test_map,10)
-LG1_test <- make_seq(LG1_extend,15) # We choose to remove this marker
+LG1_test_map <- make_seq(LG1_extend,15) 
 LG1_extend <- try_seq(LG1_test_map,11)
-LG1_test <- make_seq(LG1_extend,22) # We choose to remove this marker
+LG1_test <- make_seq(LG1_extend,23) # We choose to remove this marker
 LG1_extend <- try_seq(LG1_test_map,28)
-LG1_test <- make_seq(LG1_extend,15) 
-LG1_extend <- try_seq(LG1_test,42)
+LG1_test_map <- make_seq(LG1_extend,16) 
+LG1_extend <- try_seq(LG1_test_map,42)
 LG1_final <- make_seq(LG1_extend,17) 
 ```
 
@@ -1035,12 +1036,8 @@ Print it:
 LG1_final
 ```
 
-```{r, eval=FALSE}
+```{r}
 rf_graph_table(LG1_final)
-```
-
-```{r, echo=FALSE}
-rf_graph_table(LG1_final, inter=FALSE)
 ```
 
 As an option, different algorithms to order markers could be applied: 
@@ -1148,12 +1145,8 @@ Based in those results, we decide to not include marker 11 in our map.
 CHR1_test_map
 ```
 
-```{r, eval=FALSE}
+```{r}
 rf_graph_table(CHR1_test_map) 
-```
-
-```{r, echo=FALSE}
-rf_graph_table(CHR1_test_map, inter = FALSE) 
 ```
 
 ```{r}
@@ -1191,35 +1184,30 @@ CHR3_frame <- make_seq(CHR3_ord, "force")
 ```
 
 ```{r, eval=FALSE}
-rf_graph_table(CHR3_frame) # graphic not showed
+rf_graph_table(CHR3_frame, mrk.axis = "numbers") # graphic not showed
 ```
 
-
-Here, marker `23`, `27` and `29` have color pattern too different of the expected, removing them could influentiate in other markers ordering. Then we will remove them and search for a new order.
+Here, marker `29` have color pattern too different of the expected, removing it could influentiate in other markers ordering. Then we will remove them and search for a new order.
 
 ```{r, results='hide'}
-CHR3_test_seq <- drop_marker(CHR3_frame, c(23,27, 29))
+CHR3_test_seq <- drop_marker(CHR3_frame, c(29))
 CHR3_test_ord <- order_seq(CHR3_test_seq)
 CHR3_test_map <- make_seq(CHR3_test_ord, "force")
 ```
 
 ```{r, eval=FALSE}
-rf_graph_table(CHR3_test_map) #graphic not showed
+rf_graph_table(CHR3_test_map, mrk.axis = "numbers") #graphic not showed
 ```
 
 Trying to add markers `23`, `27` and `29` again.
 
 ```{r, results='hide'}
-CHR3_add23_seq <- try_seq(CHR3_test_map, 23)
-CHR3_add23 <- make_seq(CHR3_add23_seq, 5) # Marker 23 removed of the map
-CHR3_add27_seq <- try_seq(CHR3_test_map, 26)
-CHR3_add27 <- make_seq(CHR3_add27_seq, 1) # Marker 27 was better positioned
-CHR3_add29_seq <- try_seq(CHR3_add27, 28)
-CHR3_add29 <- make_seq(CHR3_add29_seq, 1) # Marker 29 increase the map size disproportionately, it was removed from the map
+CHR3_add29_seq <- try_seq(CHR3_test_map, 29)
+CHR3_add29 <- make_seq(CHR3_add29_seq, 12) # Marker 29 increase the map size disproportionately, it was removed from the map
 ```
 
 ```{r}
-CHR3_final <- CHR3_add27
+CHR3_final <- CHR3_test_map
 rf_graph_table(CHR3_final, inter = FALSE)
 ```
 
