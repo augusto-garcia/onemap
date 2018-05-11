@@ -50,4 +50,8 @@
 * Examples files for rils and backcross populations 
 * Vignette for inbred and outcrossing updated
 
+# onemap 2.1.3
+
+* rf_graph_plotly
+
 
