@@ -9,7 +9,6 @@ addons:
   apt:
     update: true
     packages:
-      - r-cran-tkrplot
       - tk-dev
 
 r_build_args: --no-build-vignettes
