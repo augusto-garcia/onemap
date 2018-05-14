@@ -49,7 +49,7 @@
 ##'                  cross="outcross",
 ##'                  parent1=c("P1"),
 ##'                  parent2=c("P2"))
-##'                  
+##'@export                  
 
 onemap_read_vcfR <- function(vcfR.object=NULL,
          cross = c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"),

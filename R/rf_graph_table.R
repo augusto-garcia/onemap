@@ -17,6 +17,11 @@
 ##                                                                     ##
 #########################################################################
 
+globalVariables(c("x", "y", "x.type"))
+globalVariables(c("y.type", "x.missing"))
+globalVariables(c("y.missing", "LOD.CC"))
+globalVariables(c("LOD.CR", "LOD.RC", "LOD.RR"))
+
 ##' Plots pairwise recombination fractions and LOD Scores in a heatmap
 ##'
 ##' Plots a matrix of pairwise recombination fraction or
@@ -38,6 +43,8 @@
 ##' be empty (white color). For cells on the diagonal of the matrix, the name, the number and
 ##' the type of the marker are printed, as well as the percentage of missing
 ##' data for that marker.
+##'
+##'@import ggplot2 
 ##'
 ##' @param input.seq an object of class \code{sequence} with a predefined
 ##' order.
@@ -93,7 +100,7 @@
 ##'   plot3 <- rf_graph_table(maps.list[[3]], main="Group 3",inter=FALSE)
 ##'   grid.arrange(plot1, plot2, plot3, nrow=3)
 ##' }
-##'
+##'@export
 
 rf_graph_table <- function(input.seq,
                              graph.LOD=FALSE,
@@ -235,11 +242,11 @@ rf_graph_table <- function(input.seq,
         if(graph.LOD!=TRUE){
             p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, x.missing = x.missing, y.missing = y.missing, fill = rf, LOD.CC=LOD.CC, LOD.CR=LOD.CR, LOD.RC=LOD.RC, LOD.RR=LOD.RR), data=df.graph) +
                 geom_tile() +
-                scale_fill_gradientn(colours = rainbow(n.colors), na.value = "white")
+                scale_fill_gradientn(colours = grDevices::rainbow(n.colors), na.value = "white")
         }else{
             p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, x.missing = x.missing, y.missing = y.missing, rf=rf, fill = LOD, LOD.CC=LOD.CC, LOD.CR=LOD.CR, LOD.RC=LOD.RC, LOD.RR=LOD.RR), data=df.graph) +
                 geom_tile() +
-                scale_fill_gradientn(colours = rev(rainbow(n.colors)), na.value = "white")
+                scale_fill_gradientn(colours = rev(grDevices::rainbow(n.colors)), na.value = "white")
         }
 
     ## If inbred:
@@ -247,11 +254,11 @@ rf_graph_table <- function(input.seq,
         if(graph.LOD!=TRUE){
             p <- ggplot(aes(x, y, x.missing = x.missing, y.missing = y.missing, fill=rf, LOD=LOD), data=df.graph) +
                 geom_tile() +
-                scale_fill_gradientn(colours = rainbow(n.colors), na.value = "white")
+                scale_fill_gradientn(colours = grDevices::rainbow(n.colors), na.value = "white")
         }else{
             p <- ggplot(aes(x, y, x.missing = x.missing, y.missing = y.missing, rf=rf, fill=LOD), data=df.graph) +
                 geom_tile() +
-                scale_fill_gradientn(colours = rev(rainbow(n.colors)), na.value = "white")
+                scale_fill_gradientn(colours = rev(grDevices::rainbow(n.colors)), na.value = "white")
                 }
     }
 
@@ -281,9 +288,9 @@ rf_graph_table <- function(input.seq,
       if(is.null(html.file)){
         stop("For iteractive mode you must define a name for the outputted html file in 'html.file' argument.")
       }else{
-        p <- ggplotly(p)
+        p <- plotly::ggplotly(p)
         htmlwidgets::saveWidget(p, file = html.file)
-        browseURL(html.file)
+        utils::browseURL(html.file)
       }
     }else{
         p #it is a ggplot which can be expanded (+).

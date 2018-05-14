@@ -56,6 +56,8 @@
 ##' a "safe" order, markers that could not be mapped are "forced" into the map,
 ##' resulting in a map with all markers positioned.
 ##'
+##'@importFrom graphics abline axis layout lines par plot points text title
+##'
 ##' @param input.seq an object of class \code{sequence}.
 ##' @param n.init the number of markers to be used in the \code{compare} step
 ##' (defaults to 5).
@@ -156,7 +158,7 @@
 ##'   rbind(ord.1$seq.num, ord.2$seq.num) # probably, the same order for
 ##'   this dataset
 ##' }
-##'
+##'@export
 order_seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
                        subset.n.try=30, subset.THRES=3, twopt.alg= c("rec", "rcd", "ser", "ug"),
                        THRES=3, touchdown=FALSE, tol=10E-2) {

@@ -75,7 +75,6 @@ constructed using the multipoint approach (function
   LG1.ser <- seriation(LG1)
   LG1.ser
 }
-
 }
 \references{
 Buetow, K. H. and Chakravarti, A. (1987) Multipoint gene

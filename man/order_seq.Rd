@@ -125,7 +125,6 @@ resulting in a map with all markers positioned.
   rbind(ord.1$seq.num, ord.2$seq.num) # probably, the same order for
   this dataset
 }
-
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.

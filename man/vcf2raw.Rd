@@ -79,7 +79,7 @@ fields denoted \code{CHROM} and \code{POS}.
                            # in a heterozygote genotype call; for parent2, at
                            # least two samples have to be concordant
   }
-
+  
 }
 \seealso{
 \code{read_onemap} for a description of the OneMap file format.

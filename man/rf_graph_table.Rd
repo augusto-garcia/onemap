@@ -89,7 +89,6 @@ data for that marker.
   plot3 <- rf_graph_table(maps.list[[3]], main="Group 3",inter=FALSE)
   grid.arrange(plot1, plot2, plot3, nrow=3)
 }
-
 }
 \author{
 Rodrigo Amadeu, \email{rramadeu@gmail.com}
