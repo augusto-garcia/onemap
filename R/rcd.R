@@ -94,7 +94,7 @@
 ##'   LG1.rcd <- rcd(LG1)
 ##'   LG1.rcd
 ##' }
-##'
+##'@export
 rcd <-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5)
 {
     ## checking for correct object

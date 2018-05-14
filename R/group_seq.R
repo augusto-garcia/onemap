@@ -81,7 +81,7 @@
 ##' out_seqs <- group_seq(twopts, seqs=list(seq1,seq2,seq3))
 ##' out_seqs
 ##'
-##'
+##'@export
 group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", rm.repeated = TRUE, LOD=NULL, max.rf=NULL){
 
   ## checking for correct object
