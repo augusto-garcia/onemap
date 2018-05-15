@@ -69,7 +69,6 @@ same in both parents. Hidden Markov chain codes adapted from Broman et al.
 
 }
 
-
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.

@@ -74,7 +74,9 @@ globalVariables(c("marker", "geno"))
 ##' g <- plot(example_out, all=FALSE)
 ##' ggplot2::ggsave("MyRawData_out.jpg", g, width=9, height=4, dpi=600)
 ##'}
-##' @export
+##'
+##'@method plot onemap
+##' @export 
 plot.onemap <- function(x, all=TRUE, ...) {
     # Creating the data frame
     if (is(x, "outcross")) {
@@ -374,7 +376,7 @@ create_dataframe_for_plot_outcross <- function(x) {
 ##' # g <- plot_by_segreg_type(example_out)
 ##' # ggplot2::ggsave("SegregationTypes.jpg", g, width=7, height=4, dpi=600)
 ##'
-##' @export
+##'@export
 plot_by_segreg_type <- function(x, subcateg=TRUE) {
   # Create a dataframe, indicating the category and subcategory
   df <- data.frame(segr.type=factor(x$segr.type),Type=999)

@@ -21,7 +21,7 @@
 data(vcf_example_out)
 
 # plot markers informations
-plot.onemap(vcf_example_out)
+plot(vcf_example_out)
 }
 
 \author{Cristiane Hayumi Taniguti, \email{chaytaniguti@gmail.com}}
