@@ -1,21 +1,21 @@
-#########################################################################
-##                                                                     ##
-## Package: onemap                                                     ##
-##                                                                     ##
-## File: rf_graph_table.R                                              ##
-## Contains: rf_graph_table                                            ##
-##                                                                     ##
-## Written by Marcelo Mollinari                                        ##
-## Upgraded to ggplot2/plotly by Rodrigo Amadeu                        ##
-## copyright (c) 2018, Marcelo Mollinari and Rodrigo Amadeu            ##
-##                                                                     ##
-## First version: 2009/05/03                                           ##
-## Last update: 2018/02/15                                             ##
-## Description was modified by Augusto Garcia on 2015/07/25            ##
-## Upgrade to ggplot2/plotly by Rodrigo Amadeu on 2018/02/15           ##
-## License: GNU General Public License version 2 (June, 1991) or later ##
-##                                                                     ##
-#########################################################################
+#####################################################################################
+##                                                                                 ##
+## Package: onemap                                                                 ##
+##                                                                                 ##
+## File: rf_graph_table.R                                                          ##
+## Contains: rf_graph_table                                                        ##
+##                                                                                 ##
+## Written by Marcelo Mollinari                                                    ##
+## Upgraded to ggplot2/plotly by Rodrigo Amadeu and Cristiane Taniguti             ##
+## copyright (c) 2018, Marcelo Mollinari and Rodrigo Amadeu and Cristiane Taniguti ##
+##                                                                                 ##
+## First version: 2009/05/03                                                       ##
+## Last update: 2018/05/15                                                         ##
+## Description was modified by Augusto Garcia on 2015/07/25                        ##
+## Upgrade to ggplot2/plotly by Rodrigo Amadeu on 2018/02/15                       ##
+## License: GNU General Public License version 2 (June, 1991) or later             ##
+##                                                                                 ##
+#####################################################################################
 
 globalVariables(c("x", "y", "x.type"))
 globalVariables(c("y.type", "x.missing"))
@@ -242,11 +242,13 @@ rf_graph_table <- function(input.seq,
         if(graph.LOD!=TRUE){
             p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, x.missing = x.missing, y.missing = y.missing, fill = rf, LOD.CC=LOD.CC, LOD.CR=LOD.CR, LOD.RC=LOD.RC, LOD.RR=LOD.RR), data=df.graph) +
                 geom_tile() +
-                scale_fill_gradientn(colours = grDevices::rainbow(n.colors), na.value = "white")
+                scale_fill_gradientn(colours = grDevices::rainbow(n.colors), na.value = "white") +
+                theme(axis.text.x=element_text(angle=90, hjust=1))
         }else{
             p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, x.missing = x.missing, y.missing = y.missing, rf=rf, fill = LOD, LOD.CC=LOD.CC, LOD.CR=LOD.CR, LOD.RC=LOD.RC, LOD.RR=LOD.RR), data=df.graph) +
                 geom_tile() +
-                scale_fill_gradientn(colours = rev(grDevices::rainbow(n.colors)), na.value = "white")
+                scale_fill_gradientn(colours = rev(grDevices::rainbow(n.colors)), na.value = "white") +
+                theme(axis.text.x=element_text(angle=90, hjust=1))
         }
 
     ## If inbred:
@@ -254,11 +256,13 @@ rf_graph_table <- function(input.seq,
         if(graph.LOD!=TRUE){
             p <- ggplot(aes(x, y, x.missing = x.missing, y.missing = y.missing, fill=rf, LOD=LOD), data=df.graph) +
                 geom_tile() +
-                scale_fill_gradientn(colours = grDevices::rainbow(n.colors), na.value = "white")
+                scale_fill_gradientn(colours = grDevices::rainbow(n.colors), na.value = "white") +
+                theme(axis.text.x=element_text(angle=90, hjust=1))
         }else{
             p <- ggplot(aes(x, y, x.missing = x.missing, y.missing = y.missing, rf=rf, fill=LOD), data=df.graph) +
                 geom_tile() +
-                scale_fill_gradientn(colours = rev(grDevices::rainbow(n.colors)), na.value = "white")
+                scale_fill_gradientn(colours = rev(grDevices::rainbow(n.colors)), na.value = "white") +
+                theme(axis.text.x=element_text(angle=90, hjust=1))
                 }
     }
 
