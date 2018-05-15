@@ -26,7 +26,7 @@
 
 * Fixing chi-square segregation tests for markers with missing classes
 
-# onemap 2.1.0000
+# onemap 2.1.1001
 
 * Bug fix in function test_segregation for F2 cross
 * Fix in example f2
@@ -44,14 +44,15 @@
 * F2 vcf example file are available
 * Vignette for inbred updated
 
-# onemap 2.1.2
+# onemap 2.1.1002
 
 * onemap_read_vcfR function
 * Examples files for rils and backcross populations 
 * Vignette for inbred and outcrossing updated
 
-# onemap 2.1.3
+# onemap 2.1.1003
 
-* rf_graph_plotly
+* rf_graph_table updated with ggplot2 and plotly
+* NAMESPACE automated with roxygen2
 
 
