@@ -4,7 +4,7 @@
 \alias{plot.onemap_segreg_test}
 \title{Plot p-values for chi-square tests of expected segregation}
 \usage{
-plot.onemap_segreg_test(x, order = TRUE, ...)
+\method{plot}{onemap_segreg_test}(x, order = TRUE, ...)
 }
 \arguments{
 \item{x}{an object of class onemap_segreg_test (produced by onemap's function
@@ -45,6 +45,4 @@ plot(Out.seg, order=FALSE) # Plot the graph showing the results keeping the orde
 # For details, see the help of ggplot2's function ggsave()
 g <- plot(Out.seg)
 ggplot2::ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
-
-
 }

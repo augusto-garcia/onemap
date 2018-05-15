@@ -49,7 +49,7 @@
 ##'                  cross="outcross",
 ##'                  parent1=c("P1"),
 ##'                  parent2=c("P2"))
-##'                  
+##'@export                  
 
 onemap_read_vcfR <- function(vcfR.object=NULL,
          cross = c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"),
@@ -229,7 +229,8 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   rownames(GT_matrix) <- MKS
   colnames(GT_matrix) <- INDS[-c(P1,P2)] 
   
-  
+  legacy_crosses <- setNames(c("outcross", "f2", "backcross", "riself", "risib"), 
+                             c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"))
   structure(list(geno= t(GT_matrix),
                  n.ind = dim(GT_matrix)[2],
                  n.mar = n.mk,
@@ -240,5 +241,5 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
                  CHROM = CHROM,
                  POS = POS,
                  input = "vcfR.object"),
-            class=c("onemap",cross))
+            class=c("onemap",legacy_crosses[cross]))
 }
