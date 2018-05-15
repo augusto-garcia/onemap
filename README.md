@@ -36,20 +36,6 @@ setRepositories(ind = 1:2)
 install.packages("onemap", dependencies=TRUE)
 ```
 
-Some Linux users reported the error message below:
-
-```R
-ERROR: dependency ‘tkrplot’ is not available for package ‘onemap’
-```
-
-To fix it, in a terminal (outside R), install `r-cran-tkrplot`:
-
-```R
-sudo apt-get install r-cran-tkrplot
-```
-
-Then, go back to `R` and install `OneMap` as mentioned above.
-
 You also can use the console menus: _Packages -> Install
 package(s)_. After clicking, a box will pop-up asking you to choose
 the CRAN mirror. Choose the location nearest to you. Then, another box
@@ -75,7 +61,7 @@ library(devtools)
 This will allow you to automatically build and install packages from
 github. If you use Windows, first install
 [Rtools](https://cran.r-project.org/bin/windows/Rtools/). If you are facing problems with Rtools installation, try to do it by selecting *Run as Admnistrator* option with right mouse button. On a Mac,
-you will need Xcode (available on the App Store). On Linux, you may need to install `r-cran-tkrplot` (see above).
+you will need Xcode (available on the App Store).
 
 Then, to install `OneMap` from github (this very repo):
 
