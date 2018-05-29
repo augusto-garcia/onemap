@@ -118,7 +118,7 @@
 ##'   extend.map
 ##'   (new.map<-make_seq(extend.map,14)) # best position
 ##' }
-##'
+##'@export
 try_seq<-function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
 {
     if(is(get(input.seq$data.name), "outcross"))
@@ -152,7 +152,7 @@ try_seq_inbred <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
   try.ord <- c(mrk,input.seq$seq.num)
   if(verbose) cat("TRY", 1,": ", c(mrk,input.seq$seq.num),"\n")
   else cat(format(mrk,width=num.max) , "-->", format(colnames(get(input.seq$data.name, pos=1)$geno)[mrk], width=mark.max), ": .")
-  flush.console()
+  utils::flush.console()
   seq.temp<-make_seq(get(input.seq$twopt), arg=try.ord)
   seq.temp$twopt<-input.seq$twopt
   rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
@@ -175,7 +175,7 @@ try_seq_inbred <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
     if(verbose)
       cat("TRY", i+1, ": ", try.ord[i+1,], "\n")
     else cat(".")
-    flush.console()
+    utils::flush.console()
     seq.temp<-make_seq(get(input.seq$twopt), arg=try.ord[i+1,])
     seq.temp$twopt<-input.seq$twopt
     rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
@@ -192,7 +192,7 @@ try_seq_inbred <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
   try.ord <- rbind(try.ord,c(input.seq$seq.num,mrk))
   if(verbose) cat("TRY",length(input.seq$seq.num)+1,": ", c(input.seq$seq.num,mrk) ,"\n")
   else cat(".\n")
-  flush.console()
+  utils::flush.console()
   ## estimate parameters for all possible linkage phases for this order
   final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,try.ord[length(input.seq$seq.num)+1,]]),
                             rf.vec=rf.temp,
@@ -254,7 +254,7 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
     try.ord <- c(mrk,input.seq$seq.num)
     if(verbose) cat("TRY", 1,": ", c(mrk,input.seq$seq.num),"\n")
     else cat(format(mrk,width=num.max) , "-->", format(colnames(get(input.seq$data.name, pos=1)$geno)[mrk], width=mark.max), ": .")
-    flush.console()
+    utils::flush.console()
 
     if(nrow(Ph.Init)>1){
         ##Removing ambigous phases
@@ -312,7 +312,7 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
         try.ord <- rbind(try.ord,c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)]))
         if(verbose) cat("TRY", i+1,": ",c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)]) ,"\n")
         else cat(".")
-        flush.console()
+        utils::flush.console()
 
         if(nrow(Ph.Init)>1){
             ##Removing ambigous phases
@@ -358,7 +358,7 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
     try.ord <- rbind(try.ord,c(input.seq$seq.num,mrk))
     if(verbose) cat("TRY",length(input.seq$seq.num)+1,": ", c(input.seq$seq.num,mrk) ,"\n")
     else cat(".\n")
-    flush.console()
+    utils::flush.console()
     if(nrow(Ph.Init)>1){
         ##Removing ambigous phases
         rm.ab<-rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=c(input.seq$seq.num,mrk))
@@ -557,11 +557,9 @@ draw.try<-function(base.input, try.input, pos=NULL){
       par(op)
   }
     rf_graph_table(input.seq=new.map,
-                   axis.cex = 0.75,
                    main ="",
                    inter = FALSE,
-                   mrk.names = TRUE,
-                   colorkey = FALSE)
+                   mrk.axis = "numbers")
     title(main = "LOD (above diag.) and Recombination Fraction Matrix", cex.main=.9, line=15.4)
 }
 

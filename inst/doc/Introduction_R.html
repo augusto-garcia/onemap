@@ -12,7 +12,7 @@
 
 <meta name="author" content="Statistical Genetics Lab   Department of Genetics   Luiz de Queiroz College of Agriculture   University of São Paulo" />
 
-<meta name="date" content="2017-12-18" />
+<meta name="date" content="2018-05-11" />
 
 <title>Introduction to R</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Introduction to R</h1>
 <h4 class="author"><em><a href="http://statgen.esalq.usp.br">Statistical Genetics Lab</a> <br /> Department of Genetics <br /> Luiz de Queiroz College of Agriculture <br /> University of São Paulo</em></h4>
-<h4 class="date"><em>2017-12-18</em></h4>
+<h4 class="date"><em>2018-05-11</em></h4>
 
 
 
@@ -83,15 +83,15 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h1>Getting started</h1>
 <p>In the left window, you can see a <em>greater than</em> sign (``&gt;’’), which means that R is waiting for a command. We call this a <em>prompt</em>.</p>
 <p>Let us start with a simple example adding two numbers. Type <code>2 + 3</code> at the prompt then type the <em>Enter</em> key. You will see the result directly on the screen.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">2</span> +<span class="st"> </span><span class="dv">3</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">2</span> <span class="op">+</span><span class="st"> </span><span class="dv">3</span>
 <span class="co">#&gt; [1] 5</span></code></pre></div>
 <p>You can store this result into a variable for future use, applying the assignment operator _ &lt;- _ (<em>less than</em> sign and _ minus_ altogether):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="dv">2</span> +<span class="st"> </span><span class="dv">3</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span><span class="dv">3</span></code></pre></div>
 <p>The result of the calculation was stored into the variable <em>x</em>. You can access this result typing <em>x</em> at the prompt:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x
 <span class="co">#&gt; [1] 5</span></code></pre></div>
 <p>You can also use the variable <em>x</em> into other calculations. For example:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x +<span class="st"> </span><span class="dv">4</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x <span class="op">+</span><span class="st"> </span><span class="dv">4</span>
 <span class="co">#&gt; [1] 9</span></code></pre></div>
 <p>So, play a little just to start understanding what is going on.</p>
 </div>
@@ -121,15 +121,15 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h1>Packages</h1>
 <p>Although R has a huge amount of internal functions, for doing very specific computations (like constructing genetic linkage maps), it is necessary to add extra functionalities. These can be done by installing a <em>package</em> (that, loosely speaking, will include a number of new functions for helping you to achieve what you are trying to do). A package is a collection of related functions, help files and example data files that have been bundled together (Adler, 2010).</p>
 <p>For example, let us assume that you need to convert a set of recombination fractions into centimorgan distance using the Kosambi mapping function. One possible way to do this is by using basic R to write a function to calculate the distances. Another way is use the <em>OneMap</em> package. To install it you can type:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">setRepositories</span>(<span class="dt">ind =</span> <span class="dv">1</span>:<span class="dv">2</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">setRepositories</span>(<span class="dt">ind =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>)
 <span class="kw">install.packages</span>(<span class="st">&quot;onemap&quot;</span>)</code></pre></div>
 <p>You also can use the console menus on RStudio. On the bottom window to the right, select <strong>Packages</strong>, then <strong>Install</strong> and finally select <em>OneMap</em> (select CRAN as your repository). Yes, it is that easy!</p>
 <p>Returning to the console, you need to load <em>OneMap</em> by typing:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(onemap)</code></pre></div>
 <p>Some Linux users reported the error message below:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ERROR:<span class="st"> </span>dependency ‘tkrplot’ is not available for package ‘onemap’</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ERROR<span class="op">:</span><span class="st"> </span>dependency ‘tkrplot’ is not available <span class="cf">for</span> package ‘onemap’</code></pre></div>
 <p>To fix it, in a terminal (outside R), install <code>r-cran-tkrplot</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sudo apt-get install r-cran-tkrplot</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sudo apt<span class="op">-</span>get install r<span class="op">-</span>cran<span class="op">-</span>tkrplot</code></pre></div>
 <p>To finish our example, let us enter some recombination fractions, for example, 0.01, 0.12, 0.05, 0.11, 0.21, 0.07, and save it into a variable named <em>rf</em>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rf &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">0.01</span>, <span class="fl">0.12</span>, <span class="fl">0.05</span>, <span class="fl">0.11</span>, <span class="fl">0.21</span>, <span class="fl">0.07</span>)</code></pre></div>
 <p>Now, let us use <em>OneMap</em>’s function <em>kosambi</em> to do the calculation:</p>
@@ -160,10 +160,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="dt">file =</span> <span class="st">&quot;test.txt&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>)
 dat</code></pre></div>
 <p>The second line, with <em>dat</em>, is necessary to ask R to print the contents of the object <em>dat</em> (i. e., the data itself). Inspecting the object <em>dat</em> you can see a table with 12 rows and two columns. The names of the columns are <em>x</em> and <em>y</em>. We can access the variables in columns using the dollar sign followed by the column name:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat$x
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat<span class="op">$</span>x
 <span class="co">#&gt;  [1]  2.13  4.48 10.95 10.03 12.72 24.63 22.57 29.78 19.54  7.86 11.75</span>
 <span class="co">#&gt; [12] 23.71</span>
-dat$y 
+dat<span class="op">$</span>y 
 <span class="co">#&gt;  [1]  4.50  1.98  9.29 16.25 27.38 22.60 36.87 31.73 10.42 14.68  8.68</span>
 <span class="co">#&gt; [12] 37.39</span></code></pre></div>
 <p>It is also possible to use the function <em>summary</em> to extract some information about the object <em>dat</em>, or about each one of the columns separately:</p>
@@ -175,10 +175,10 @@ dat$y
 <span class="co">#&gt;  Mean   :15.012   Mean   :18.481  </span>
 <span class="co">#&gt;  3rd Qu.:22.855   3rd Qu.:28.468  </span>
 <span class="co">#&gt;  Max.   :29.780   Max.   :37.390</span>
-<span class="kw">summary</span>(dat$x)
+<span class="kw">summary</span>(dat<span class="op">$</span>x)
 <span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span>
 <span class="co">#&gt;   2.130   9.488  12.235  15.012  22.855  29.780</span>
-<span class="kw">summary</span>(dat$y)
+<span class="kw">summary</span>(dat<span class="op">$</span>y)
 <span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span>
 <span class="co">#&gt;   1.980   9.137  15.465  18.481  28.468  37.390</span></code></pre></div>
 <p>The function <em>summary</em> provides some descriptive statistics about the variables in the dataset. If you want to export these information to a file you can use the function <em>write.table</em>:</p>
@@ -193,7 +193,7 @@ dat$y
 <p>When we used the function <em>summary</em>, it automatically recognized the class of the object <em>dat</em> and applied a specific procedure developed for class <em>data.frame</em>, which in this case involves the computation of some descriptive statistics.</p>
 <p>This procedure is named <em>method</em>. However, other classes of objects can be used as arguments to function <em>summary</em> and the result will be different!</p>
 <p>For example, let us adjust a linear (regression) model using column <em>y</em> as the response variable, and column <em>x</em> as the independent one. This can be done with the function <em>lm()</em>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ft_mod &lt;-<span class="st"> </span><span class="kw">lm</span>(dat$y ~<span class="st"> </span>dat$x)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ft_mod &lt;-<span class="st"> </span><span class="kw">lm</span>(dat<span class="op">$</span>y <span class="op">~</span><span class="st"> </span>dat<span class="op">$</span>x)
 ft_mod
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Call:</span>

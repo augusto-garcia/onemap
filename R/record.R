@@ -83,7 +83,7 @@
 ##'   LG1.rec <- record(LG1)
 ##'   LG1.rec
 ##' }
-##'
+##'@export
 record<-function(input.seq, times=10, LOD=0, max.rf=0.5, tol=10E-5){
     ## checking for correct object
     if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is

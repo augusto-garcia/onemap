@@ -45,7 +45,6 @@ ab x oo \tab 1:1 \cr D1.12 \tab bo x aa \tab 1:1 \cr D1.13 \tab ao x oo
   lg1<-make_seq(lgs,1)
   marker_type(lg1) # segregation type for linkage group 1
 
-
 }
 \references{
 Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002)

@@ -54,7 +54,6 @@ Provides a simple draw of a genetic map.
   draw_map(maps, grid=TRUE, horizontal=TRUE)
 
 }
-
 }
 \author{
 Marcelo Mollinari, \email{mmollina@usp.br}
