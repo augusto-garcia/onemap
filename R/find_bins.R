@@ -45,7 +45,7 @@
 ##'   load(url("https://github.com/mmollina/data/raw/master/fake_big_data_f2.RData"))
 ##'   fake.big.data.f2
 ##'   (bins<-find_bins(fake.big.data.f2, exact=FALSE))}
-##'@export
+##'
 find_bins <- function(input.obj, exact=TRUE, ch=NULL)
 {
     ## checking for correct object

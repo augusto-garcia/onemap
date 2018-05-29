@@ -66,6 +66,7 @@ using the multipoint approach (function \code{\link[onemap]{map}}).
   LG1.ug <- ug(LG1)
   LG1.ug
 }
+
 }
 \references{
 Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia,

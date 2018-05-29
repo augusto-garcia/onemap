@@ -991,38 +991,29 @@ linkage group 3 (between markers `M50` and `M38`, as expected.
 Let us now plot the recombination fraction matrix:
 
 ```{r, rec_matrix}
+rf_graph_table(LG3_f2_wrong, inter = FALSE)
+```
+
+The recombination fractions are plotted below the diagonal and the LOD
+Scores are plotted above the diagonal. The color scale varies from red
+(small distances and big LODs) to dark blue.
+
+You can also plot an interactive version of this graphic, changing
+option `inter` to `TRUE` (the default):
+
+```{r, rec_matrix_inter, eval=FALSE}
 rf_graph_table(LG3_f2_wrong)
 ```
 
-With default arguments, the graphic cells represents the recombination fractions. 
-If you change the argument to `graph.LOD = TRUE`, LOD score values are plotted. The 
-color scale varies from red (small distances and big LODs) to dark blue.
-
-You can also plot an interactive version of this graphic, changing
-option `inter` to `TRUE` and defined a name to the html file generated:
-
-```{r, rec_matrix_inter, eval=FALSE}
-rf_graph_table(LG3_f2_wrong, inter = TRUE, html.file = "LG3_f2_wrong.html")
-```
-
-An interactive version of the graphic will pop up (not shown here) in your internet browser
-end generated a html file in your work directory.
-Hover the mouse cursor over the cell corresponding to two markers, you can see some
-useful information about them. For example, over the cell
+An interactive version of the graphic will pop up (not shown here).
+Clicking on the cell corresponding to two markers, you can see some
+useful information about them. For example, clicking on the cell
 corresponding to markers `M47` and `M19` you can see their names,
 types (co-dominant and dominant), recombination fraction (`rf =
-0.074`) and LOD Score (`LOD = 23`). Over a cell on the
+0.074`) and LOD Score (`LOD = 23`). Clicking on a cell on the
 diagonal, some information about the corresponding marker is shown,
 including percentage of missing data. We found this to be very useful
 when evaluating the results of the ordering algorithms.
-
-You can also change que number of colors from `rainbow` palette with argument `n.colors`,
-add/remove graphic main and axis title (`main` and `lab.xy`), and shows marker numbers,
-insted of names in the axis (`mrk.axis`).
-
-```{r}
-rf_graph_table(LG3_f2_wrong, n.colors = 7, main="LG3", lab.xy = c("markers", "markers"), mrk.axis = "numbers")
-```
 
 We clearly see a different pattern for marker `M38`. The blue cell,
 corresponding to markers `M50` and `M38`, indicates a big
@@ -1052,10 +1043,21 @@ are now better. Therefore, you should do
 
 We can also check the heatmap matrix for the other groups ordered. This is a good map diagnostic and can be used during the map building procedure:
 
-```{r}
+```{r, eval=FALSE}
 rf_graph_table(LG1_f2_final)
+```
 
+```{r, echo=FALSE}
+rf_graph_table(LG1_f2_final, inter = FALSE)
+```
+
+
+```{r, eval=FALSE}
 rf_graph_table(LG2_f2_final)
+```
+
+```{r, echo=FALSE}
+rf_graph_table(LG2_f2_final, inter = FALSE)
 ```
 
 ## Using the recombinations and the reference genome informations
@@ -1204,8 +1206,12 @@ Comparing with and without marker 58:
 CHR2_test_map
 ```
 
-```{r}
+```{r, eval=FALSE}
 rf_graph_table(CHR1_test_map)
+```
+
+```{r, echo=FALSE}
+rf_graph_table(CHR2_test_map, inter = FALSE)
 ```
 
 ```{r}
