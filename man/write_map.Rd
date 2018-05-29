@@ -60,6 +60,7 @@ plot.map(dat1, newmap)
 write.cross(dat1, format="qtlcart", filestem="mapmaker_example_f2")
 
 }
+
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.

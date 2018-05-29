@@ -38,6 +38,7 @@ Within each bin, the pairwise recombination fraction between markers is zero.
   load(url("https://github.com/mmollina/data/raw/master/fake_big_data_f2.RData"))
   fake.big.data.f2
   (bins<-find_bins(fake.big.data.f2, exact=FALSE))}
+
 }
 \seealso{
 \code{\link[onemap]{create_data_bins}}
