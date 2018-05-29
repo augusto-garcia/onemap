@@ -110,7 +110,7 @@
 ##'   \dontrun{
 ##'     outcr_data <- read_onemap(dir="work_directory", inputfile="data_file.txt")
 ##'   }
-##'
+##'@export
 read_onemap <- function (dir, inputfile) {
   if (missing(inputfile))
     stop("missing file")

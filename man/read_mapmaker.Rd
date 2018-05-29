@@ -51,7 +51,6 @@ can contain phenotypic data, but it will not be used in the analysis.
     data(mapmaker_example_f2)
     names(mapmaker_example_f2)
   }
-
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.

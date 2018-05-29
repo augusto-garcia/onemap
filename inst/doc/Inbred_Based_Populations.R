@@ -18,10 +18,6 @@ library(onemap)
 ## ---- eval=FALSE---------------------------------------------------------
 #  save.image("C:/.../yourfile.RData")
 
-## ---- eval=FALSE, message='hide'-----------------------------------------
-#  vcf2raw(input = system.file("extdata/vcf_example_f2.vcf.gz", package = "onemap"),
-#          output = "vcf_example_f21.raw", parent1 = "P1", parent2 = "P2", cross = "f2 intercross")
-
 ## ---- eval=FALSE---------------------------------------------------------
 #  mapmaker_example_f2 <- read_mapmaker(dir="C:/workingdirectory",
 #                                  file="your_data_file.raw")
@@ -50,6 +46,10 @@ data("onemap_example_f2")
 ## ------------------------------------------------------------------------
 onemap_example_f2
 
+## ---- eval=FALSE, message='hide'-----------------------------------------
+#  vcf2raw(input = system.file("extdata/vcf_example_f2.vcf.gz", package = "onemap"),
+#          output = "vcf_example_f21.raw", parent1 = "P1", parent2 = "P2", cross = "f2 intercross")
+
 ## ---- eval=FALSE---------------------------------------------------------
 #  vcf_example_f2 <- read_onemap(inputfile= system.file("extdata/vcf_example_f2.raw",
 #                                                         package = "onemap"))
@@ -59,6 +59,20 @@ data("vcf_example_f2")
 
 ## ------------------------------------------------------------------------
 vcf_example_f2
+
+## ---- eval=FALSE---------------------------------------------------------
+#  library(vcfR)
+#  vcfR.object <- read.vcfR(system.file("extdata/vcf_example_f2.vcf", package = "onemap"))
+
+## ---- eval=FALSE---------------------------------------------------------
+#  vcf_example_f2 <- onemap_read_vcfR(vcfR.object = vcfR.object,
+#                                     parent1 = "P1",
+#                                     parent2 = "P2",
+#                                     cross = "f2 intercross")
+
+## ---- eval=FALSE---------------------------------------------------------
+#  save(vcfR.object, file = "vcfR.object.RData")
+#  rm(vcfR.object)
 
 ## ---- class_of_object----------------------------------------------------
 class(onemap_example_f2)
@@ -246,10 +260,13 @@ temp_seq <- drop_marker(LG3_f2_final, 38)
 (LG3_f2_wrong <- map(temp_seq))
 
 ## ---- rec_matrix---------------------------------------------------------
-rf_graph_table(LG3_f2_wrong, inter = FALSE)
+rf_graph_table(LG3_f2_wrong)
 
 ## ---- rec_matrix_inter, eval=FALSE---------------------------------------
-#  rf_graph_table(LG3_f2_wrong)
+#  rf_graph_table(LG3_f2_wrong, inter = TRUE, html.file = "LG3_f2_wrong.html")
+
+## ------------------------------------------------------------------------
+rf_graph_table(LG3_f2_wrong, n.colors = 7, main="LG3", lab.xy = c("markers", "markers"), mrk.axis = "numbers")
 
 ## ---- width=9, height=9--------------------------------------------------
 temp_seq <- drop_marker(LG3_f2_wrong, 38)
@@ -259,17 +276,10 @@ temp_map <- map(temp_seq)
 ## ------------------------------------------------------------------------
 (LG3_f2_final <- make_seq(temp_try, 4))
 
-## ---- eval=FALSE---------------------------------------------------------
-#  rf_graph_table(LG1_f2_final)
+## ------------------------------------------------------------------------
+rf_graph_table(LG1_f2_final)
 
-## ---- echo=FALSE---------------------------------------------------------
-rf_graph_table(LG1_f2_final, inter = FALSE)
-
-## ---- eval=FALSE---------------------------------------------------------
-#  rf_graph_table(LG2_f2_final)
-
-## ---- echo=FALSE---------------------------------------------------------
-rf_graph_table(LG2_f2_final, inter = FALSE)
+rf_graph_table(LG2_f2_final)
 
 ## ------------------------------------------------------------------------
 CHR1 <- make_seq(twopts_f2, "1")
@@ -347,11 +357,8 @@ CHR2_add20 <- make_seq(CHR2_add20_seq, 20) # marker 20 was placed at the same po
 ## ------------------------------------------------------------------------
 CHR2_test_map
 
-## ---- eval=FALSE---------------------------------------------------------
-#  rf_graph_table(CHR1_test_map)
-
-## ---- echo=FALSE---------------------------------------------------------
-rf_graph_table(CHR2_test_map, inter = FALSE)
+## ------------------------------------------------------------------------
+rf_graph_table(CHR1_test_map)
 
 ## ------------------------------------------------------------------------
 CHR2_add20
