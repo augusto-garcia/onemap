@@ -64,6 +64,7 @@ there are many partially informative markers.
  ripple_seq(ord.1, ws=5)
 }
 
+
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.

@@ -20,7 +20,6 @@
 ##'
 ##' Provides a simple draw of a genetic map.
 ##'
-##'@importFrom graphics abline axis lines plot points text
 ##'
 ##' @param map.list a map, i.e. an object of class \code{sequence} with a
 ##' predefined order, linkage phases, recombination fraction and likelihood;
@@ -61,7 +60,7 @@
 ##'   draw_map(maps, grid=TRUE, horizontal=TRUE)
 ##'
 ##' }
-##'@export
+##'
 draw_map<-function(map.list, horizontal=FALSE, names=FALSE, grid=FALSE, cex.mrk=1, cex.grp=.75){
   ## checking for correct object
   if(!any(class(map.list)=="list" | class(map.list)=="sequence")) stop(deparse(substitute(map.list))," is not an object of class 'list' or 'sequnece'")

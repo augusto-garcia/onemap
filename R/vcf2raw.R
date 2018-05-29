@@ -82,9 +82,7 @@
 ##'                            # in a heterozygote genotype call; for parent2, at
 ##'                            # least two samples have to be concordant
 ##'   }
-##'   
-##'@useDynLib onemap
-##'@export
+##'
 
 vcf2raw <- function(input = NULL, output = NULL,
                     cross = c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"),

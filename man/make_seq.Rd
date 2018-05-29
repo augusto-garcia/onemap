@@ -93,6 +93,7 @@ Makes a sequence of markers based on an object of another type.
   (extend.map <- try_seq(base.map,30))
   (base.map <- make_seq(extend.map,5)) # fifth position is the best
 }
+
 }
 \references{
 Lander, E. S., Green, P., Abrahamson, J., Barlow, A., Daly, M.

@@ -73,7 +73,7 @@
 ##' write.cross(dat1, format="qtlcart", filestem="mapmaker_example_f2")
 ##'
 ##' }
-##'@export
+##'
 write_map<-function(map.list,file.out){
    # checking for correct object
   if(!any(class(map.list)=="list" | class(map.list)=="sequence")) stop(deparse(substitute(map.list))," is not an object of class 'list' or 'sequnece'")

@@ -57,7 +57,7 @@
 ##'   lg1<-make_seq(lgs,1)
 ##'   marker_type(lg1) # segregation type for linkage group 1
 ##'
-##'@export
+##'
 marker_type <-
 function(input.seq) {
   ## checking for correct objects

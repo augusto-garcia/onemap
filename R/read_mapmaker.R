@@ -74,7 +74,7 @@ globalVariables(c("mkt.wrg"))
 ##'     data(mapmaker_example_f2)
 ##'     names(mapmaker_example_f2)
 ##'   }
-##'@export
+##'
 read_mapmaker<-function (dir, file)
 {
     ## create file name

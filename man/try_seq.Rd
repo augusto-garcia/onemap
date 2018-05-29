@@ -72,6 +72,7 @@ the original linkage map unaltered.
   extend.map
   (new.map<-make_seq(extend.map,14)) # best position
 }
+
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S.,
