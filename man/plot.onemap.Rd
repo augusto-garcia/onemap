@@ -4,7 +4,7 @@
 \alias{plot.onemap}
 \title{Draw a graphic of raw data for any OneMap population}
 \usage{
-\method{plot}{onemap}(x, all = TRUE, ...)
+plot.onemap(x, all = TRUE, ...)
 }
 \arguments{
 \item{x}{an object of class \code{onemap}, with data and additional information}
@@ -58,5 +58,4 @@ plot(example_out, all=FALSE) # This will show you the graph splitted for marker 
 g <- plot(example_out, all=FALSE)
 ggplot2::ggsave("MyRawData_out.jpg", g, width=9, height=4, dpi=600)
 }
-
 }

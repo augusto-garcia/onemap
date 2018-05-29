@@ -1,7 +1,7 @@
 Package: onemap
 Title: Construction of Genetic Maps in Experimental Crosses: Full-Sib,
         RILs, F2 and Backcrosses
-Version: 2.1.1003
+Version: 2.1.1001
 Description: Analysis of molecular marker data from model (backcrosses,
     F2 and recombinant inbred lines) and non-model systems (i. e.
     outcrossing species). For the later, it allows statistical
@@ -9,7 +9,7 @@ Description: Analysis of molecular marker data from model (backcrosses,
     phases (genetic map construction) according to Wu et al. (2002)
     <doi:10.1006/tpbi.2002.1577>. All analysis are based on multipoint 
     approaches using hidden Markov models.
-Date: 2018-02-16
+Date: 2017-10-17
 Authors@R: c(person("Gabriel", "Margarido", role = "aut", email =
         "gramarga@usp.br"), person("Marcelo", "Mollinari", role =
         "aut", email = "mmollina@usp.br"), person("Karl",
@@ -22,19 +22,10 @@ Author: Gabriel Margarido [aut], Marcelo Mollinari [aut], Karl
         Broman [ctb], Rodrigo Amadeu [ctb], Cristiane Taniguti [ctb, cre], Augusto Garcia [aut, ctb]
 LinkingTo: Rcpp (>= 0.10.5), Rhtslib (>= 1.8.0), zlibbioc (>= 1.22.0)
 Depends: R (>= 3.4.0)
-Imports: ggplot2 (>= 2.2.1), 
-        plotly (>= 4.7.1),
-        reshape2 (>= 1.4.1), 
-        Rcpp (>= 0.10.5),
-        graphics, 
-        methods, 
-        stats, 
-        utils
-Suggests: qtl (>= 1.36-6), 
-          knitr (>= 1.10), 
-          rmarkdown, 
-          htmlwidgets,
-          vcfR (>= 1.6.0),
+Imports: tcltk (>= 3.2.0), tkrplot (>= 0.0-23), ggplot2 (>= 2.2.1),
+        fields (>= 8.3-5), reshape2 (>= 1.4.1), Rcpp (>= 0.10.5),
+        graphics, methods, stats, utils, vcfR (== 1.6.0)
+Suggests: qtl (>= 1.36-6), knitr (>= 1.10), rmarkdown
 VignetteBuilder: knitr
 Encoding: UTF-8
 License: GPL-3
@@ -46,4 +37,3 @@ Packaged: 2017-10-18 22:25:43 UTC; cris
 NeedsCompilation: yes
 Date/Publication: 2017-10-18 22:48:07 UTC
 RoxygenNote: 6.0.1
-biocViews:

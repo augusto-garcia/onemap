@@ -27,6 +27,7 @@
 \alias{perm_pars}
 \alias{perm_tot}
 \alias{phases}
+\alias{plot_function_out}
 \alias{rem_amb_ph}
 \alias{return_geno}
 \alias{ripple_seq_inbred}
@@ -70,6 +71,7 @@ get_vec_rf_out(input.seq, LOD, max.rf, min.LOD, acum)
 perm_pars(v)
 perm_tot(v)
 phases(input.seq, LOD=0, max.rf=0.50)
+plot_function_out(info.graph, cex, main)
 rem_amb_ph(M,w,seq.num)
 return_geno(segr.type, link.phases)
 ripple_seq_inbred(input.seq, ws, ext.w, LOD, tol)

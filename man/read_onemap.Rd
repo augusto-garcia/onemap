@@ -94,6 +94,7 @@ be found at the tutorial distributed along with this package.
   \dontrun{
     outcr_data <- read_onemap(dir="work_directory", inputfile="data_file.txt")
   }
+
 }
 \references{
 Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993)

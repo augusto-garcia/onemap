@@ -28,8 +28,6 @@ globalVariables(c("Marker", "p.value"))
 ##' First, the function selects the correct segregation pattern, then it
 ##' defines the H0 hypothesis, and then tests it, together with percentage of
 ##' missing data.
-##' 
-##' @importFrom stats chisq.test cor.test dist na.omit qchisq rf setNames
 ##'
 ##' @param x an object of class \code{onemap}, with data and additional information.
 ##' @param marker the marker which will be tested for its segregation.
@@ -43,7 +41,6 @@ globalVariables(c("Marker", "p.value"))
 ##'
 ##' data(example_out) # Loads a fake outcross dataset installed with onemap
 ##' test_segregation_of_a_marker(example_out,1)
-##' @export
 test_segregation_of_a_marker <- function(x, marker) {
     options(warn=-1) #Supress warnings from function chisq.test - when cell have < 5 elements
     ## Segregation pattern for each marker type
@@ -231,7 +228,8 @@ print.onemap_segreg_test <- function(x,...) {
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' g <- plot(Out.seg)
 ##' ggplot2::ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
-##' @method plot onemap_segreg_test
+##'
+##'
 ##' @export
 plot.onemap_segreg_test <- function(x, order=TRUE,...) {
                                         # Create a data frame
@@ -264,8 +262,6 @@ plot.onemap_segreg_test <- function(x, order=TRUE,...) {
 ##'
 ##' It shows the alpha value to be used in each chi-square segregation test, in order to achieve
 ##' a given global type I error. To do so, it uses Bonferroni's criteria.
-##'
-##'@importFrom methods is
 ##'
 ##' @param x an object of class onemap_segreg_test
 ##' @param global.alpha the global alpha that
