@@ -110,7 +110,7 @@
 ##'   \dontrun{
 ##'     outcr_data <- read_onemap(dir="work_directory", inputfile="data_file.txt")
 ##'   }
-##'
+##'@export
 read_onemap <- function (dir, inputfile) {
   if (missing(inputfile))
     stop("missing file")
@@ -291,6 +291,8 @@ read_onemap <- function (dir, inputfile) {
 }
 
 ## Print method for object class 'onemap'
+##'@export
+##' @method print onemap
 print.onemap <- function (x, ...) {
   ## Print a brief summary of the data
   not_miss <- 100*sum(x$geno!=0)/length(x$geno)

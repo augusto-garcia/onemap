@@ -206,25 +206,6 @@ The input file must be saved in text format, with extensions like
 you installed it) to see how this file should be. You can see where
 `OneMap` is installed using the command
 
-
-## Creating `OneMap` data file from `VCF` file
-
-If you are working with biallelic markers, as SNPs and indels (only codominant markers A.H.B), in VCF (Variant Call Format) files, you can use the function `vcf2raw` to convert the genotype information from the VCF file to `OneMap` format `.raw`. Moreover, the function keeps chromosome and position information for each marker at the end of raw file.
-
-To see how the function works, there is a short example of VCF file called `vcf_example_f2.vcf` saved in the directory you installed the `OneMap`. This file is already sorted, compressed and tabix indexed as require by the function. If you need to sort your file, we suggest the `vcf-sort` perl script from `vcftools` program. The functions `bgzip` and `indexTabix` from `Rsamtools` package can be used to compress and add tabix index.
-
-```{r, eval=FALSE, message='hide'}
-vcf2raw(input = system.file("extdata/vcf_example_f2.vcf.gz", package = "onemap"),
-        output = "vcf_example_f21.raw", parent1 = "P1", parent2 = "P2", cross = "f2 intercross")
-```
-
-The first argument is the path and the name of the data file. You can acess the example data using the function `system.file` as already seen above. For the second argument you can choose a name for the output `.raw` data. At the `parent1` and `parent2` arguments you should specify the parents samples IDs. They could be only one ID or, if there are replicate samples of the parents, multiple IDs for each parent. If you have replicates, you can specify a real number between 0.0 and 1.0 for the argument `min_class` to define the proportion of parents replicates that must have the same genotype for it to be assigned to the corresponding parent. At the `cross` argument you should point the cross type. You can access more information in the help page `?vcf2raw`.
-
-After running the function, the `OneMap` imput file `vcf_example_out.raw` generated will be at your working directory.
-
-The function will not convert non-informative markers (if parents genotypes are not as expected). Therefore, you can have smaller number of markers in your `.raw` file compared to `vcf` file. In our example, there is one non-informative marker, identified as `SNP4`.
-
-
 # Importing data
 
 
@@ -303,6 +284,29 @@ onemap_example_f2
 
 As you can see, the mean difference in the output object is that `read_onemap` function keeps chromossome and position informations. Because the objetcs `mapmaker_example_f2` and `onemap_example_f2` are pratically the same, from now we will use only `onemap_example_f2`.
 
+## Importing data from `VCF` file
+
+If you are working with biallelic markers, as SNPs and indels (only codominant markers A.H.B), in VCF (Variant Call Format) files, there are two ways of import information from `VCF` to `OneMap`:
+
+* With the `vcf2raw` function
+
+You can use the function `vcf2raw` to convert the genotype information from the VCF file to `OneMap` format `.raw`. Moreover, the function keeps chromosome and position information for each marker at the end of raw file.
+
+To see how the function works, there is a short example of VCF file called `vcf_example_f2.vcf` saved in the directory you installed the `OneMap`. This file is already sorted, compressed and tabix indexed as require by the function. If you need to sort your file, we suggest the `vcf-sort` perl script from `vcftools` program. The functions `bgzip` and `indexTabix` from `Rsamtools` package can be used to compress and add tabix index.
+
+```{r, eval=FALSE, message='hide'}
+vcf2raw(input = system.file("extdata/vcf_example_f2.vcf.gz", package = "onemap"),
+        output = "vcf_example_f21.raw", parent1 = "P1", parent2 = "P2", cross = "f2 intercross")
+```
+
+The first argument is the path and the name of the data file. You can acess the example data using the function `system.file` as already seen above. For the second argument you can choose a name for the output `.raw` data. At the `parent1` and `parent2` arguments you should specify the parents samples IDs. They could be only one ID or, if there are replicate samples of the parents, multiple IDs for each parent. If you have replicates, you can specify a real number between 0.0 and 1.0 for the argument `min_class` to define the proportion of parents replicates that must have the same genotype for it to be assigned to the corresponding parent. At the `cross` argument you should point the cross type. You can access more information in the help page `?vcf2raw`.
+
+After running the function, the `OneMap` imput file `vcf_example_out.raw` generated will be at your working directory.
+
+The function will not convert non-informative markers (if parents genotypes are not as expected). Therefore, you can have smaller number of markers in your `.raw` file compared to `vcf` file. In our example, there is one non-informative marker, identified as `SNP4`.
+
+**This function is usually fast, even with big datasets, and it is only available in the `OneMap` github version.** 
+
 `OneMap` data sets from `VCF` file can also be read by `read_onemap` function, once the file have the `OneMap` format:
 
 ```{r, eval=FALSE}
@@ -320,6 +324,41 @@ This file contains 25 other markers for 192 of the individuals in `onemap_exampl
 
 ```{r}
 vcf_example_f2
+```
+
+* With the `onemap_read_vcfR` function
+
+With the `onemap_read_vcfR` you can convert the object from `vcfR` package directly to `onemap`. As the `vcf2raw` function, the `onemap_read_vcfR` function keeps chromosome and position information for each marker at the end of raw file.
+
+We will use the same example file `vcf_example_f2.vcf` to show how it works.
+
+First, we convert the `VCF` file to `vcfR` object:
+
+```{r, eval=FALSE}
+library(vcfR)
+vcfR.object <- read.vcfR(system.file("extdata/vcf_example_f2.vcf", package = "onemap"))
+```
+
+As described in the `vcfR` package vignette, memory use is a important consideration when using `vcfR`. Depending of your dataset, the object created can be very large and occupy a lot of memory.
+
+After, you can use `onemap_read_vcfR` function to convert this object to `onemap` object. The parameters used is the `vcfR.object` we just created, the identification of each parent (here you must define only one sample for each parent) and the cross type.
+
+```{r, eval=FALSE}
+vcf_example_f2 <- onemap_read_vcfR(vcfR.object = vcfR.object,
+                                   parent1 = "P1", 
+                                   parent2 = "P2", 
+                                   cross = "f2 intercross")
+```
+
+Depending of your dataset, this function can take some time to run. As a measure, in my computer (see informations about it in the `Session Info`) it tooks 15 min to run 1 million markers. 
+
+The `onemap `object `vcf_example_f2` generated is exactly the same as generated by the `vcf2raw` function combined with the `read_onemap`.
+
+After the convertion, we can save the `vcfR.object` as a `.RData` and to remove it from the workspace, once it can occupy a lot of memory and turn the other process too slow. 
+
+```{r, eval=FALSE}
+save(vcfR.object, file = "vcfR.object.RData") 
+rm(vcfR.object)
 ```
 
 # Visualization of raw data
@@ -952,29 +991,38 @@ linkage group 3 (between markers `M50` and `M38`, as expected.
 Let us now plot the recombination fraction matrix:
 
 ```{r, rec_matrix}
-rf_graph_table(LG3_f2_wrong, inter = FALSE)
-```
-
-The recombination fractions are plotted below the diagonal and the LOD
-Scores are plotted above the diagonal. The color scale varies from red
-(small distances and big LODs) to dark blue.
-
-You can also plot an interactive version of this graphic, changing
-option `inter` to `TRUE` (the default):
-
-```{r, rec_matrix_inter, eval=FALSE}
 rf_graph_table(LG3_f2_wrong)
 ```
 
-An interactive version of the graphic will pop up (not shown here).
-Clicking on the cell corresponding to two markers, you can see some
-useful information about them. For example, clicking on the cell
+With default arguments, the graphic cells represents the recombination fractions. 
+If you change the argument to `graph.LOD = TRUE`, LOD score values are plotted. The 
+color scale varies from red (small distances and big LODs) to dark blue.
+
+You can also plot an interactive version of this graphic, changing
+option `inter` to `TRUE` and defined a name to the html file generated:
+
+```{r, rec_matrix_inter, eval=FALSE}
+rf_graph_table(LG3_f2_wrong, inter = TRUE, html.file = "LG3_f2_wrong.html")
+```
+
+An interactive version of the graphic will pop up (not shown here) in your internet browser
+end generated a html file in your work directory.
+Hover the mouse cursor over the cell corresponding to two markers, you can see some
+useful information about them. For example, over the cell
 corresponding to markers `M47` and `M19` you can see their names,
 types (co-dominant and dominant), recombination fraction (`rf =
-0.074`) and LOD Score (`LOD = 23`). Clicking on a cell on the
+0.074`) and LOD Score (`LOD = 23`). Over a cell on the
 diagonal, some information about the corresponding marker is shown,
 including percentage of missing data. We found this to be very useful
 when evaluating the results of the ordering algorithms.
+
+You can also change que number of colors from `rainbow` palette with argument `n.colors`,
+add/remove graphic main and axis title (`main` and `lab.xy`), and shows marker numbers,
+insted of names in the axis (`mrk.axis`).
+
+```{r}
+rf_graph_table(LG3_f2_wrong, n.colors = 7, main="LG3", lab.xy = c("markers", "markers"), mrk.axis = "numbers")
+```
 
 We clearly see a different pattern for marker `M38`. The blue cell,
 corresponding to markers `M50` and `M38`, indicates a big
@@ -1004,21 +1052,10 @@ are now better. Therefore, you should do
 
 We can also check the heatmap matrix for the other groups ordered. This is a good map diagnostic and can be used during the map building procedure:
 
-```{r, eval=FALSE}
+```{r}
 rf_graph_table(LG1_f2_final)
-```
 
-```{r, echo=FALSE}
-rf_graph_table(LG1_f2_final, inter = FALSE)
-```
-
-
-```{r, eval=FALSE}
 rf_graph_table(LG2_f2_final)
-```
-
-```{r, echo=FALSE}
-rf_graph_table(LG2_f2_final, inter = FALSE)
 ```
 
 ## Using the recombinations and the reference genome informations
@@ -1167,12 +1204,8 @@ Comparing with and without marker 58:
 CHR2_test_map
 ```
 
-```{r, eval=FALSE}
+```{r}
 rf_graph_table(CHR1_test_map)
-```
-
-```{r, echo=FALSE}
-rf_graph_table(CHR2_test_map, inter = FALSE)
 ```
 
 ```{r}

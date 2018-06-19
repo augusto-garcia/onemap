@@ -44,15 +44,14 @@ same in both parents. Hidden Markov chain codes adapted from Broman et al.
 }
 \examples{
 
-  data(example_out)
-  twopt <- rf_2pts(example_out)
+  data(onemap_example_out)
+  twopt <- rf_2pts(onemap_example_out)
 
   markers <- make_seq(twopt,c(30,12,3,14,2)) # correct phases
   map(markers)
 
   markers <- make_seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
   map(markers)
-
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.

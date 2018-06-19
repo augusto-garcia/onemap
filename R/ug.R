@@ -63,8 +63,8 @@
 ##'
 ##' \dontrun{
 ##'   #outcross example
-##'   data(example_out)
-##'   twopt <- rf_2pts(example_out)
+##'   data(onemap_example_out)
+##'   twopt <- rf_2pts(onemap_example_out)
 ##'   all_mark <- make_seq(twopt,"all")
 ##'   groups <- group(all_mark)
 ##'   LG1 <- make_seq(groups,1)
@@ -79,7 +79,7 @@
 ##'   LG1.ug <- ug(LG1)
 ##'   LG1.ug
 ##' }
-##'
+##'@export
 ug<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5)
 {
     ## checking for correct object

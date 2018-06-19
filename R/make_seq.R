@@ -88,8 +88,8 @@
 ##' @examples
 ##'
 ##' \dontrun{
-##'   data(example_out)
-##'   twopt <- rf_2pts(example_out)
+##'   data(onemap_example_out)
+##'   twopt <- rf_2pts(onemap_example_out)
 ##'
 ##'   all_mark <- make_seq(twopt,"all")
 ##'   all_mark <- make_seq(twopt,1:30) # same as above, for this data set
@@ -106,7 +106,7 @@
 ##'   (extend.map <- try_seq(base.map,30))
 ##'   (base.map <- make_seq(extend.map,5)) # fifth position is the best
 ##' }
-##'
+##'@export
 make_seq <-
   function(input.obj, arg = NULL, phase = NULL, data.name = NULL, twopt = NULL) {
     # checking for correct object
@@ -169,7 +169,7 @@ make_seq <-
              twopt <- input.obj$twopt
            },
            'compare' = {
-             n.ord <- max(which(head(input.obj$best.ord.LOD,-1) != -Inf))
+             n.ord <- max(which(utils::head(input.obj$best.ord.LOD,-1) != -Inf))
              unique.orders <- unique(input.obj$best.ord[1:n.ord,])
              if(is.null(arg)) seq.num <- unique.orders[1,] # NULL = 1 is the best order
              else if(length(arg) == 1 && is.numeric(arg) && arg <= nrow(unique.orders)) seq.num <- unique.orders[arg,]
@@ -223,6 +223,9 @@ make_seq <-
   }
 
 # print method for object class 'sequence'
+##'@export
+##'@method print sequence
+
 print.sequence <- function(x,...) {
   marnames <- colnames(get(x$data.name, pos=1)$geno)[x$seq.num]
   if(length(x$seq.rf) == 1 && x$seq.rf == -1) {

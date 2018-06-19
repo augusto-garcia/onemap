@@ -27,6 +27,8 @@
 ##' markers to be analyzed. Therefore, completion of the two-point analyses can
 ##' take a long time.
 ##'
+##'@importFrom methods is
+##'
 ##' @aliases rf_2pts
 ##' @param input.obj an object of class \code{onemap}.
 ##' @param LOD minimum LOD Score to declare linkage (defaults to \code{3}).
@@ -48,13 +50,13 @@
 ##' @keywords utilities
 ##' @examples
 ##'
-##'   data(example_out)
+##'   data(onemap_example_out)
 ##'
-##'   twopts <- rf_2pts(example_out,LOD=3,max.rf=0.5) # perform two-point analyses
+##'   twopts <- rf_2pts(onemap_example_out,LOD=3,max.rf=0.5) # perform two-point analyses
 ##'   twopts
 ##'
 ##'   print(twopts,c("M1","M2")) # detailed results for markers 1 and 2
-##'
+##'@export
 rf_2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE) {
     ## checking for correct object
     if(!any(c("onemap", "outcross", "f2", "backcross", "riself", "risib") %in% class(input.obj)))

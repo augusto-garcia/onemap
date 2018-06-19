@@ -53,8 +53,8 @@ constructed using the multipoint approach (function
 
 \dontrun{
   ##outcross example
-  data(example_out)
-  twopt <- rf_2pts(example_out)
+  data(onemap_example_out)
+  twopt <- rf_2pts(onemap_example_out)
   all_mark <- make_seq(twopt,"all")
   groups <- group(all_mark)
   LG1 <- make_seq(groups,1)
@@ -69,7 +69,6 @@ constructed using the multipoint approach (function
   LG1.rec <- record(LG1)
   LG1.rec
 }
-
 }
 \references{
 Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia,
