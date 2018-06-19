@@ -78,6 +78,7 @@ using the multipoint approach (function \code{\link[onemap]{map}}).
   LG1.rcd <- rcd(LG1)
   LG1.rcd
 }
+
 }
 \references{
 Basten, C. J., Weir, B. S. and Zeng, Z.-B. (2005) \emph{QTL

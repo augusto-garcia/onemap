@@ -13,7 +13,6 @@
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
-##'@export
 haldane <-
 function(rcmb) {
   # rcmb must be a number between 0 and 0.5
@@ -26,7 +25,6 @@ function(rcmb) {
             dQuote("numeric"))
 }
 
-##'@export
 kosambi <-
 function(rcmb) {
   # rcmb must be a number between 0 and 0.5
