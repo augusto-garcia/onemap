@@ -38,7 +38,7 @@
 #'   fake.big.data.f2
 #'   (bins <- find_bins(fake.big.data.f2, exact=FALSE))
 #'   (new.data <- create_data_bins(fake.big.data.f2, bins))}
-#'@export
+#'
 create_data_bins <- function(input.obj, bins)
 {
   ## checking for correct object

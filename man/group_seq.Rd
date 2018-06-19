@@ -77,6 +77,7 @@ seq3 <- make_seq(twopts, c(4,16,20,21,24,29))
 out_seqs <- group_seq(twopts, seqs=list(seq1,seq2,seq3))
 out_seqs
 
+
 }
 \seealso{
 \code{\link[onemap]{make_seq}} and \code{\link[onemap]{group}}

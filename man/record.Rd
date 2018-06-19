@@ -69,6 +69,7 @@ constructed using the multipoint approach (function
   LG1.rec <- record(LG1)
   LG1.rec
 }
+
 }
 \references{
 Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia,

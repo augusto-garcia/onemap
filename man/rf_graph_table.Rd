@@ -4,40 +4,40 @@
 \alias{rf_graph_table}
 \title{Plots pairwise recombination fractions and LOD Scores in a heatmap}
 \usage{
-rf_graph_table(input.seq, graph.LOD = FALSE, main = NULL, inter = FALSE,
-  html.file = NULL, mrk.axis = "names", lab.xy = NULL, n.colors = 4)
+rf_graph_table(input.seq, scale = 1, axis.cex = 1, main = NULL,
+  inter = TRUE, mrk.names = FALSE, colorkey = TRUE)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence} with a predefined
 order.}
 
-\item{graph.LOD}{logical. If \code{TRUE}, displays the LOD heatmap, otherwise,
-displays the recombination fraction heatmap.}
+\item{scale}{controls the plot size. If \code{inter == FALSE} this value is
+not used.}
 
-\item{main}{character. The title of the plot.}
+\item{axis.cex}{the magnification to be used for axis annotation.}
 
-\item{inter}{logical. If \code{TRUE}, an interactive HTML graphic is plotted.
+\item{main}{the title for no interactive plot, i.e. it is only used if
+\code{inter == FALSE}.}
+
+\item{inter}{logical. If \code{TRUE}, an interactive graphic is plotted.
 Otherwise, a default graphic device is used.}
 
-\item{html.file}{character naming the html file with iterative graphic.}
+\item{mrk.names}{logical. If \code{TRUE}, displays the names of the markers.}
 
-\item{mrk.axis}{character, "names" to display marker names in the axis, "numbers" to display
-marker numbers and NULL to display axis free of labels.}
-
-\item{lab.xy}{character vector with length 2, first component is the label of x axis and second of the y axis.}
-
-\item{n.colors}{integer. Number of colors in the pallete.}
+\item{colorkey}{logical. If \code{TRUE}, a colorkey is plotted
+along horizontal axis, indicating recombination fraction, and
+along vertical axis, indicating the LOD Score.}
 }
 \description{
-Plots a matrix of pairwise recombination fraction or
-LOD Scores using a color scale. Any value of the
-matrix can be easily accessed using an interactive plotly-html interface,
+Plots a matrix of pairwise recombination fractions (under the diagonal) and
+LOD Scores (above the diagonal) using a color scale. Any value of the
+matrix can be easily accessed using an interactive Tcl-Tk interface,
 helping users to check for possible problems.
 }
 \details{
-The color scale varies from red (small distances or big LODs) to purple.
-When hover on a cell, a dialog box is displayed with some information
-about corresponding markers for that cell (line (y) \eqn{\times} column (x)). They are:
+The color scale varies from red (small distances or big LODs) to dark blue.
+When clicking on a cell, a dialog box is displayed with some information
+about corresponding markers for that cell (line \eqn{\times} column). They are:
 \eqn{i}) the name of the markers; \eqn{ii}) the number of
 the markers on the data set; \eqn{iii}) the segregation types; \eqn{iv})
 the recombination fraction between the markers and \eqn{v}) the LOD-Score
@@ -46,7 +46,7 @@ neighbor markers, the multipoint recombination fraction is printed;
 otherwise, the two-point recombination fraction is printed. For markers of
 type \code{D1} and \code{D2}, it is impossible to calculate recombination
 fraction via two-point analysis and, therefore, the corresponding cell will
-be empty (white color). For cells on the diagonal of the matrix, the name, the number and
+be empty. For cells on the diagonal of the matrix, the name, the number and
 the type of the marker are printed, as well as the percentage of missing
 data for that marker.
 }
@@ -62,8 +62,9 @@ data for that marker.
   LG1.rcd <- rcd(LG1)
   rf_graph_table(LG1.rcd, inter=FALSE)
 
-  ##Now, using interactive plotly
-  rf_graph_table(LG1.rcd, inter=TRUE, html.file= "LG1.rcd.html")
+
+  ##Now, using interactive Tcl-Tk
+  rf_graph_table(LG1.rcd, scale=2, inter=TRUE)
 
   ##F2 example
   data(onemap_example_f2)
@@ -83,14 +84,14 @@ data for that marker.
     maps.list[[i]]<-make_seq(map.cur, "force")
   }
   ##Plot LOD/recombination fraction matrices for each group
-  require(gridExtra)
-  plot1 <- rf_graph_table(maps.list[[1]], main="Group 1",inter=FALSE)
-  plot2 <- rf_graph_table(maps.list[[2]], main="Group 2",inter=FALSE)
-  plot3 <- rf_graph_table(maps.list[[3]], main="Group 3",inter=FALSE)
-  grid.arrange(plot1, plot2, plot3, nrow=3)
+  op <- par(mfrow = c(1, 3))
+  for(i in 1:groups$n.groups)
+    rf_graph_table(maps.list[[i]], axis.cex=.7, main=paste("Group", i),inter=FALSE)
+  par(op)
 }
+
 }
 \author{
-Rodrigo Amadeu, \email{rramadeu@gmail.com}
+Marcelo Mollinari, \email{mmollina@gmail.com}
 }
 \keyword{utilities}
