@@ -22,9 +22,9 @@ applied for the Chi-square tests of mendelian segregation.
 }
 \examples{
 # Loads a fake backcross dataset installed with onemap
-data(example_bc)
+data(onemap_example_bc)
 # Performs the chi-square test for all markers
-Chi <- test_segregation(example_bc)
+Chi <- test_segregation(onemap_example_bc)
 # To show non-distorted markers
 select_segreg(Chi)
 # To show markers with segregation distortion

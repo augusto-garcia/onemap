@@ -32,8 +32,8 @@ Provides a simple draw of a genetic map.
 
 \dontrun{
  #outcross example
-  data(example_out)
-  twopt <- rf_2pts(example_out)
+  data(onemap_example_out)
+  twopt <- rf_2pts(onemap_example_out)
   lg<-group(make_seq(twopt, "all"))
   maps<-vector("list", lg$n.groups)
   for(i in 1:lg$n.groups)
@@ -54,7 +54,6 @@ Provides a simple draw of a genetic map.
   draw_map(maps, grid=TRUE, horizontal=TRUE)
 
 }
-
 }
 \author{
 Marcelo Mollinari, \email{mmollina@usp.br}

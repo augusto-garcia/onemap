@@ -50,8 +50,8 @@
 ##' @seealso \code{\link[onemap]{add_marker}}
 ##'
 ##' @examples
-##' data(example_out)
-##' twopt <- rf_2pts(example_out)
+##' data(onemap_example_out)
+##' twopt <- rf_2pts(onemap_example_out)
 ##' all_mark <- make_seq(twopt,"all")
 ##' groups <- group(all_mark)
 ##' (LG1 <- make_seq(groups,1))

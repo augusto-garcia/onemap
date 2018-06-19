@@ -62,9 +62,9 @@ using \code{NULL}, the new values override the ones in object
 \code{input.2pts}.
 }
 \examples{
-data(example_out) # load OneMap's fake dataset for a outcrossing population
+data(onemap_example_out) # load OneMap's fake dataset for a outcrossing population
 data(vcf_example_out) # load OneMap's fake dataset from a VCF file for a outcrossing population
-comb_example <- combine_onemap(example_out, vcf_example_out) # Combine datasets
+comb_example <- combine_onemap(onemap_example_out, vcf_example_out) # Combine datasets
 twopts <- rf_2pts(comb_example)
 
 out_CHROM <- group_seq(twopts, seqs="CHROM", rm.repeated=FALSE)
@@ -76,7 +76,6 @@ seq3 <- make_seq(twopts, c(4,16,20,21,24,29))
 
 out_seqs <- group_seq(twopts, seqs=list(seq1,seq2,seq3))
 out_seqs
-
 
 }
 \seealso{

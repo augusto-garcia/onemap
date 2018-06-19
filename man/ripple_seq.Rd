@@ -45,8 +45,8 @@ there are many partially informative markers.
 
 \dontrun{
  #Outcross example
-  data(example_out)
-  twopt <- rf_2pts(example_out)
+  data(onemap_example_out)
+  twopt <- rf_2pts(onemap_example_out)
   markers <- make_seq(twopt,c(27,16,20,4,19,21,23,9,24,29))
   markers.map <- map(markers)
   ripple_seq(markers.map)
@@ -63,7 +63,6 @@ there are many partially informative markers.
  ord.1<-make_seq(LG3.ord,"force") # get forced sequence
  ripple_seq(ord.1, ws=5)
 }
-
 
 }
 \references{

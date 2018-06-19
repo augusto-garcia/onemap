@@ -75,8 +75,8 @@ Makes a sequence of markers based on an object of another type.
 \examples{
 
 \dontrun{
-  data(example_out)
-  twopt <- rf_2pts(example_out)
+  data(onemap_example_out)
+  twopt <- rf_2pts(onemap_example_out)
 
   all_mark <- make_seq(twopt,"all")
   all_mark <- make_seq(twopt,1:30) # same as above, for this data set
@@ -93,7 +93,6 @@ Makes a sequence of markers based on an object of another type.
   (extend.map <- try_seq(base.map,30))
   (base.map <- make_seq(extend.map,5)) # fifth position is the best
 }
-
 }
 \references{
 Lander, E. S., Green, P., Abrahamson, J., Barlow, A., Daly, M.
