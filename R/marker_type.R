@@ -45,8 +45,8 @@
 ##' @keywords manip utilities
 ##' @examples
 ##'
-##'   data(example_out)
-##'   twopts <- rf_2pts(example_out)
+##'   data(onemap_example_out)
+##'   twopts <- rf_2pts(onemap_example_out)
 ##'   markers.ex <- make_seq(twopts,c(3,6,8,12,16,25))
 ##'   marker_type(markers.ex) # segregation type for some markers
 ##'
@@ -57,7 +57,7 @@
 ##'   lg1<-make_seq(lgs,1)
 ##'   marker_type(lg1) # segregation type for linkage group 1
 ##'
-##'
+##'@export
 marker_type <-
 function(input.seq) {
   ## checking for correct objects

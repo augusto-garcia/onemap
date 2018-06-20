@@ -58,14 +58,14 @@
 ##' @keywords misc
 ##' @examples
 ##'
-##'   data(example_out)
-##'   twopts <- rf_2pts(example_out)
+##'   data(onemap_example_out)
+##'   twopts <- rf_2pts(onemap_example_out)
 ##'
 ##'   all.data <- make_seq(twopts,"all")
 ##'   link_gr <- group(all.data)
 ##'   link_gr
 ##'   print(link_gr, details=FALSE) #omit the names of the markers
-##'
+##'@export
 group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
 {
     ## checking for correct object

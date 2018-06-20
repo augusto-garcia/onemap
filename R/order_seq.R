@@ -56,6 +56,8 @@
 ##' a "safe" order, markers that could not be mapped are "forced" into the map,
 ##' resulting in a map with all markers positioned.
 ##'
+##'@importFrom graphics abline axis layout lines par plot points text title
+##'
 ##' @param input.seq an object of class \code{sequence}.
 ##' @param n.init the number of markers to be used in the \code{compare} step
 ##' (defaults to 5).
@@ -127,8 +129,8 @@
 ##'
 ##' \dontrun{
 ##'   #outcross example
-##'   data(example_out)
-##'   twopt <- rf_2pts(example_out)
+##'   data(onemap_example_out)
+##'   twopt <- rf_2pts(onemap_example_out)
 ##'   all_mark <- make_seq(twopt,"all")
 ##'   groups <- group(all_mark)
 ##'   LG2 <- make_seq(groups,2)
@@ -156,7 +158,7 @@
 ##'   rbind(ord.1$seq.num, ord.2$seq.num) # probably, the same order for
 ##'   this dataset
 ##' }
-##'
+##'@export
 order_seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
                        subset.n.try=30, subset.THRES=3, twopt.alg= c("rec", "rcd", "ser", "ug"),
                        THRES=3, touchdown=FALSE, tol=10E-2) {
@@ -339,6 +341,8 @@ order_seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
   }
 }
 
+##'@export
+##'@method print order
 print.order <- function(x,...) {
   cat("\nBest sequence found.")
   ## print the 'safe' order
@@ -405,7 +409,7 @@ draw_order<-function(map.input){
   text(x=new.dist[1]-(max(new.dist)/40), y=1 ,"Markers",  adj=c(1,0.5))
   text(x=new.dist[1]-(max(new.dist)/40), y=0 ,"Distance",  adj=c(1,0.2))
   par(op)
-  rf_graph_table(map.input, inter=FALSE, axis.cex = .75, main="", colorkey = FALSE, mrk.names = TRUE)
+  rf_graph_table(map.input, inter=FALSE, main="")
   title(main = "LOD (above diag.) and Recombination Fraction Matrix", cex.main=.9, line=15.4)
 }
 ## end of file

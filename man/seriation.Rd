@@ -59,8 +59,8 @@ constructed using the multipoint approach (function
 
 \dontrun{
   ##outcross example
-  data(example_out)
-  twopt <- rf_2pts(example_out)
+  data(onemap_example_out)
+  twopt <- rf_2pts(onemap_example_out)
   all_mark <- make_seq(twopt,"all")
   groups <- group(all_mark)
   LG3 <- make_seq(groups,3)
@@ -75,7 +75,6 @@ constructed using the multipoint approach (function
   LG1.ser <- seriation(LG1)
   LG1.ser
 }
-
 }
 \references{
 Buetow, K. H. and Chakravarti, A. (1987) Multipoint gene

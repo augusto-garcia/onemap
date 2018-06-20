@@ -29,7 +29,6 @@ amount of missing data among those on the bin.
   fake.big.data.f2
   (bins <- find_bins(fake.big.data.f2, exact=FALSE))
   (new.data <- create_data_bins(fake.big.data.f2, bins))}
-
 }
 \seealso{
 \code{\link[onemap]{find_bins}}

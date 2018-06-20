@@ -72,15 +72,15 @@
 ##' @keywords utilities
 ##' @examples
 ##'
-##'   data(example_out)
-##'   twopt <- rf_2pts(example_out)
+##'   data(onemap_example_out)
+##'   twopt <- rf_2pts(onemap_example_out)
 ##'
 ##'   markers <- make_seq(twopt,c(30,12,3,14,2)) # correct phases
 ##'   map(markers)
 ##'
 ##'   markers <- make_seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
 ##'   map(markers)
-##'
+##'@export
 map <- function(input.seq,tol=10E-5, verbose=FALSE)
 {
     ## checking for correct object

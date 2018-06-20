@@ -125,7 +125,7 @@ common mistake made by users, so please be careful**.
 
 The input file must be saved in text format, with extensions like
 `.raw`. It is a good idea to open the text file called
-`example_out.raw` (available with `OneMap` and saved in the directory
+`onemap_example_out.raw` (available with `OneMap` and saved in the directory
 you installed it) to see how this file should be. You can see where
 `OneMap` is installed using the command
 
@@ -133,9 +133,89 @@ you installed it) to see how this file should be. You can see where
 system.file(package = "onemap")
 ``` 
 
-# Create data file from VCF file
 
-If you are working with biallelic markers, as SNPs and indels (marker types B3.7, D1.10 or D2.15), in VCF (Variant Call Format) files, you can use the function `vcf2raw` to convert the genotype information from the VCF file to `OneMap` format `.raw`. Moreover, the function keeps chromosome and position information for each marker at the end of raw file.
+# Importing data
+
+Once the input file is created, the data can be loaded and saved into an R
+`onemap` object. The function used to import data is named `read_onemap`. Its usage is quite simple:
+ 
+```{r, eval=FALSE}
+onemap_example_out <- read_onemap(dir = "C:/workingdirectory", inputfile = "onemap_example_out.raw")
+```
+
+The first argument is the directory where the input file is located,
+so modify it accordingly. The second one is the data file name. In
+this example, an object named `onemap_example_out` was created. If you leave
+the argument `dir` blank, the file will be loaded from your `working
+directory`.
+
+You can change the working directory in R using function `setwd()` or
+in the toolbar clicking `File -> Change dir`. If you set your working
+directory to the one containing the input file, you can just type:
+
+
+```{r, eval=FALSE}
+onemap_example_out <- read_onemap(inputfile = "onemap_example_out.raw")
+``` 
+
+If no error has occurred, a message will display some basic
+information about the data, such as number of individuals and number
+of markers:
+
+```{r, echo=FALSE}
+onemap_example_out <- read_onemap(inputfile = system.file("extdata/onemap_example_out.raw", package = "onemap"))
+``` 
+
+Because this particular data set is distributed along with the
+package, as an alternative you can load it typing
+
+```{r}
+data("onemap_example_out")
+``` 
+
+Loading the data creates an object of class `onemap`, which will
+further be used in the analysis. R command `print` recognizes
+objects of this class. Thus, if you type:
+
+```{r, eval=FALSE}
+onemap_example_out
+```
+
+you will see some information about the object:
+
+```{r, echo=FALSE}
+onemap_example_out
+```
+
+Also, you can use the `plot.onemap` function to see graphically markers genotypes:
+
+```{r}
+plot(onemap_example_out)
+```
+
+Changing the argument `all` to `FALSE`, the markers will be separed by their type. In this case, you can note that the graphic cells size will adapt to the number of markers of the same type. In other words, the greater is the number of markers with the same type, smaller are the cells for this type.
+
+```{r}
+plot(onemap_example_out, all = FALSE)
+```
+
+This function can take quite some time, depending on the
+number of markers involved. More informations about this plot function can be found using `?plot.onemap`.
+
+Also, you can see graphically the number of markers by segregattion pattern with the `plot_by_segreg_type` function:
+
+```{r}
+plot_by_segreg_type(onemap_example_out)
+```
+
+
+## Importing data from `VCF` file
+
+If you are working with biallelic markers, as SNPs and indels (marker types B3.7, D1.10 or D2.15), in VCF (Variant Call Format) files, there are two ways of import information from `VCF` to `OneMap`:
+
+* With the `vcf2raw` function
+
+You can use the function `vcf2raw` to convert the genotype information from the VCF file to `OneMap` format `.raw`. Moreover, the function keeps chromosome and position information for each marker at the end of raw file.
 
 To see how the function works, there is a short example of VCF file called `vcf_example_out.vcf` saved in the directory you installed the `OneMap`. This file is already sorted, compressed and tabix indexed as require by the function. If you need to sort your file, we suggest the `vcf-sort` perl script from `vcftools` program. The functions `bgzip` and `indexTabix` from `Rsamtools` package can be used to compress and add tabix index.
 
@@ -148,83 +228,11 @@ The first argument is the path and the name of the data file. You can acess the 
 
 After running the function, the `OneMap` imput file `vcf_example_out.raw` generated will be at your working directory.
 
+**This function is usually fast, even with big datasets, and it is only available in the `OneMap` github version.** 
+
 The function will not convert non-informative markers (if both parents are homozygotes). Therefore, you can have smaller number of markers in your `.raw` file compared to `vcf` file. In our example, there is one non-informative marker, identified as `SNP15`.
 
-# Importing data
-
-Once the input file is created, the data can be loaded and saved into an R
-`onemap` object. The function used to import data is named `read_onemap`. Its usage is quite simple:
- 
-```{r, eval=FALSE}
-example_out <- read_onemap(dir = "C:/workingdirectory", inputfile = "example_out.raw")
-```
-
-The first argument is the directory where the input file is located,
-so modify it accordingly. The second one is the data file name. In
-this example, an object named `example_out` was created. If you leave
-the argument `dir` blank, the file will be loaded from your `working
-directory`.
-
-You can change the working directory in R using function `setwd()` or
-in the toolbar clicking `File -> Change dir`. If you set your working
-directory to the one containing the input file, you can just type:
-
-
-```{r, eval=FALSE}
-example_out <- read_onemap(inputfile = "example_out.raw")
-``` 
-
-If no error has occurred, a message will display some basic
-information about the data, such as number of individuals and number
-of markers:
-
-```{r, echo=FALSE}
-example_out <- read_onemap(inputfile = system.file("extdata/example_out.raw", package = "onemap"))
-``` 
-
-Because this particular data set is distributed along with the
-package, as an alternative you can load it typing
-
-```{r}
-data("example_out")
-``` 
-
-Loading the data creates an object of class `onemap`, which will
-further be used in the analysis. R command `print` recognizes
-objects of this class. Thus, if you type:
-
-```{r, eval=FALSE}
-example_out
-```
-
-you will see some information about the object:
-
-```{r, echo=FALSE}
-example_out
-```
-
-Also, you can use the `plot.onemap` function to see graphically markers genotypes:
-
-```{r}
-plot(example_out)
-```
-
-Changing the argument `all` to `FALSE`, the markers will be separed by their type. In this case, you can note that the graphic cells size will adapt to the number of markers of the same type. In other words, the greater is the number of markers with the same type, smaller are the cells for this type.
-
-```{r}
-plot(example_out, all = FALSE)
-```
-
-This function can take quite some time, depending on the
-number of markers involved. More informations about this plot function can be found using `?plot.onemap`.
-
-Also, you can see graphically the number of markers by segregattion pattern with the `plot_by_segreg_type` function:
-
-```{r}
-plot_by_segreg_type(example_out)
-```
-
-In the next analysis, we will also use the data from `vcf` file. You can load it in the same way as shown above:
+You can load it in the same way as shown above:
 
 ```{r, eval=FALSE}
 vcf_example_out <- read_onemap("C:/workingdirectory", "vcf_example_out.raw")
@@ -240,7 +248,6 @@ data("vcf_example_out")
 vcf_example_out <- read_onemap(inputfile = system.file("extdata/vcf_example_out.raw", package = "onemap"))
 ``` 
 
-
 And you can see the informations about this new object with:
 
 ```{r}
@@ -255,13 +262,48 @@ plot(vcf_example_out, all = FALSE)
 
 The black cells here are indicating missing genotypes for those markers and individuals.
 
+* With the `onemap_read_vcfR` function
+
+With the `onemap_read_vcfR` you can convert the object from `vcfR` package directly to `onemap`. As the `vcf2raw` function, the `onemap_read_vcfR` function keeps chromosome and position information for each marker at the end of raw file.
+
+We will use the same example file `vcf_example_out.vcf` to show how it works.
+
+First, we convert the `VCF` file to `vcfR` object:
+
+```{r, eval=FALSE}
+library(vcfR)
+vcfR.object <- read.vcfR(system.file("extdata/vcf_example_f2.vcf", package = "onemap"))
+```
+
+As described in the `vcfR` package vignette, memory use is a important consideration when using `vcfR`. Depending of your dataset, the object created can be very large and occupy a lot of memory.
+
+After, you can use `onemap_read_vcfR` function to convert this object to `onemap` object. The parameters used is the `vcfR.object` we just created, the identification of each parent (here you must define only one sample for each parent) and the cross type.
+
+```{r, eval=FALSE}
+vcf_example_out <- onemap_read_vcfR(vcfR.object = vcfR.object,
+                                   parent1 = "P1", 
+                                   parent2 = "P2", 
+                                   cross = "outcross")
+```
+
+Depending of your dataset, this function can take some time to run. As a measure, in my computer (see informations about it in the `Session Info`) it tooks 15 min to run 1 million markers. 
+
+The `onemap `object `vcf_example_out` generated is exactly the same as generated by the `vcf2raw` function combined with the `read_onemap`.
+
+After the convertion, we can save the `vcfR.object` as a `.RData` and to remove it from the workspace, once it can occupy a lot of memory and turn the other process too slow. 
+
+```{r, eval=FALSE}
+save(vcfR.object, file = "vcfR.object.RData") 
+rm(vcfR.object)
+```
+
 # Combining `OneMap` datasets
 
 If you have more than one dataset of markers, all from the same cross type, you can use the function `combine_onemap` to merge them into only one `onemap` object.
 
 In our example, we have two datasets: 
 
-* first: `example_out` with 30 markers and 100 individuals
+* first: `onemap_example_out` with 30 markers and 100 individuals
 * second: `vcf_example_out` with 24 biallelic markers and 92 individuals.
 
 The `combine_function` recognizes the correspondent individuals by the ID, thus, it is important define exactly same IDs to respective individuals in both `raw` files. Compared with the first file, the second file do not have markers informations for 8 individuals. The `combine_onemap` will complete those informations with NA.
@@ -269,7 +311,7 @@ The `combine_function` recognizes the correspondent individuals by the ID, thus,
 In our examples, we have only genotypic information, but the function can also merge the phenotipic information if it exists.
 
 ```{r}
-comb_example <- combine_onemap(example_out, vcf_example_out)
+comb_example <- combine_onemap(onemap_example_out, vcf_example_out)
 comb_example
 ```
 
@@ -304,7 +346,6 @@ bins_example
 The arguments for `create_data_bins` function are the `onemap` object and the object created by `find_bins` function.
 
 # Testing segregation pattern
-
 
 For the map building process it is also important to know which markers have deviations in the expecteded segregation pattern. It can be a good pratice to remove them from the map building process, because they can adversely affect the map building, and, once the map is builded, they can be inserted.
 
@@ -631,18 +672,40 @@ is, the combination in which alleles are arranged in the chromosomes, given the 
 A careful examination of the results can be done using the function `rf_graph_table` to provide graphical view:
 
 ```{r}
-rf_graph_table(LG3_final, inter = FALSE)
+rf_graph_table(LG3_final)
 ```
 
-The recombination fractions are plotted below the diagonal and the LOD Scores are plotted above the diagonal. The color scale varies from red (small distances or big LODs) to dark blue. This color scale follows the `rainbow` color palette with `start` argument equal to 0 and `end` argument equal to 0.65. White cells indicate combinations of markers for which the recombination fractions cannot be estimated (D1 and D2).
+With the default arguments, this functions plots the recombination fractions between the markers pointed in the axes. You can change the number of colors from `rainbow` pallete with the argument `n.colors`. Hot colors (more close to red) represents lower values of recombination fractions, as showed in the scale at right side of the graphic. White cells indicate combinations of markers for which the recombination fractions cannot be estimated (D1 and D2). If you want to analyze the LOD values between the markers, use `graph.LOD = TRUE`.
 
-If you change the `inter` argument to `TRUE`,  you can see some information about cells corresponding to two markers (off the secondary diagonal) just clicking on them. For example, clicking on the cell corresponding to markers numbers 8 and 13, you can see their names (`M8` and `M13` ), types (`B3.7` and `C.8`), recombination fraction (`rf = 0.02662`) and LOD Scores for each possible linkage phase. Clicking on a cell on the diagonal, some information about the corresponding marker is shown, including percent of missing data. This is quite useful in helping to interpret the results.
+```{r}
+rf_graph_table(LG3_final, graph.LOD = TRUE)
+```
+
+If you change the `inter` argument to `TRUE`,  you should also specify a output html file name in `html.file`. This html contains a iterative plolty graphic. If you hover the mouse cursor over the cells it shows some extra information about cells, as percentagem of missing data, marker name and type. The output html file is generated in your work directory and opens automatically in your internet browser.
+
+```{r, eval=FALSE}
+rf_graph_table(LG3_final, inter = TRUE, html.file = "LG3.html")
+```
+
+For example, passing on the cell corresponding to markers  M8 and M13, you can see their names (`M8` and `M13` ), types (`B3.7` and `C.8`), recombination fraction (`rf = 0.03`) and LOD Scores for each possible linkage phase. This is quite useful in helping to interpret the results.
+
+If you want to see corresponding marker numbers (not the names) in the axis just change the argument `mrk.axis` to `numbers`. It can make the next steps easier.
+
+```{r}
+rf_graph_table(LG3_final, inter = FALSE, mrk.axis = "numbers")
+```
 
 The `rf_graph_table` can also be used to check the order of markers
 based on the monotonicity of the matrix: as we get away from the
 secondary diagonal, the recombination fraction values should increase.
 
-Looking at the matrix, it is possible to see a gap between markers `M22` and `M18` (numbers 22 and 18). In some cases, gaps could indicate that the group must be divided at this position, but here `SNP14` (number 43) also show linkage with `M8`, which points that probabily it is only a gap. Adding more markers to this groups could fill this gap.
+Looking at the matrix, it is possible to see a gap between markers `M7` and `M18` (numbers 7 and 18). In some cases, gaps could indicate that the group must be divided at this position, but here `SNP18` (number 43) also show linkage with `M8`, which points that probabily it is only a gap. Adding more markers to this groups could fill this gap.
+
+Changing other arguments of the function you can add/remove labels of the axes ('lab.xy') and add a title to the graph ('main').
+
+```{r}
+rf_graph_table(LG3_final, main = "LG3", inter = FALSE, n.colors = 7, lab.xy = c("markers", "markers"))
+```
 
 ## Genetic mapping of linkage group 2
 
@@ -699,13 +762,8 @@ LG2_frame <- make_seq(LG2_comp)
 
 Also, we can obtain a useful diagnostic graphic using the function `rf_graph_table`.
 
-```{r, eval=FALSE}
-rf_graph_table(LG2_frame)
-```
-
-
-```{r, echo=FALSE}
-rf_graph_table(LG2_frame, inter = FALSE)
+```{r}
+rf_graph_table(LG2_frame, mrk.axis = "numbers")
 ```
 
 The graphic shows that there are two groups of markers, once `M20` and `M4` are far from the other markers. These markers could be in different linkage groups or they are distant in the same group. Adding more markers will give more informations to solve this issue.
@@ -729,7 +787,6 @@ print(LG2_extend, 7)
 The second argument indicates the position where to place the marker.
 Note that the first allele arrangement is the most likely one.
 
-
 It should be pointed out that the framework created by the function
 `compare` (with `M20`, `M4`, `SNP24`, `SNP23`, `M24` and `SNP22`) could be in
 reverse order (`SNP22`, `M24`, `SNP23`, `SNP24`, `M4` and `M20`) and still represent the
@@ -750,12 +807,8 @@ argument is the position on the map (according to the scale on the
 right of the output) and the last argument indicates linkage phases
 (defaults to 1, higher nested LOD).
 
-```{r, eval=FALSE}
-rf_graph_table(LG2_test)
-```
-
-```{r, echo=FALSE}
-rf_graph_table(LG2_test, inter=FALSE)
+```{r}
+rf_graph_table(LG2_test, mrk.axis = "numbers")
 ```
 
 We can see that `SNP25` (or marker 52) was positioned at the end of the sequence and the color pattern shows that it is strongly linked with its neighbors, indicating that it is well positioned, then we will maintain this marker at this position:
@@ -791,12 +844,8 @@ LG2_final <- make_seq(LG2_extend, 10)
 
 Checking graphically:
 
-```{r, eval=FALSE}
+```{r}
 rf_graph_table(LG2_final)
-```
-
-```{r, echo=FALSE}
-rf_graph_table(LG2_final, inter=FALSE)
 ```
 
 The process of adding markers sequentially can be automated with the
@@ -862,6 +911,10 @@ LG2_ord
 
 For this particular sequence, the `touchdown` step could map safely markers `46` and `52`, but this depends on the specific dataset.
 
+```{r}
+rf_graph_table(LG2_all, mrk.axis = "numbers")
+```
+
 Finally, to check for alternative orders (because we did not use
 exhaustive search), use the `ripple_seq` function:
 
@@ -886,10 +939,10 @@ If there were an alternative order more likely than the original, one
 should check the difference between these orders (and linkage phases). 
 
 In some cases, even if there are no better alternative order suggested by `ripple_seq`, the graphic showed color pattern different of the expected. Then, we can remove 
-doubtful markers (for this groups markers `23` and `51`) and try to positioned them again. First, we use the function `drop_marker` to remove selected marker of our sequence.
+doubtful markers (for this groups markers `23` and `29`) and try to positioned them again. First, we use the function `drop_marker` to remove selected marker of our sequence.
 
 ```{r}
-LG2_test_seq <- drop_marker(LG2_all, c(23,51))
+LG2_test_seq <- drop_marker(LG2_all, c(23,29))
 ```
 
 The function will provide a sequence with the same order of the estimated map (`LG2_all`). After, we should estimate the map again using this predefined order. For this we use the `map` function:
@@ -900,28 +953,28 @@ The function will provide a sequence with the same order of the estimated map (`
 
 Now we have the map without markers `23` and `51`. 
 
-```{r, eval=FALSE}
-rf_graph_table(LG2_test_map)
-```
-
-```{r, echo=FALSE}
-rf_graph_table(LG2_test_map, inter=FALSE)
+```{r}
+rf_graph_table(LG2_test_map, mrk.axis = "numbers")
 ```
 
 We use `try_seq` function to positioned them again:
 
 ```{r}
-LG2_test_seq <- try_seq(LG2_test_map, 51)
-LG2_test_51 <- make_seq(LG2_test_seq, 15)
-LG2_test_seq <- try_seq(LG2_test_51, 23)
-LG2_test_51_23 <- make_seq(LG2_test_seq, 6)
+LG2_test_seq <- try_seq(LG2_test_map, 23)
+LG2_test_23 <- make_seq(LG2_test_seq, 6)
+LG2_test_seq <- try_seq(LG2_test_23, 29)
+LG2_test_23_29 <- make_seq(LG2_test_seq, 12)
+
+rf_graph_table(LG2_test_23_29, mrk.axis = "numbers")
 ```
 
-Markers 23 and 51 was positioned at the same position as before. We will remove marker 23 of our map, because it color pattern are too different of expected. Then, our final map is:
+Marker 23 keeped its previous position, but marker 29 was re-positioned, configuring now a gap between markers 47 and 50. We removed marker 29 of our map, because it color pattern are too different of expected. Then, our final map is:
 
 ```{r}
-LG2_final <- LG2_test_51
+LG2_final <- LG2_test_23
 LG2_final
+
+rf_graph_table(LG2_final, mrk.axis = "numbers")
 ```
 
 ## Genetic mapping of linkage group 1
@@ -952,12 +1005,8 @@ Now, get the order with all markers:
 
 Check the map graphically:
 
-```{r, eval=FALSE}
-rf_graph_table(LG1_frame)
-```
-
-```{r, echo=FALSE}
-rf_graph_table(LG1_frame, inter = FALSE)
+```{r}
+rf_graph_table(LG1_frame, mrk.axis = "numbers")
 ```
 
 Check for alternative orders:
@@ -974,22 +1023,18 @@ LG1_test_seq <- drop_marker(LG1_frame, c(10,11,28,42))
 LG1_test_map <- map(LG1_test_seq)
 ```
 
-```{r, eval=FALSE}
-rf_graph_table(LG1_test_map)
-```
-
-```{r, echo=FALSE}
-rf_graph_table(LG1_test_map, inter=FALSE)
+```{r}
+rf_graph_table(LG1_test_map, mrk.axis = "numbers")
 ```
 
 ```{r, results='hide'}
 LG1_extend <- try_seq(LG1_test_map,10)
-LG1_test <- make_seq(LG1_extend,15) # We choose to remove this marker
+LG1_test_map <- make_seq(LG1_extend,15) 
 LG1_extend <- try_seq(LG1_test_map,11)
-LG1_test <- make_seq(LG1_extend,22) # We choose to remove this marker
+LG1_test <- make_seq(LG1_extend,23) # We choose to remove this marker
 LG1_extend <- try_seq(LG1_test_map,28)
-LG1_test <- make_seq(LG1_extend,15) 
-LG1_extend <- try_seq(LG1_test,42)
+LG1_test_map <- make_seq(LG1_extend,16) 
+LG1_extend <- try_seq(LG1_test_map,42)
 LG1_final <- make_seq(LG1_extend,17) 
 ```
 
@@ -998,12 +1043,8 @@ Print it:
 LG1_final
 ```
 
-```{r, eval=FALSE}
+```{r}
 rf_graph_table(LG1_final)
-```
-
-```{r, echo=FALSE}
-rf_graph_table(LG1_final, inter=FALSE)
 ```
 
 As an option, different algorithms to order markers could be applied: 
@@ -1111,12 +1152,8 @@ Based in those results, we decide to not include marker 11 in our map.
 CHR1_test_map
 ```
 
-```{r, eval=FALSE}
+```{r}
 rf_graph_table(CHR1_test_map) 
-```
-
-```{r, echo=FALSE}
-rf_graph_table(CHR1_test_map, inter = FALSE) 
 ```
 
 ```{r}
@@ -1154,35 +1191,30 @@ CHR3_frame <- make_seq(CHR3_ord, "force")
 ```
 
 ```{r, eval=FALSE}
-rf_graph_table(CHR3_frame) # graphic not showed
+rf_graph_table(CHR3_frame, mrk.axis = "numbers") # graphic not showed
 ```
 
-
-Here, marker `23`, `27` and `29` have color pattern too different of the expected, removing them could influentiate in other markers ordering. Then we will remove them and search for a new order.
+Here, marker `29` have color pattern too different of the expected, removing it could influentiate in other markers ordering. Then we will remove them and search for a new order.
 
 ```{r, results='hide'}
-CHR3_test_seq <- drop_marker(CHR3_frame, c(23,27, 29))
+CHR3_test_seq <- drop_marker(CHR3_frame, c(29))
 CHR3_test_ord <- order_seq(CHR3_test_seq)
 CHR3_test_map <- make_seq(CHR3_test_ord, "force")
 ```
 
 ```{r, eval=FALSE}
-rf_graph_table(CHR3_test_map) #graphic not showed
+rf_graph_table(CHR3_test_map, mrk.axis = "numbers") #graphic not showed
 ```
 
 Trying to add markers `23`, `27` and `29` again.
 
 ```{r, results='hide'}
-CHR3_add23_seq <- try_seq(CHR3_test_map, 23)
-CHR3_add23 <- make_seq(CHR3_add23_seq, 5) # Marker 23 removed of the map
-CHR3_add27_seq <- try_seq(CHR3_test_map, 26)
-CHR3_add27 <- make_seq(CHR3_add27_seq, 1) # Marker 27 was better positioned
-CHR3_add29_seq <- try_seq(CHR3_add27, 28)
-CHR3_add29 <- make_seq(CHR3_add29_seq, 1) # Marker 29 increase the map size disproportionately, it was removed from the map
+CHR3_add29_seq <- try_seq(CHR3_test_map, 29)
+CHR3_add29 <- make_seq(CHR3_add29_seq, 12) # Marker 29 increase the map size disproportionately, it was removed from the map
 ```
 
 ```{r}
-CHR3_final <- CHR3_add27
+CHR3_final <- CHR3_test_map
 rf_graph_table(CHR3_final, inter = FALSE)
 ```
 

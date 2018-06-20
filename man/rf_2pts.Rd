@@ -39,13 +39,12 @@ subsequent analyses, but can be overriden.
 }
 \examples{
 
-  data(example_out)
+  data(onemap_example_out)
 
-  twopts <- rf_2pts(example_out,LOD=3,max.rf=0.5) # perform two-point analyses
+  twopts <- rf_2pts(onemap_example_out,LOD=3,max.rf=0.5) # perform two-point analyses
   twopts
 
   print(twopts,c("M1","M2")) # detailed results for markers 1 and 2
-
 }
 \references{
 Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002)

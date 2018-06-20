@@ -68,7 +68,7 @@
 ##'   \dontrun{
 ##'     combined_data <- combine_onemap(onemap_data1, onemap_data2)
 ##'   }
-##'
+##'@export
 combine_onemap <- function(...) {
     onemap.objs <- list(...)
     n.objs <- length(onemap.objs)
