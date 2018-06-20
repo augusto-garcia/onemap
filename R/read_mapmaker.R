@@ -295,7 +295,7 @@ read_mapmaker<-function (dir, file)
         segr.type[]<-"A.B"
         segr.type.num<-rep(NA,ncol(geno))
         geno[is.na(geno)]<-0
-        geno[geno==3]<-2 #coding as backcross
+        #geno[geno==3]<-2 #coding as backcross
     }
     else
         stop("Invalid cross type")
