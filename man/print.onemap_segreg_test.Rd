@@ -20,8 +20,8 @@ It shows the results of Chisquare tests performed for all markers in a onemap ob
 of cross type outcross, backcross, F2 intercross or recombinant inbred lines.
 }
 \examples{
-data(example_out) # Loads a fake outcross dataset installed with onemap
-Chi <- test_segregation(example_out) # Performs the chi-square test for all markers
+data(onemap_example_out) # Loads a fake outcross dataset installed with onemap
+Chi <- test_segregation(onemap_example_out) # Performs the chi-square test for all markers
 print(Chi) # Shows the results
 
 }

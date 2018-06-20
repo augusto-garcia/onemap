@@ -49,12 +49,12 @@ globalVariables(c("marker", "geno"))
 ##' @examples
 ##' 
 ##' \dontrun{
-##' data(example_bc) # Loads a fake backcross dataset installed with onemap
-##' plot(example_bc) # This will show you the graph
+##' data(onemap_example_bc) # Loads a fake backcross dataset installed with onemap
+##' plot(onemap_example_bc) # This will show you the graph
 ##'
 ##' # You can store the graphic in an object, then save it with a number of properties
 ##' # For details, see the help of ggplot2's function ggsave()
-##' g <- plot(example_bc)
+##' g <- plot(onemap_example_bc)
 ##' ggplot2::ggsave("MyRawData_bc.jpg", g, width=7, height=4, dpi=600)
 ##'
 ##' data(onemap_example_f2) # Loads a fake backcross dataset installed with onemap
@@ -65,16 +65,18 @@ globalVariables(c("marker", "geno"))
 ##' g <- plot(onemap_example_f2)
 ##' ggplot2::ggsave("MyRawData_f2.jpg", g, width=7, height=4, dpi=600)
 ##'
-##' data(example_out) # Loads a fake full-sib dataset installed with onemap
-##' plot(example_out) # This will show you the graph for all markers
-##' plot(example_out, all=FALSE) # This will show you the graph splitted for marker types
+##' data(onemap_example_out) # Loads a fake full-sib dataset installed with onemap
+##' plot(onemap_example_out) # This will show you the graph for all markers
+##' plot(onemap_example_out, all=FALSE) # This will show you the graph splitted for marker types
 ##'
 ##' # You can store the graphic in an object, then save it.
 ##' # For details, see the help of ggplot2's function ggsave()
-##' g <- plot(example_out, all=FALSE)
+##' g <- plot(onemap_example_out, all=FALSE)
 ##' ggplot2::ggsave("MyRawData_out.jpg", g, width=9, height=4, dpi=600)
 ##'}
-##' @export
+##'
+##'@method plot onemap
+##' @export 
 plot.onemap <- function(x, all=TRUE, ...) {
     # Creating the data frame
     if (is(x, "outcross")) {
@@ -358,23 +360,23 @@ create_dataframe_for_plot_outcross <- function(x) {
 ##' @import ggplot2
 ##'
 ##' @examples
-##' data(example_out) #Outcrossing data
-##' plot_by_segreg_type(example_out)
-##' plot_by_segreg_type(example_out, subcateg=FALSE)
+##' data(onemap_example_out) #Outcrossing data
+##' plot_by_segreg_type(onemap_example_out)
+##' plot_by_segreg_type(onemap_example_out, subcateg=FALSE)
 ##'
-##' data(example_bc)
-##' plot_by_segreg_type(example_bc)
+##' data(onemap_example_bc)
+##' plot_by_segreg_type(onemap_example_bc)
 ##'
 ##' data(mapmaker_example_f2)
 ##' plot_by_segreg_type(mapmaker_example_f2)
 ##'
 ##' # You can store the graphic in an object, then save it.
 ##' # For details, see the help of ggplot2's function ggsave()
-##' # data(example_out) #Outcrossing data
-##' # g <- plot_by_segreg_type(example_out)
+##' # data(onemap_example_out) #Outcrossing data
+##' # g <- plot_by_segreg_type(onemap_example_out)
 ##' # ggplot2::ggsave("SegregationTypes.jpg", g, width=7, height=4, dpi=600)
 ##'
-##' @export
+##'@export
 plot_by_segreg_type <- function(x, subcateg=TRUE) {
   # Create a dataframe, indicating the category and subcategory
   df <- data.frame(segr.type=factor(x$segr.type),Type=999)

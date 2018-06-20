@@ -27,6 +27,10 @@
 ##' Large values for the window size make computations very slow, specially if
 ##' there are many partially informative markers.
 ##'
+##'@importFrom methods is
+##'@importFrom utils head tail
+##'
+##'
 ##' @param input.seq an object of class \code{sequence} with a
 ##'     predefined order.
 ##' @param ws an integer specifying the length of the window size
@@ -76,8 +80,8 @@
 ##'
 ##' \dontrun{
 ##'  #Outcross example
-##'   data(example_out)
-##'   twopt <- rf_2pts(example_out)
+##'   data(onemap_example_out)
+##'   twopt <- rf_2pts(onemap_example_out)
 ##'   markers <- make_seq(twopt,c(27,16,20,4,19,21,23,9,24,29))
 ##'   markers.map <- map(markers)
 ##'   ripple_seq(markers.map)
@@ -95,7 +99,7 @@
 ##'  ripple_seq(ord.1, ws=5)
 ##' }
 ##'
-##'
+##'@export
 
 ripple_seq<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2)
 {
@@ -119,7 +123,7 @@ ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2) {
     if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
     if(ws < 2) stop("ws must be greater than or equal to 2")
     if(ws > 5) cat("WARNING: this operation may take a VERY long time\n\n")
-    flush.console()
+    utils::flush.console()
 
     len <- length(input.seq$seq.num)
     ## computations unnecessary in this case
@@ -354,7 +358,7 @@ ripple_seq_inbred<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2)
         stop("ws must be greater than or equal to 2")
     if(ws > 5)
         cat("WARNING: this operation may take a VERY long time\n\n")
-    flush.console()
+    utils::flush.console()
     len <- length(input.seq$seq.num)
 
     ## computations unnecessary in this case

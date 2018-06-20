@@ -33,8 +33,8 @@ ab x oo \tab 1:1 \cr D1.12 \tab bo x aa \tab 1:1 \cr D1.13 \tab ao x oo
 }
 \examples{
 
-  data(example_out)
-  twopts <- rf_2pts(example_out)
+  data(onemap_example_out)
+  twopts <- rf_2pts(onemap_example_out)
   markers.ex <- make_seq(twopts,c(3,6,8,12,16,25))
   marker_type(markers.ex) # segregation type for some markers
 
@@ -44,7 +44,6 @@ ab x oo \tab 1:1 \cr D1.12 \tab bo x aa \tab 1:1 \cr D1.13 \tab ao x oo
   lgs<-group(all_mrk)
   lg1<-make_seq(lgs,1)
   marker_type(lg1) # segregation type for linkage group 1
-
 
 }
 \references{

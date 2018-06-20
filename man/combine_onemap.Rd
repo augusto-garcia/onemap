@@ -51,7 +51,6 @@ are arranged in the same order in every dataset.
   \dontrun{
     combined_data <- combine_onemap(onemap_data1, onemap_data2)
   }
-
 }
 \references{
 Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993)
