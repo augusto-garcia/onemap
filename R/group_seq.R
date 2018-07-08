@@ -6,7 +6,6 @@
 ## Contains: group_seq, print.group_seq                                ##
 ##                                                                     ##
 ## Written by Cristiane Taniguti                                       ##
-## copyright (c) 2007-9, Gabriel R A Margarido and Marcelo Mollinari   ##
 ##                                                                     ##
 ## First version: 09/08/2017                                           ##
 ## Last update: 09/08/2017                                             ##
@@ -38,7 +37,7 @@
 ##' the markers to be grouped with the preexisting sequences defined by \code{seqs}
 ##' parameter. Using the string "all", all remaining markers of
 ##' the \code{rf_2pts} object will be tested.
-##' @param rm.repeated logical. If \code{TRUE}, markers grouped in more than
+##' @param repeated logical. If \code{TRUE}, markers grouped in more than
 ##' one of the sequences are keeped in the output sequences. If \code{FALSE},
 ##' they are removed of the output sequences.
 ##' @param LOD a (positive) real number used as minimum LOD score
