@@ -92,6 +92,19 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     mk.type[which(GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "0/1")] <- "D2.15.2"
     mk.type[which(GT_matrix[,P1] == "0/1" & GT_matrix[,P2] == "0/1")] <- "B3.7"
     
+    # Informs to user why markers are being removed
+    idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./.")
+    if (length(idx) > 0)
+      cat("Markers", MKS[idx], "were removed of the dataset because one or both of parents have no informed genotypes (are missing data)")
+     
+    idx <- which((GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "0/0")|
+                   (GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "1/1") |
+                   (GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "1/1")|
+                   (GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "0/0"))
+      
+    if (length(idx) > 0)
+      cat("Markers", MKS[idx], "were removed from the dataset because both of parents are homozygotes, these markers are considered non-informative in outcrossing populations.")
+    
     # Excluding non-informative markers
     rm_mk <- which(is.na(mk.type))
     if(length(rm_mk)!=0){
@@ -132,6 +145,16 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     mk.type[which(GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "1/1")] <- "A.H.B.1"
     mk.type[which(GT_matrix[,P1][i] == "1/1" & GT_matrix[,P2][i] == "0/0")] <- "A.H.B.2"
     
+    # Informs to user why markers are being removed
+    idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./.")
+    if (length(idx) > 0)
+      cat("Markers", MKS[idx], "were removed of the dataset because one or both of parents have no informed genotypes (are missing data)")
+    
+    idx <- which((GT_matrix[,P1] == "0/1" | GT_matrix[,P2] == "0/1"))
+    if (length(idx) > 0)
+      cat("Markers", MKS[idx], "were removed from the dataset because one or both of the parents are heterozygotes, we do not expect heterozygotes parents in F2 populations.") 
+    
+    
     # Excluding non-informative markers
     rm_mk <- which(is.na(mk.type))
     if(length(rm_mk)!=0){
@@ -162,6 +185,16 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   } else if(cross=="f2 backcross"){
     mk.type[which(GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "1/1")] <- "A.H.1"
     mk.type[which(GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "0/0")] <- "A.H.2"
+    
+    # Informs to user why markers are being removed
+    idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./.")
+    if (length(idx) > 0)
+      cat("Markers", MKS[idx], "were removed of the dataset because one or both of parents have no informed genotypes (are missing data)")
+    
+    idx <- which((GT_matrix[,P1] == "0/1" | GT_matrix[,P2] == "0/1"))
+    if (length(idx) > 0)
+      cat("Markers", MKS[idx], "were removed from the dataset because one or both of the parents are heterozygotes, we do not expect heterozygotes parents in F2 populations.") 
+    
     
     # Excluding non-informative markers
     rm_mk <- which(is.na(mk.type))
@@ -194,6 +227,16 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     # Marker type
     mk.type[which(GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "1/1")] <- "A.B.1"
     mk.type[which(GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "0/0")] <- "A.B.2"
+    
+    # Informs to user why markers are being removed
+    idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./.")
+    if (length(idx) > 0)
+      cat("Markers", MKS[idx], "were removed of the dataset because one or both of parents have no informed genotypes (are missing data)")
+    
+    idx <- which((GT_matrix[,P1] == "0/1" | GT_matrix[,P2] == "0/1"))
+    if (length(idx) > 0)
+      cat("Markers", MKS[idx], "were removed from the dataset because one or both of the parents are heterozygotes, we do not expect heterozygotes parents in RILs populations.") 
+    
     
     # Excluding non-informative markers
     rm_mk <- which(is.na(mk.type))
