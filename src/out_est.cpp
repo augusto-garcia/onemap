@@ -50,6 +50,9 @@ using namespace std;
 #define LN3 1.098612288668109
 #define LN4 1.38629436111989
 #define LN_75 -0.28768207245178
+#define rf_TOL_min 1e-5  
+#define rf_TOL_max 1-1e-5 
+
 
 Rcpp::NumericVector rf_A_A(Rcpp::NumericMatrix n,
 			  int n_ind,
@@ -684,6 +687,10 @@ Rcpp::NumericVector rf_B3_B3(Rcpp::NumericMatrix n,
 	(2.0*(n_ind-mis)*(2*(rold*rold)-2*rold+1));
     }
   r(0)=rnew;
+  
+  if(rnew < rf_TOL_min) rnew=rf_TOL_min; /*to avoid operations with zero*/
+  if(rnew > rf_TOL_max) rnew=rf_TOL_max; /*to avoid operations with Inf*/
+  
   l=n(2,2)*log(2*(rnew*rnew)-2*rnew+1)+(n(2,3)+n(2,1))*log(rnew-(rnew*rnew))+
     (n(3,2)+n(1,2))*log(2*rnew-2*(rnew*rnew))+(2*n(3,1)+2*n(1,3))*log(rnew)+
     (2*n(3,3)+2*n(1,1))*log(1-rnew);
