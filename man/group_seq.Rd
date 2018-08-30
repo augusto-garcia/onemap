@@ -5,7 +5,7 @@
 \title{Assign markers to preexisting linkage groups}
 \usage{
 group_seq(input.2pts, seqs = "CHROM", unlink.mks = "all",
-  rm.repeated = TRUE, LOD = NULL, max.rf = NULL)
+  repeated = FALSE, LOD = NULL, max.rf = NULL)
 }
 \arguments{
 \item{input.2pts}{an object of class \code{rf_2pts}.}
@@ -19,7 +19,7 @@ the markers to be grouped with the preexisting sequences defined by \code{seqs}
 parameter. Using the string "all", all remaining markers of
 the \code{rf_2pts} object will be tested.}
 
-\item{rm.repeated}{logical. If \code{TRUE}, markers grouped in more than
+\item{repeated}{logical. If \code{TRUE}, markers grouped in more than
 one of the sequences are keeped in the output sequences. If \code{FALSE},
 they are removed of the output sequences.}
 
@@ -67,7 +67,7 @@ data(vcf_example_out) # load OneMap's fake dataset from a VCF file for a outcros
 comb_example <- combine_onemap(onemap_example_out, vcf_example_out) # Combine datasets
 twopts <- rf_2pts(comb_example)
 
-out_CHROM <- group_seq(twopts, seqs="CHROM", rm.repeated=FALSE)
+out_CHROM <- group_seq(twopts, seqs="CHROM", repeated=FALSE)
 out_CHROM
 
 seq1 <- make_seq(twopts, c(1,2,3,4,5,25,26))

@@ -128,8 +128,7 @@ get_vec_rf_in<- function(input.seq, LOD=FALSE, acum=TRUE) {
                  phases <- which((LODs >= min.LOD) & rfs <= max.rf)
                  if(length(phases) == 0)
                  {
-                   warning("LOD and/or rf values for markers ", i, " and ", j, " do not reached the threshold, the rf for this linkage will be 0.5" )
-                     r[j,i] <- r[i,j] <- 0.5
+                   r[j,i] <- r[i,j] <- NA
                  }
                  else
                  {
