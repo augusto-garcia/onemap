@@ -70,7 +70,7 @@
 ##' comb_example <- combine_onemap(onemap_example_out, vcf_example_out) # Combine datasets
 ##' twopts <- rf_2pts(comb_example)
 ##'
-##' out_CHROM <- group_seq(twopts, seqs="CHROM", rm.repeated=FALSE)
+##' out_CHROM <- group_seq(twopts, seqs="CHROM", repeated=FALSE)
 ##' out_CHROM
 ##'
 ##' seq1 <- make_seq(twopts, c(1,2,3,4,5,25,26))
@@ -81,7 +81,7 @@
 ##' out_seqs
 ##'
 ##'@export
-group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", rm.repeated = TRUE, LOD=NULL, max.rf=NULL){
+group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FALSE, LOD=NULL, max.rf=NULL){
 
   ## checking for correct object
   if(!any(class(input.2pts)=="rf_2pts")) stop(deparse(substitute(input.2pts)),
@@ -171,7 +171,7 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", rm.repeated =
     names(repeated_mks_list) <- names_seqs
 
     # Including or not the repeated in the sequences
-    if(rm.repeated==FALSE){
+    if(repeated==FALSE){
       structure(list(data.name= input.2pts$data.name, twopt=deparse(substitute(input.2pts)),
                      mk.names = mk_names, input.seqs= sapply(seqs.int, '[[',1), input.unlink.mks= mk_rest,
                      out.seqs = mks_new_seqs, n.unlinked = length(unlinked[!is.na(unlinked)]),
