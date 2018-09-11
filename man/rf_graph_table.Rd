@@ -5,7 +5,7 @@
 \title{Plots pairwise recombination fractions and LOD Scores in a heatmap}
 \usage{
 rf_graph_table(input.seq, graph.LOD = FALSE, main = NULL, inter = FALSE,
-  html.file = NULL, mrk.axis = "names", lab.xy = NULL, n.colors = 4)
+  html.file = NULL, mrk.axis = "numbers", lab.xy = NULL, n.colors = 4)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence} with a predefined
@@ -22,7 +22,7 @@ Otherwise, a default graphic device is used.}
 \item{html.file}{character naming the html file with iterative graphic.}
 
 \item{mrk.axis}{character, "names" to display marker names in the axis, "numbers" to display
-marker numbers and NULL to display axis free of labels.}
+marker numbers and "none" to display axis free of labels.}
 
 \item{lab.xy}{character vector with length 2, first component is the label of x axis and second of the y axis.}
 

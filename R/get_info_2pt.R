@@ -128,7 +128,7 @@ get_vec_rf_in<- function(input.seq, LOD=FALSE, acum=TRUE) {
                  phases <- which((LODs >= min.LOD) & rfs <= max.rf)
                  if(length(phases) == 0)
                  {
-                     r[j,i] <- r[i,j] <- NA
+                   r[j,i] <- r[i,j] <- NA
                  }
                  else
                  {
