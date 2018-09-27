@@ -6,8 +6,8 @@
 functions}
 \usage{
 order_seq(input.seq, n.init = 5, subset.search = c("twopt", "sample"),
-  subset.n.try = 30, subset.THRES = 3, twopt.alg = c("rec", "rcd", "ser",
-  "ug"), THRES = 3, touchdown = FALSE, tol = 0.1)
+  subset.n.try = 30, subset.THRES = 3, twopt.alg = c("rec", "rcd",
+  "ser", "ug"), THRES = 3, touchdown = FALSE, tol = 0.1)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}

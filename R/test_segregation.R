@@ -294,6 +294,7 @@ Bonferroni_alpha <- function(x, global.alpha=0.05) {
 ##' @param x an object of class onemap_segreg_test
 ##' @param distorted a TRUE/FALSE variable to show distorted or non-distorted markers
 ##' @param numbers a TRUE/FALSE variable to show the numbers or the names of the markers
+##' @param threshold a number between 0 and 1 to specify the threshold to be considered in the test. If NULL, it uses the threshold defined by bonferroni correction with alpha = 0.05 
 ##'
 ##' @return a vector with marker names or numbers, according to the option for "distorted" and "numbers"
 ##'
@@ -310,12 +311,14 @@ Bonferroni_alpha <- function(x, global.alpha=0.05) {
 ##' select_segreg(Chi, distorted=TRUE, numbers=TRUE)
 ##'
 ##' @export
-select_segreg <- function(x, distorted=FALSE, numbers=FALSE) {
+select_segreg <- function(x, distorted=FALSE, numbers=FALSE, threshold = NULL) {
     if (!is(x,"onemap_segreg_test")) stop("This is not an object of class onemap_segreg_test")
     Z <- data.frame(Marker=x$Marker,
                     p.value=unlist(x$Results.of.tests[3,]))
-    if (distorted==FALSE) Z <- subset(Z, p.value>=Bonferroni_alpha(x))
-    else Z <- subset(Z, p.value<Bonferroni_alpha(x))
+    if(is.null(threshold)) thr <- Bonferroni_alpha(x)
+    else  thr <- threshold
+    if (distorted==FALSE) Z <- subset(Z, p.value>=thr)
+    else Z <- subset(Z, p.value<thr)
     if (numbers==TRUE) return(which(x$Marker %in% as.vector(Z[,1])))
     else return(as.vector(Z[,1]))
 }
