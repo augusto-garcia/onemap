@@ -345,6 +345,16 @@ bins_example
 
 The arguments for `create_data_bins` function are the `onemap` object and the object created by `find_bins` function.
 
+# Exporting .raw file from onemap object
+
+The functions `onemap_read_vcfR` generates new onemap objects without use a input `.raw` file. Also, the functions `combine_onemap` and `create_data_bins` manipulates the information of the original `.raw` file and creates a new data set. In both cases, you do not have a input file `.raw` that contains the same informations of the analysed data. If you want to create a new input file with the data set you are working after using this functions, you can use the function `write_onemap_raw`.  
+
+```{r, eval=FALSE}
+write_onemap_raw(comb_example, file.name = "new_dataset.raw", cross="outcross")
+```
+
+The file `new_dataset.raw` will be generated in your working directory. In our example, it contains only non-redundant markers from `onemap_example_out` and `vcf_example_out` data sets.
+
 # Testing segregation pattern
 
 For the map building process it is also important to know which markers have deviations in the expecteded segregation pattern. It can be a good pratice to remove them from the map building process, because they can adversely affect the map building, and, once the map is builded, they can be inserted.
@@ -366,13 +376,15 @@ print(segreg_test)
 
 The only argument of the function is a `onemap` object. 
 
-Once we have the `onemap_segreg_test`object, the function `select_segreg` can be used to show only the markers considered with/without segregation distortion if Bonferroni's correction is applied with global  $\alpha=0.5$.
+Once we have the `onemap_segreg_test`object, the function `select_segreg` can be used to show only the markers considered with/without segregation distortion. By default, it uses as threshold for the test a global $\alpha=0.05$, corrected for multiple test with Bonferroni correction.
 
 ```{r}
 select_segreg(segreg_test, distorted = TRUE) #to show the markers names with segregation distortion
 
 select_segreg(segreg_test, distorted = FALSE) #to show the markers names without segregation distortion
 ```
+
+It is not recommended, but you can define a different threshold value changing the `threshold` argument of the function `select_segreg`. 
 
 For the next steps will be useful to know the numbers of each markers with segregation distortion, so then you can keep those out of your map building analysis. These numbers refer to the lines where markers are located on the data file.
 
@@ -1080,21 +1092,21 @@ According to `CHROM` informations we have three defined linkage groups, now we c
 
 ```{r}
 CHR_mks <- group_seq(input.2pts = twopts, seqs = "CHROM", unlink.mks = mark_no_dist,
-                      rm.repeated = TRUE)
+                      repeated = FALSE)
 ```
 
 The function works as the function `group`, but considering preexisting sequences. Setting `seqs` argument with the string `"CHROM"`, it will considered the preexisting sequences according to `CHROM` information. You can also indicate others preexisting sequences if it make sense for your study. For that, you should inform a list with objects of class `sequences`, as the example:
 
 ```{r, eval=FALSE}
 CHR_mks <- group_seq(input.2pts = twopts, seqs = list(CHR1=CHR1, CHR2=CHR2, CHR3=CHR3), 
-                      unlink.mks = mark_no_dist, rm.repeated = TRUE)
+                      unlink.mks = mark_no_dist, repeated = FALSE)
 ```
 
 In this case, the command had the same effect of the previous, because we indicate chromossome sequences, but others sequences can be used.
 
 The `unlink.mks` argument receive a object of class `sequence`, this define which markers will be tested to group with the sequences in `seqs`. In our example, we will indicate only the markers with no segregation distortion, using the sequence `mark_no_dist`. It is also possible to use the string `"all"` to test all the remining markers at the `rf_2pts` object. 
 
-In some cases, the same marker can group to more than one sequence, those markers will be considered `repeated`. We can choose if we want to remove or not (`TRUE/FALSE`) them of the output sequences, with the argument `rm.repeated`. Anyway, their numbers will be informed at the list `repeateds` in the output object. 
+In some cases, the same marker can group to more than one sequence, those markers will be considered `repeated`. We can choose if we want to remove or not (`FALSE/TRUE`) them of the output sequences, with the argument `repeated`. Anyway, their numbers will be informed at the list `repeateds` in the output object. 
 In the example case, there are no repeated markers. However, if they exists, it could indicate that their groups actually constitute the same group. Also, genotyping erros can generate repeated markers. Anyway, they deserves better investigations. 
 
 We can access detailed information about the results just printing:

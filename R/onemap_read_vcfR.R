@@ -3,7 +3,7 @@
 # Package: onemap                                                     #
 #                                                                     #
 # File: onemap_read_vcfR.R                                            #
-# Contains: onemap_read_vcfR                                          #
+# Contains: onemap_read_vcfR write_onemap_raw                         #
 #                                                                     #
 # Written by Cristiane Hayumi Taniguti                                #
 #                                                                     #

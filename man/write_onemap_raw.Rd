@@ -5,7 +5,8 @@
 \title{Convert onemap object to onemap raw file}
 \usage{
 write_onemap_raw(onemap.obj = NULL, file.name = "out.raw",
-  cross = c("outcross", "f2 backcross", "f2 intercross", "ri self", "ri sib"))
+  cross = c("outcross", "f2 backcross", "f2 intercross", "ri self",
+  "ri sib"))
 }
 \arguments{
 \item{onemap.obj}{object of class `onemap`}

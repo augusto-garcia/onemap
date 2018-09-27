@@ -1,7 +1,7 @@
 Package: onemap
 Title: Construction of Genetic Maps in Experimental Crosses: Full-Sib,
         RILs, F2 and Backcrosses
-Version: 2.1.1004
+Version: 2.1.1005
 Description: Analysis of molecular marker data from model (backcrosses,
     F2 and recombinant inbred lines) and non-model systems (i. e.
     outcrossing species). For the later, it allows statistical
@@ -45,5 +45,5 @@ Repository: CRAN
 Packaged: 2017-10-18 22:25:43 UTC; cris
 NeedsCompilation: yes
 Date/Publication: 2017-10-18 22:48:07 UTC
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 biocViews:
