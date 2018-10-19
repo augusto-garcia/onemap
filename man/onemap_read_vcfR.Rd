@@ -41,11 +41,14 @@ Reference sequence ID and position for each variant site are also stored.
 }
 \examples{
 
+\dontrun{
 vcfR.object <- vcfR::read.vcfR(system.file("extdata/vcf_example_out.vcf", package = "onemap"))
 data <- onemap_read_vcfR(vcfR.object=vcfR.object,
                  cross="outcross",
                  parent1=c("P1"),
                  parent2=c("P2"))
+}
+                
 }
 \seealso{
 \code{read_onemap} for a description of the output object of class onemap.

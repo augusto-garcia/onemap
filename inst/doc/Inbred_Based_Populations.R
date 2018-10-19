@@ -46,20 +46,6 @@ data("onemap_example_f2")
 ## ------------------------------------------------------------------------
 onemap_example_f2
 
-## ---- eval=FALSE, message='hide'-----------------------------------------
-#  vcf2raw(input = system.file("extdata/vcf_example_f2.vcf.gz", package = "onemap"),
-#          output = "vcf_example_f21.raw", parent1 = "P1", parent2 = "P2", cross = "f2 intercross")
-
-## ---- eval=FALSE---------------------------------------------------------
-#  vcf_example_f2 <- read_onemap(inputfile= system.file("extdata/vcf_example_f2.raw",
-#                                                         package = "onemap"))
-
-## ------------------------------------------------------------------------
-data("vcf_example_f2")
-
-## ------------------------------------------------------------------------
-vcf_example_f2
-
 ## ---- eval=FALSE---------------------------------------------------------
 #  library(vcfR)
 #  vcfR.object <- read.vcfR(system.file("extdata/vcf_example_f2.vcf", package = "onemap"))
@@ -73,6 +59,9 @@ vcf_example_f2
 ## ---- eval=FALSE---------------------------------------------------------
 #  save(vcfR.object, file = "vcfR.object.RData")
 #  rm(vcfR.object)
+
+## ---- echo=FALSE---------------------------------------------------------
+data(vcf_example_f2)
 
 ## ---- class_of_object----------------------------------------------------
 class(onemap_example_f2)
@@ -95,6 +84,9 @@ comb_example
 
 ## ------------------------------------------------------------------------
 plot(comb_example)
+
+## ---- eval=FALSE---------------------------------------------------------
+#  write_onemap_raw(comb_example, file.name = "new_dataset.raw", cross="f2 intercross")
 
 ## ---- chi_square---------------------------------------------------------
 f2_test <- test_segregation(comb_example)
@@ -290,11 +282,11 @@ CHR3 <- make_seq(twopts_f2, "3")
 
 ## ------------------------------------------------------------------------
 CHR_mks <- group_seq(input.2pts = twopts_f2, seqs = "CHROM", unlink.mks = mark_all_f2,
-                      rm.repeated = TRUE)
+                      repeated = FALSE)
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  CHR_mks <- group_seq(input.2pts = twopts_f2, seqs = list(CHR1=CHR1, CHR2=CHR2, CHR3=CHR3),
-#                        unlink.mks = mark_all_f2, rm.repeated = TRUE)
+#                        unlink.mks = mark_all_f2, repeated = FALSE)
 
 ## ------------------------------------------------------------------------
 CHR_mks

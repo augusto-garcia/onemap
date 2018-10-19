@@ -43,12 +43,15 @@
 ##' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
 ##' @seealso \code{read_onemap} for a description of the output object of class onemap.
 ##' @examples
-##'
+##' 
+##' \dontrun{
 ##' vcfR.object <- vcfR::read.vcfR(system.file("extdata/vcf_example_out.vcf", package = "onemap"))
 ##' data <- onemap_read_vcfR(vcfR.object=vcfR.object,
 ##'                  cross="outcross",
 ##'                  parent1=c("P1"),
 ##'                  parent2=c("P2"))
+##' }
+##'                 
 ##'@export                  
 
 onemap_read_vcfR <- function(vcfR.object=NULL,
