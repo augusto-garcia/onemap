@@ -46,6 +46,9 @@ globalVariables(c("Marker", "p.value"))
 ##' @export
 test_segregation_of_a_marker <- function(x, marker) {
     options(warn=-1) #Supress warnings from function chisq.test - when cell have < 5 elements
+    # Break if marker has any genotype information
+    if(all(x$geno[,marker] ==0)) 
+      stop(cat("Marker", marker, "do not have genotype information for any sample. We suggest to remove it from the dataset"))
     ## Segregation pattern for each marker type
     p.a <- rep(1/4, 4); p.b <- c(1/4, 1/2, 1/4); p.c <- c(3/4, 1/4); p.d <- rep(1/2, 2)
     ## Counting each category, removing missing data (coded as 0)
