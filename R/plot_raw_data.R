@@ -211,6 +211,8 @@ plot.onemap <- function(x, all=TRUE, ...) {
             labels.OM <- c("-","not BB","not AA")
         else if (suppressWarnings(all(levels(df.OM$geno)==c("4","5"))))
             labels.OM <- c("not BB","not AA")
+        else if (suppressWarnings(all(levels(df.OM$geno)==c("1","3", "4", "5"))))
+          labels.OM <- c("AA", "BB", "not BB","not AA")
     }
     # Plotting
     g <- ggplot(data=df.OM, aes(x=ind, y=marker, fill=factor(geno)))
