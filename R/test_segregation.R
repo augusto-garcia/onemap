@@ -45,10 +45,12 @@ globalVariables(c("Marker", "p.value"))
 ##' test_segregation_of_a_marker(onemap_example_out,1)
 ##' @export
 test_segregation_of_a_marker <- function(x, marker) {
-    options(warn=-1) #Supress warnings from function chisq.test - when cell have < 5 elements
-    # Break if marker has any genotype information
-    if(all(x$geno[,marker] ==0)) 
-      stop(cat("Marker", marker, "do not have genotype information for any sample. We suggest to remove it from the dataset"))
+  options(warn=-1) #Supress warnings from function chisq.test - when cell have < 5 elements
+  # Break if marker has any genotype information
+  if(all(x$geno[,marker] ==0)) {
+    warning(cat("Marker", marker, "do not have genotype information for any sample. We suggest to remove it from the dataset\n"))
+    return(list(Hypothesis=NA, qui.quad=NA, p.val=NA, perc.genot=NA))
+  } else {
     ## Segregation pattern for each marker type
     p.a <- rep(1/4, 4); p.b <- c(1/4, 1/2, 1/4); p.c <- c(3/4, 1/4); p.d <- rep(1/2, 2)
     ## Counting each category, removing missing data (coded as 0)
@@ -57,29 +59,29 @@ test_segregation_of_a_marker <- function(x, marker) {
     ## grepl() allows finding the marker type (it has the letter in the argument)
     ## Some markers may not have data for some classes, so fill them with 0
     if (grepl("A.H.B",x$segr.type[marker])) {
-            if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
-            if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
-            if (is.element(3,x$geno[,marker])) c3 <- count[names(count)==3] else c3 <- 0
-            qui <- chisq.test(c(c1,c2,c3), p=p.b, correct = FALSE)
-            H0 <- "1:2:1"
+      if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
+      if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
+      if (is.element(3,x$geno[,marker])) c3 <- count[names(count)==3] else c3 <- 0
+      qui <- chisq.test(c(c1,c2,c3), p=p.b, correct = FALSE)
+      H0 <- "1:2:1"
     }
     else if (grepl("C.A",x$segr.type[marker])) {
-          if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
-          if (is.element(5,x$geno[,marker])) c2 <- count[names(count)==5] else c2 <- 0
-          qui <- chisq.test(as.vector(c(c1,c2)), p=rev(p.c), correct = FALSE)
-          H0 <- "3:1"
-      }
+      if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
+      if (is.element(5,x$geno[,marker])) c2 <- count[names(count)==5] else c2 <- 0
+      qui <- chisq.test(as.vector(c(c1,c2)), p=rev(p.c), correct = FALSE)
+      H0 <- "3:1"
+    }
     else if (grepl("D.B",x$segr.type[marker])) {
-          if (is.element(3,x$geno[,marker])) c1 <- count[names(count)==3] else c1 <- 0
-          if (is.element(4,x$geno[,marker])) c2 <- count[names(count)==4] else c2 <- 0
-          qui <- chisq.test(as.vector(c(c1,c2)), p=rev(p.c), correct = FALSE)
-          H0 <- "3:1"
+      if (is.element(3,x$geno[,marker])) c1 <- count[names(count)==3] else c1 <- 0
+      if (is.element(4,x$geno[,marker])) c2 <- count[names(count)==4] else c2 <- 0
+      qui <- chisq.test(as.vector(c(c1,c2)), p=rev(p.c), correct = FALSE)
+      H0 <- "3:1"
     }
     else if (grepl("A.H",x$segr.type[marker])) {
-          if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
-          if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
-          qui <- chisq.test(as.vector(c(c1,c2)), p=p.d, correct = FALSE)
-          H0 <- "1:1"
+      if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
+      if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
+      qui <- chisq.test(as.vector(c(c1,c2)), p=p.d, correct = FALSE)
+      H0 <- "1:1"
     }
     else if (grepl("A.B",x$segr.type[marker])) {
       if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
@@ -88,43 +90,44 @@ test_segregation_of_a_marker <- function(x, marker) {
       H0 <- "1:1"
     }
     else if (grepl("A",x$segr.type[marker]) & class(x)[2]=="outcross") {
-          if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
-          if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
-          if (is.element(3,x$geno[,marker])) c3 <- count[names(count)==3] else c3 <- 0
-          if (is.element(4,x$geno[,marker])) c4 <- count[names(count)==4] else c4 <- 0
-          qui <- chisq.test(as.vector(c(c1,c2,c3,c4)), p=p.a, correct = FALSE)
-          H0 <- "1:1:1:1"
+      if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
+      if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
+      if (is.element(3,x$geno[,marker])) c3 <- count[names(count)==3] else c3 <- 0
+      if (is.element(4,x$geno[,marker])) c4 <- count[names(count)==4] else c4 <- 0
+      qui <- chisq.test(as.vector(c(c1,c2,c3,c4)), p=p.a, correct = FALSE)
+      H0 <- "1:1:1:1"
     }
     else if (grepl("B",x$segr.type[marker]) & class(x)[2]=="outcross") {
-            if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
-            if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
-            if (is.element(3,x$geno[,marker])) c3 <- count[names(count)==3] else c3 <- 0
-            qui <- chisq.test(as.vector(c(c1,c2,c3)), p=p.b, correct = FALSE)
-            H0 <- "1:2:1"
+      if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
+      if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
+      if (is.element(3,x$geno[,marker])) c3 <- count[names(count)==3] else c3 <- 0
+      qui <- chisq.test(as.vector(c(c1,c2,c3)), p=p.b, correct = FALSE)
+      H0 <- "1:2:1"
     }
     else if (grepl("C",x$segr.type[marker]) & class(x)[2]=="outcross") {
-          if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
-          if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
-          qui <- chisq.test(as.vector(c(c1,c2)), p=p.c, correct = FALSE)
-          H0 <- "3:1"
+      if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
+      if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
+      qui <- chisq.test(as.vector(c(c1,c2)), p=p.c, correct = FALSE)
+      H0 <- "3:1"
     }
     else if (grepl("D",x$segr.type[marker]) & class(x)[2]=="outcross") {
-          if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
-          if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
-          qui <- chisq.test(as.vector(c(c1,c2)), p=p.d, correct = FALSE)
-          H0 <- "1:1"
+      if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
+      if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
+      qui <- chisq.test(as.vector(c(c1,c2)), p=p.d, correct = FALSE)
+      H0 <- "1:1"
     }
     #impossible to test: dominant and co-dominant mixed in the same marker
     #however, it will not work with "qui <- NA"; using NULL instead
     else if (grepl("M.X",x$segr.type[marker])) {
-        qui <- NULL
-        qui$statistic <- NA
-        qui$p.value <- NA
-        H0 <- "Check data!"
+      qui <- NULL
+      qui$statistic <- NA
+      qui$p.value <- NA
+      H0 <- "Check data!"
     }
-
+    
     return(list(Hypothesis=H0, qui.quad=qui$statistic, p.val=qui$p.value,
                 perc.genot=100*(sum(table(x$geno[,marker], exclude=0))/x$n.ind)))
+  }
 }
 ##'
 
