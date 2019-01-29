@@ -4,15 +4,13 @@
 \alias{draw_map2}
 \title{Draw a linkage map}
 \usage{
-draw_map2(..., data, tag = NULL, id = TRUE, pos = TRUE,
-  cex.label = NULL, main = NULL, group.names = NULL, centred = F,
-  y.axis = TRUE, space = NULL, col.group = NULL, col.mark = NULL,
-  col.tag = NULL, output = NULL)
+draw_map2(..., tag = NULL, id = TRUE, pos = TRUE, cex.label = NULL,
+  main = NULL, group.names = NULL, centered = F, y.axis = TRUE,
+  space = NULL, col.group = NULL, col.mark = NULL, col.tag = NULL,
+  output = NULL)
 }
 \arguments{
 \item{...}{sequence(s). Object(s) of class \code{sequence} with a predefined order, linkage phase, recombination fraction and likelihood.}
-
-\item{data}{the object of class \code{onemap} used to make the sequence(s).}
 
 \item{tag}{name(s) of the marker(s) to highlight. If "all", all markers will be highlighted. Default is \code{NULL}.}
 
@@ -22,13 +20,13 @@ draw_map2(..., data, tag = NULL, id = TRUE, pos = TRUE,
 
 \item{cex.label}{the magnification used for label(s) of tagged marker(s). If \code{NULL} (default), the cex will be automatically calculated to avoid overlapping.}
 
-\item{main}{an overall title for the plot. If \code{NULL} (default), the data's name will be used.}
+\item{main}{an overall title for the plot. Default is \code{NULL}.}
 
 \item{group.names}{name(s) to identfy the group(s). If \code{NULL} (default), the name(s) of the sequence(s) will be used.}
 
-\item{centred}{logical. If \code{TRUE}, the group(s) will be aligned in the center. If \code{FALSE} (default), the group(s) will be aligned at the top.}
+\item{centered}{logical. If \code{TRUE}, the group(s) will be aligned in the center. If \code{FALSE} (default), the group(s) will be aligned at the top.}
 
-\item{y.axis}{logical. If \code{TRUE} (default), shows y axis. If centred = \code{TRUE}, the y axis will always be hidden.}
+\item{y.axis}{logical. If \code{TRUE} (default), shows y axis. If centered = \code{TRUE}, the y axis will always be hidden.}
 
 \item{space}{numerical. Spacing between groups. If \code{NULL} (default), the spacing will be automatically calculated to avoid overlapping.}
 
@@ -52,7 +50,7 @@ Provides a simple draw of a linkage map.
  seq1<-make_seq(order_seq(input.seq= make_seq(lg,1),twopt.alg = "rcd"), "force")
  seq2<-make_seq(order_seq(input.seq= make_seq(lg,2),twopt.alg = "rcd"), "force")
  seq3<-make_seq(order_seq(input.seq= make_seq(lg,3),twopt.alg = "rcd"), "force")
- draw_map2(seq1,seq2,seq3,data=onemap_example_out,tag = c("M1","M2","M3","M4","M5"))
+ draw_map2(seq1,seq2,seq3,tag = c("M1","M2","M3","M4","M5"))
  
  data("onemap_example_f2")
  twopt <- rf_2pts(onemap_example_f2)
@@ -60,8 +58,7 @@ Provides a simple draw of a linkage map.
  seq1<-make_seq(order_seq(input.seq= make_seq(lg,1),twopt.alg = "rcd"), "force")
  seq2<-make_seq(order_seq(input.seq= make_seq(lg,2),twopt.alg = "rcd"), "force")
  seq3<-make_seq(order_seq(input.seq= make_seq(lg,3),twopt.alg = "rcd"), "force")
- draw_map2(seq1,seq2,seq3,data=onemap_example_f2,tag = "all",
-           group.names = c("Chr 1","Chr 2","Chr 3"))
+ draw_map2(seq1,seq2,seq3,tag = "all",group.names = c("Chr 1","Chr 2","Chr 3"))
 
 }
 }
