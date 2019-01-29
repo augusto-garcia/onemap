@@ -24,15 +24,14 @@
 ##'@importFrom grDevices bmp dev.off jpeg pdf png postscript tiff
 ##'
 ##' @param ... sequence(s). Object(s) of class \code{sequence} with a predefined order, linkage phase, recombination fraction and likelihood.
-##' @param data the object of class \code{onemap} used to make the sequence(s).
 ##' @param tag name(s) of the marker(s) to highlight. If "all", all markers will be highlighted. Default is \code{NULL}.
 ##' @param id logical. If \code{TRUE} (default), shows name(s) of tagged marker(s).
 ##' @param pos logical. If \code{TRUE} (default), shows position(s) of tagged marker(s).
 ##' @param cex.label the magnification used for label(s) of tagged marker(s). If \code{NULL} (default), the cex will be automatically calculated to avoid overlapping.
-##' @param main an overall title for the plot. If \code{NULL} (default), the data's name will be used.
+##' @param main an overall title for the plot. Default is \code{NULL}.
 ##' @param group.names name(s) to identfy the group(s). If \code{NULL} (default), the name(s) of the sequence(s) will be used.
-##' @param centred logical. If \code{TRUE}, the group(s) will be aligned in the center. If \code{FALSE} (default), the group(s) will be aligned at the top.
-##' @param y.axis logical. If \code{TRUE} (default), shows y axis. If centred = \code{TRUE}, the y axis will always be hidden.
+##' @param centered logical. If \code{TRUE}, the group(s) will be aligned in the center. If \code{FALSE} (default), the group(s) will be aligned at the top.
+##' @param y.axis logical. If \code{TRUE} (default), shows y axis. If centered = \code{TRUE}, the y axis will always be hidden.
 ##' @param space numerical. Spacing between groups. If \code{NULL} (default), the spacing will be automatically calculated to avoid overlapping.
 ##' @param col.group the color used for group(s).
 ##' @param col.mark the color used for marker(s).
@@ -49,7 +48,7 @@
 ##'  seq1<-make_seq(order_seq(input.seq= make_seq(lg,1),twopt.alg = "rcd"), "force")
 ##'  seq2<-make_seq(order_seq(input.seq= make_seq(lg,2),twopt.alg = "rcd"), "force")
 ##'  seq3<-make_seq(order_seq(input.seq= make_seq(lg,3),twopt.alg = "rcd"), "force")
-##'  draw_map2(seq1,seq2,seq3,data=onemap_example_out,tag = c("M1","M2","M3","M4","M5"))
+##'  draw_map2(seq1,seq2,seq3,tag = c("M1","M2","M3","M4","M5"))
 ##'  
 ##'  data("onemap_example_f2")
 ##'  twopt <- rf_2pts(onemap_example_f2)
@@ -57,40 +56,51 @@
 ##'  seq1<-make_seq(order_seq(input.seq= make_seq(lg,1),twopt.alg = "rcd"), "force")
 ##'  seq2<-make_seq(order_seq(input.seq= make_seq(lg,2),twopt.alg = "rcd"), "force")
 ##'  seq3<-make_seq(order_seq(input.seq= make_seq(lg,3),twopt.alg = "rcd"), "force")
-##'  draw_map2(seq1,seq2,seq3,data=onemap_example_f2,tag = "all",
-##'            group.names = c("Chr 1","Chr 2","Chr 3"))
+##'  draw_map2(seq1,seq2,seq3,tag = "all",group.names = c("Chr 1","Chr 2","Chr 3"))
 ##'
 ##' }
 ##'@export
-draw_map2<-function(...,data,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL,group.names=NULL,centred=F,y.axis=TRUE,space=NULL,col.group=NULL,col.mark=NULL,col.tag=NULL,output=NULL){
+draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL,group.names=NULL,centered=F,y.axis=TRUE,space=NULL,col.group=NULL,col.mark=NULL,col.tag=NULL,output=NULL){
+  #check sequences
   map.data<-setNames(list(...),as.list(substitute(list(...)))[-1L])
   for(i in seq_along(map.data)) if(class(map.data[[i]])!="sequence") stop(paste("'",names(map.data)[i],"' is not an object of class 'sequence'",sep=""))
-  if("onemap"%in%class(data)==F) stop(paste("'",deparse(substitute(data)),"' is not an object of class 'onemap'",sep=""))
+  #check data
+  data.name<-vector()
+  for(i in seq_along(map.data)){
+    data.name<-c(data.name,map.data[[i]]$data.name)
+  }
+  data.name<-data.name[!duplicated(data.name)]
+  if(F %in% (data.name%in%ls(envir=.GlobalEnv))) stop(paste("Object(s) data not found:",paste("'",data.name[!data.name%in%ls()],"'",collapse = " ",sep = "")))
+  data<-list()
+  for(i in seq_along(data.name)) data[[i]]<-get(data.name[i])
+  data<-setNames(data,as.list(data.name))
+  for(i in seq_along(data)) if(!"onemap"%in%class(data[[i]])) stop(paste("'",names(data)[i],"' is not an object of class 'onemap'",sep=""))
+  
   dmaps <- list()
-  for(i in seq_along(map.data)) dmaps[[i]] <-data.frame(mark=colnames(data$geno)[map.data[[i]]$seq.num], pos=c(0,cumsum(kosambi(map.data[[i]]$seq.rf))), chr=i)
+  for(i in seq_along(map.data)) dmaps[[i]] <-data.frame(mark=colnames(data[[map.data[[i]]$data.name]]$geno)[map.data[[i]]$seq.num], pos=c(0,cumsum(kosambi(map.data[[i]]$seq.rf))), chr=i)
   nchr<-length(dmaps)
   max.pos<-ceiling(max(do.call("rbind",dmaps)$pos)/10)*10
   for(i in seq_along(dmaps))dmaps[[i]]$coord<--dmaps[[i]]$pos*100/max.pos
   
-  if(is.null(main)) main<-"Linkage Map"
+  if(is.null(main)) main<-""
   if(is.null(group.names)) group.names<-names(map.data)
   if(is.null(space)) space<-1+pos+id
-  if(centred==T){
+  if(centered==T){
     for(i in seq_along(dmaps)){dmaps[[i]]$coord<-dmaps[[i]]$coord-(100+min(dmaps[[i]]$coord))/2}
     y.axis<-F
   }
   if(y.axis==T){
-    yl="Distance (cM)"
-    mleft=5
+    yl<-"Distance (cM)"
+    mleft<-5
   } else {
     yl<-""
     mleft<-1
   }
-  if(is.null(col.group)) col.group<-"lightblue"
-  if(is.null(col.mark)) col.mark<-"steelblue"
-  if(is.null(col.tag)) col.tag<-"darkorange"
+  if(is.null(col.group)) col.group<-"grey85"
+  if(is.null(col.mark)) col.mark<-"#cc662f"
+  if(is.null(col.tag)) col.tag<-"#003350"
   if(is.null(output)) output<-"map"
-  if("all"%in%tag) tag<-colnames(data$geno)
+  if("all"%in%tag) tag<-unlist(lapply(data,function(x) colnames(x$geno)))
   
   # Split output
   if(strsplit(output,"")[[1]][length(strsplit(output,"")[[1]])]=="/") output<-paste(output,"map",sep = "")
@@ -122,17 +132,17 @@ draw_map2<-function(...,data,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL
   
   # Preparing plot area
   if(output.ext=="bmp"){
-    bmp(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15,width = nchr*(1+space)+3,res = 300,units = "cm")
+    bmp(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15,width = nchr*(1+space)+(mleft+1)/2,res = 300,units = "cm")
   } else  if(output.ext=="jpeg"){
-    jpeg(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15,width = nchr*(1+space)+3,res = 300,units = "cm")
+    jpeg(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15,width = nchr*(1+space)+(mleft+1)/2,res = 300,units = "cm")
   } else if(output.ext=="png"){
-    png(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15,width = nchr*(1+space)+3,res = 300,units = "cm")
+    png(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15,width = nchr*(1+space)+(mleft+1)/2,res = 300,units = "cm")
   } else if(output.ext=="tiff"){
-    tiff(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15,width = nchr*(1+space)+3,res = 300,units = "cm")
+    tiff(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15,width = nchr*(1+space)+(mleft+1)/2,res = 300,units = "cm")
   } else if(output.ext=="pdf"){
-    pdf(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15/2.54,width = (nchr*(1+space)+3)/2.54)
+    pdf(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15/2.54,width = (nchr*(1+space)+(mleft+1)/2)/2.54)
   } else if(output.ext=="eps"){
-    postscript(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15/2.54,width = (nchr*(1+space)+3)/2.54,paper = "special",horizontal = F,onefile = F)
+    postscript(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15/2.54,width = (nchr*(1+space)+(mleft+1)/2)/2.54,paper = "special",horizontal = F,onefile = F)
   }
   
   par(mar=c(1,mleft,2,1))
@@ -197,18 +207,17 @@ draw_map2<-function(...,data,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL
       }
     }
     tag.data<-do.call("rbind",tag.data)
-    tag.data<-tag.data[match(tag,tag.data$mark),]
     segments((tag.data$chr-.5)*(1+space)-.25,tag.data$coord,
              (tag.data$chr-.5)*(1+space)+.25,tag.data$coord,lwd = 2,col = col.tag)
     if(id==T){
-      segments((tag.data$chr-.5)*(1+space)+.25,tag.data$coord,
-               (tag.data$chr-.5)*(1+space)+.5,tag.data$coord2,lwd = 1,col = col.tag)
+      segments((tag.data$chr-.5)*(1+space)+.275,tag.data$coord,
+               (tag.data$chr-.5)*(1+space)+.5,tag.data$coord2,lwd = .5,col = col.tag)
       text((tag.data$chr-.5)*(1+space)+.4,tag.data$coord2,
            pos = 4,tag.data$mark,col = col.tag,cex = cex.label)
     }
     if(pos==T){
-      segments((tag.data$chr-.5)*(1+space)-.25,tag.data$coord,
-               (tag.data$chr-.5)*(1+space)-.5,tag.data$coord2,lwd = 1,col = col.tag)
+      segments((tag.data$chr-.5)*(1+space)-.275,tag.data$coord,
+               (tag.data$chr-.5)*(1+space)-.5,tag.data$coord2,lwd = .5,col = col.tag)
       text((tag.data$chr-.5)*(1+space)-.4,tag.data$coord2,
            pos = 2,round(tag.data$pos,1),col = col.tag,cex = cex.label)
     }
