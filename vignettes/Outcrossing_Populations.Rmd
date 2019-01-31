@@ -1193,7 +1193,7 @@ ripple_seq(CHR3_final)
 
 # Drawing the genetic maps
 
-Once all linkage groups were obtained using both strategies, we can draw a map for each strategy using the function `draw_map`. Since version 2.1.1007, OneMap a new version of `draw_map`, called `draw_map2`. The new function draws elegant linkage groups, and presents new arguments to personalize your draw.
+Once all linkage groups were obtained using both strategies, we can draw a map for each strategy using the function `draw_map`. Since version 2.1.1007, OneMap has a new version of `draw_map`, called `draw_map2`. The new function draws elegant linkage groups, and presents new arguments to personalize your draw.
 
 If you prefer the old function, we also keep it. Follow examples how to use both of them.
 
@@ -1242,63 +1242,80 @@ Or groups alone:
 draw_map(CHR1_final, names = TRUE, grid = TRUE, cex.mrk = 0.7)
 ``` 
 
-It is obvious that function `draw_map` draws a very simple graphic
-representation of the genetic map. But once the distances and the
-linkage phases are estimated, better map figures can be drawn by the
+Function `draw_map` draws a very simple graphic
+representation of the genetic map. More recently, we developed a new version called `draw_map2` that draws a more sophisticated figure. Furthermore, once the distances and the
+linkage phases are estimated, other map figures can be drawn by the
 user with any appropriate software. There are several free software
 that can be used, such as `MapChart` (Voorrips, 2002).
 
 ## Draw_map2
 
+The same figures did with `draw_map` can be done with `draw_map2` function. But it has different capacities and arguments. Here are some examples, but you can find more options in the help page `?write_map2`.
+
 Drawing map builded with only recombinations informations
 
-```{r, echo=TRUE, fig=TRUE}
-draw_map2(LG1_final, LG2_final, LG3_final, data = bins_example)
+```{r, echo=TRUE, results='hide', eval=FALSE}
+draw_map2(LG1_final, LG2_final, LG3_final, main = "Only with linkage information", 
+          group.names = c("LG1", "LG2", "LG3"))
 ```
 
-The figure will be saved in your work directory with the default name `map.eps`. You can change the file name and extension specifing them in the argument `output`. To know which figure extension are available check the function help with `?draw_map2`.
+```{r, echo=FALSE, results='hide'}
+draw_map2(LG1_final, LG2_final, LG3_final, main = "Only with linkage information", 
+          group.names = c("LG1", "LG2", "LG3"), output = "map1.png")
+```
+
+<img src="map1.png" width="300" height="500">
+
+
+The figure will be saved in your work directory with the default name `map.eps`. You can change the file name and extension specifing them in the argument `output`.
 
 Drawing map builded with reference genome and  recombinations informations
 
-```{r, echo=TRUE, eval=FALSE}
-draw_map2(CHR1_final, CHR2_final, CHR3_final, data = bins_example, output= "map_ref.pdf", 
+```{r, echo=TRUE, results='hide', eval=FALSE}
+draw_map2(CHR1_final, CHR2_final, CHR3_final, output= "map_ref.pdf", 
           col.group = "#58A4B0",
          col.mark= "#335C81")
 ``` 
 
-![](vignettes/map_ref.pdf)
+```{r, echo=TRUE, results='hide', echo=FALSE}
+draw_map2(CHR1_final, CHR2_final, CHR3_final, output= "map_ref.png", 
+          col.group = "#58A4B0",
+         col.mark= "#335C81")
+``` 
+
+<img src="map_all.png" width="600" height="600">
 
 With the argument `tag`, we can highlight some markers with other color. The arguments `col.group`, `col.mark` and `col.tag` can be changed to personalize the color of the groups, the markers, and the highlighted markers, respctivelly. 
 
-## Parei aqui!
 We also can draw a maps comparing corresponding linkage groups in each strategy:
 
-```{r, width = 9.5, height = 9.5}
-CHR1_comp <- list(LG1_final, CHR1_final)
-draw_map2(LG1_final, CHR1_final, data=bins_example )
+```{r, results='hide', eval=FALSE}
+draw_map2(LG1_final, CHR1_final, output = "map_comp.pdf", tag = c("M1","SNP2"))
 ```
 
-Markers `M1` and `SNP2` are in different position between the strategies results for CHR1.
-
-```{r, width = 9.5, height = 9.5}
-CHR2_comp <- list(LG3_final, CHR2_final)
-draw_map(CHR2_comp, names = TRUE, grid = TRUE, cex.mrk = 0.7)
+```{r, results='hide', echo=FALSE}
+draw_map2(LG1_final, CHR1_final, output = "map_comp.png", tag = c("M1","SNP2"))
 ```
 
-Both strategies produced the same result for CHR2 (the map are only inverted).
+<img src="map_comp.png" width="200" height="500">
 
-```{r, width = 9.5, height = 9.5}
-CHR3_comp <- list(LG2_final, CHR3_final)
-draw_map(CHR3_comp, names = TRUE, grid = TRUE, cex.mrk = 0.7)
+Markers `M1` and `SNP2` are in different position between the strategies results for CHR1. When defining marker names in `tag` argument, all markers with these name will be highlighted no matter in which group it/they is/are.
+
+
+```{r, results='hide', eval=FALSE}
+draw_map2(LG2_final, CHR3_final, tag= c("SNP17", "SNP18", "M29"), main = "Chromosome 3", 
+          group.names = c("Only linkage", "With genome"), centered = TRUE, output = "map_comp2.pdf")
 ``` 
+
+```{r, results='hide', echo=FALSE}
+draw_map2(LG2_final, CHR3_final, tag= c("SNP17", "SNP18", "M29"), main = "Chromosome 3", 
+          group.names = c("Only linkage", "With genome"), centered = TRUE, output = "map_comp2.png")
+``` 
+
+<img src="map_comp2.png" width="200" height="500">
 
 There are a invertion between markers `SNP17` and `SNP18` and the marker `M29` was removed in te second strategy.
 
-Or groups alone:
-
-```{r}
-draw_map(CHR1_final, names = TRUE, grid = TRUE, cex.mrk = 0.7)
-``` 
 
 # Map estimation for an arbitrary order
 

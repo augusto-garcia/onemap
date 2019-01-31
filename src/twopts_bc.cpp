@@ -106,6 +106,7 @@ Rcpp::NumericMatrix est_rf_bc(Rcpp::NumericVector geno, int mrk,
 	      if(k_sub[k]==0 || k1_sub[k]==0) mis++;
 	      else if((k_sub[k] != k1_sub[k])) nr++;
 	    }
+	  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
 	  rtemp=nr/(n_ind-mis);
 	  if(rtemp < rf_TOL_min) rtemp=rf_TOL_min;
 	  if(rtemp > rf_TOL_max)

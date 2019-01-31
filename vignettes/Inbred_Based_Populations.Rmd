@@ -1290,6 +1290,12 @@ Removing markers `M59` and `21` from `LG3seq_f2_map`:
 
 # Drawing the genetic map
 
+Once all linkage groups were obtained using both strategies, we can draw a map for each strategy using the function `draw_map`. Since version 2.1.1007, OneMap has a new version of `draw_map`, called `draw_map2`. The new function draws elegant linkage groups, and presents new arguments to personalize your draw.
+
+If you prefer the old function, we also keep it. Follow examples how to use both of them.
+
+## `Draw_map`
+
 We can draw a genetic map for all linkage groups using the function
 `draw_map`. First we have to create a list of ordered linkage groups:
   
@@ -1317,12 +1323,65 @@ draw_map(map_list_all, names = TRUE, grid = TRUE, cex.mrk = 0.7)
 
 ```
 
-Function `draw_map` draws a very simple graphic representation of the
-genetic map. However, once the distances are estimated, better map figures
-can be drawn by the user with any appropriate software. There are
-several free software that can be used, such as
-[MapChart](https://www.wageningenur.nl/en/show/Mapchart.htm)
-(Voorrips, 2002).
+Function `draw_map` draws a very simple graphic
+representation of the genetic map. More recently, we developed a new version called `draw_map2` that draws a more sophisticated figure. Furthermore, once the distances and the
+linkage phases are estimated, other map figures can be drawn by the
+user with any appropriate software. There are several free software
+that can be used, such as `MapChart` (Voorrips, 2002).
+
+## `Draw_map2`
+
+The same figures did with `draw_map` can be done with `draw_map2` function. But it has different capacities and arguments. Here are some examples, but you can find more options in the help page `?write_map2`.
+
+First, for all three groups built only with linkage information:
+
+```{r, eval=FALSE, results='hide', eval=FALSE}
+draw_map2(LG1_f2_final, LG2_f2_final, LG3_f2_final, main = "Only linkage information", 
+          group.names = c("LG1", "LG2", "LG3"))
+```
+
+```{r, echo=FALSE, results='hide', echo=FALSE}
+draw_map2(LG1_f2_final, LG2_f2_final, LG3_f2_final, main = "Only linkage information", 
+          group.names = c("LG1", "LG2", "LG3"), output = "map.png")
+```
+
+<img src="map.png" width="400" height="400">
+
+You can include all `sequence` objects refering to the groups as the first arguments. The `main` argument define the main title of the draw and `group.names` define the names of each group. If no `output` file and file extension is defined, the draw will be generated at you working directory as `map.eps`. The eps extension is only the default option but there are others that can be used. You can have access to a list of them at the help page.
+
+We also can draw a map for a specific linkage group:
+
+```{r, results='hide', eval=FALSE}
+draw_map2(LG1_f2_final, col.group = "#58A4B0", col.mark = "#335C81", output = "map_LG1.pdf")
+``` 
+
+```{r, results='hide', echo=FALSE}
+draw_map2(LG1_f2_final, col.group = "#58A4B0", col.mark = "#335C81", output = "map_LG1.png")
+``` 
+
+<img src="map_LG1.png" width="200" height="400">
+
+You can also change the default colors using the `col.group` and `col.mark` arguments.
+
+Let's use this function to overview the maps builded by different strategies in this tutorial:
+
+```{r, results='hide', eval=FALSE}
+draw_map2(LG1_f2_final, CHR1_final, LG2_f2_final, CHR3_final, CHR2_final, LG3_f2_final, 
+          tag = c("M18", "M59", "M38", "M47", "M1"),
+          output = "map_all.pdf")
+
+```
+
+```{r, results='hide', echo=FALSE}
+draw_map2(LG1_f2_final, CHR1_final, LG2_f2_final, CHR3_final, CHR2_final, LG3_f2_final,
+          tag = c("M18", "M59", "M38", "M47", "M1"),
+          output = "map_all.png")
+
+```
+
+<img src="map_all.png" width="500" height="500">
+
+With argument `tag` you can highlight some markers at the figure according to you specific purpose.
 
 # Final remarks
 
@@ -1433,6 +1492,4 @@ species. **_Theoretical Population Biology_** 61, 349-363, 2002a.
 
 Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. Linkage mapping of
 sex-specific differences. **_Genetical Research_** 79, 85-96, 2002b.
-
-
 

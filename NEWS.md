@@ -55,4 +55,20 @@
 * rf_graph_table updated with ggplot2 and plotly
 * NAMESPACE automated with roxygen2
 
+# onemap 2.1.1004
+
+* write_onemap_raw function
+
+# onemap 2.1.1005
+
+* Vignette updated
+
+# onemap 2.1.1006
+
+* vcf2raw as defunct
+
+# onemap 2.1.1007
+
+* draw_map2 function
+* vignette update
 
