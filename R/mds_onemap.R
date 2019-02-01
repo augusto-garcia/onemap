@@ -55,6 +55,8 @@
 #' Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage mapping of
 #' sex-specific differences. \emph{Genetical Research} 79: 85-96
 #'
+#'@import MDSMap
+#'
 #'@export
 mds_onemap <- function(input.seq, out.file= "out.file", mds.graph.file="NULL.pdf", p = NULL, n=NULL, ispc=TRUE,
                         displaytext=FALSE, weightfn='lod2', mapfn='haldane', hmm= FALSE){
