@@ -17,6 +17,9 @@
 #' matrix in the MDS 'lod2' or 'lod'.
 #' @param mapfn Character string specifying the map function to use on the
 #' recombination fractions 'haldane' is default, 'kosambi' or 'none'.
+#' @param insp Logical determining the method to be used to estimate the map. By default 
+#' this is TRUE and the method of principal curves will be used. If FALSE then the 
+#' constrained MDS method will be used.
 #'
 #' @return An object of class \code{sequence}, which is a list containing the
 #' following components: \item{seq.num}{a \code{vector} containing the
@@ -34,9 +37,7 @@
 #' @details For better description about MDS method, see MDSMap package vignette.
 #' 
 #' @author Cristiane Taniguti, \email{chtaniguti@@usp.br} 
-#' @seealso \code{\link[MDSMap]{mds}} 
-#'     \code{\link[onemap]{map}} and 
-#'     \url{http://cran.r-project.org/web/packages/MDSMap/vignettes/MDSMap.pdf}.
+#' @seealso  \url{http://cran.r-project.org/web/packages/MDSMap/vignettes/MDSMap.pdf}.
 #'
 #'
 #' @references 
@@ -56,6 +57,7 @@
 #' sex-specific differences. \emph{Genetical Research} 79: 85-96
 #'
 #'@import MDSMap
+#'@importFrom utils write.table
 #'
 #'@export
 mds_onemap <- function(input.seq, out.file= "out.file", mds.graph.file="NULL.pdf", p = NULL, n=NULL, ispc=TRUE,

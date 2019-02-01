@@ -31,6 +31,10 @@ matrix in the MDS 'lod2' or 'lod'.}
 recombination fractions 'haldane' is default, 'kosambi' or 'none'.}
 
 \item{hmm}{Multipoint genetic distance estimation}
+
+\item{insp}{Logical determining the method to be used to estimate the map. By default 
+this is TRUE and the method of principal curves will be used. If FALSE then the 
+constrained MDS method will be used.}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the
@@ -71,9 +75,7 @@ Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage mapping of
 sex-specific differences. \emph{Genetical Research} 79: 85-96
 }
 \seealso{
-\code{\link[MDSMap]{mds}} 
-    \code{\link[onemap]{map}} and 
-    \url{http://cran.r-project.org/web/packages/MDSMap/vignettes/MDSMap.pdf}.
+\url{http://cran.r-project.org/web/packages/MDSMap/vignettes/MDSMap.pdf}.
 }
 \author{
 Cristiane Taniguti, \email{chtaniguti@usp.br}
