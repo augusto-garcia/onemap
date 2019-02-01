@@ -22,6 +22,10 @@ forces points more closely onto a sphere.}
 \item{n}{Vector of integers or strings containing markers to be omitted from
 the analysis.}
 
+\item{ispc}{Logical determining the method to be used to estimate the map. By default 
+this is TRUE and the method of principal curves will be used. If FALSE then the 
+constrained MDS method will be used.}
+
 \item{displaytext}{Shows markers names in analysis graphic view}
 
 \item{weightfn}{Character string specifying the values to use for the weight
@@ -31,10 +35,6 @@ matrix in the MDS 'lod2' or 'lod'.}
 recombination fractions 'haldane' is default, 'kosambi' or 'none'.}
 
 \item{hmm}{Multipoint genetic distance estimation}
-
-\item{insp}{Logical determining the method to be used to estimate the map. By default 
-this is TRUE and the method of principal curves will be used. If FALSE then the 
-constrained MDS method will be used.}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the
