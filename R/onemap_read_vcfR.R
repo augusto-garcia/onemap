@@ -100,7 +100,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     # Informs to user why markers are being removed
     idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./.")
     if (length(idx) > 0)
-      cat("Markers\n", MKS[idx], "were removed of the dataset because one or both of parents have no informed genotypes (are missing data)\n")
+      cat(length(MKS[idx]), "Markers were removed of the dataset because one or both of parents have no informed genotypes (are missing data)\n")
      
     idx <- which((GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "0/0")|
                    (GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "1/1") |
@@ -108,7 +108,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
                    (GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "0/0"))
       
     if (length(idx) > 0)
-      cat("Markers\n", MKS[idx], "were removed from the dataset because both of parents are homozygotes, these markers are considered non-informative in outcrossing populations.\n")
+      cat( length(MKS[idx]), "Markers were removed from the dataset because both of parents are homozygotes, these markers are considered non-informative in outcrossing populations.\n")
     
     # Excluding non-informative markers
     rm_mk <- which(is.na(mk.type))
@@ -153,11 +153,11 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     # Informs to user why markers are being removed
     idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./.")
     if (length(idx) > 0)
-      cat("Markers\n", MKS[idx], "were removed of the dataset because one or both of parents have no informed genotypes (are missing data)\n")
+      cat(length(MKS[idx]), "Markers were removed of the dataset because one or both of parents have no informed genotypes (are missing data)\n")
     
     idx <- which((GT_matrix[,P1] == "0/1" | GT_matrix[,P2] == "0/1"))
     if (length(idx) > 0)
-      cat("Markers\n", MKS[idx], "were removed from the dataset because one or both of the parents are heterozygotes, we do not expect heterozygotes parents in F2 populations.\n") 
+      cat(length(MKS[idx]), "Markers were removed from the dataset because one or both of the parents are heterozygotes, we do not expect heterozygotes parents in F2 populations.\n") 
     
     
     # Excluding non-informative markers
@@ -194,11 +194,11 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     # Informs to user why markers are being removed
     idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./.")
     if (length(idx) > 0)
-      cat("Markers\n", MKS[idx], "were removed of the dataset because one or both of parents have no informed genotypes (are missing data)\n")
+      cat(length(MKS[idx]), "Markers were removed of the dataset because one or both of parents have no informed genotypes (are missing data)\n")
     
     idx <- which((GT_matrix[,P1] == "0/1" | GT_matrix[,P2] == "0/1"))
     if (length(idx) > 0)
-      cat("Markers\n", MKS[idx], "were removed from the dataset because one or both of the parents are heterozygotes, we do not expect heterozygotes parents in F2 populations.\n") 
+      cat(length(MKS[idx]), "Markers were removed from the dataset because one or both of the parents are heterozygotes, we do not expect heterozygotes parents in F2 populations.\n") 
     
     
     # Excluding non-informative markers
@@ -236,11 +236,11 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     # Informs to user why markers are being removed
     idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./.")
     if (length(idx) > 0)
-      cat("Markers\n", MKS[idx], "were removed of the dataset because one or both of parents have no informed genotypes (are missing data)\n")
+      cat(length(MKS[idx]), "Markers were removed of the dataset because one or both of parents have no informed genotypes (are missing data)\n")
     
     idx <- which((GT_matrix[,P1] == "0/1" | GT_matrix[,P2] == "0/1"))
     if (length(idx) > 0)
-      cat("Markers\n", MKS[idx], "were removed from the dataset because one or both of the parents are heterozygotes, we do not expect heterozygotes parents in RILs populations.\n") 
+      cat(length(MKS[idx]), "Markers were removed from the dataset because one or both of the parents are heterozygotes, we do not expect heterozygotes parents in RILs populations.\n") 
     
     
     # Excluding non-informative markers
