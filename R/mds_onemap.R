@@ -17,7 +17,7 @@
 #' matrix in the MDS 'lod2' or 'lod'.
 #' @param mapfn Character string specifying the map function to use on the
 #' recombination fractions 'haldane' is default, 'kosambi' or 'none'.
-#' @param insp Logical determining the method to be used to estimate the map. By default 
+#' @param ispc Logical determining the method to be used to estimate the map. By default 
 #' this is TRUE and the method of principal curves will be used. If FALSE then the 
 #' constrained MDS method will be used.
 #'

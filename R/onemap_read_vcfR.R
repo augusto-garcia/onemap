@@ -75,7 +75,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   INDS <- dimnames(vcf@gt)[[2]][-1]
  
   MKS <- vcf@fix[,3]
-  if (any(grepl("[.]", MKS) | is.na(MKS))) MKS <- paste0(vcf@fix[,1],"_", vcf@fix[,2])
+  if (any(MKS == "." | is.na(MKS))) MKS <- paste0(vcf@fix[,1],"_", vcf@fix[,2])
     
   # Geno matrix
   GT_matrix <- matrix(rep(NA,n.ind*n.mk), ncol=n.ind, nrow=n.mk)
