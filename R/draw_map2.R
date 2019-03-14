@@ -74,7 +74,6 @@ draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL,grou
   data<-list()
   for(i in seq_along(data.name)) data[[i]]<-get(data.name[i])
   data<-setNames(data,as.list(data.name))
-  for(i in seq_along(data)) if(!"onemap"%in%class(data[[i]])) stop(paste("'",names(data)[i],"' is not an object of class 'onemap'",sep=""))
   
   dmaps <- list()
   for(i in seq_along(map.data)) dmaps[[i]] <-data.frame(mark=colnames(data[[map.data[[i]]$data.name]]$geno)[map.data[[i]]$seq.num], pos=c(0,cumsum(kosambi(map.data[[i]]$seq.rf))), chr=i)
