@@ -7,7 +7,7 @@
 mds_onemap(input.seq, out.file = "out.file",
   mds.graph.file = "NULL.pdf", p = NULL, n = NULL, ispc = TRUE,
   displaytext = FALSE, weightfn = "lod2", mapfn = "haldane",
-  hmm = FALSE)
+  hmm = TRUE)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}}
