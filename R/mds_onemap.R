@@ -61,12 +61,17 @@
 #'
 #'@export
 mds_onemap <- function(input.seq, out.file= "out.file", mds.graph.file="NULL.pdf", p = NULL, n=NULL, ispc=TRUE,
-                        displaytext=FALSE, weightfn='lod2', mapfn='haldane', hmm= FALSE){
+                        displaytext=FALSE, weightfn='lod2', mapfn='haldane', hmm = TRUE){
   
     #Do the checks
 
     n_ind <- get(input.seq$data.name)$n.ind
+    obj.class <- class(get(input.seq$data.name))
+    if(obj.class[2]=="outcross"){
     mat<-get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1)
+    } else {
+      mat<-get_mat_rf_in(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1)
+    }
     n_mk <- nrow(mat)
 
     mat.rf <- mat.lod <- matrix(rep(NA, n_mk*n_mk), nrow = n_mk)
@@ -87,7 +92,6 @@ mds_onemap <- function(input.seq, out.file= "out.file", mds.graph.file="NULL.pdf
     write.table(file.out, file = out.file, col.names = FALSE,
                 row.names = FALSE, quote = FALSE)
     
-    # Bug fix! Make return to be equal to map return
     pdf(mds.graph.file)
     mds_map <- MDSMap::estimate.map(out.file, p = p, n=n, ispc = ispc, 
                                 displaytext = displaytext)
@@ -98,5 +102,5 @@ mds_onemap <- function(input.seq, out.file= "out.file", mds.graph.file="NULL.pdf
       seq_mds$twopt <- input.seq$twopt
       mds_map <- map(seq_mds)
     }
-    structure(mds_map)
+    return(mds_map)
 }
