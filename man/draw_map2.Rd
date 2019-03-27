@@ -10,7 +10,7 @@ draw_map2(..., tag = NULL, id = TRUE, pos = TRUE, cex.label = NULL,
   output = NULL)
 }
 \arguments{
-\item{...}{sequence(s). Object(s) of class \code{sequence} with a predefined order, linkage phase, recombination fraction and likelihood.}
+\item{...}{sequence(s). Object(s) of class \code{sequence} with a predefined order, linkage phase, recombination fraction and likelihood. Can be used list(s) of sequences.}
 
 \item{tag}{name(s) of the marker(s) to highlight. If "all", all markers will be highlighted. Default is \code{NULL}.}
 
@@ -55,10 +55,12 @@ Provides a simple draw of a linkage map.
  data("onemap_example_f2")
  twopt <- rf_2pts(onemap_example_f2)
  lg<-group(make_seq(twopt, "all"))
- seq1<-make_seq(order_seq(input.seq= make_seq(lg,1),twopt.alg = "rcd"), "force")
- seq2<-make_seq(order_seq(input.seq= make_seq(lg,2),twopt.alg = "rcd"), "force")
- seq3<-make_seq(order_seq(input.seq= make_seq(lg,3),twopt.alg = "rcd"), "force")
- draw_map2(seq1,seq2,seq3,tag = "all",group.names = c("Chr 1","Chr 2","Chr 3"))
+ seq<-list(
+ make_seq(order_seq(input.seq= make_seq(lg,1),twopt.alg = "rcd"), "force"),
+ make_seq(order_seq(input.seq= make_seq(lg,2),twopt.alg = "rcd"), "force"),
+ make_seq(order_seq(input.seq= make_seq(lg,3),twopt.alg = "rcd"), "force")
+ )
+ draw_map2(seq,tag = "all",group.names = c("Chr 1","Chr 2","Chr 3"),main="Linkage Map")
 
 }
 }
