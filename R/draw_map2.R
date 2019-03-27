@@ -23,7 +23,7 @@
 ##'@importFrom graphics segments
 ##'@importFrom grDevices bmp dev.off jpeg pdf png postscript tiff
 ##'
-##' @param ... sequence(s). Object(s) of class \code{sequence} with a predefined order, linkage phase, recombination fraction and likelihood.
+##' @param ... sequence(s). Object(s) of class \code{sequence} with a predefined order, linkage phase, recombination fraction and likelihood. Can be used list(s) of sequences.
 ##' @param tag name(s) of the marker(s) to highlight. If "all", all markers will be highlighted. Default is \code{NULL}.
 ##' @param id logical. If \code{TRUE} (default), shows name(s) of tagged marker(s).
 ##' @param pos logical. If \code{TRUE} (default), shows position(s) of tagged marker(s).
@@ -53,17 +53,22 @@
 ##'  data("onemap_example_f2")
 ##'  twopt <- rf_2pts(onemap_example_f2)
 ##'  lg<-group(make_seq(twopt, "all"))
-##'  seq1<-make_seq(order_seq(input.seq= make_seq(lg,1),twopt.alg = "rcd"), "force")
-##'  seq2<-make_seq(order_seq(input.seq= make_seq(lg,2),twopt.alg = "rcd"), "force")
-##'  seq3<-make_seq(order_seq(input.seq= make_seq(lg,3),twopt.alg = "rcd"), "force")
-##'  draw_map2(seq1,seq2,seq3,tag = "all",group.names = c("Chr 1","Chr 2","Chr 3"))
+##'  seq<-list(
+##'  make_seq(order_seq(input.seq= make_seq(lg,1),twopt.alg = "rcd"), "force"),
+##'  make_seq(order_seq(input.seq= make_seq(lg,2),twopt.alg = "rcd"), "force"),
+##'  make_seq(order_seq(input.seq= make_seq(lg,3),twopt.alg = "rcd"), "force")
+##'  )
+##'  draw_map2(seq,tag = "all",group.names = c("Chr 1","Chr 2","Chr 3"),main="Linkage Map")
 ##'
 ##' }
 ##'@export
 draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL,group.names=NULL,centered=F,y.axis=TRUE,space=NULL,col.group=NULL,col.mark=NULL,col.tag=NULL,output=NULL){
   #check sequences
-  map.data<-setNames(list(...),as.list(substitute(list(...)))[-1L])
-  for(i in seq_along(map.data)) if(class(map.data[[i]])!="sequence") stop(paste("'",names(map.data)[i],"' is not an object of class 'sequence'",sep=""))
+  input<-setNames(list(...),as.list(substitute(list(...)))[-1L])
+  if(length(input)==0) stop("sequence required")
+  map.data<-list()
+  for(i in seq(input)) map.data<-c(map.data,if(lapply(input,class)[i]!="list") input[i] else do.call(c,input[i]))
+  if(F%in%(lapply(map.data,class)=="sequence")) stop(paste("\n'",names(map.data)[lapply(map.data,class)!="sequence"],"' is not an object of class 'sequence'",sep=""))
   #check data
   data.name<-vector()
   for(i in seq_along(map.data)){
@@ -72,9 +77,8 @@ draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL,grou
   data.name<-data.name[!duplicated(data.name)]
   if(F %in% (data.name%in%ls(envir=.GlobalEnv))) stop(paste("Object(s) data not found:",paste("'",data.name[!data.name%in%ls()],"'",collapse = " ",sep = "")))
   data<-list()
-  for(i in seq_along(data.name)) data[[i]]<-get(data.name[i])
+  for(i in seq_along(data.name)) data[[i]]<-get(data.name[i],envir =.GlobalEnv)
   data<-setNames(data,as.list(data.name))
-  for(i in seq_along(data)) if(!"onemap"%in%class(data[[i]])) stop(paste("'",names(data)[i],"' is not an object of class 'onemap'",sep=""))
   
   dmaps <- list()
   for(i in seq_along(map.data)) dmaps[[i]] <-data.frame(mark=colnames(data[[map.data[[i]]$data.name]]$geno)[map.data[[i]]$seq.num], pos=c(0,cumsum(kosambi(map.data[[i]]$seq.rf))), chr=i)
