@@ -20,7 +20,8 @@
 #' @param ispc Logical determining the method to be used to estimate the map. By default 
 #' this is TRUE and the method of principal curves will be used. If FALSE then the 
 #' constrained MDS method will be used.
-#'
+#' @param mds.seq When some pair of markers do not follow the linkage criteria, 
+#' if \code{TRUE} one of the markers is removed and mds is performed again.
 #' @return An object of class \code{sequence}, which is a list containing the
 #' following components: \item{seq.num}{a \code{vector} containing the
 #' (ordered) indices of markers in the sequence, according to the input file.}
@@ -61,7 +62,7 @@
 #'
 #'@export
 mds_onemap <- function(input.seq, out.file= "out.file", mds.graph.file="NULL.pdf", p = NULL, n=NULL, ispc=TRUE,
-                        displaytext=FALSE, weightfn='lod2', mapfn='haldane', hmm = TRUE){
+                        displaytext=FALSE, weightfn='lod2', mapfn='haldane', hmm = TRUE, mds.seq=TRUE){
   
     #Do the checks
 
@@ -75,7 +76,7 @@ mds_onemap <- function(input.seq, out.file= "out.file", mds.graph.file="NULL.pdf
     n_mk <- nrow(mat)
 
     mat.rf <- mat.lod <- matrix(rep(NA, n_mk*n_mk), nrow = n_mk)
-    colnames(mat.rf) <- colnames(mat.lod) <- rownames(mat.rf) <- colnames(mat.lod) <- colnames(mat)
+    colnames(mat.rf) <- colnames(mat.lod) <- rownames(mat.rf) <- rownames(mat.lod) <- colnames(mat)
     mat.lod[lower.tri(mat.lod)] <- mat[lower.tri(mat)]
     mat.rf[upper.tri(mat.rf)] <- mat[upper.tri(mat)]
 
@@ -100,7 +101,14 @@ mds_onemap <- function(input.seq, out.file= "out.file", mds.graph.file="NULL.pdf
       ord_mds <- match(as.character(mds_map$locimap[,2]), colnames(get(input.seq$data.name)$geno)) 
       seq_mds <- make_seq(get(input.seq$twopt), ord_mds)
       seq_mds$twopt <- input.seq$twopt
-      mds_map <- map(seq_mds)
+      mds_map <- map(seq_mds, mds.seq = mds.seq)
+    }
+    
+    if(!is.list(mds_map)) {
+      new.seq <- make_seq(get(input.seq$twopt), mds_map)
+      new.seq$twopt <- input.seq$twopt
+      mds_map <- mds_onemap(new.seq, out.file= out.file, mds.graph.file=mds.graph.file, p = NULL, n=NULL, ispc=TRUE,
+                                      displaytext=displaytext, weightfn=weightfn, mapfn=mapfn, hmm = hmm, mds.seq=mds.seq)
     }
     return(mds_map)
 }
