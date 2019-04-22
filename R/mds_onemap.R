@@ -62,53 +62,56 @@
 #'
 #'@export
 mds_onemap <- function(input.seq, out.file= "out.file", mds.graph.file="NULL.pdf", p = NULL, n=NULL, ispc=TRUE,
-                        displaytext=FALSE, weightfn='lod2', mapfn='haldane', hmm = TRUE, mds.seq=TRUE){
+                       displaytext=FALSE, weightfn='lod2', mapfn='haldane', hmm = TRUE, mds.seq=TRUE){
   
-    #Do the checks
-
-    n_ind <- get(input.seq$data.name)$n.ind
-    obj.class <- class(get(input.seq$data.name))
-    if(obj.class[2]=="outcross"){
+  ## checking for correct object
+  if(!("sequence" %in% class(input.seq)))
+    stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+  
+  
+  n_ind <- get(input.seq$data.name)$n.ind
+  obj.class <- class(get(input.seq$data.name))
+  if(obj.class[2]=="outcross"){
     mat<-get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1)
-    } else {
-      mat<-get_mat_rf_in(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1)
-    }
-    n_mk <- nrow(mat)
-
-    mat.rf <- mat.lod <- matrix(rep(NA, n_mk*n_mk), nrow = n_mk)
-    colnames(mat.rf) <- colnames(mat.lod) <- rownames(mat.rf) <- rownames(mat.lod) <- colnames(mat)
-    mat.lod[lower.tri(mat.lod)] <- mat[lower.tri(mat)]
-    mat.rf[upper.tri(mat.rf)] <- mat[upper.tri(mat)]
-
-    df <- reshape2::melt(mat.lod, na.rm = TRUE)
-    df.rf <- reshape2::melt(mat.rf, na.rm = TRUE)
-
-    df <- cbind(df.rf, df$value)
-    df <- df[with(df, order(Var1, Var2)),]
-
-    n_col <- dim(df)[1]
-    vector.file <- apply(df, 1, function(x) paste(x, collapse = " "))
-    file.out <- c(paste(n_mk, n_col, collapse = " "), vector.file)
-
-    write.table(file.out, file = out.file, col.names = FALSE,
-                row.names = FALSE, quote = FALSE)
-    
-    pdf(mds.graph.file)
-    mds_map <- MDSMap::estimate.map(out.file, p = p, n=n, ispc = ispc, 
-                                displaytext = displaytext)
-    dev.off()
-    if(hmm==TRUE){
-      ord_mds <- match(as.character(mds_map$locimap[,2]), colnames(get(input.seq$data.name)$geno)) 
-      seq_mds <- make_seq(get(input.seq$twopt), ord_mds)
-      seq_mds$twopt <- input.seq$twopt
-      mds_map <- map(seq_mds, mds.seq = mds.seq)
-    }
-    
-    if(!is.list(mds_map)) {
-      new.seq <- make_seq(get(input.seq$twopt), mds_map)
-      new.seq$twopt <- input.seq$twopt
-      mds_map <- mds_onemap(new.seq, out.file= out.file, mds.graph.file=mds.graph.file, p = NULL, n=NULL, ispc=TRUE,
-                                      displaytext=displaytext, weightfn=weightfn, mapfn=mapfn, hmm = hmm, mds.seq=mds.seq)
-    }
-    return(mds_map)
+  } else {
+    mat<-get_mat_rf_in(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1)
+  }
+  n_mk <- nrow(mat)
+  
+  mat.rf <- mat.lod <- matrix(rep(NA, n_mk*n_mk), nrow = n_mk)
+  colnames(mat.rf) <- colnames(mat.lod) <- rownames(mat.rf) <- rownames(mat.lod) <- colnames(mat)
+  mat.lod[lower.tri(mat.lod)] <- mat[lower.tri(mat)]
+  mat.rf[upper.tri(mat.rf)] <- mat[upper.tri(mat)]
+  
+  df <- reshape2::melt(mat.lod, na.rm = TRUE)
+  df.rf <- reshape2::melt(mat.rf, na.rm = TRUE)
+  
+  df <- cbind(df.rf, df$value)
+  df <- df[with(df, order(Var1, Var2)),]
+  
+  n_col <- dim(df)[1]
+  vector.file <- apply(df, 1, function(x) paste(x, collapse = " "))
+  file.out <- c(paste(n_mk, n_col, collapse = " "), vector.file)
+  
+  write.table(file.out, file = out.file, col.names = FALSE,
+              row.names = FALSE, quote = FALSE)
+  
+  pdf(mds.graph.file)
+  mds_map <- MDSMap::estimate.map(out.file, p = p, n=n, ispc = ispc, 
+                                  displaytext = displaytext)
+  dev.off()
+  if(hmm==TRUE){
+    ord_mds <- match(as.character(mds_map$locimap[,2]), colnames(get(input.seq$data.name)$geno)) 
+    seq_mds <- make_seq(get(input.seq$twopt), ord_mds)
+    seq_mds$twopt <- input.seq$twopt
+    mds_map <- map(seq_mds, mds.seq = mds.seq)
+  }
+  
+  if(!is.list(mds_map)) {
+    new.seq <- make_seq(get(input.seq$twopt), mds_map)
+    new.seq$twopt <- input.seq$twopt
+    mds_map <- mds_onemap(new.seq, out.file= out.file, mds.graph.file=mds.graph.file, p = NULL, n=NULL, ispc=TRUE,
+                          displaytext=displaytext, weightfn=weightfn, mapfn=mapfn, hmm = hmm, mds.seq=mds.seq)
+  }
+  return(mds_map)
 }
