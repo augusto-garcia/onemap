@@ -151,6 +151,21 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
       results[[1]][j] <- temp$seq.phases
       results[[2]][j] <- temp$seq.like
     }
+    if (all(is.na(results[[2]]))) {
+      if (mds.seq) {
+        warning(cat("The linkage between markers", 
+                    seq.num[mrk], "and", seq.num[mrk + 1], 
+                    "did not reached the OneMap default criteria. They are probably segregating independently. Marker", 
+                    seq.num[mrk + 1], "will be removed.\n"))
+        return(seq.num[-(mrk + 1)])
+        browser()
+      }
+      else {
+        stop(paste("The linkage between markers", 
+                   seq.num[mrk], "and", seq.num[mrk + 1], 
+                   "did not reached the OneMap default criteria. They are probably segregating independently.\n"))
+      }
+    }
     seq.phase[1] <- results[[1]][which.max(results[[2]])] # best linkage phase is chosen
     
     if(length(seq.num) > 2) {
