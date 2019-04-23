@@ -161,6 +161,10 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     if (length(idx) > 0)
       cat(length(MKS[idx]), "Markers were removed from the dataset because one or both of the parents are heterozygotes, we do not expect heterozygotes parents in F2 populations.\n") 
     
+    idx <- which((GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "0/0") | (GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "1/1"))
+    if (length(idx) > 0)
+      cat(length(MKS[idx]), "Markers were removed from the dataset because they are monomorphic for the parents, these markers are not informative for the genetic map.\n") 
+    
     
     # Excluding non-informative markers
     rm_mk <- which(is.na(mk.type))
@@ -202,6 +206,9 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     if (length(idx) > 0)
       cat(length(MKS[idx]), "Markers were removed from the dataset because one or both of the parents are heterozygotes, we do not expect heterozygotes parents in F2 populations.\n") 
     
+    idx <- which((GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "0/0") | (GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "1/1"))
+    if (length(idx) > 0)
+      cat(length(MKS[idx]), "Markers were removed from the dataset because they are monomorphic for the parents, these markers are not informative for the genetic map.\n") 
     
     # Excluding non-informative markers
     rm_mk <- which(is.na(mk.type))
@@ -244,7 +251,10 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     if (length(idx) > 0)
       cat(length(MKS[idx]), "Markers were removed from the dataset because one or both of the parents are heterozygotes, we do not expect heterozygotes parents in RILs populations.\n") 
     
-    
+    idx <- which((GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "0/0") | (GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "1/1"))
+    if (length(idx) > 0)
+      cat(length(MKS[idx]), "Markers were removed from the dataset because they are monomorphic for the parents, these markers are not informative for the genetic map.\n") 
+        
     # Excluding non-informative markers
     rm_mk <- which(is.na(mk.type))
     if(length(rm_mk)!=0){
