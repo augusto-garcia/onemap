@@ -88,6 +88,8 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   P1 <- which(dimnames(vcf@gt)[[2]]==parent1) - 1
   P2 <- which(dimnames(vcf@gt)[[2]]==parent2) - 1
   
+  if(length(P1)==0 | length(P2)==0) stop("One or both parents names could not be found in your data")
+  
   mk.type <- rep(NA, n.mk)
   if (cross == "outcross"){
     # Marker types
