@@ -58,6 +58,7 @@ function(rcmb) {
 ##' Kosambi, D. D. (1944) The estimation of map distance from recombination
 ##' values. \emph{Annuaire of Eugenetics} 12: 172-175.
 ##' @keywords arith
+##' @export
 set_map_fun<-
   function(type=c("kosambi", "haldane")){
     type<-match.arg(type,c("kosambi", "haldane"))
