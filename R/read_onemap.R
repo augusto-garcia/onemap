@@ -111,11 +111,13 @@
 ##'     outcr_data <- read_onemap(dir="work_directory", inputfile="data_file.txt")
 ##'   }
 ##'@export
-read_onemap <- function (dir, inputfile) {
-  if (missing(inputfile))
-    stop("missing file")
-  if (!missing(dir) && dir != "")
-    inputfile <- file.path(dir, inputfile)
+read_onemap <- function (inputfile=NULL, dir=NULL) {
+  if (is.null(inputfile)){
+     stop("missing file")
+  }
+  if (!is.null(inputfile) && !is.null(dir)) {
+     inputfile <- file.path(dir, inputfile)
+  }
 
   f <- file(inputfile, open = "r")
   on.exit(close(f))
@@ -200,6 +202,10 @@ read_onemap <- function (dir, inputfile) {
   geno[!is.na(geno) & geno == "-"] <- NA
   colnames(geno) <- marnames
   rownames(geno) <- sample_IDs
+  error <- matrix(rep(0.00001, n.mar*n.ind), nrow = n.ind, ncol = n.mar)
+  colnames(geno) <- colnames(error) <- marnames
+  rownames(geno) <- rownames(error) <- sample_IDs
+
   temp.data <- codif_data(geno, segr.type, crosstype)
   geno <- temp.data[[1]]
   segr.type.num <- temp.data[[2]]
@@ -286,6 +292,7 @@ read_onemap <- function (dir, inputfile) {
   structure(list(geno = geno, n.ind = n.ind, n.mar = n.mar,
                  segr.type = segr.type, segr.type.num = segr.type.num,
                  n.phe = n.phe, pheno = pheno, CHROM = CHROM, POS = POS,
+		 error=error,
                  input = inputfile),
             class = c("onemap", crosstype))
 }

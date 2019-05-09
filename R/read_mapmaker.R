@@ -75,14 +75,15 @@ globalVariables(c("mkt.wrg"))
 ##'     names(mapmaker_example_f2)
 ##'   }
 ##'@export
-read_mapmaker<-function (dir, file)
+read_mapmaker<-function (dir=NULL, file=NULL)
 {
     ## create file name
-    if (missing(file))
-        stop("Missing file.")
-    if (!missing(dir) && dir != "") {
-        file <- file.path(dir, file)
-    }
+    if (is.null(file))
+         stop("Missing file.")
+    if (!is.null(dir) && dir != "") {
+         file <- file.path(dir, file)
+     }
+     
     ## count lines in rawfile
     n.lines <- length(scan(file, what = character(), skip = 0,
                            nlines = 0, blank.lines.skip = FALSE,
@@ -306,8 +307,13 @@ read_mapmaker<-function (dir, file)
             cat("\t",formatC(paste(colnames(pheno)[i],":",sep=""),width=max(nchar(paste(colnames(pheno),":",sep="")))), miss.value.pheno[i], "\n")
         }
     }
+    error <- matrix(rep(0.00001, n.mar*n.ind), nrow = n.ind, ncol = n.mar)
+    colnames(error) <- colnames(geno)
+    rownames(error) <- rownames(geno)
+    
     structure(list(geno = geno, n.ind = n.ind, n.mar = n.mar,
                    segr.type = segr.type, segr.type.num=segr.type.num,
+		   error=error,
                    input=file, n.phe=n.phe, pheno = pheno),  class = cl)
 }
 

@@ -57,7 +57,8 @@
 onemap_read_vcfR <- function(vcfR.object=NULL,
          cross = c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"),
          parent1 =NULL,
-         parent2 =NULL){
+         parent2 =NULL,
+	 f1=NULL){
   
   if (is.null(vcfR.object)) {
     stop("You must specify one vcfR object.")
@@ -89,7 +90,9 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   P2 <- which(dimnames(vcf@gt)[[2]]==parent2) - 1
   
   if(length(P1)==0 | length(P2)==0) stop("One or both parents names could not be found in your data")
-  
+
+F1 <- which(dimnames(vcf@gt)[[2]]==f1) - 1
+
   mk.type <- rep(NA, n.mk)
   if (cross == "outcross"){
     # Marker types
@@ -284,11 +287,19 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   }
   
   # Removing parents
-  
-  GT_matrix <- apply(GT_matrix[,-c(P1,P2)],2,as.numeric)
-  rownames(GT_matrix) <- MKS
-  colnames(GT_matrix) <- INDS[-c(P1,P2)] 
-  
+
+if(is.null(f1)){
+        GT_matrix <- apply(GT_matrix[,-c(P1,P2)],2,as.numeric)
+        error <- matrix(rep(0.00001, n.mk*dim(GT_matrix)[2]), nrow = dim(GT_matrix)[2], ncol = n.mk)
+        rownames(GT_matrix) <- colnames(error) <- MKS
+        colnames(GT_matrix) <- rownames(error) <-  INDS[-c(P1,P2)] 
+    } else{
+        GT_matrix <- apply(GT_matrix[,-c(P1,P2,F1)],2,as.numeric)
+        error <- matrix(rep(0.00001, n.mk*dim(GT_matrix)[2]), nrow = dim(GT_matrix)[2], ncol = n.mk)
+        rownames(GT_matrix) <- colnames(error) <- MKS
+        colnames(GT_matrix) <- rownames(error) <-  INDS[-c(P1,P2,F1)] 
+    }
+      
   legacy_crosses <- setNames(c("outcross", "f2", "backcross", "riself", "risib"), 
                              c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"))
   structure(list(geno= t(GT_matrix),
@@ -300,6 +311,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
                  pheno = NULL,
                  CHROM = CHROM,
                  POS = POS,
+		 error=error,
                  input = "vcfR.object"),
             class=c("onemap",legacy_crosses[cross]))
 }

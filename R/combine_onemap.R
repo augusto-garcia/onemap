@@ -123,6 +123,7 @@ combine_onemap <- function(...) {
 
     ## Allocate
     geno <- matrix(0, nrow = n.ind, ncol = n.mar)
+    error <- matrix(0, nrow= n.ind, ncol= n.mar)
     colnames(geno) <- rep(NA, n.mar)
     if (!sampleID.flag) {
         rownames(geno) <- sampleIDs
@@ -153,6 +154,7 @@ combine_onemap <- function(...) {
             ind.matches <- match(rownames(onemap.objs[[i]]$geno), rownames(geno))
         }
         geno[ind.matches, mrk.start:mrk.end] <- onemap.objs[[i]]$geno
+	error[ind.matches, mrk.start:mrk.end] <- onemap.objs[[i]]$error
         colnames(geno)[mrk.start:mrk.end] <- colnames(onemap.objs[[i]]$geno)
         
         segr.type[mrk.start:mrk.end] <- onemap.objs[[i]]$segr.type
@@ -191,6 +193,6 @@ combine_onemap <- function(...) {
     structure(list(geno = geno, n.ind = n.ind, n.mar = n.mar,
                    segr.type = segr.type, segr.type.num = segr.type.num,
                    n.phe = n.phe, pheno = pheno, CHROM = CHROM, POS = POS,
-                   input = input),
+                   error=error, input = input),
               class = c("onemap", crosstype))
 }

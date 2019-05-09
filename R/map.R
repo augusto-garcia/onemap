@@ -6,6 +6,7 @@
 ## Contains: map                                                       ##
 ##                                                                     ##
 ## Written by Gabriel Rodrigues Alves Margarido and Marcelo Mollinari  ##
+## with minor changes by Cristiane Taniguti
 ## copyright (c) 2009, Gabriel R A Margarido                           ##
 ##                                                                     ##
 ## First version: 02/27/2009                                           ##
@@ -100,6 +101,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
   if(class(get(input.seq$data.name, pos=1))[2] == "f2")
   {
     final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,seq.num]),
+    error=t(get(input.seq$data.name, pos=1)$error[,seq.num]),
                               rf.vec=get_vec_rf_in(input.seq),
                               verbose=verbose,
                               tol=tol)
@@ -116,6 +118,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
           class(get(input.seq$data.name, pos=1))[2] == "risib")
   {
     final.map<-est_map_hmm_bc(geno=t(get(input.seq$data.name, pos=1)$geno[,seq.num]),
+    error=t(get(input.seq$data.name, pos=1)$error[,seq.num]),
                               rf.vec=get_vec_rf_in(input.seq),
                               verbose=verbose,
                               tol=tol)
@@ -206,6 +209,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
     rf.init <- get_vec_rf_out(input.seq, acum=FALSE)
     ## estimate parameters
     final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,seq.num]),
+    error = t(get(input.seq$data.name, pos=1)$error[,seq.num]),
                                  type=get(input.seq$data.name, pos=1)$segr.type.num[seq.num],
                                  phase=seq.phases,
                                  rf.vec=rf.init,

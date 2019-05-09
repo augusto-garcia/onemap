@@ -41,8 +41,9 @@
 using namespace Rcpp;
 using namespace std;
 
-RcppExport SEXP est_hmm_out(SEXP geno_R, SEXP type_R, SEXP phase_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R){
+RcppExport SEXP est_hmm_out(SEXP geno_R, SEXP error_R, SEXP type_R, SEXP phase_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R){
   Rcpp::NumericMatrix geno = Rcpp::as<Rcpp::NumericMatrix>(geno_R);
+  Rcpp::NumericMatrix error = Rcpp::as<Rcpp::NumericMatrix>(error_R);
   Rcpp::NumericVector type = Rcpp::as<Rcpp::NumericVector>(type_R);
   Rcpp::NumericVector phase = Rcpp::as<Rcpp::NumericVector>(phase_R);
   Rcpp::NumericVector rf = Rcpp::as<Rcpp::NumericVector>(rf_R);
@@ -52,7 +53,7 @@ RcppExport SEXP est_hmm_out(SEXP geno_R, SEXP type_R, SEXP phase_R, SEXP rf_R, S
   int n_ind = geno.ncol();
   int n_gen = 4;
   int it, i, v, v2, j, j2, flag=0, maxit=1000;
-  double error_prob = 0.00001, s=0.0;
+  double s=0.0;
   double loglik, curloglik;
   NumericMatrix alpha(n_gen, n_mar);
   NumericMatrix beta(n_gen, n_mar);
@@ -86,7 +87,7 @@ RcppExport SEXP est_hmm_out(SEXP geno_R, SEXP type_R, SEXP phase_R, SEXP rf_R, S
       R_CheckUserInterrupt(); // check for ^C
       // initialize alpha and beta
       for(v=0; v<n_gen; v++) {
-	alpha(v,0) = initf(v) * emit_out(geno(0,i), v+1, error_prob, type(0));
+	alpha(v,0) = initf(v) * emit_out(geno(0,i), v+1, error(0,i), type(0));
 	beta(v,n_mar-1) = 1.0;
       }
       // forward-backward equations
@@ -97,15 +98,15 @@ RcppExport SEXP est_hmm_out(SEXP geno_R, SEXP type_R, SEXP phase_R, SEXP rf_R, S
 	      tr(0, (j-1)*n_gen+v);     
 	    beta(v,j2) = beta(0,j2+1) * 
 	      tr(v,j2*n_gen)  * 
-	      emit_out(geno(j2+1,i), 1, error_prob,type(j2+1));
+	      emit_out(geno(j2+1,i), 1, error(j2+1,i),type(j2+1));
 	    for(v2=1; v2<n_gen; v2++) {
 	      alpha(v,j) = alpha(v,j) + alpha(v2,j-1) * 
 		tr(v2,(j-1)*n_gen+v);
 	      beta(v,j2) = beta(v,j2) + beta(v2,j2+1) * 
 		tr(v, j2*n_gen+v2) * 
-		emit_out(geno(j2+1,i), v2+1, error_prob, type(j2+1));
+		emit_out(geno(j2+1,i), v2+1, error(j2+1,i), type(j2+1));
 	    }
-	    alpha(v,j) *= emit_out(geno(j,i),v+1,error_prob,type(j));
+	    alpha(v,j) *= emit_out(geno(j,i),v+1,error(j,i),type(j));
 	  } 
 	} 
       for(j=0; j<n_mar-1; j++) {
@@ -114,7 +115,7 @@ RcppExport SEXP est_hmm_out(SEXP geno_R, SEXP type_R, SEXP phase_R, SEXP rf_R, S
 	  for(v2=0; v2<n_gen; v2++) {
 	    gamma(v,v2) = alpha(v,j) * 
 	      beta(v2,j+1) * 
-	      emit_out(geno(j+1,i), v2+1, error_prob, type(j+1)) * 
+	      emit_out(geno(j+1,i), v2+1, error(j+1,i), type(j+1)) * 
 	      tr(v, j*n_gen+v2);  
 	    if(v==0 && v2==0) s = gamma(v,v2);
 	    else s += gamma(v,v2);
@@ -149,7 +150,7 @@ RcppExport SEXP est_hmm_out(SEXP geno_R, SEXP type_R, SEXP phase_R, SEXP rf_R, S
   for(i=0; i<n_ind; i++) { // i = individual
     // initialize alpha
     for(v=0; v<n_gen; v++)
-      alpha(v,0) = initf(v) * emit_out(geno(0,i), v+1, error_prob, type(0));
+      alpha(v,0) = initf(v) * emit_out(geno(0,i), v+1, error(0,i), type(0));
     // forward equations
     for(j=1; j<n_mar; j++) {
       for(v=0; v<n_gen; v++) {
@@ -159,7 +160,7 @@ RcppExport SEXP est_hmm_out(SEXP geno_R, SEXP type_R, SEXP phase_R, SEXP rf_R, S
 	for(v2=1; v2<n_gen; v2++)
 	  alpha(v,j) = alpha(v,j) + alpha(v2,j-1) * 
 	    step_out(v2+1,v+1,phase(j-1),rf(j-1));
-	alpha(v,j) *= emit_out(geno(j,i),v+1,error_prob,type(j));
+	alpha(v,j) *= emit_out(geno(j,i),v+1,error(j,i),type(j));
       }
     }
     curloglik = alpha(0,n_mar-1);
@@ -180,7 +181,7 @@ RcppExport SEXP est_hmm_out(SEXP geno_R, SEXP type_R, SEXP phase_R, SEXP rf_R, S
 }
 
 //Emission function for outcrossing species
-double emit_out(int obs_gen, int true_gen, double error_prob, int mark_type)
+double emit_out(int obs_gen, int true_gen, double error, int mark_type)
 {
   /*Notation similar to Wu et. al.(2002)
     
@@ -206,8 +207,8 @@ double emit_out(int obs_gen, int true_gen, double error_prob, int mark_type)
     switch(obs_gen){
     case 0: return(1.0);
     case 1: case 2: case 3: case 4:
-      if(obs_gen==true_gen) return(1.0-error_prob);
-      else return(error_prob/3.0);
+      if(obs_gen==true_gen) return(1.0-error);
+      else return(error/3.0);
     }
     return(1.0);/* shouldn't get here */
 
@@ -236,18 +237,18 @@ double emit_out(int obs_gen, int true_gen, double error_prob, int mark_type)
     case 0: return(1.0);
     case 1:
       switch(true_gen){
-      case 1: case 2: return(1.0-error_prob);
-      case 3: case 4: return(error_prob/2.0);
+      case 1: case 2: return(1.0-error);
+      case 3: case 4: return(error/2.0);
       }
     case 2:
       switch(true_gen){
-      case 3: return(1.0-error_prob);
-      case 1: case 2: case 4: return(error_prob/3.0);
+      case 3: return(1.0-error);
+      case 1: case 2: case 4: return(error/3.0);
       }
     case 3:
       switch(true_gen){
-      case 4: return(1.0-error_prob);
-      case 1: case 2: case 3: return(error_prob/3.0);
+      case 4: return(1.0-error);
+      case 1: case 2: case 3: return(error/3.0);
       }
     }
     return(1.0);/* shouldn't get here */
@@ -257,18 +258,18 @@ double emit_out(int obs_gen, int true_gen, double error_prob, int mark_type)
     case 0: return(1.0);
     case 1:
       switch(true_gen){
-      case 1: case 3: return(1.0-error_prob);
-      case 2: case 4: return(error_prob/2.0);
+      case 1: case 3: return(1.0-error);
+      case 2: case 4: return(error/2.0);
       }
     case 2:
       switch(true_gen){
-      case 2: return(1.0-error_prob);
-      case 1: case 3: case 4: return(error_prob/3.0);
+      case 2: return(1.0-error);
+      case 1: case 3: case 4: return(error/3.0);
       }
     case 3:
       switch(true_gen){
-      case 4: return(1.0-error_prob);
-      case 1: case 2: case 3: return(error_prob/3.0);
+      case 4: return(1.0-error);
+      case 1: case 2: case 3: return(error/3.0);
       }
     }
     return(1.0);/* shouldn't get here */
@@ -278,18 +279,18 @@ double emit_out(int obs_gen, int true_gen, double error_prob, int mark_type)
     case 0: return(1.0);
     case 1:
       switch(true_gen){
-      case 1: return(1.0-error_prob);
-      case 2: case 3: case 4: return(error_prob/3.0);
+      case 1: return(1.0-error);
+      case 2: case 3: case 4: return(error/3.0);
       }
     case 2:
       switch(true_gen){
-      case 2: case 3: return(1.0-error_prob);
-      case 1: case 4: return(error_prob/2.0);
+      case 2: case 3: return(1.0-error);
+      case 1: case 4: return(error/2.0);
       }
     case 3:
       switch(true_gen){
-      case 4: return(1.0-error_prob);
-      case 1: case 2: case 3: return(error_prob/3.0);
+      case 4: return(1.0-error);
+      case 1: case 2: case 3: return(error/3.0);
       }
     }
     return(1.0);/* shouldn't get here */
@@ -315,11 +316,11 @@ double emit_out(int obs_gen, int true_gen, double error_prob, int mark_type)
     switch(obs_gen){
     case 0: return(1.0);
     case 1:
-      if(true_gen==4) return(error_prob);
-      else return(1.0-error_prob);
+      if(true_gen==4) return(error);
+      else return(1.0-error);
     case 2:
-      if(true_gen==4) return(1.0-error_prob);
-      else return(error_prob/3.0);
+      if(true_gen==4) return(1.0-error);
+      else return(error/3.0);
     }
     return(1.0);/* shouldn't get here */
 
@@ -356,11 +357,11 @@ double emit_out(int obs_gen, int true_gen, double error_prob, int mark_type)
     switch(obs_gen){
     case 0: return(1.0);
     case 1:
-      if(true_gen==1||true_gen==2) return(1.0-error_prob);
-      else return(error_prob/2.0);
+      if(true_gen==1||true_gen==2) return(1.0-error);
+      else return(error/2.0);
     case 2:
-      if(true_gen==3||true_gen==4) return(1.0-error_prob);
-      else return(error_prob/2.0);
+      if(true_gen==3||true_gen==4) return(1.0-error);
+      else return(error/2.0);
     }
     return(1.0);/* shouldn't get here */
 
@@ -368,11 +369,11 @@ double emit_out(int obs_gen, int true_gen, double error_prob, int mark_type)
     switch(obs_gen){
     case 0: return(1.0);
     case 1:
-      if(true_gen==1||true_gen==3) return(1.0-error_prob);
-      else return(error_prob/2.0);
+      if(true_gen==1||true_gen==3) return(1.0-error);
+      else return(error/2.0);
     case 2:
-      if(true_gen==2||true_gen==4) return(1.0-error_prob);
-      else return(error_prob/2.0);
+      if(true_gen==2||true_gen==4) return(1.0-error);
+      else return(error/2.0);
     }
     return(1.0);/* shouldn't get here */
   }
