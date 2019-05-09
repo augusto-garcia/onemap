@@ -1243,6 +1243,15 @@ ripple_seq(CHR3_final)
 ```
 
 
+# Ordering large amount of markers
+
+In our examples until now we had few markers compared with those obtained by high-throughput technologies. Ordering several markers using the `order_seq` function combined with `drop_marker` 
+and `try_seq` can be a hardy and slow work. To help this task, we create the function `mds_onemap`
+wich makes a interface between `OneMap` and `MDSMap` package. The ordering approach presented in
+`MDSMap` provides a faster and efficient way of ordering markers using multi-dimensional scaling. 
+The method also provides diagnostics graphics and parameters to find outliers to help users to filter the dataset. You can find more informations in `MDSMap` [vignette](https://cran.r-project.org/web/packages/MDSMap/vignettes/MDSMap.pdf). Here we will show a simples example of how it can be used for a outcrossing dataset.
+
+
 # Map estimation for an arbitrary order
 
 If you have some information about the order of the markers, for

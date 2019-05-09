@@ -162,7 +162,7 @@ If no error has occurred, a message will display some basic
 information about the data, such as number of individuals and number
 of markers:
 
-```{r, echo=FALSE}
+```{r, eval=FALSE, echo=FALSE}
 onemap_example_out <- read_onemap(inputfile = system.file("extdata/onemap_example_out.raw", package = "onemap"))
 ``` 
 
@@ -221,7 +221,7 @@ First, we convert the `VCF` file to `vcfR` object:
 
 ```{r, eval=FALSE}
 library(vcfR)
-vcfR.object <- read.vcfR(system.file("extdata/vcf_example_f2.vcf", package = "onemap"))
+vcfR.object <- read.vcfR(system.file("extdata/vcf_example_out.vcf", package = "onemap"))
 ```
 
 As described in the `vcfR` package vignette, memory use is a important consideration when using `vcfR`. Depending of your dataset, the object created can be very large and occupy a lot of memory.
@@ -1041,7 +1041,6 @@ CHR1 <- make_seq(twopts, "1")
 CHR1
 CHR2 <- make_seq(twopts, "2")
 CHR3 <- make_seq(twopts, "3")
-
 ```
 
 ## Adding markers with no reference genome informations
@@ -1194,6 +1193,7 @@ Checking for better orders:
 ripple_seq(CHR3_final)
 ```
 
+<!---
 # Ordering large amount of markers
 
 In our examples until now we had few markers compared with those obtained by high-throughput technologies. Ordering several markers using the `order_seq` function combined with `drop_marker` 
@@ -1204,13 +1204,13 @@ The method also provides diagnostics graphics and parameters to find outliers to
 
 Get the data with:
 
-```{r}
+```{r, eval=FALSE, echo=FALSE}
 data("example.RData")
 ```
 
-There is only a group in this data set, with total of 1809 markers.
+There is only a group in this data set, with total of 442 markers.
 
-```{r}
+```{r, eval=FALSE, echo=FALSE}
 segr <- test_segregation(example)
 plot(segr) # all markers follow the expected Mendelian segregation pattern
 
@@ -1226,31 +1226,35 @@ Here we will use the Principal Curves method available in `MDSMap` package. For 
 
 The `MDSMap` converts the recombination fraction obtained by multi-dimensional scaling to centimorgan using Haldane or Kosambi functions. But here we update this values with the multipoint approach implemented in OneMap. 
 
-```{r}
+```{r, eval=FALSE, echo=FALSE}
 #  MDS method
 start <- Sys.time()
 map.mds3 <- mds_onemap(lg1, out.file = "mds.input.file.txt", displaytext = F, mds.graph.file = "graph.mds.pdf", hmm = T)
 end <- Sys.time()
-end - start # 25.77458
+end - start # It will take about 25 minutes
 rf_graph_table(map.mds)
 
 # order_seq method
 start <- Sys.time()
 map.order <- order_seq(lg1)
 end <- Sys.time()
-end - start # 25.48 mins
+end - start # It will take about 25 mins
 map.seq <- make_seq(map.order, "force")
 rf_graph_table(map.seq)
 
 # real order
 real.ord <- make_seq(twopts, lg1$seq.num)
+start <- Sys.time()
 real.map <- map(real.ord)
+end <- Sys.time()
+end - start # It will take about 25 mins
 rf_graph_table(real.map)
 ```
 
 These are simulated data, with five percent of missing data. The correct order would be the name of the markers in crescent order (eg. M001, M002, M003). You can see that any of the methods order perfectly the markers. For MDS method, there are local invertions and for order_seq method the markers are ordered according with their information (D1.10 close of D1.10 and D2.15 close of D2.15).
 
 The group has originally 100 cM, the incorrect order of the markers inflate it.
+--->
 
 # Drawing the genetic maps
 
@@ -1344,7 +1348,7 @@ draw_map2(CHR1_final, CHR2_final, CHR3_final, output= "map_ref.png",
          col.mark= "#335C81")
 ``` 
 
-<img src="map_all.png" width="600" height="600">
+<img src="map_ref.png" width="600" height="600">
 
 With the argument `tag`, we can highlight some markers with other color. The arguments `col.group`, `col.mark` and `col.tag` can be changed to personalize the color of the groups, the markers, and the highlighted markers, respctivelly. 
 
