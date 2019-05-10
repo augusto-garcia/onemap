@@ -4,7 +4,7 @@
 \alias{read_mapmaker}
 \title{Read data from a Mapmaker raw file}
 \usage{
-read_mapmaker(dir, file)
+read_mapmaker(dir = NULL, file = NULL)
 }
 \arguments{
 \item{dir}{directory where the input file is located.}
