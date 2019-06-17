@@ -108,8 +108,10 @@ extract_depth <- function(vcfR.object=NULL,
   if(length(which(par_matrix == ".")) > 0){
     if(vcf.par=="GQ") {
       par_matrix[which(par_matrix == ".")] <- "0"
+      par_matrix[which(is.na(par_matrix))] <- "0"
     }else{
       par_matrix[which(par_matrix == ".")] <- "0,0"
+      par_matrix[which(is.na(par_matrix))]
     }
   }
   if(length(rm.mks)>0 & length(rm.ind)>0){
