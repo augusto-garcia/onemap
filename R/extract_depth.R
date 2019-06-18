@@ -102,14 +102,16 @@ extract_depth <- function(vcfR.object=NULL,
     } else {vcfR.object@gt[miss.num] <- paste0(rep("0",n.par),":", collapse = "")}
   }
   # Extracting choosed parameter matrix                                                                          
-  par_matrix <- matrix(unlist(lapply(split.gt,  "[[", n.par)), nrow = N.MKs, ncol = N.IND+1)[,-1]
+  par_matrix <- matrix(unlist(lapply(split.gt,  "[", n.par)), nrow = N.MKs, ncol = N.IND+1)[,-1]
   
   # Replacing missing data with compatible format                                                                
-  if(length(which(par_matrix == ".")) > 0){
+  if(length(which(par_matrix == ".")) > 0 | length(which(is.na(par_matrix))) > 0 ){
     if(vcf.par=="GQ") {
       par_matrix[which(par_matrix == ".")] <- "0"
+      par_matrix[which(is.na(par_matrix))] <- "0"
     }else{
       par_matrix[which(par_matrix == ".")] <- "0,0"
+      par_matrix[which(is.na(par_matrix))]
     }
   }
   if(length(rm.mks)>0 & length(rm.ind)>0){
