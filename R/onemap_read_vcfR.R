@@ -85,13 +85,19 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   for(i in 2:(n.ind+1))
     GT_matrix[,i-1] <- unlist(lapply(strsplit(vcf@gt[,i], split=":"), "[[", GT))
   
+  if(any(grepl("|", GT_matrix))){
+    GT_matrix[GT_matrix=="1|0"] <- GT_matrix[GT_matrix=="0|1"] <- "0/1"
+    GT_matrix[GT_matrix=="0|0"] <- "0/0"
+    GT_matrix[GT_matrix=="1|1"] <- "1/1"
+  }
+  
   # Checking marker segregation according with parents
   P1 <- which(dimnames(vcf@gt)[[2]]==parent1) - 1
   P2 <- which(dimnames(vcf@gt)[[2]]==parent2) - 1
   
   if(length(P1)==0 | length(P2)==0) stop("One or both parents names could not be found in your data")
 
-F1 <- which(dimnames(vcf@gt)[[2]]==f1) - 1
+  F1 <- which(dimnames(vcf@gt)[[2]]==f1) - 1
 
   mk.type <- rep(NA, n.mk)
   if (cross == "outcross"){
@@ -288,7 +294,7 @@ F1 <- which(dimnames(vcf@gt)[[2]]==f1) - 1
   
   # Removing parents
 
-if(is.null(f1)){
+  if(is.null(f1)){
         GT_matrix <- apply(GT_matrix[,-c(P1,P2)],2,as.numeric)
         error <- matrix(rep(0.00001, n.mk*dim(GT_matrix)[2]), nrow = dim(GT_matrix)[2], ncol = n.mk)
         rownames(GT_matrix) <- colnames(error) <- MKS
