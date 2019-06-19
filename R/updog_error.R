@@ -34,7 +34,8 @@ updog_error <- function(vcfR.object=NULL,
                         f1="F1",
                         recovering = FALSE,
                         mean_phred = 20, cores = 2,
-                        depths = NULL){
+                        depths = NULL,
+                        error_type="naive"){
   
   if(is.null(depths)){
     depth_matrix <- extract_depth(vcfR.object=vcfR.object,
@@ -133,6 +134,7 @@ updog_error <- function(vcfR.object=NULL,
   postmat <- lapply(gene_est, "[", 6)
   
   # The error is the second highest genotype probability
+  if(error_type == "GQ"){
   error_matrix1 <- lapply(postmat,
                           function(x){ 
                             sapply(x, function(q){ 
@@ -150,13 +152,15 @@ updog_error <- function(vcfR.object=NULL,
                               })
                             })
                           })
-  
+  } else {
+    error_matrix1 <- sapply(gene_est, "[", 10)
+  }
   
   geno_matrix1 <- sapply(gene_est, "[", 9)
   
   error_matrix <- geno_matrix <- matrix(nrow = n.mks, ncol = n.ind)
   for(i in 1:n.mks){
-    error_matrix[i,] <- error_matrix1[[i]]
+    error_matrix[i,] <- 1- error_matrix1[[i]]
     geno_matrix[i,] <- geno_matrix1[[i]]
   }
   if(class(onemap.object)[2] == "outcross"){
@@ -218,8 +222,8 @@ updog_error <- function(vcfR.object=NULL,
       P2 <- P2[-rm.mk]
       n.mks <- n.mks - length(rm.mk)
       mks <- mks[-rm.mk]
-      onemap_updog$CHROM <- CHROM[-rm.mk]
-      onemap_updog$POS <- POS[-rm.mk]
+      onemap_updog$CHROM <- onemap_updog$CHROM[-rm.mk]
+      onemap_updog$POS <- onemap_updog$POS[-rm.mk]
     }
     
     conv_geno <- matrix(rep(NA,n.ind*n.mks),nrow=n.mks)
