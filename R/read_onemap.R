@@ -202,9 +202,8 @@ read_onemap <- function (inputfile=NULL, dir=NULL) {
   geno[!is.na(geno) & geno == "-"] <- NA
   colnames(geno) <- marnames
   rownames(geno) <- sample_IDs
-  error <- matrix(rep(0.00001, n.mar*n.ind), nrow = n.ind, ncol = n.mar)
-  colnames(geno) <- colnames(error) <- marnames
-  rownames(geno) <- rownames(error) <- sample_IDs
+  colnames(geno) <- marnames
+  rownames(geno) <- sample_IDs
 
   temp.data <- codif_data(geno, segr.type, crosstype)
   geno <- temp.data[[1]]
@@ -289,12 +288,13 @@ read_onemap <- function (inputfile=NULL, dir=NULL) {
   }
 
   ## Return "onemap" object
-  structure(list(geno = geno, n.ind = n.ind, n.mar = n.mar,
+  onemap.obj <- structure(list(geno = geno, n.ind = n.ind, n.mar = n.mar,
                  segr.type = segr.type, segr.type.num = segr.type.num,
                  n.phe = n.phe, pheno = pheno, CHROM = CHROM, POS = POS,
-		 error=error,
                  input = inputfile),
             class = c("onemap", crosstype))
+  new.onemap.obj <- create_probs(onemap.obj)
+  return(new.onemap.obj)
 }
 
 ## Print method for object class 'onemap'
