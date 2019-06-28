@@ -63,6 +63,6 @@ using namespace std;
 /* Note: true genotypes coded as 1, 2, ...
    but in the alpha's and beta's, we use 0, 1, ... */
 
-RcppExport SEXP est_hmm_bc(SEXP geno_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R);
+RcppExport SEXP est_hmm_bc(SEXP geno_R, SEXP error_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R);
 double stepf_bc(int gen1, int gen2, double rf);
 double nrecf_bc(int gen1, int gen2);

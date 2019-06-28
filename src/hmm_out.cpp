@@ -181,204 +181,204 @@ RcppExport SEXP est_hmm_out(SEXP geno_R, SEXP error_R, SEXP type_R, SEXP phase_R
 }
 
 //Emission function for outcrossing species
-double emit_out(int obs_gen, int true_gen, double error, int mark_type)
-{
-  /*Notation similar to Wu et. al.(2002)
-   
-   Marker type: A (1:1:1:1) (m=1 in the codes)
-   Parental genotype codification (not used in the codes)
-   
-   A.1        A.2        A.3        A.4 (in the article)
-   
-   P1  P2     P1  P2     P1  P2     P1  P2
-   -a- -c-    -a- -a-    -a- -c-    -a- -b-
-   X    or    X    or    X    or    X
-   -b- -d-    -b- -c-    -b- -o-    -o- -o-
-   
-   offspring genotype codification (observed)
-   missing: 0
-   ac;  a; ac; ab: 1
-   ad; ac;  a;  a: 2
-   bc; ba; bc;  b: 3
-   bd; bc;  b;  o: 4
-   */
-  switch(mark_type){
-  case 1: /*A*/
-  switch(obs_gen){
-  case 0: return(1.0);
-  case 1: case 2: case 3: case 4:
-    if(obs_gen==true_gen) return(1.0-error);
-    else return(error/3.0);
-  }
-    return(1.0);/* shouldn't get here */
-  
-  /*
-   Marker type: B (2:1:1) (m=2, m=3, m=4 in the codes)
-   Parental genotype codification (do not used in the codes)
-   
-   B.1        B.2        B.3     (in the article)
-   
-   P1  P2     P1  P2     P1  P2
-   -a- -a-    -a- -a-    -a- -a-
-   X    or    X    or    X
-   -b- -o-    -o- -b-    -b- -b-
-   
-   offspring genotype codification (observed)
-   
-   VERY IMPORTANT: The proportion here is 2:1:1, unlike 1:2:1, as usualy used!!!!!
-   missing: 0
-   a  a  ab : 1
-   ab ab a  : 2
-   b  b  b  : 3
-   */
-  
-  case 2: /*B.1*/
-  switch(obs_gen){
-  case 0: return(1.0);
-  case 1:
-    switch(true_gen){
-    case 1: case 2: return(1.0-error);
-    case 3: case 4: return(error/2.0);
-    }
-  case 2:
-    switch(true_gen){
-    case 3: return(1.0-error);
-    case 1: case 2: case 4: return(error/3.0);
-    }
-  case 3:
-    switch(true_gen){
-    case 4: return(1.0-error);
-    case 1: case 2: case 3: return(error/3.0);
-    }
-  }
-    return(1.0);/* shouldn't get here */
-  
-  case 3:/*B.2*/
-  switch(obs_gen){
-  case 0: return(1.0);
-  case 1:
-    switch(true_gen){
-    case 1: case 3: return(1.0-error);
-    case 2: case 4: return(error/2.0);
-    }
-  case 2:
-    switch(true_gen){
-    case 2: return(1.0-error);
-    case 1: case 3: case 4: return(error/3.0);
-    }
-  case 3:
-    switch(true_gen){
-    case 4: return(1.0-error);
-    case 1: case 2: case 3: return(error/3.0);
-    }
-  }
-    return(1.0);/* shouldn't get here */
-  
-  case 4: /*B.3*/
-  switch(obs_gen){
-  case 0: return(1.0);
-  case 1:
-    switch(true_gen){
-    case 1: return(1.0-error);
-    case 2: case 3: case 4: return(error/3.0);
-    }
-  case 2:
-    switch(true_gen){
-    case 2: case 3: return(1.0-error);
-    case 1: case 4: return(error/2.0);
-    }
-  case 3:
-    switch(true_gen){
-    case 4: return(1.0-error);
-    case 1: case 2: case 3: return(error/3.0);
-    }
-  }
-    return(1.0);/* shouldn't get here */
-  
-  
-  /*
-   Marker type: C (3:1) (m=5, in the codes)
-   Parental genotype codification (do not used in the codes)
-   
-   C   (in the article)
-   
-   P1  P2
-   -a- -a-
-   X
-   -o- -o-
-   
-   offspring genotype codification (observed)
-   missing: 0
-   a: 1
-   o: 2
-   */
-  case 5:  /*C*/
-  switch(obs_gen){
-  case 0: return(1.0);
-  case 1:
-    if(true_gen==4) return(error);
-    else return(1.0-error);
-  case 2:
-    if(true_gen==4) return(1.0-error);
-    else return(error/3.0);
-  }
-    return(1.0);/* shouldn't get here */
-  
-  /*
-   Marker type: D (1:1) (m=6,m=7 in the codes)
-   Parental genotype codification (do not used in the codes)
-   
-   D.1   (in the article)
-   
-   P1  P2
-   -a- -c-
-   X   ...more 4 types, see on the article
-   -b- -c-
-   
-   D.2   (in the article)
-   
-   P1  P2
-   -c- -a-
-   X   ...more 4 types, see on the article
-   -c- -b-
-   
-   offspring genotype codification (observed)
-   missing: 0
-   D.1
-   ac: 1
-   bc: 2
-   
-   D.2
-   ac: 2
-   bc: 1
-   
-   */
-  case 6:  /*D.1*/
-  switch(obs_gen){
-  case 0: return(1.0);
-  case 1:
-    if(true_gen==1||true_gen==2) return(1.0-error);
-    else return(error/2.0);
-  case 2:
-    if(true_gen==3||true_gen==4) return(1.0-error);
-    else return(error/2.0);
-  }
-    return(1.0);/* shouldn't get here */
-  
-  case 7:  /*D.2*/
-  switch(obs_gen){
-  case 0: return(1.0);
-  case 1:
-    if(true_gen==1||true_gen==3) return(1.0-error);
-    else return(error/2.0);
-  case 2:
-    if(true_gen==2||true_gen==4) return(1.0-error);
-    else return(error/2.0);
-  }
-    return(1.0);/* shouldn't get here */
-  }
-  return(1.0);/* shouldn't get here */
-}
+// double emit_out(int obs_gen, int true_gen, double error, int mark_type)
+// {
+//   /*Notation similar to Wu et. al.(2002)
+//    
+//    Marker type: A (1:1:1:1) (m=1 in the codes)
+//    Parental genotype codification (not used in the codes)
+//    
+//    A.1        A.2        A.3        A.4 (in the article)
+//    
+//    P1  P2     P1  P2     P1  P2     P1  P2
+//    -a- -c-    -a- -a-    -a- -c-    -a- -b-
+//    X    or    X    or    X    or    X
+//    -b- -d-    -b- -c-    -b- -o-    -o- -o-
+//    
+//    offspring genotype codification (observed)
+//    missing: 0
+//    ac;  a; ac; ab: 1
+//    ad; ac;  a;  a: 2
+//    bc; ba; bc;  b: 3
+//    bd; bc;  b;  o: 4
+//    */
+//   switch(mark_type){
+//   case 1: /*A*/
+//   switch(obs_gen){
+//   case 0: return(1.0);
+//   case 1: case 2: case 3: case 4:
+//     if(obs_gen==true_gen) return(1.0-error);
+//     else return(error/3.0);
+//   }
+//     return(1.0);/* shouldn't get here */
+//   
+//   /*
+//    Marker type: B (2:1:1) (m=2, m=3, m=4 in the codes)
+//    Parental genotype codification (do not used in the codes)
+//    
+//    B.1        B.2        B.3     (in the article)
+//    
+//    P1  P2     P1  P2     P1  P2
+//    -a- -a-    -a- -a-    -a- -a-
+//    X    or    X    or    X
+//    -b- -o-    -o- -b-    -b- -b-
+//    
+//    offspring genotype codification (observed)
+//    
+//    VERY IMPORTANT: The proportion here is 2:1:1, unlike 1:2:1, as usualy used!!!!!
+//    missing: 0
+//    a  a  ab : 1
+//    ab ab a  : 2
+//    b  b  b  : 3
+//    */
+//   
+//   case 2: /*B.1*/
+//   switch(obs_gen){
+//   case 0: return(1.0);
+//   case 1:
+//     switch(true_gen){
+//     case 1: case 2: return(1.0-error);
+//     case 3: case 4: return(error/2.0);
+//     }
+//   case 2:
+//     switch(true_gen){
+//     case 3: return(1.0-error);
+//     case 1: case 2: case 4: return(error/3.0);
+//     }
+//   case 3:
+//     switch(true_gen){
+//     case 4: return(1.0-error);
+//     case 1: case 2: case 3: return(error/3.0);
+//     }
+//   }
+//     return(1.0);/* shouldn't get here */
+//   
+//   case 3:/*B.2*/
+//   switch(obs_gen){
+//   case 0: return(1.0);
+//   case 1:
+//     switch(true_gen){
+//     case 1: case 3: return(1.0-error);
+//     case 2: case 4: return(error/2.0);
+//     }
+//   case 2:
+//     switch(true_gen){
+//     case 2: return(1.0-error);
+//     case 1: case 3: case 4: return(error/3.0);
+//     }
+//   case 3:
+//     switch(true_gen){
+//     case 4: return(1.0-error);
+//     case 1: case 2: case 3: return(error/3.0);
+//     }
+//   }
+//     return(1.0);/* shouldn't get here */
+//   
+//   case 4: /*B.3*/
+//   switch(obs_gen){
+//   case 0: return(1.0);
+//   case 1:
+//     switch(true_gen){
+//     case 1: return(1.0-error);
+//     case 2: case 3: case 4: return(error/3.0);
+//     }
+//   case 2:
+//     switch(true_gen){
+//     case 2: case 3: return(1.0-error);
+//     case 1: case 4: return(error/2.0);
+//     }
+//   case 3:
+//     switch(true_gen){
+//     case 4: return(1.0-error);
+//     case 1: case 2: case 3: return(error/3.0);
+//     }
+//   }
+//     return(1.0);/* shouldn't get here */
+//   
+//   
+//   /*
+//    Marker type: C (3:1) (m=5, in the codes)
+//    Parental genotype codification (do not used in the codes)
+//    
+//    C   (in the article)
+//    
+//    P1  P2
+//    -a- -a-
+//    X
+//    -o- -o-
+//    
+//    offspring genotype codification (observed)
+//    missing: 0
+//    a: 1
+//    o: 2
+//    */
+//   case 5:  /*C*/
+//   switch(obs_gen){
+//   case 0: return(1.0);
+//   case 1:
+//     if(true_gen==4) return(error);
+//     else return(1.0-error);
+//   case 2:
+//     if(true_gen==4) return(1.0-error);
+//     else return(error/3.0);
+//   }
+//     return(1.0);/* shouldn't get here */
+//   
+//   /*
+//    Marker type: D (1:1) (m=6,m=7 in the codes)
+//    Parental genotype codification (do not used in the codes)
+//    
+//    D.1   (in the article)
+//    
+//    P1  P2
+//    -a- -c-
+//    X   ...more 4 types, see on the article
+//    -b- -c-
+//    
+//    D.2   (in the article)
+//    
+//    P1  P2
+//    -c- -a-
+//    X   ...more 4 types, see on the article
+//    -c- -b-
+//    
+//    offspring genotype codification (observed)
+//    missing: 0
+//    D.1
+//    ac: 1
+//    bc: 2
+//    
+//    D.2
+//    ac: 2
+//    bc: 1
+//    
+//    */
+//   case 6:  /*D.1*/
+//   switch(obs_gen){
+//   case 0: return(1.0);
+//   case 1:
+//     if(true_gen==1||true_gen==2) return(1.0-error);
+//     else return(error/2.0);
+//   case 2:
+//     if(true_gen==3||true_gen==4) return(1.0-error);
+//     else return(error/2.0);
+//   }
+//     return(1.0);/* shouldn't get here */
+//   
+//   case 7:  /*D.2*/
+//   switch(obs_gen){
+//   case 0: return(1.0);
+//   case 1:
+//     if(true_gen==1||true_gen==3) return(1.0-error);
+//     else return(error/2.0);
+//   case 2:
+//     if(true_gen==2||true_gen==4) return(1.0-error);
+//     else return(error/2.0);
+//   }
+//     return(1.0);/* shouldn't get here */
+//   }
+//   return(1.0);/* shouldn't get here */
+// }
 
 //Transition errorability funtion for outcrossing species
 double step_out(int gen1, int gen2, int phase, double rf)

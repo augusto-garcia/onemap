@@ -14,18 +14,37 @@ lg4 <- make_seq(lgs,4)
 lg4.ord <- order_seq(lg4)
 map.lg4.df <- make_seq(lg4.ord, "force")
 
-seq2 <- make_seq(twopts, c(24,21,22,23,20,18,17,16,19))
-map.test <- map(input.seq = seq2)
-map.lg4.df
+
+df.f2 <- read_onemap("vcf_example_f2.raw")
+df.f2 <- create_probs(df.f2, cross="f2")
+str(df.f2)
+head(df.f2$error)
+
+twopts <- rf_2pts(df.f2)
+seq1 <- make_seq(twopts,"all")
+lgs <- group(seq1)
+lg2 <- make_seq(lgs,2)
+
+lg2.ord <- order_seq(input.seq = lg2)
+map.lg2.df <- make_seq(lg2.ord, "force")
 
 
+df.bc <- read_onemap("vcf_example_bc.raw")
+df.bc <- create_probs(df.bc, cross="backcross")
+str(df.bc)
+head(df.bc$error)
 
+twopts <- rf_2pts(df.bc)
+seq1 <- make_seq(twopts,"all")
+lgs <- group(seq1)
+lg2 <- make_seq(lgs,2)
+
+lg2.ord <- order_seq(lg2)
+map.lg2.df <- make_seq(lg2.ord, "force")
 
 ### Function
-
 create_probs <- function(df, error = 10^(-5), cross=c("outcross", "backcross", "rils")){
-  probs <- melt(df$geno)
-  probs <- probs[order(probs$Var1),]
+  probs <- melt(t(df$geno))
   probs$type <- rep(df$segr.type.num, df$n.ind)
   
   # Global error according to observated data
@@ -107,6 +126,7 @@ create_probs <- function(df, error = 10^(-5), cross=c("outcross", "backcross", "
     idx <- which(probs$value == 3)
     prob[idx,] <- c(rep(error, length(idx)), rep(1-error, length(idx)))
   }
+  rownames(prob) <- paste0(probs$Var1, "_", probs$Var2)
   df$error <- prob
   return(df)
 }

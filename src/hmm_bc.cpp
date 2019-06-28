@@ -64,8 +64,9 @@ using namespace std;
 /* Note: true genotypes coded as 1, 2, ...
    but in the alpha's and beta's, we use 0, 1, ... */
 
-RcppExport SEXP est_hmm_bc(SEXP geno_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R){
+RcppExport SEXP est_hmm_bc(SEXP geno_R, SEXP error_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R){
   Rcpp::NumericMatrix geno = Rcpp::as<Rcpp::NumericMatrix>(geno_R);
+  Rcpp::NumericMatrix error = Rcpp::as<Rcpp::NumericMatrix>(error_R);
   Rcpp::NumericVector rf = Rcpp::as<Rcpp::NumericVector>(rf_R);
   int verbose = Rcpp::as<int>(verbose_R);
   double tol = Rcpp::as<double>(tol_R);
@@ -83,14 +84,14 @@ RcppExport SEXP est_hmm_bc(SEXP geno_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R){
 
   NumericMatrix tr(n_gen, (n_mar-1)*n_gen);
 
-  NumericMatrix em(4,2);
+  /*NumericMatrix em(4,2);
   em(0,0)=em(0,1)=1.0;
   em(1,0)=1.0-error_prob;
   em(1,1)=error_prob;
   em(2,1)=1.0-error_prob;
   em(2,0)=error_prob;
   em(3,1)=1.0-error_prob;
-  em(3,0)=error_prob;
+  em(3,0)=error_prob;*/
   if(verbose) {
     /* print initial estimates */
     Rprintf("      "); 
@@ -128,26 +129,26 @@ RcppExport SEXP est_hmm_bc(SEXP geno_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R){
       R_CheckUserInterrupt(); /* check for ^C */
       /* initialize alpha and beta */
       for(v=0; v<n_gen; v++) {
-	alpha(v,0) = initf(v)  * em(geno(0,i), v);
+	alpha(v,0) = initf(v)  * error(i*n_mar, v);
 	beta(v,n_mar-1) = 1.0;
       }   
       /* forward-backward equations */
       for(j=1,j2=n_mar-2; j<n_mar; j++, j2--) {
 	for(v=0; v<n_gen; v++) {
 	  alpha(v,j) = alpha(0,j-1) * tr(0, (j-1)*n_gen+v);
-	  beta(v,j2) = beta(0,j2+1) * tr(v, j2*n_gen) * em(geno(j2+1,i),0);
+	  beta(v,j2) = beta(0,j2+1) * tr(v, j2*n_gen) * error(j2+1 + i*n_mar,0);
 	  for(v2=1; v2<n_gen; v2++) {
 	    alpha(v,j) = alpha(v,j) + alpha(v2,j-1) * tr(v2,(j-1)*n_gen+v);
-	    beta(v,j2) = beta(v,j2) + beta(v2,j2+1) * tr(v, j2*n_gen+v2)  * em(geno(j2+1,i),v2);
+	    beta(v,j2) = beta(v,j2) + beta(v2,j2+1) * tr(v, j2*n_gen+v2)  * error(j2+1+i*n_mar,v2);
 	  }
-	  alpha(v,j) *= em(geno(j,i),v);
+	  alpha(v,j) *= error(j+i*n_mar,v);
 	}
       }
       for(j=0; j<n_mar-1; j++) {
 	/* calculate gamma = log Pr(v1, v2, O) */
 	for(v=0, s=0.0; v<n_gen; v++) {
 	  for(v2=0; v2<n_gen; v2++) {
-	    gamma(v,v2) = alpha(v,j) * beta(v2,j+1) * em(geno(j+1,i), v2)* tr(v, j*n_gen+v2);
+	    gamma(v,v2) = alpha(v,j) * beta(v2,j+1) * error(j+1+i*n_mar, v2)* tr(v, j*n_gen+v2);
 	    if(v==0 && v2==0) s = gamma(v,v2);
 	    else s = s + gamma(v,v2);
 	  }
@@ -184,7 +185,7 @@ RcppExport SEXP est_hmm_bc(SEXP geno_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R){
   for(i=0; i<n_ind; i++) { // i = individual 
     // initialize alpha 
     for(v=0; v<n_gen; v++) {
-      alpha(v,0) = initf(v) * em(geno(0,i), v);
+      alpha(v,0) = initf(v) * error(i*n_mar, v);
     }
     // forward equations 
     for(j=1; j<n_mar; j++) {
@@ -195,7 +196,7 @@ RcppExport SEXP est_hmm_bc(SEXP geno_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R){
 	for(v2=1; v2<n_gen; v2++)
 	  alpha(v,j) = alpha(v,j) + alpha(v2,j-1) *
 	    stepf_bc(v2+1,v+1,rf(j-1));
-	alpha(v,j) *= em(geno(j,i),v);
+	alpha(v,j) *= error(j+i*n_mar,v);
       }
     }
     curloglik = alpha(0,n_mar-1);
