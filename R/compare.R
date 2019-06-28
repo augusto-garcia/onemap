@@ -175,7 +175,7 @@ compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
                 for(j in 1:nrow(Ph.Init)){
                     ## estimate parameters
                     final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
-		    error=t(get(input.seq$data.name, pos=1)$error[,all.ord[i,]]),
+		    error=get(input.seq$data.name, pos=1)$error[which(rep(1:get(input.seq$data.name)$n.mar, get(input.seq$data.name)$n.ind) %in% all.ord[i,]),],
                                                  type=get(input.seq$data.name, pos=1)$segr.type.num[all.ord[i,]],
                                                  phase=Ph.Init[j,],
                                                  rf.vec=Rf.Init[j,],
@@ -238,7 +238,7 @@ compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
             for(j in 1:nrow(Ph.Init)){
                 ## estimate parameters
                 final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
-		error=t(get(input.seq$data.name, pos=1)$error[,all.ord[i,]]),
+		error=get(input.seq$data.name, pos=1)$error[which(rep(1:get(input.seq$data.name)$n.mar, get(input.seq$data.name)$n.ind) %in% all.ord[i,]),],
                                              type=get(input.seq$data.name, pos=1)$segr.type.num[all.ord[i,]],
                                              phase=Ph.Init[j,],
                                              rf.vec=Rf.Init[j,],

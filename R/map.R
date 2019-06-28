@@ -145,9 +145,9 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
     ## linkage map is started with the first two markers in the sequence
     ## gather two-point information for this pair
     phase.init <- vector("list",1)
-    list.init <- phases(make_seq(get(input.seq$twopt,pos = 1),seq.num[1:2],twopt=input.seq$twopt))
+    list.init <- onemap:::phases(make_seq(get(input.seq$twopt,pos = 1),seq.num[1:2],twopt=input.seq$twopt))
     phase.init[[1]] <- list.init$phase.init[[1]]
-    Ph.Init <- comb_ger(phase.init)
+    Ph.Init <- onemap:::comb_ger(phase.init)
     for(j in 1:nrow(Ph.Init)) {
       ## call to 'map' function with predefined linkage phase
       temp <- map(make_seq(get(input.seq$twopt),seq.num[1:2],phase=Ph.Init[j],twopt=input.seq$twopt))
@@ -177,10 +177,10 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
         results <- list(rep(NA,4),rep(-Inf,4))
         ## gather two-point information
         phase.init <- vector("list",mrk)
-        list.init <- phases(make_seq(get(input.seq$twopt),c(seq.num[mrk],seq.num[mrk+1]),twopt=input.seq$twopt))
+        list.init <- onemap:::phases(make_seq(get(input.seq$twopt),c(seq.num[mrk],seq.num[mrk+1]),twopt=input.seq$twopt))
         phase.init[[mrk]] <- list.init$phase.init[[1]]
         for(j in 1:(mrk-1)) phase.init[[j]] <- seq.phase[j]
-        Ph.Init <- comb_ger(phase.init)
+        Ph.Init <- onemap:::comb_ger(phase.init)
         for(j in 1:nrow(Ph.Init)) {
           ## call to 'map' function with predefined linkage phases
           temp <- map(make_seq(get(input.seq$twopt),seq.num[1:(mrk+1)],phase=Ph.Init[j,],twopt=input.seq$twopt))
@@ -209,7 +209,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
     rf.init <- get_vec_rf_out(input.seq, acum=FALSE)
     ## estimate parameters
     final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,seq.num]),
-    error = t(get(input.seq$data.name, pos=1)$error[,seq.num]),
+    error = get(input.seq$data.name, pos=1)$error[which(rep(1:get(input.seq$data.name)$n.mar, get(input.seq$data.name)$n.ind) %in% seq.num),],
                                  type=get(input.seq$data.name, pos=1)$segr.type.num[seq.num],
                                  phase=seq.phases,
                                  rf.vec=rf.init,

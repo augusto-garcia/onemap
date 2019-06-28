@@ -158,7 +158,7 @@ try_seq_inbred <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
   rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
   ## estimate parameters for all possible linkage phases for this order
   final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,try.ord]),
-  error=t(get(input.seq$data.name, pos=1)$error[,try.ord]),
+  error=t(get(input.seq$data.name, pos=1)$error[which(rep(1:get(input.seq$data.name)$n.mar, get(input.seq$data.name)$n.ind) %in% try.ord),]),
                             rf.vec=rf.temp,
                             verbose=FALSE,
                             tol=tol)
@@ -182,7 +182,7 @@ try_seq_inbred <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
     rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
     ## estimate parameters for all possible linkage phases for this order
     final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,try.ord[i+1,]]),
-    error=t(get(input.seq$data.name, pos=1)$error[,try.ord[i+1,]]),
+    error=t(get(input.seq$data.name, pos=1)$error[which(rep(1:get(input.seq$data.name)$n.mar, get(input.seq$data.name)$n.ind) %in% try.ord[i+1,]),]),
                               rf.vec=rf.temp,
                               verbose=FALSE,
                               tol=tol)
@@ -272,7 +272,7 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
                                         # estimate parameters for all possible linkage phases for this order
     for(j in 1:nrow(Ph.Init)) {
         final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,c(mrk,input.seq$seq.num)]),
-	error=t(get(input.seq$data.name, pos=1)$error[,c(mrk,input.seq$seq.num)]),
+	error=t(get(input.seq$data.name, pos=1)$error[which(rep(1:get(input.seq$data.name)$n.mar, get(input.seq$data.name)$n.ind) %in% c(mrk,input.seq$seq.num)),]),
                                      type=get(input.seq$data.name, pos=1)$segr.type.num[c(mrk,input.seq$seq.num)],
                                      phase=Ph.Init[j,],
                                      rf.vec=Rf.Init[j,],
@@ -331,7 +331,7 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
         ## estimate parameters for all possible linkage phases for the current order
         for(j in 1:nrow(Ph.Init)) {
             final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)])]),
-	    error=t(get(input.seq$data.name, pos=1)$error[,c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)])]),
+	    error=t(get(input.seq$data.name, pos=1)$error[which(rep(1:get(input.seq$data.name)$n.mar, get(input.seq$data.name)$n.ind) %in% c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)])),]),
                                          type=get(input.seq$data.name, pos=1)$segr.type.num[c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)])],
                                          phase=Ph.Init[j,],
                                          rf.vec=Rf.Init[j,],
@@ -377,7 +377,7 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
                                         # estimate parameters for all possible linkage phases for this order
     for(j in 1:nrow(Ph.Init)) {
         final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,c(input.seq$seq.num,mrk)]),
-	error=t(get(input.seq$data.name, pos=1)$error[,c(input.seq$seq.num,mrk)]),
+	error=t(get(input.seq$data.name, pos=1)$error[which(rep(1:get(input.seq$data.name)$n.mar, get(input.seq$data.name)$n.ind) %in% c(input.seq$seq.num,mrk)),]),
                                      type=get(input.seq$data.name, pos=1)$segr.type.num[c(input.seq$seq.num,mrk)],
                                      phase=Ph.Init[j,],
                                      rf.vec=Rf.Init[j,],
