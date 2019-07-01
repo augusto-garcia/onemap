@@ -296,19 +296,17 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
 
   if(is.null(f1)){
         GT_matrix <- apply(GT_matrix[,-c(P1,P2)],2,as.numeric)
-        error <- matrix(rep(0.00001, n.mk*dim(GT_matrix)[2]), nrow = dim(GT_matrix)[2], ncol = n.mk)
-        rownames(GT_matrix) <- colnames(error) <- MKS
-        colnames(GT_matrix) <- rownames(error) <-  INDS[-c(P1,P2)] 
+        rownames(GT_matrix)  <- MKS
+        colnames(GT_matrix)  <-  INDS[-c(P1,P2)] 
     } else{
         GT_matrix <- apply(GT_matrix[,-c(P1,P2,F1)],2,as.numeric)
-        error <- matrix(rep(0.00001, n.mk*dim(GT_matrix)[2]), nrow = dim(GT_matrix)[2], ncol = n.mk)
-        rownames(GT_matrix) <- colnames(error) <- MKS
-        colnames(GT_matrix) <- rownames(error) <-  INDS[-c(P1,P2,F1)] 
+        rownames(GT_matrix)  <- MKS
+        colnames(GT_matrix)  <-  INDS[-c(P1,P2,F1)] 
     }
       
   legacy_crosses <- setNames(c("outcross", "f2", "backcross", "riself", "risib"), 
                              c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"))
-  structure(list(geno= t(GT_matrix),
+  onemap.obj <- structure(list(geno= t(GT_matrix),
                  n.ind = dim(GT_matrix)[2],
                  n.mar = n.mk,
                  segr.type = mk.type,
@@ -317,9 +315,11 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
                  pheno = NULL,
                  CHROM = CHROM,
                  POS = POS,
-		 error=error,
                  input = "vcfR.object"),
             class=c("onemap",legacy_crosses[cross]))
+  
+  new.onemap.obj <- create_probs(onemap.obj)
+  return(new.onemap.obj)
 }
 
 

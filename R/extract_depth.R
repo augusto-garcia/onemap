@@ -70,7 +70,7 @@ extract_depth <- function(vcfR.object=NULL,
   
   if(recovering==FALSE){
     rm.mks <- which(pos.vcf %in% pos.onemap==FALSE)
-    rm.ind <- which(IND[-parents] %in% ind==FALSE)                                                                             
+    rm.ind <- which(IND %in% ind==FALSE)                                                                             
     CHROM <- onemap.object$CHROM
     POS <- onemap.object$POS
   } else {
@@ -140,9 +140,7 @@ extract_depth <- function(vcfR.object=NULL,
     error_matrix[which(error_matrix == 1)] <- 10^(-mean_phred/10)
     rownames(error_matrix) <- IND
     colnames(error_matrix) <- MKS
-    onemap.gq <- onemap.object
-    onemap.gq$error <- error_matrix
-    return(onemap.gq)
+    return(error_matrix)
   }
   
   if(vcf.par!="GQ"){
@@ -161,15 +159,29 @@ extract_depth <- function(vcfR.object=NULL,
     psize <- size_matrix[,idx]
     
     if(class(onemap.object)[2] == "f2"){
-      oalt <- alt_matrix[,-c(idx, which(IND==parent1), which(IND==parent2))]
-      oref <- ref_matrix[,-c(idx, which(IND==parent1), which(IND==parent2))]
-      osize <- size_matrix[,-c(idx, which(IND==parent1), which(IND==parent2))]
-      IND <- IND[-c(idx, which(IND==parent1), which(IND==parent2))]
+      if(recovering==TRUE){
+        oalt <- alt_matrix[,-c(idx, which(IND==parent1), which(IND==parent2))]
+        oref <- ref_matrix[,-c(idx, which(IND==parent1), which(IND==parent2))]
+        osize <- size_matrix[,-c(idx, which(IND==parent1), which(IND==parent2))]
+        IND <- IND[-c(idx, which(IND==parent1), which(IND==parent2))]
+      } else {
+        oalt <- alt_matrix
+        oref <- ref_matrix
+        osize <- size_matrix
+        IND <- IND
+      }
     } else {
-      IND <- IND[-c(idx)]
-      oalt <- alt_matrix[,-idx]
-      oref <- ref_matrix[,-idx]
-      osize <- size_matrix[,-idx]
+      if(recovering==TRUE){
+        IND <- IND[-c(idx)]
+        oalt <- alt_matrix[,-idx]
+        oref <- ref_matrix[,-idx]
+        osize <- size_matrix[,-idx]
+      } else {
+        IND <- IND
+        oalt <- alt_matrix
+        oref <- ref_matrix
+        osize <- size_matrix
+      }
     }
     
     n.ind <- dim(oref)[2]
