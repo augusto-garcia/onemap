@@ -156,7 +156,6 @@ updog_error <- function(vcfR.object=NULL,
       onemap_updog$POS <- POS[-rm.mk]
       genotypes_probs <- genotypes_probs[-c(rm.mk + rep(c(0:(dim(osize)[2]-1))*dim(osize)[1], each=length(rm.mk))),]
     }
-    get(input.seq$data.name, pos=1)$error[seq.num + rep(c(0:(get(input.seq$data.name)$n.ind-1))*get(input.seq$data.name)$n.mar, each=length(seq.num)),]
     conv_geno <- matrix(rep(NA,dim(geno_matrix)[2]*dim(geno_matrix)[1]),nrow=dim(geno_matrix)[1])
     segr.type <- segr.type.num <- rep(NA, n.mks)
     conv_geno[which(geno_matrix==1)] <- 2
