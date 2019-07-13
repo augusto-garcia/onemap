@@ -1,8 +1,37 @@
-# Generate input files for PedigreeSim software
-# example.chrom
-# example.ped
-# example.map
-# example.gen
+#' Generate input files for PedigreeSim software
+#'
+#' With the function arguments users can define the basic characteristics 
+#' of the maps to be simulated. The PedigreeSim software must be located at 
+#' path.pedsim. The PedigreeSim software offers other options that are not available here.
+#' 
+#' @param chromosome a vector of characters defining the chromosomes names 
+#' @param n.marker a vector of integers defining the number of markers within chromosome
+#' @param tot.size.cm a vector of double numbers defining the total size in centimorgan of each chromosome
+#' @param centromere a vector of double numbers defining the centromere position
+#' @param n.ind a integer defining the number of individuals to be simulated in the progeny
+#' @param mk.types a vector of characters defining the marker types according with Wu2002a 
+#' (the types will be distribuited randomly by the chromosomes)
+#' @param n.types a vector of integers defining the number of markers of each type
+#' @param pop a character defining the population type. Supported: "F1", "F2", "BC"
+#' @param path.pedsim path to the .jar PedigreeSim file
+#' @param name.mapfile a character with the mapfile name
+#' @param name.founderfile a character with the founderfile name
+#' @param name.chromfile a character with the chromfile name
+#' @param name.parfile a character with the parfile name
+#' @param name.out a character with the PedigreeSim outputs names
+#' 
+#' @return PedigreeSim outputs including the population genotypes 
+#' 
+#' @author Cristiane Taniguti, \email{chtaniguti@@usp.br} 
+#'
+#' @references 
+#'
+#' Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002)
+#' Simultaneous maximum likelihood estimation of linkage and linkage phases in
+#' outcrossing species. \emph{Theoretical Population Biology} 61: 349-363.
+#'
+#' 
+#' @export
 
 run_pedsim <- function(chromosome = c("Chr1", "Chr2", "Chr3"),
                        n.marker = c(18,19,20),

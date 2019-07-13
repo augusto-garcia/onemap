@@ -7,7 +7,7 @@
 updog_error(vcfR.object = NULL, onemap.object = NULL,
   vcf.par = c("AD", "DPR"), parent1 = "P1", parent2 = "P2",
   f1 = "F1", recovering = FALSE, mean_phred = 20, cores = 2,
-  depths = NULL, error_type = "naive")
+  depths = NULL)
 }
 \arguments{
 \item{parent1}{parent 1 identification in vcfR object}

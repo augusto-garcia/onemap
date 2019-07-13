@@ -71,7 +71,7 @@ pedsim2vcf <- function(inputfile=NULL,
   
   # Reference haplotype - If there is no haploid reference, A will be the reference and B the alternative
   if(is.null(haplo.ref)){
-    h.ref <- rep("A", n.mk)
+    h.ref <- rep("a", n.mk)
   } else{
     h.ref <- data[,which(colnames(data) == haplo.ref)]
     alt <- vector()
