@@ -175,7 +175,7 @@ compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
                 for(j in 1:nrow(Ph.Init)){
                     ## estimate parameters
                     final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
-		    error=t(get(input.seq$data.name, pos=1)$error[,all.ord[i,]]),
+		    error=get(input.seq$data.name, pos=1)$error[all.ord[i,] + rep(c(0:(get(input.seq$data.name)$n.ind-1))*get(input.seq$data.name)$n.mar, each=length(all.ord[i,])),],
                                                  type=get(input.seq$data.name, pos=1)$segr.type.num[all.ord[i,]],
                                                  phase=Ph.Init[j,],
                                                  rf.vec=Rf.Init[j,],
@@ -238,7 +238,7 @@ compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
             for(j in 1:nrow(Ph.Init)){
                 ## estimate parameters
                 final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
-		error=t(get(input.seq$data.name, pos=1)$error[,all.ord[i,]]),
+		error=get(input.seq$data.name, pos=1)$error[all.ord[i,] + rep(c(0:(get(input.seq$data.name)$n.ind-1))*get(input.seq$data.name)$n.mar, each=length(all.ord[i,])),],
                                              type=get(input.seq$data.name, pos=1)$segr.type.num[all.ord[i,]],
                                              phase=Ph.Init[j,],
                                              rf.vec=Rf.Init[j,],
@@ -317,7 +317,7 @@ compare_inbred<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
             seq.temp$twopt<-input.seq$twopt
             rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
             final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
-	    error=t(get(input.seq$data.name, pos=1)$error[,all.ord[i,]]),
+	    error=get(input.seq$data.name, pos=1)$error[all.ord[i,] + rep(c(0:(get(input.seq$data.name)$n.ind-1))*get(input.seq$data.name)$n.mar, each=length(all.ord[i,])),],
                                       rf.vec=rf.temp,
                                       verbose=FALSE,
                                       tol=tol)

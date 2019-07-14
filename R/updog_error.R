@@ -34,8 +34,7 @@ updog_error <- function(vcfR.object=NULL,
                         f1="F1",
                         recovering = FALSE,
                         mean_phred = 20, cores = 2,
-                        depths = NULL,
-                        error_type="naive"){
+                        depths = NULL){
   
   if(is.null(depths)){
     depth_matrix <- extract_depth(vcfR.object=vcfR.object,
@@ -91,7 +90,7 @@ updog_error <- function(vcfR.object=NULL,
   osize[idx] <- NA
   oref[idx] <- NA
   
-  error_matrix <- geno_matrix <- matrix(rep(NA,n.ind*n.mks),nrow=n.mks)
+  geno_matrix <- matrix(rep(NA,dim(osize)[2]*dim(osize)[1]),nrow=dim(osize)[1])
   P1 <- P2 <- rep(NA, n.mks)
   if(class(onemap.object)[2] == "f2"){
     cl <- parallel::makeCluster(cores)
@@ -131,44 +130,23 @@ updog_error <- function(vcfR.object=NULL,
     P2 <- unlist(sapply(sapply(gene_est, "[", 8), "[", 2))
   }
   
+  for(i in 1:n.mks)
+    geno_matrix[i,] <- lapply(gene_est, "[[", 9)[[i]]
+  
   postmat <- lapply(gene_est, "[", 6)
+  genotypes_probs <- postmat[[1]]$postmat
+  for(i in 2:length(postmat))
+    genotypes_probs <- rbind(genotypes_probs, postmat[[i]]$postmat)
   
-  # The error is the second highest genotype probability
-  if(error_type == "GQ"){
-  error_matrix1 <- lapply(postmat,
-                          function(x){ 
-                            sapply(x, function(q){ 
-                              apply(q,1,function(y){
-                                if(all(is.na(y))){
-                                  prob <- NA
-                                }else{
-                                  z <- -10*log(y, base=10)
-                                  w <- z - z[which.min(z)]
-                                  n <- length(w)
-                                  GQ <- sort(w,partial=n-1)[n-1]
-                                  prob <- 10^(-GQ/10)
-                                }
-                                return(prob)
-                              })
-                            })
-                          })
-  } else {
-    error_matrix1 <- sapply(gene_est, "[", 10)
-  }
-  
-  geno_matrix1 <- sapply(gene_est, "[", 9)
-  
-  error_matrix <- geno_matrix <- matrix(nrow = n.mks, ncol = n.ind)
-  for(i in 1:n.mks){
-    error_matrix[i,] <- 1- error_matrix1[[i]]
-    geno_matrix[i,] <- geno_matrix1[[i]]
-  }
+  # sort
+  idx <- rep(1:dim(osize)[2], dim(osize)[1])
+  genotypes_probs <- genotypes_probs[order(idx), ]
+    
   if(class(onemap.object)[2] == "outcross"){
     rm.mk <- which(P1==0 & P2 == 2 | P2 == 0 & P1 == 0 | P1==2 & P2 == 2 | P1==2 & P2 ==0)
     
     if(length(rm.mk) > 0){
       cat("markers", length(mks[rm.mk]), "were reestimated as non-informative and removed of analysis")
-      error_matrix <- error_matrix[-rm.mk,]
       geno_matrix <- geno_matrix[-rm.mk,]
       P1 <- P1[-rm.mk]
       P2 <- P2[-rm.mk]
@@ -176,9 +154,9 @@ updog_error <- function(vcfR.object=NULL,
       mks <- mks[-rm.mk]
       onemap_updog$CHROM <- CHROM[-rm.mk]
       onemap_updog$POS <- POS[-rm.mk]
+      genotypes_probs <- genotypes_probs[-c(rm.mk + rep(c(0:(dim(osize)[2]-1))*dim(osize)[1], each=length(rm.mk))),]
     }
-    
-    conv_geno <- matrix(rep(NA,n.ind*n.mks),nrow=n.mks)
+    conv_geno <- matrix(rep(NA,dim(geno_matrix)[2]*dim(geno_matrix)[1]),nrow=dim(geno_matrix)[1])
     segr.type <- segr.type.num <- rep(NA, n.mks)
     conv_geno[which(geno_matrix==1)] <- 2
     # B3.7                                                                                                         
@@ -216,7 +194,6 @@ updog_error <- function(vcfR.object=NULL,
     rm.mk <- which(P1!=1)
     if(length(rm.mk) > 0){
       cat("markers", length(mks[rm.mk]), "were estimated as non-informative and removed of analysis")
-      error_matrix <- error_matrix[-rm.mk,]
       geno_matrix <- geno_matrix[-rm.mk,]
       P1 <- P1[-rm.mk]
       P2 <- P2[-rm.mk]
@@ -224,9 +201,10 @@ updog_error <- function(vcfR.object=NULL,
       mks <- mks[-rm.mk]
       onemap_updog$CHROM <- onemap_updog$CHROM[-rm.mk]
       onemap_updog$POS <- onemap_updog$POS[-rm.mk]
+      genotypes_probs <- genotypes_probs[-c(rm.mk + rep(c(0:(dim(osize)[2]-1))*dim(osize)[1], each=length(rm.mk))),]
     }
     
-    conv_geno <- matrix(rep(NA,n.ind*n.mks),nrow=n.mks)
+    conv_geno <- matrix(rep(NA,dim(geno_matrix)[2]*dim(geno_matrix)[1]),nrow=dim(geno_matrix)[1])
     segr.type <- segr.type.num <- rep(NA, n.mks)
     conv_geno[which(geno_matrix==1)] <- 2
     
@@ -236,20 +214,11 @@ updog_error <- function(vcfR.object=NULL,
     conv_geno[idx,][which(geno_matrix[idx,]==2)] <- 1
     segr.type[idx] <- "A.H.B"
     segr.type.num[idx] <- 1
-    
   }
-  # Error probabilitie very low                                                                                  
-  if(length(which(error_matrix==0)) > 0)
-    error_matrix[which(error_matrix==0)] <- 10^-5
-  
-  # Error probabilitie for missing data                                                                          
-  if(length(which(is.na(error_matrix))) > 0)
-    error_matrix[which(is.na(error_matrix))] <- 10^((-mean_phred/10))
   
   conv_geno <-  t(conv_geno)
   conv_geno[which(is.na(conv_geno))] <- 0
-  error_matrix <- t(error_matrix)
-  
+
   comp <- which(colnames(onemap.object$geno) %in% mks)
   
   # If some marker in onemap object is now non-informative and didn't recover any marker                         
@@ -262,7 +231,7 @@ updog_error <- function(vcfR.object=NULL,
   } else if(length(colnames(onemap.object$geno)) - length(comp) > 0 & length(mks) > length(comp)){
     cat(length(mks) - length(colnames(onemap.object$geno)[comp]), "markers were recovered from vcf file and added to onemap object \n")
     comp1 <- which(mks %in% colnames(onemap.object$geno))
-    cat("This approach changed", (sum(conv_geno[,comp1] != onemap.object$geno[,comp])/length(onemap.object$geno[,comp]))*100, "% of the genotypes\\
+    cat("This approach changed", (sum(conv_geno[,comp1] != onemap.object$geno[,comp])/length(onemap.object$geno[,comp]))*100, "% of the genotypes \
 n")
     
     # If any marker in onemap object were considered non-informative and some marker were recovered from vcf       
@@ -274,17 +243,18 @@ n")
   }
   
   cat("New onemap object contains", length(mks), "markers")
-  colnames(conv_geno) <- colnames(error_matrix) <- mks
-  inds <- rownames(conv_geno) <- rownames(error_matrix) <- rownames(onemap.object$geno)
+  colnames(conv_geno)  <- mks
+  inds <- rownames(conv_geno)  <- rownames(onemap.object$geno)
   
-  onemap_updog$error <- error_matrix
   onemap_updog$geno <- conv_geno
   onemap_updog$n.ind <- length(inds)
   onemap_updog$n.mar <- length(mks)
   onemap_updog$segr.type.num <- segr.type.num
   onemap_updog$segr.type <- segr.type
   
-  structure(onemap_updog)
+  onemap_updog.new <- create_probs(onemap.obj = onemap_updog, genotypes_probs = genotypes_probs)
+  
+  structure(onemap_updog.new)
 }
 
 ##' Plot a barplot with error probabilities values

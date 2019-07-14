@@ -100,9 +100,9 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
   ##For F2, BC and rils
   if(class(get(input.seq$data.name, pos=1))[2] == "f2")
   {
-    final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,seq.num]),
-    error=t(get(input.seq$data.name, pos=1)$error[,seq.num]),
-                              rf.vec=get_vec_rf_in(input.seq),
+    final.map<- onemap:::est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,seq.num]),
+    error=get(input.seq$data.name, pos=1)$error[seq.num + rep(c(0:(get(input.seq$data.name)$n.ind-1))*get(input.seq$data.name)$n.mar, each=length(seq.num)),],
+                              rf.vec=onemap:::get_vec_rf_in(input.seq),
                               verbose=verbose,
                               tol=tol)
     return(structure(list(seq.num=seq.num,
@@ -118,7 +118,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
           class(get(input.seq$data.name, pos=1))[2] == "risib")
   {
     final.map<-est_map_hmm_bc(geno=t(get(input.seq$data.name, pos=1)$geno[,seq.num]),
-    error=t(get(input.seq$data.name, pos=1)$error[,seq.num]),
+    error=get(input.seq$data.name, pos=1)$error[seq.num + rep(c(0:(get(input.seq$data.name)$n.ind-1))*get(input.seq$data.name)$n.mar, each=length(seq.num)),],
                               rf.vec=get_vec_rf_in(input.seq),
                               verbose=verbose,
                               tol=tol)
@@ -209,7 +209,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
     rf.init <- get_vec_rf_out(input.seq, acum=FALSE)
     ## estimate parameters
     final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,seq.num]),
-    error = t(get(input.seq$data.name, pos=1)$error[,seq.num]),
+    error = get(input.seq$data.name, pos=1)$error[seq.num + rep(c(0:(get(input.seq$data.name)$n.ind-1))*get(input.seq$data.name)$n.mar, each=length(seq.num)),],
                                  type=get(input.seq$data.name, pos=1)$segr.type.num[seq.num],
                                  phase=seq.phases,
                                  rf.vec=rf.init,

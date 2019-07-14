@@ -133,26 +133,26 @@ RcppExport SEXP est_hmm_f2(SEXP geno_R, SEXP error_R, SEXP rf_R, SEXP verbose_R,
       R_CheckUserInterrupt(); /* check for ^C */
       /* initialize alpha and beta */
       for(v=0; v<n_gen; v++) {
-	alpha(v,0) = initf(v)  * emit_inb(geno(0,i), v+1, error(0,i));
+	alpha(v,0) = initf(v)  * error(i*n_mar,v);
 	beta(v,n_mar-1) = 1.0;
       }   
       /* forward-backward equations */
       for(j=1,j2=n_mar-2; j<n_mar; j++, j2--) {
 	for(v=0; v<n_gen; v++) {
 	  alpha(v,j) = alpha(0,j-1) * tr(0, (j-1)*n_gen+v);
-	  beta(v,j2) = beta(0,j2+1) * tr(v, j2*4) * emit_inb(geno(j2+1,i),1, error(j2+1,i));
+	  beta(v,j2) = beta(0,j2+1) * tr(v, j2*4) * error(j2+1+i*n_mar,0);
 	  for(v2=1; v2<n_gen; v2++) {
 	    alpha(v,j) = alpha(v,j) + alpha(v2,j-1) * tr(v2,(j-1)*n_gen+v);
-	    beta(v,j2) = beta(v,j2) + beta(v2,j2+1) * tr(v, j2*n_gen+v2)  * emit_inb(geno(j2+1,i),v2+1,error(j2+1,i));
+	    beta(v,j2) = beta(v,j2) + beta(v2,j2+1) * tr(v, j2*n_gen+v2)  * error(j2+1+i*n_mar,v2);
 	  }
-	  alpha(v,j) *= emit_inb(geno(j,i),v+1, error(j,i));
+	  alpha(v,j) *= error(j+i*n_mar,v);
 	}
       }
       for(j=0; j<n_mar-1; j++) {
 	/* calculate gamma = log Pr(v1, v2, O) */
 	for(v=0, s=0.0; v<n_gen; v++) {
 	  for(v2=0; v2<n_gen; v2++) {
-	    gamma(v,v2) = alpha(v,j) * beta(v2,j+1) * emit_inb(geno(j+1,i), v2+1, error(j+1,i))* tr(v, j*n_gen+v2);
+	    gamma(v,v2) = alpha(v,j) * beta(v2,j+1) * error(j+1+i*n_mar,v2)* tr(v, j*n_gen+v2);
 	    if(v==0 && v2==0) s = gamma(v,v2);
 	    else s = s + gamma(v,v2);
 	  }
@@ -189,7 +189,7 @@ RcppExport SEXP est_hmm_f2(SEXP geno_R, SEXP error_R, SEXP rf_R, SEXP verbose_R,
   for(i=0; i<n_ind; i++) { // i = individual 
     // initialize alpha 
     for(v=0; v<n_gen; v++) {
-      alpha(v,0) = initf(v) * emit_inb(geno(0,i), v+1, error(0,i));
+      alpha(v,0) = initf(v) * error(i*n_mar,v);
     }
     // forward equations 
     for(j=1; j<n_mar; j++) {
@@ -200,7 +200,7 @@ RcppExport SEXP est_hmm_f2(SEXP geno_R, SEXP error_R, SEXP rf_R, SEXP verbose_R,
 	for(v2=1; v2<n_gen; v2++)
 	  alpha(v,j) = alpha(v,j) + alpha(v2,j-1) *
 	    stepf_f2(v2+1,v+1,rf(j-1));
-	alpha(v,j) *= emit_inb(geno(j,i),v+1, error(j,i));
+	alpha(v,j) *= error(j+i*n_mar,v);
       }
     }
     curloglik = alpha(0,n_mar-1);
@@ -224,46 +224,46 @@ RcppExport SEXP est_hmm_f2(SEXP geno_R, SEXP error_R, SEXP rf_R, SEXP verbose_R,
 
 //Emission function for inbred species
 
-double emit_inb(int obs_gen, int true_gen, double error)
-{
-  /* Format: 6 x 4
-     column(true gen):            A       AB    BA      B
-     row (obs gen): missing(0)    1       1      1      1
-     A(1)      1-e     e/3    e/3    e/3
-     H(2)      e/2     1-e    1-e    e/2
-     B(3)      e/3     e/3    e/3    1-e
-     D(4)     1-e/3    1-e/3  1-e/3   e
-     C(5)       e      1-e/3  1-e/3  1-e/3
-  */
-  switch(obs_gen){
-  case 0: return(1.0);
-  case 1:
-    switch(true_gen){
-    case 1: return(1.0-error);
-    case 2: case 3: case 4: return(error/3.0);
-    }
-  case 2:
-    switch(true_gen){
-    case 2: case 3: return(1.0-error);
-    case 1: case 4: return(error/2.0);
-    }
-  case 3:
-    switch(true_gen){
-    case 4: return(1.0-error);
-    case 1: case 2: case 3: return(error/3.0);
-    }
-  case 4:
-    switch(true_gen){
-    case 1: case 2: case 3: return(1 - error/3.0);
-    case 4: return(error);
-    }
-  case 5:
-    switch(true_gen){
-    case 1: return(error);
-    case 2: case 3: case 4: return(1 - error/3.0);
-    }    
-  }
-}
+// double emit_inb(int obs_gen, int true_gen, double error)
+// {
+//   /* Format: 6 x 4
+//      column(true gen):            A       AB    BA      B
+//      row (obs gen): missing(0)    1       1      1      1
+//      A(1)      1-e     e/3    e/3    e/3
+//      H(2)      e/2     1-e    1-e    e/2
+//      B(3)      e/3     e/3    e/3    1-e
+//      D(4)     1-e/3    1-e/3  1-e/3   e
+//      C(5)       e      1-e/3  1-e/3  1-e/3
+//   */
+//   switch(obs_gen){
+//   case 0: return(1.0);
+//   case 1:
+//     switch(true_gen){
+//     case 1: return(1.0-error);
+//     case 2: case 3: case 4: return(error/3.0);
+//     }
+//   case 2:
+//     switch(true_gen){
+//     case 2: case 3: return(1.0-error);
+//     case 1: case 4: return(error/2.0);
+//     }
+//   case 3:
+//     switch(true_gen){
+//     case 4: return(1.0-error);
+//     case 1: case 2: case 3: return(error/3.0);
+//     }
+//   case 4:
+//     switch(true_gen){
+//     case 1: case 2: case 3: return(1 - error/3.0);
+//     case 4: return(error);
+//     }
+//   case 5:
+//     switch(true_gen){
+//     case 1: return(error);
+//     case 2: case 3: case 4: return(1 - error/3.0);
+//     }    
+//   }
+// }
 
 
 double stepf_f2(int gen1, int gen2, double rf)

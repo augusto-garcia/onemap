@@ -1,3 +1,5 @@
+## Bug in simulating F2
+
 #' Function to simulate depths and to convert PedigreeSim file to vcf file
 #' 
 #' Given PedigreeSim .dat .map and .chrom files generate vcf file with depths count
@@ -24,7 +26,7 @@
 #' 
 #' @seealso vcf file description 
 #' <http://www.internationalgenome.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-40/>
-#' \code{\link{[onemap]{simu_updog}}}
+#' 
 #' 
 #' @author Cristiane Taniguti, \email{chtaniguti@@usp.br} 
 #' 
@@ -69,7 +71,7 @@ pedsim2vcf <- function(inputfile=NULL,
   
   # Reference haplotype - If there is no haploid reference, A will be the reference and B the alternative
   if(is.null(haplo.ref)){
-    h.ref <- rep("A", n.mk)
+    h.ref <- rep("a", n.mk)
   } else{
     h.ref <- data[,which(colnames(data) == haplo.ref)]
     alt <- vector()
