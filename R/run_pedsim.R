@@ -166,7 +166,7 @@ run_pedsim <- function(chromosome = c("Chr1", "Chr2", "Chr3"),
   system(paste0("java -jar ",path.pedsim, "PedigreeSim.jar ",name.parfile))
   
   if(rm.tempfiles){
-    file.remove(name.parfile, name.chromfile, paste0(name.out, "_allelefose.dat"), 
+    file.remove(name.parfile, paste0(name.out, "_alleledose.dat"), 
                 paste0(name.out, ".hsa"), paste0(name.out, ".hsb"), paste0(name.out, ".ped"))
   }
 }
