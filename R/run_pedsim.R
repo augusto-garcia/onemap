@@ -46,7 +46,8 @@ run_pedsim <- function(chromosome = c("Chr1", "Chr2", "Chr3"),
                        name.founderfile="founderfile.gen", 
                        name.chromfile="sim.chrom", 
                        name.parfile="sim.par",
-                       name.out="sim_out"){
+                       name.out="sim_out",
+                       rm.tempfiles=F){
   
   # Checks
   sizes <-sapply(list(chromosome, n.marker, tot.size.cm, centromere), length)
@@ -163,6 +164,11 @@ run_pedsim <- function(chromosome = c("Chr1", "Chr2", "Chr3"),
   
   # Run pedigreesim
   system(paste0("java -jar ",path.pedsim, "PedigreeSim.jar ",name.parfile))
+  
+  if(rm.tempfiles){
+    file.remove(name.parfile, name.chromfile, paste0(name.out, "_allelefose.dat"), 
+                paste0(name.out, ".hsa"), paste0(name.out, ".hsb"), paste0(name.out, ".ped"))
+  }
 }
 
 # Example of usage
