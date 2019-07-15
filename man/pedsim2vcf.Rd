@@ -62,7 +62,6 @@ Sequencing Data When Constructing Genetic Maps Using Biparental Outcrossed Popul
 \seealso{
 vcf file description 
 <http://www.internationalgenome.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-40/>
-\code{\link{[onemap]{simu_updog}}}
 }
 \author{
 Cristiane Taniguti, \email{chtaniguti@usp.br}

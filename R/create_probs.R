@@ -228,6 +228,10 @@ create_probs <- function(onemap.obj = NULL,
     }
   }
   rownames(prob) <- paste0(probs$Var1, "_", probs$Var2)
+  
+  # Values can't be zero
+  prob[prob==0] <- 10^-6
+  prob[prob==1] <- 1-10^-6
   onemap.obj$error <- prob
   
   return(onemap.obj)
