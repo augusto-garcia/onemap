@@ -1,10 +1,17 @@
 #' OneMap interface with updog package
 #'
 #' Uses alelle counts to re-estimate genotypes with updog approach and 
-#' considers (1 - updog genotype probability) as error probability for further multipoint 
+#' considers the genotypes probabilities in for further multipoint 
 #' analysis
 #' 
-#' @param depth_matrix list containing ref allele counts for parents and progeny, output 
+#' @param vcfR.object
+#' @param onemap.object
+#' @param vcf.par
+#' @param f1
+#' @param recovering
+#' @param mean_phred
+#' @param cores
+#' @param depths list containing ref allele counts for parents and progeny, output 
 #' from extract_depth function
 #' 
 #' @param parent1 parent 1 identification in vcfR object
@@ -23,7 +30,7 @@
 #' Empirical Bayes and Mendelian Segregation for Genotyping Autopolyploids from 
 #' Messy Sequencing Data. bioRxiv. doi: 10.1101/281550.
 #'
-#' @import foreach doParallel
+#' @import foreach doParallel updog
 #'   
 #' @export
 updog_error <- function(vcfR.object=NULL,

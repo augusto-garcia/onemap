@@ -14,7 +14,7 @@ updog_error(vcfR.object = NULL, onemap.object = NULL,
 
 \item{parent2}{parent 2 identification in vcfR objetc}
 
-\item{depth_matrix}{list containing ref allele counts for parents and progeny, output 
+\item{depths}{list containing ref allele counts for parents and progeny, output 
 from extract_depth function}
 }
 \value{
@@ -22,7 +22,7 @@ onemap object with error updated
 }
 \description{
 Uses alelle counts to re-estimate genotypes with updog approach and 
-considers (1 - updog genotype probability) as error probability for further multipoint 
+considers the genotypes probabilities in for further multipoint 
 analysis
 }
 \references{
