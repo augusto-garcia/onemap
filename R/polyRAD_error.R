@@ -33,7 +33,8 @@ polyRAD_error <- function(vcf=NULL,
                           parent1=NULL,
                           parent2=NULL,
                           f1=NULL,
-                          crosstype=NULL){
+                          crosstype=NULL,
+                          tech.issue=TRUE){
   # Do the checks
   
   poly.test <- VCF2RADdata(vcf, phaseSNPs = FALSE, 
@@ -62,7 +63,8 @@ polyRAD_error <- function(vcf=NULL,
   
   # this will change according to the vcf - bug!!
   pos <- sapply(strsplit(as.character(genotypes$V1), split = "_"),"[",1)
-  pos <- gsub(":", "_", pos)
+  if(tech.issue) # Muda conforme o software de chamada, tem q ver como deixar universal
+    pos <- gsub(":", "_", pos)
   
   pos.onemap <- colnames(onemap.obj$geno)
   genotypes <- genotypes[which(pos%in%pos.onemap),]
