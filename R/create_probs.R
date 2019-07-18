@@ -199,10 +199,6 @@ create_probs <- function(onemap.obj = NULL,
         }
     }
     
-    prob.temp[,as.numeric(names(which.max(tapply(genotypes_probs[,1], probs$value, mean))))] <- genotypes_probs[,1]
-    prob.temp[,] <- genotypes_probs[,3]
-    
-    
     # Only for biallelic markers codominant markers
     if(crosstype == "outcross"){
       prob <- matrix(NA, nrow=length(probs$value), ncol = 4)
