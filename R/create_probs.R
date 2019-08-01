@@ -191,7 +191,7 @@ create_probs <- function(onemap.obj = NULL,
         }
     } else {
         idx3 <- as.numeric(names(which.max(tapply(genotypes_probs[,3], probs$value, mean))))
-        prob.temp[,idx1] <- genotypes_probs[,3]
+        prob.temp[,idx3] <- genotypes_probs[,3]
         if(idx3 == 1){
             prob.temp[,3] <- genotypes_probs[,1]
         } else {
