@@ -74,7 +74,7 @@ install_github("augusto-garcia/onemap")
 `OneMap` requires several dependencies that you may not have in your system. To overcome needs of installing all of them, you can use the `OneMap` image in docker hub. Install docker (see more about ir [here](https://docs.docker.com/get-started/)) and use:
 
 ```bash
-docker run -it critaniguti/onemap_git:v2.1.1007
+docker push critaniguti/onemap_git:v2.1.1007
 ```
 
 # Tutorials
