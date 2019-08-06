@@ -14,4 +14,6 @@ services:
     
 before_install:
     - export DISPLAY=:99.0
-    
+
+apt_packages:
+    - mesa-common-dev
