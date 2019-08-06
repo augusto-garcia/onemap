@@ -14,5 +14,4 @@ services:
     
 before_install:
     - export DISPLAY=:99.0
-    - R -e 'source("https://install-github.me/r-lib/remotes")'
     
