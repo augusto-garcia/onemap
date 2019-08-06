@@ -16,4 +16,9 @@ before_install:
     - export DISPLAY=:99.0
 
 apt_packages:
-    - mesa-common-dev
+    - libssl-dev 
+    - libftgl2 
+    - libglu1-mesa-dev 
+    - libftgl2 
+    - libfreetype6-dev  
+    - libxml2-dev
