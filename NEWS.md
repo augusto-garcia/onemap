@@ -70,5 +70,9 @@
 # onemap 2.1.1007
 
 * draw_map2 function
-* vignette update
+* Vignette update
 
+# onemap 2.1.1008
+
+* mds_onemap function
+* Vignette update
