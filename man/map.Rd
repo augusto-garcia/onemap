@@ -4,7 +4,7 @@
 \alias{map}
 \title{Construct the linkage map for a sequence of markers}
 \usage{
-map(input.seq, tol = 1e-04, verbose = FALSE)
+map(input.seq, tol = 1e-04, verbose = FALSE, mds.seq = FALSE)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}
@@ -13,6 +13,10 @@ map(input.seq, tol = 1e-04, verbose = FALSE)
 convergence.}
 
 \item{verbose}{If \code{TRUE}, print tracing information.}
+
+\item{mds.seq}{When some pair of markers do not follow the linkage criteria, 
+if \code{TRUE} one of the markers is removed and returns a vector with remaining 
+marker numbers (useful for mds_onemap function).}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the

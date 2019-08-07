@@ -254,8 +254,8 @@ read_mapmaker<-function (dir, file)
         }
         mkt<-apply(geno, 2, function(x) prod(unique(x), na.rm=TRUE))
         segr.type[mkt==2 | mkt==3 | mkt==6]<-"A.H.B"
-        segr.type[mkt==12]<-"C.A"
-        segr.type[mkt==5]<-"D.B"
+        segr.type[mkt==12]<-"D.B"
+        segr.type[mkt==5]<-"C.A"
         mkt.rest<-which(segr.type=="")
         for(i in mkt.rest)
         {
@@ -271,8 +271,8 @@ read_mapmaker<-function (dir, file)
                 segr.type[i]<-"M.X"
         }
         segr.type.num[segr.type=="A.H.B"]<-1
-        segr.type.num[segr.type=="C.A"]<-2
-        segr.type.num[segr.type=="D.B"]<-3
+        segr.type.num[segr.type=="C.A"]<-3
+        segr.type.num[segr.type=="D.B"]<-2
         segr.type.num[segr.type=="M.X"]<-4
         geno[is.na(geno)]<-0
     }
