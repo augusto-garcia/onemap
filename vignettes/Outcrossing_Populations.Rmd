@@ -24,7 +24,7 @@ knitr::opts_chunk$set(collapse = TRUE,
 
 ```
 
-```{r, echo=FALSE, results='hide'}
+```{r, echo=FALSE, results='hide', message=FALSE}
 library(onemap)
 ```
 
@@ -162,7 +162,7 @@ If no error has occurred, a message will display some basic
 information about the data, such as number of individuals and number
 of markers:
 
-```{r, echo=FALSE}
+```{r, eval=FALSE, echo=FALSE}
 onemap_example_out <- read_onemap(inputfile = system.file("extdata/onemap_example_out.raw", package = "onemap"))
 ``` 
 
@@ -211,60 +211,9 @@ plot_by_segreg_type(onemap_example_out)
 
 ## Importing data from `VCF` file
 
-If you are working with biallelic markers, as SNPs and indels (marker types B3.7, D1.10 or D2.15), in VCF (Variant Call Format) files, there are two ways of import information from `VCF` to `OneMap`:
+If you are working with biallelic markers, as SNPs and indels (marker types B3.7, D1.10 or D2.15), in VCF (Variant Call Format) files, you can import information from `VCF` to `OneMap` using `onemap_read_vcfR` function.
 
-* With the `vcf2raw` function
-
-You can use the function `vcf2raw` to convert the genotype information from the VCF file to `OneMap` format `.raw`. Moreover, the function keeps chromosome and position information for each marker at the end of raw file.
-
-To see how the function works, there is a short example of VCF file called `vcf_example_out.vcf` saved in the directory you installed the `OneMap`. This file is already sorted, compressed and tabix indexed as require by the function. If you need to sort your file, we suggest the `vcf-sort` perl script from `vcftools` program. The functions `bgzip` and `indexTabix` from `Rsamtools` package can be used to compress and add tabix index.
-
-```{r, eval=FALSE, message='hide'}
-vcf2raw(input = system.file("extdata/vcf_example_out.vcf.gz", package = "onemap"),
-        output = "vcf_example_out.raw", parent1 = "P1", parent2 = "P2", cross = "outcross")
-```
-
-The first argument is the path and the name of the data file. You can acess the example data using the function `system.file` as already seen above. For the second argument you can choose a name for the output `.raw` data. At the `parent1` and `parent2` arguments you should specify the parents samples IDs. They could be only one ID or, if there are replicate samples of the parents, multiple IDs for each parent. If you have replicates, you can specify a real number between 0.0 and 1.0 for the argument `min_class` to define the proportion of parents replicates that must have the same genotype for it to be assigned to the corresponding parent. At the `cross` argument you should point the cross type. You can access more information in the help page `?vcf2raw`.
-
-After running the function, the `OneMap` imput file `vcf_example_out.raw` generated will be at your working directory.
-
-**This function is usually fast, even with big datasets, and it is only available in the `OneMap` github version.** 
-
-The function will not convert non-informative markers (if both parents are homozygotes). Therefore, you can have smaller number of markers in your `.raw` file compared to `vcf` file. In our example, there is one non-informative marker, identified as `SNP15`.
-
-You can load it in the same way as shown above:
-
-```{r, eval=FALSE}
-vcf_example_out <- read_onemap("C:/workingdirectory", "vcf_example_out.raw")
-```
-
-Or, because it is also a data set from the package:
-
-```{r}
-data("vcf_example_out")
-``` 
-
-```{r, echo=FALSE}
-vcf_example_out <- read_onemap(inputfile = system.file("extdata/vcf_example_out.raw", package = "onemap"))
-``` 
-
-And you can see the informations about this new object with:
-
-```{r}
-vcf_example_out
-``` 
-
-and with:
-
-```{r}
-plot(vcf_example_out, all = FALSE)
-```
-
-The black cells here are indicating missing genotypes for those markers and individuals.
-
-* With the `onemap_read_vcfR` function
-
-With the `onemap_read_vcfR` you can convert the object from `vcfR` package directly to `onemap`. As the `vcf2raw` function, the `onemap_read_vcfR` function keeps chromosome and position information for each marker at the end of raw file.
+With the `onemap_read_vcfR` you can convert the object from `vcfR` package directly to `onemap`. The `onemap_read_vcfR` function keeps chromosome and position information for each marker at the end of raw file.
 
 We will use the same example file `vcf_example_out.vcf` to show how it works.
 
@@ -272,7 +221,7 @@ First, we convert the `VCF` file to `vcfR` object:
 
 ```{r, eval=FALSE}
 library(vcfR)
-vcfR.object <- read.vcfR(system.file("extdata/vcf_example_f2.vcf", package = "onemap"))
+vcfR.object <- read.vcfR(system.file("extdata/vcf_example_out.vcf", package = "onemap"))
 ```
 
 As described in the `vcfR` package vignette, memory use is a important consideration when using `vcfR`. Depending of your dataset, the object created can be very large and occupy a lot of memory.
@@ -286,9 +235,11 @@ vcf_example_out <- onemap_read_vcfR(vcfR.object = vcfR.object,
                                    cross = "outcross")
 ```
 
-Depending of your dataset, this function can take some time to run. As a measure, in my computer (see informations about it in the `Session Info`) it tooks 15 min to run 1 million markers. 
+```{r, echo=FALSE}
+data(vcf_example_out)
+```
 
-The `onemap `object `vcf_example_out` generated is exactly the same as generated by the `vcf2raw` function combined with the `read_onemap`.
+Depending of your dataset, this function can take some time to run.
 
 After the convertion, we can save the `vcfR.object` as a `.RData` and to remove it from the workspace, once it can occupy a lot of memory and turn the other process too slow. 
 
@@ -296,6 +247,8 @@ After the convertion, we can save the `vcfR.object` as a `.RData` and to remove 
 save(vcfR.object, file = "vcfR.object.RData") 
 rm(vcfR.object)
 ```
+
+From version 2.0.6 to 2.1.1005, OneMap had the `vcf2raw` function to convert `vcf` to `.raw`. Now, this function is defunct, but it can be replaced by a combination of `onemap_read_vcfR` and `write_onemap_raw` functions.
 
 # Combining `OneMap` datasets
 
@@ -345,6 +298,16 @@ bins_example
 
 The arguments for `create_data_bins` function are the `onemap` object and the object created by `find_bins` function.
 
+# Exporting .raw file from onemap object
+
+The functions `onemap_read_vcfR` generates new onemap objects without use a input `.raw` file. Also, the functions `combine_onemap` and `create_data_bins` manipulates the information of the original `.raw` file and creates a new data set. In both cases, you do not have a input file `.raw` that contains the same informations of the analysed data. If you want to create a new input file with the data set you are working after using this functions, you can use the function `write_onemap_raw`.  
+
+```{r, eval=FALSE}
+write_onemap_raw(comb_example, file.name = "new_dataset.raw", cross="outcross")
+```
+
+The file `new_dataset.raw` will be generated in your working directory. In our example, it contains only non-redundant markers from `onemap_example_out` and `vcf_example_out` data sets.
+
 # Testing segregation pattern
 
 For the map building process it is also important to know which markers have deviations in the expecteded segregation pattern. It can be a good pratice to remove them from the map building process, because they can adversely affect the map building, and, once the map is builded, they can be inserted.
@@ -366,13 +329,15 @@ print(segreg_test)
 
 The only argument of the function is a `onemap` object. 
 
-Once we have the `onemap_segreg_test`object, the function `select_segreg` can be used to show only the markers considered with/without segregation distortion if Bonferroni's correction is applied with global  $\alpha=0.5$.
+Once we have the `onemap_segreg_test`object, the function `select_segreg` can be used to show only the markers considered with/without segregation distortion. By default, it uses as threshold for the test a global $\alpha=0.05$, corrected for multiple test with Bonferroni correction.
 
 ```{r}
 select_segreg(segreg_test, distorted = TRUE) #to show the markers names with segregation distortion
 
 select_segreg(segreg_test, distorted = FALSE) #to show the markers names without segregation distortion
 ```
+
+It is not recommended, but you can define a different threshold value changing the `threshold` argument of the function `select_segreg`. 
 
 For the next steps will be useful to know the numbers of each markers with segregation distortion, so then you can keep those out of your map building analysis. These numbers refer to the lines where markers are located on the data file.
 
@@ -552,6 +517,8 @@ To use Kosambi
 set_map_fun(type = "kosambi")
 ```
 
+If you do not set one of these functions, the kosambi is used as default.
+
 Now, you must define which linkage group will be mapped. In another
 words, a linkage group must be `extracted` from the object of class
 `group`, in order to be mapped. For simplicity, we will start here
@@ -602,12 +569,15 @@ function `compare` can be used:
 LG3_comp <- compare(LG3)
 ``` 
 
-This algorithm can take some time to run, depending on marker types in
+**WARNING: This algorithm can take some time to run, depending on marker types in
 the linkage group. If you are working in a personal computer, without 
-high capacity, we recommend using maximum of ten markers. 
+high capacity, we recommend using maximum of ten markers. **
+
+If you have more markers in your group, we suggest to use the following explained approaches
+`order_seq` or `mds_onemap`.
 
 In the example, 
-`LG3` contains six markers. Two of them are of type D1 and one are
+`LG3` contains only six markers. Two of them are of type D1 and one are
 segregating in 3:1 fashion (type C). Thus, although the number 
 of possible orders is relatively small (360), for each order there 
 are various possible combinations of linkage phases. Also, the 
@@ -1016,7 +986,19 @@ ripple_seq(LG1_frame)
 
 No better order was observed. 
 
-As we made for LG2, we can remove some doubtful markers accordinly with the graphic, try to positioned them again and decide if and where we will maintain them.
+Alternatively, you can also use `mds_onemap` function to obtain a first draft for the markers order. The `mds_onemap` function makes a interface between `OneMap` and `MDSMap` package. The ordering approach presented in `MDSMap` provides a faster and efficient way of ordering markers using multi-dimensional scaling. The method also provides diagnostics graphics and parameters to find outliers to help users to filter the dataset. You can find more informations in `MDSMap` [vignette](https://cran.r-project.org/web/packages/MDSMap/vignettes/MDSMap.pdf). Here we will show a simple example of how it can be used for ordering our example markers from an outcrossing population.
+
+```{r}
+LG1_mds <- mds_onemap(LG1)
+```
+
+If you only specify the input sequence, mds_onemap will use the default parameters. It will generate MDSMap input file in `out.file` file and the `NULL.pdf` file with the diagnostic graphics in your work directory. Also, the default method used is the principal curves, know more about using `?mds_onemap` and reading the MDSMap [vignette](https://cran.r-project.org/web/packages/MDSMap/vignettes/MDSMap.pdf). By default, we use the OneMap HMM approach to estimate the distances after the MDSMap ordered the markers, but you can have the default output from MDSMap setting `hmm = FALSE`.
+
+```{r}
+rf_graph_table(LG1_mds)
+```
+
+Based on the drafts from `order_seq` or/and `mds_onemap`, we can remove some doubtful markers accordinly with the graphic, try to positioned them again and decide if and where we will maintain them.
 
 ```{r}
 LG1_test_seq <- drop_marker(LG1_frame, c(10,11,28,42))
@@ -1071,7 +1053,6 @@ CHR1 <- make_seq(twopts, "1")
 CHR1
 CHR2 <- make_seq(twopts, "2")
 CHR3 <- make_seq(twopts, "3")
-
 ```
 
 ## Adding markers with no reference genome informations
@@ -1080,21 +1061,21 @@ According to `CHROM` informations we have three defined linkage groups, now we c
 
 ```{r}
 CHR_mks <- group_seq(input.2pts = twopts, seqs = "CHROM", unlink.mks = mark_no_dist,
-                      rm.repeated = TRUE)
+                      repeated = FALSE)
 ```
 
 The function works as the function `group`, but considering preexisting sequences. Setting `seqs` argument with the string `"CHROM"`, it will considered the preexisting sequences according to `CHROM` information. You can also indicate others preexisting sequences if it make sense for your study. For that, you should inform a list with objects of class `sequences`, as the example:
 
 ```{r, eval=FALSE}
 CHR_mks <- group_seq(input.2pts = twopts, seqs = list(CHR1=CHR1, CHR2=CHR2, CHR3=CHR3), 
-                      unlink.mks = mark_no_dist, rm.repeated = TRUE)
+                      unlink.mks = mark_no_dist, repeated = FALSE)
 ```
 
 In this case, the command had the same effect of the previous, because we indicate chromossome sequences, but others sequences can be used.
 
 The `unlink.mks` argument receive a object of class `sequence`, this define which markers will be tested to group with the sequences in `seqs`. In our example, we will indicate only the markers with no segregation distortion, using the sequence `mark_no_dist`. It is also possible to use the string `"all"` to test all the remining markers at the `rf_2pts` object. 
 
-In some cases, the same marker can group to more than one sequence, those markers will be considered `repeated`. We can choose if we want to remove or not (`TRUE/FALSE`) them of the output sequences, with the argument `rm.repeated`. Anyway, their numbers will be informed at the list `repeateds` in the output object. 
+In some cases, the same marker can group to more than one sequence, those markers will be considered `repeated`. We can choose if we want to remove or not (`FALSE/TRUE`) them of the output sequences, with the argument `repeated`. Anyway, their numbers will be informed at the list `repeateds` in the output object. 
 In the example case, there are no repeated markers. However, if they exists, it could indicate that their groups actually constitute the same group. Also, genotyping erros can generate repeated markers. Anyway, they deserves better investigations. 
 
 We can access detailed information about the results just printing:
@@ -1129,6 +1110,8 @@ To order those groups, first we will use `order_seq` function to access a prelim
 ## Genetic mapping of linkage group 1 (with reference genome informations)
 
 ```{r, results='hide'}
+CHR1_frame <- mds_onemap(CHR_mks$sequences$CHR1)
+# or
 CHR1_ord <- order_seq(CHR_mks$sequences$CHR1)
 CHR1_frame <- make_seq(CHR1_ord, "force")
 ```
@@ -1169,6 +1152,8 @@ ripple_seq(CHR1_final)
 ## Genetic mapping of linkage group 2 (with reference genome informations)
 
 ```{r, results='hide'}
+CHR2_frame <- mds_onemap(CHR_mks$sequences$CHR2)
+# or
 CHR2_ord <- order_seq(CHR_mks$sequences$CHR2)
 CHR2_frame <- make_seq(CHR2_ord, "force")
 ```
@@ -1186,6 +1171,8 @@ CHR2_final <- CHR2_frame
 ## Genetic mapping of linkage group 3 (with reference genome informations)
 
 ```{r, results='hide'}
+CHR3_frame <- mds_onemap(CHR_mks$sequences$CHR3)
+# or
 CHR3_ord <- order_seq(CHR_mks$sequences$CHR3)
 CHR3_frame <- make_seq(CHR3_ord, "force")
 ```
@@ -1224,9 +1211,14 @@ Checking for better orders:
 ripple_seq(CHR3_final)
 ```
 
+
 # Drawing the genetic maps
 
-Once all linkage groups were obtained using both strategies, we can draw a simple map for each strategy using the function `draw_map`. 
+Once all linkage groups were obtained using both strategies, we can draw a map for each strategy using the function `draw_map`. Since version 2.1.1007, OneMap has a new version of `draw_map`, called `draw_map2`. The new function draws elegant linkage groups, and presents new arguments to personalize your draw.
+
+If you prefer the old function, we also keep it. Follow examples how to use both of them.
+
+## Draw_map
 
 Drawing map builded with only recombinations informations
 
@@ -1271,11 +1263,79 @@ Or groups alone:
 draw_map(CHR1_final, names = TRUE, grid = TRUE, cex.mrk = 0.7)
 ``` 
 
-It is obvious that function `draw_map` draws a very simple graphic
-representation of the genetic map. But once the distances and the
-linkage phases are estimated, better map figures can be drawn by the
+Function `draw_map` draws a very simple graphic
+representation of the genetic map. More recently, we developed a new version called `draw_map2` that draws a more sophisticated figure. Furthermore, once the distances and the
+linkage phases are estimated, other map figures can be drawn by the
 user with any appropriate software. There are several free software
 that can be used, such as `MapChart` (Voorrips, 2002).
+
+## Draw_map2
+
+The same figures did with `draw_map` can be done with `draw_map2` function. But it has different capacities and arguments. Here are some examples, but you can find more options in the help page `?write_map2`.
+
+Drawing map builded with only recombinations informations
+
+```{r, echo=TRUE, results='hide', eval=FALSE}
+draw_map2(LG1_final, LG2_final, LG3_final, main = "Only with linkage information", 
+          group.names = c("LG1", "LG2", "LG3"))
+```
+
+```{r, echo=FALSE, results='hide'}
+draw_map2(LG1_final, LG2_final, LG3_final, main = "Only with linkage information", 
+          group.names = c("LG1", "LG2", "LG3"), output = "map1.png")
+```
+
+<img src="map1.png" width="300" height="500">
+
+
+The figure will be saved in your work directory with the default name `map.eps`. You can change the file name and extension specifing them in the argument `output`.
+
+Drawing map builded with reference genome and  recombinations informations
+
+```{r, echo=TRUE, results='hide', eval=FALSE}
+draw_map2(CHR1_final, CHR2_final, CHR3_final, output= "map_ref.pdf", 
+          col.group = "#58A4B0",
+         col.mark= "#335C81")
+``` 
+
+```{r, echo=TRUE, results='hide', echo=FALSE}
+draw_map2(CHR1_final, CHR2_final, CHR3_final, output= "map_ref.png", 
+          col.group = "#58A4B0",
+         col.mark= "#335C81")
+``` 
+
+<img src="map_ref.png" width="600" height="600">
+
+With the argument `tag`, we can highlight some markers with other color. The arguments `col.group`, `col.mark` and `col.tag` can be changed to personalize the color of the groups, the markers, and the highlighted markers, respctivelly. 
+
+We also can draw a maps comparing corresponding linkage groups in each strategy:
+
+```{r, results='hide', eval=FALSE}
+draw_map2(LG1_final, CHR1_final, output = "map_comp.pdf", tag = c("M1","SNP2"))
+```
+
+```{r, results='hide', echo=FALSE}
+draw_map2(LG1_final, CHR1_final, output = "map_comp.png", tag = c("M1","SNP2"))
+```
+
+<img src="map_comp.png" width="200" height="500">
+
+Markers `M1` and `SNP2` are in different position between the strategies results for CHR1. When defining marker names in `tag` argument, all markers with these name will be highlighted no matter in which group it/they is/are.
+
+
+```{r, results='hide', eval=FALSE}
+draw_map2(LG2_final, CHR3_final, tag= c("SNP17", "SNP18", "M29"), main = "Chromosome 3", 
+          group.names = c("Only linkage", "With genome"), centered = TRUE, output = "map_comp2.pdf")
+``` 
+
+```{r, results='hide', echo=FALSE}
+draw_map2(LG2_final, CHR3_final, tag= c("SNP17", "SNP18", "M29"), main = "Chromosome 3", 
+          group.names = c("Only linkage", "With genome"), centered = TRUE, output = "map_comp2.png")
+``` 
+
+<img src="map_comp2.png" width="200" height="500">
+
+There are a invertion between markers `SNP17` and `SNP18` and the marker `M29` was removed in te second strategy.
 
 
 # Map estimation for an arbitrary order

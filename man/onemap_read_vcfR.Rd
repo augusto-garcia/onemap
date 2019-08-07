@@ -4,8 +4,9 @@
 \alias{onemap_read_vcfR}
 \title{Convert vcfR object to onemap object}
 \usage{
-onemap_read_vcfR(vcfR.object = NULL, cross = c("outcross", "f2 intercross",
-  "f2 backcross", "ri self", "ri sib"), parent1 = NULL, parent2 = NULL)
+onemap_read_vcfR(vcfR.object = NULL, cross = c("outcross",
+  "f2 intercross", "f2 backcross", "ri self", "ri sib"), parent1 = NULL,
+  parent2 = NULL)
 }
 \arguments{
 \item{vcfR.object}{object of class 'vcfR' from vcfR package.}
@@ -40,11 +41,14 @@ Reference sequence ID and position for each variant site are also stored.
 }
 \examples{
 
+\dontrun{
 vcfR.object <- vcfR::read.vcfR(system.file("extdata/vcf_example_out.vcf", package = "onemap"))
 data <- onemap_read_vcfR(vcfR.object=vcfR.object,
                  cross="outcross",
                  parent1=c("P1"),
                  parent2=c("P2"))
+}
+                
 }
 \seealso{
 \code{read_onemap} for a description of the output object of class onemap.
