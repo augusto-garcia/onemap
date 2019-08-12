@@ -181,22 +181,14 @@ create_probs <- function(onemap.obj = NULL,
     prob.temp <- matrix(NA, nrow=length(probs$value), ncol = 3)
                                         # Sometimes the 1 and 3 are inverted
     prob.temp[,2] <- genotypes_probs[,2]
-    idx1 <- as.numeric(names(which.max(tapply(genotypes_probs[,1], probs$value, mean))))
-    if(idx1 != 2){
-        prob.temp[,idx1] <- genotypes_probs[,1]
-        if(idx1 == 1){
-            prob.temp[,3] <- genotypes_probs[,3]
-        } else {
-            prob.temp[,1] <- genotypes_probs[,3]
-        }
+    het.idx <- which(probs$value == 2)
+    idx1 <- as.numeric(names(which.max(tapply(genotypes_probs[,1][-het.idx], probs$value[-het.idx], mean))))
+    if(idx1 == 1){
+        prob.temp[,1] <- genotypes_probs[,1]
+        prob.temp[,3] <- genotypes_probs[,3]
     } else {
-        idx3 <- as.numeric(names(which.max(tapply(genotypes_probs[,3], probs$value, mean))))
-        prob.temp[,idx3] <- genotypes_probs[,3]
-        if(idx3 == 1){
-            prob.temp[,3] <- genotypes_probs[,1]
-        } else {
-            prob.temp[,1] <- genotypes_probs[,1]
-        }
+      prob.temp[,1] <- genotypes_probs[,3]
+      prob.temp[,3] <- genotypes_probs[,1]
     }
     
     # Only for biallelic markers codominant markers

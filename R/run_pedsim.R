@@ -19,6 +19,7 @@
 #' @param name.chromfile a character with the chromfile name
 #' @param name.parfile a character with the parfile name
 #' @param name.out a character with the PedigreeSim outputs names
+#' @param rm.tempfiles logical TRUE/FALSE, if TRUE remove the temporary files generated 
 #' 
 #' @return PedigreeSim outputs including the population genotypes 
 #' 

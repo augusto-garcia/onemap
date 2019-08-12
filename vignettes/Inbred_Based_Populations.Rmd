@@ -1297,6 +1297,23 @@ Removing markers `M59` and `21` from `LG3seq_f2_map`:
 (LG3seq_f2_map <- drop_marker(LG3seq_f2_map, c(59, 21)))
 ```
 
+# Simulating maps with PedigreeSim
+
+To test out new features we usually simulates datasets. Here we make available the functions we use to do this in PedigreeSim software. First, `run_pedsim` will generate the files needed by PedigreeSim and run it. It is important to highlight that PedigreeSim have more options than the ones provided by this function. For more informations please see PedigreeSim software documentation.
+
+```{r}
+run_pedsim(chromosome = c("Chr1", "Chr10"), n.marker = c(30,50), 
+           tot.size.cm = c(100,150), centromere = c(50, 75),
+           n.ind = 200, mk.types = c("A.H.B"), n.types = c(80), 
+           pop = "F2", path.pedsim = "~/Programs/PedigreeSim/",
+           name.mapfile = "mapfile.map", name.founderfile="founderfile.gen", 
+           name.chromfile="sim.chrom", name.parfile="sim.par",
+           name.out="sim_out.f2")
+```
+
+After, we can convert the PedigreeSim output files to onemap raw format.
+
+
 # Drawing the genetic map
 
 Once all linkage groups were obtained using both strategies, we can draw a map for each strategy using the function `draw_map`. Since version 2.1.1007, OneMap has a new version of `draw_map`, called `draw_map2`. The new function draws elegant linkage groups, and presents new arguments to personalize your draw.
