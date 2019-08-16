@@ -34,13 +34,53 @@ polyRAD_error <- function(vcf=NULL,
                           parent2=NULL,
                           f1=NULL,
                           crosstype=NULL,
-                          tech.issue=TRUE){
+                          tech.issue=TRUE,
+                          depths= NULL){
   # Do the checks
   
-  poly.test <- VCF2RADdata(vcf, phaseSNPs = FALSE, 
+  if(!is.null(depths)){
+    # The input od polyRAD need to be a VCF, then this part takes the allele depth from "depths" and put at AD field of input vcf
+    idx <- system(paste0("grep -in 'CHROM' ", vcf), intern = T) # This part only works in linux OS
+    idx.i <- strsplit(idx, split = ":")[[1]][1]
+    seed <- sample(1:10000, 1)
+    system(paste0("head -n ", idx.i," ", vcf, " > head.",seed))
+    
+    vcf.tab <- read.table(vcf, stringsAsFactors = F)
+    vcf.init <- vcf.tab[,1:8]
+    AD.colum <- rep("AD", dim(vcf.init)[1])
+    vcf.init <- cbind(vcf.init, AD.colum)
+    
+    rs <- rownames(depths[[1]])
+    vcf.init[,3] <- rs
+    
+    ind.n <- colnames(depths[[1]]) # The names came in different order
+    
+    header <- strsplit(idx, split = "\t")[[1]]
+    ind.vcf <- header[10:length(header)]
+    ind.n <- factor(ind.n, levels = ind.vcf)
+    
+    depths[[1]] <- depths[[1]][,order(ind.n)]
+    depths[[2]] <- depths[[2]][,order(ind.n)]
+    
+    comb.depth <- matrix(paste0(as.matrix(depths[[1]]), ",", as.matrix(depths[[2]])), ncol = ncol(depths[[2]]))
+    colnames(comb.depth) <- ind.vcf
+    #hmc.file <- cbind(rs, comb.depth)
+    
+    vcf.body <- cbind(vcf.init, comb.depth)
+    
+    write.table(vcf.body, file = paste0("temp.body.", seed), quote = FALSE, sep = "\t", row.names = FALSE, col.names = F) 
+    
+    system(paste0("cat head.",seed," temp.body.",seed," > temp.",seed,".vcf"))
+    poly.test <- VCF2RADdata(paste0("temp.",seed,".vcf"), phaseSNPs = FALSE, 
+                             min.ind.with.reads = 0,
+                             min.ind.with.minor.allele = 0)
+    file.remove(paste0("head.",seed), paste0("temp.body.",seed) ,paste0("temp.",seed,".vcf"))
+  } else {
+  
+    poly.test <- VCF2RADdata(vcf, phaseSNPs = FALSE, 
                            min.ind.with.reads = 0,
                            min.ind.with.minor.allele = 0)
-  
+  }
   if(crosstype=="f2 intercross"){
     poly.test <- SetDonorParent(poly.test, f1)
     poly.test <- SetRecurrentParent(poly.test, f1)
@@ -63,8 +103,13 @@ polyRAD_error <- function(vcf=NULL,
   
   # this will change according to the vcf - bug!!
   pos <- sapply(strsplit(as.character(genotypes$V1), split = "_"),"[",1)
+  if(length(unique(pos)) ==1){
+    pos <- sapply(strsplit(as.character(genotypes$V1), split = "_"),"[",2)
+    pos <- paste0(sapply(strsplit(as.character(genotypes$V1), split = "_"),"[",1), "_", pos)
+  }  else {
   if(tech.issue) # Muda conforme o software de chamada, tem q ver como deixar universal
     pos <- gsub(":", "_", pos)
+  }
   
   pos.onemap <- colnames(onemap.obj$geno)
   genotypes <- genotypes[which(pos%in%pos.onemap),]
@@ -95,6 +140,8 @@ polyRAD_error <- function(vcf=NULL,
   rownames(new.geno) <- rownames(onemap.obj$geno)
   
   # Same order priority: individuals, markers
+  genotypes$V2 <- factor(genotypes$V2, levels = genotypes$V2[1:onemap.obj$n.ind])
+  
   genotypes <- genotypes[order(genotypes$V2),]
   
   # Print how many genotypes changed

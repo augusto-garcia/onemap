@@ -182,14 +182,29 @@ create_probs <- function(onemap.obj = NULL,
                                         # Sometimes the 1 and 3 are inverted
     prob.temp[,2] <- genotypes_probs[,2]
     het.idx <- which(probs$value == 2)
-    idx1 <- as.numeric(names(which.max(tapply(genotypes_probs[,1][-het.idx], probs$value[-het.idx], mean))))
-    if(idx1 == 1){
-        prob.temp[,1] <- genotypes_probs[,1]
-        prob.temp[,3] <- genotypes_probs[,3]
+    
+    hom1.idx <- which(probs$value == 1)
+    hom1.idx.prob <- unique(apply(genotypes_probs[hom1.idx,],1, which.max))
+    prob.temp[hom1.idx,1] <- genotypes_probs[hom1.idx, hom1.idx.prob]
+    if(hom1.idx.prob == 3){
+      prob.temp[hom1.idx,3] <- genotypes_probs[hom1.idx, 1]
+      prob.temp[het.idx,3] <- genotypes_probs[het.idx,1]
+      prob.temp[het.idx,1] <- genotypes_probs[het.idx,3]
     } else {
-      prob.temp[,1] <- genotypes_probs[,3]
-      prob.temp[,3] <- genotypes_probs[,1]
+      prob.temp[hom1.idx,3] <- genotypes_probs[hom1.idx, 3]
+      prob.temp[het.idx,1] <- genotypes_probs[het.idx,1]
+      prob.temp[het.idx,3] <- genotypes_probs[het.idx,3]
     }
+    
+    hom3.idx <- which(probs$value == 3)
+    hom3.idx.prob <- unique(apply(genotypes_probs[hom3.idx,],1, which.max))
+    prob.temp[hom3.idx,3] <- genotypes_probs[hom3.idx, hom3.idx.prob]
+    if(hom3.idx.prob == 3){
+      prob.temp[hom3.idx,1] <- genotypes_probs[hom3.idx, 1]
+    } else {
+      prob.temp[hom3.idx,1] <- genotypes_probs[hom3.idx, 3]
+    }
+    
     
     # Only for biallelic markers codominant markers
     if(crosstype == "outcross"){

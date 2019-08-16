@@ -11,8 +11,7 @@
 #' @param recovering
 #' @param mean_phred
 #' @param cores
-#' @param depths list containing ref allele counts for parents and progeny, output 
-#' from extract_depth function
+#' @param depths list containing a matrix for ref and other for alt allele counts, samples ID in colum and markers ID in rows
 #' 
 #' @param parent1 parent 1 identification in vcfR object
 #' @param parent2 parent 2 identification in vcfR objetc
@@ -52,7 +51,35 @@ updog_error <- function(vcfR.object=NULL,
                                   f1=f1,
                                   recovering=recovering)
   } else {
-    depth_matrix <- depths
+    p1 <- which(colnames(depths[[1]]) == parent1)
+    p2 <- which(colnames(depths[[1]]) == parent2)
+    if(is.null(f1)){
+      palt <- depths[[2]][,c(p1,p2)]
+      pref <- depths[[1]][,c(p1,p2)]
+      oalt <- depths[[2]][,-c(p1,p2)]
+      oref <- depths[[1]][,-c(p1,p2)]
+    } else {
+      f1i <- which(colnames(depths[[1]]) == f1)
+      palt <- as.numeric(depths[[2]][,f1i])
+      pref <- as.numeric(depths[[1]][,f1i])
+      oalt <- depths[[2]][,-c(p1,p2,f1i)]
+      oref <- depths[[1]][,-c(p1,p2,f1i)]
+    }
+    oalt <- oalt[,match(rownames(onemap.object$geno),colnames(oalt))]
+    oref <- oref[,match(rownames(onemap.object$geno),colnames(oref))]
+    
+    psize <- palt + pref
+    osize <- oalt + oref
+    
+    names(palt) <- names(pref) <- rownames(oalt)
+    
+    depth_matrix <- list("palt"=palt, "pref"=pref, "psize"=psize, 
+                         "oalt"=as.matrix(oalt), "oref"=as.matrix(oref), "osize"=as.matrix(osize), 
+                         n.mks = dim(depths[[1]])[1], n.ind = dim(oalt)[2],
+                         inds = colnames(oalt), mks = rownames(oalt),
+                         CHROM = sapply(strsplit(rownames(oalt), split="_"), "[",1),
+                         POS = sapply(strsplit(rownames(oalt), split="_"), "[",2),
+                         onemap.object = onemap.object)
   }
   
   # Extract list objects                                                                                         
@@ -142,10 +169,10 @@ updog_error <- function(vcfR.object=NULL,
   
   postmat <- lapply(gene_est, "[", 6)
   genotypes_probs <- postmat[[1]]$postmat
-  for(i in 2:length(postmat))
+  for(i in 2:length(postmat)) # Order: mk 1 1 1 ind 1 2 3
     genotypes_probs <- rbind(genotypes_probs, postmat[[i]]$postmat)
   
-  # sort
+  # sort - order mk 1 2 3 ind 1 1 1 
   idx <- rep(1:dim(osize)[2], dim(osize)[1])
   genotypes_probs <- genotypes_probs[order(idx), ]
     
