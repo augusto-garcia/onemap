@@ -1,7 +1,7 @@
 Package: onemap
 Title: Construction of Genetic Maps in Experimental Crosses: Full-Sib,
         RILs, F2 and Backcrosses
-Version: 2.1.1008
+Version: 2.1.2000
 Description: Analysis of molecular marker data from model (backcrosses,
     F2 and recombinant inbred lines) and non-model systems (i. e.
     outcrossing species). For the later, it allows statistical
@@ -9,7 +9,7 @@ Description: Analysis of molecular marker data from model (backcrosses,
     phases (genetic map construction) according to Wu et al. (2002)
     <doi:10.1006/tpbi.2002.1577>. All analysis are based on multipoint 
     approaches using hidden Markov models.
-Date: 2018-02-16
+Date: 2019-08-22
 Authors@R: c(person("Gabriel", "Margarido", role = "aut", email =
         "gramarga@usp.br"), person("Marcelo", "Mollinari", role =
         "aut", email = "mmollina@usp.br"), person("Karl",
@@ -23,15 +23,15 @@ Author: Gabriel Margarido [aut], Marcelo Mollinari [aut], Karl
 LinkingTo: Rcpp (>= 0.10.5)
 Depends: R (>= 3.6.0)
 Imports: ggplot2 (>= 2.2.1), 
-        plotly (>= 4.7.1),
-        reshape2 (>= 1.4.1), 
-        Rcpp (>= 0.10.5),
-        graphics, 
-        methods, 
-        stats, 
-        utils,
-        grDevices,
-        MDSMap
+         plotly (>= 4.7.1),
+         reshape2 (>= 1.4.1), 
+         Rcpp (>= 0.10.5),
+         graphics, 
+         methods, 
+         stats, 
+         utils,
+         grDevices,
+         MDSMap
 Suggests: qtl (>= 1.36-6), 
           knitr (>= 1.10), 
           rmarkdown, 
@@ -44,8 +44,8 @@ URL: https://github.com/augusto-garcia/onemap
 BugReports: https://github.com/augusto-garcia/onemap/wiki
 Maintainer: Cristiane Taniguti <chtaniguti@usp.br>
 Repository: CRAN
-Packaged: 2017-10-18 22:25:43 UTC; cris
+Packaged: 2019-09-22 22:25:43 UTC; cris
 NeedsCompilation: yes
-Date/Publication: 2017-10-18 22:48:07 UTC
+Date/Publication: 2019-09-22 22:48:07 UTC
 RoxygenNote: 6.1.1
 biocViews:

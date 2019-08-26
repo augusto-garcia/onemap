@@ -30,7 +30,7 @@ from two non-homozygous parents), RILs, F$_2$ and backcrosses.
 
 It is implemented as a package to be used under the freely distributed
 R software, which is a language and environment for statistical
-computing ([www.r-project.org](www.r-project.org)). It is designed to
+computing ([www.r-project.org](https://www.r-project.org/)). It is designed to
 be fully integrated with R/qtl package (Broman and Sen, 2009) and
 Windows QTL Cartographer (Wang et al., 2010) in order to do QTL
 mapping for RILs, F$_2$ and backcrosses. New functions for doing QTL

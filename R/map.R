@@ -74,7 +74,7 @@
 ##' sex-specific differences. \emph{Genetical Research} 79: 85-96
 ##' @keywords utilities
 ##' @examples
-##'
+##' \dontrun{
 ##'   data(onemap_example_out)
 ##'   twopt <- rf_2pts(onemap_example_out)
 ##'
@@ -82,7 +82,7 @@
 ##'   map(markers)
 ##'
 ##'   markers <- make_seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
-##'   map(markers)
+##'   map(markers)}
 ##'@export
 map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
 {
@@ -132,7 +132,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
                           twopt=input.seq$twopt), class = "sequence"))
   }
   
-  if((seq.phases == -1) && (seq.rf == -1) && is.null(seq.like)) {
+  if(all(seq.phases == -1) && all(seq.rf == -1) && all(is.null(seq.like))) {
     ## if only the marker order is provided, without predefined linkage phases,
     ## a search for the best combination of phases is performed and recombination
     ## fractions are estimated
