@@ -37,7 +37,7 @@ updog_error <- function(vcfR.object=NULL,
                         vcf.par = c("AD", "DPR"),
                         parent1="P1",
                         parent2="P2",
-                        f1="F1",
+                        f1=NULL,
                         recovering = FALSE,
                         mean_phred = 20, cores = 2,
                         depths = NULL){
@@ -58,20 +58,31 @@ updog_error <- function(vcfR.object=NULL,
       pref <- depths[[1]][,c(p1,p2)]
       oalt <- depths[[2]][,-c(p1,p2)]
       oref <- depths[[1]][,-c(p1,p2)]
+      
+      oalt <- oalt[,match(rownames(onemap.object$geno),colnames(oalt))]
+      oref <- oref[,match(rownames(onemap.object$geno),colnames(oref))]
+      
+      psize <- palt + pref
+      osize <- oalt + oref
+      
+      rownames(palt) <- rownames(pref) <- rownames(oalt)
+      
     } else {
       f1i <- which(colnames(depths[[1]]) == f1)
       palt <- as.numeric(depths[[2]][,f1i])
       pref <- as.numeric(depths[[1]][,f1i])
       oalt <- depths[[2]][,-c(p1,p2,f1i)]
       oref <- depths[[1]][,-c(p1,p2,f1i)]
+      
+      oalt <- oalt[,match(rownames(onemap.object$geno),colnames(oalt))]
+      oref <- oref[,match(rownames(onemap.object$geno),colnames(oref))]
+      
+      psize <- palt + pref
+      osize <- oalt + oref
+      
+      names(palt) <- names(pref) <- rownames(oalt)
+      
     }
-    oalt <- oalt[,match(rownames(onemap.object$geno),colnames(oalt))]
-    oref <- oref[,match(rownames(onemap.object$geno),colnames(oref))]
-    
-    psize <- palt + pref
-    osize <- oalt + oref
-    
-    names(palt) <- names(pref) <- rownames(oalt)
     
     depth_matrix <- list("palt"=palt, "pref"=pref, "psize"=psize, 
                          "oalt"=as.matrix(oalt), "oref"=as.matrix(oref), "osize"=as.matrix(osize), 
@@ -180,14 +191,14 @@ updog_error <- function(vcfR.object=NULL,
     rm.mk <- which(P1==0 & P2 == 2 | P2 == 0 & P1 == 0 | P1==2 & P2 == 2 | P1==2 & P2 ==0)
     
     if(length(rm.mk) > 0){
-      cat("markers", length(mks[rm.mk]), "were reestimated as non-informative and removed of analysis")
+      cat("markers", length(mks[rm.mk]), "were reestimated as non-informative and removed of analysis \n")
       geno_matrix <- geno_matrix[-rm.mk,]
       P1 <- P1[-rm.mk]
       P2 <- P2[-rm.mk]
       n.mks <- n.mks - length(rm.mk)
       mks <- mks[-rm.mk]
-      onemap_updog$CHROM <- CHROM[-rm.mk]
-      onemap_updog$POS <- POS[-rm.mk]
+      onemap_updog$CHROM <- onemap_updog$CHROM[-rm.mk]
+      onemap_updog$POS <- onemap_updog$POS[-rm.mk]
       genotypes_probs <- genotypes_probs[-c(rm.mk + rep(c(0:(dim(osize)[2]-1))*dim(osize)[1], each=length(rm.mk))),]
     }
     conv_geno <- matrix(rep(NA,dim(geno_matrix)[2]*dim(geno_matrix)[1]),nrow=dim(geno_matrix)[1])
@@ -227,7 +238,7 @@ updog_error <- function(vcfR.object=NULL,
   } else {
     rm.mk <- which(P1!=1)
     if(length(rm.mk) > 0){
-      cat("markers", length(mks[rm.mk]), "were estimated as non-informative and removed of analysis")
+      cat("markers", length(mks[rm.mk]), "were estimated as non-informative and removed of analysis \n")
       geno_matrix <- geno_matrix[-rm.mk,]
       P1 <- P1[-rm.mk]
       P2 <- P2[-rm.mk]

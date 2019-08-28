@@ -34,53 +34,11 @@ polyRAD_error <- function(vcf=NULL,
                           parent2=NULL,
                           f1=NULL,
                           crosstype=NULL,
-                          tech.issue=TRUE,
-                          depths= NULL){
+                          tech.issue=TRUE){
   # Do the checks
-  
-  if(!is.null(depths)){
-    # The input od polyRAD need to be a VCF, then this part takes the allele depth from "depths" and put at AD field of input vcf
-    idx <- system(paste0("grep -in 'CHROM' ", vcf), intern = T) # This part only works in linux OS
-    idx.i <- strsplit(idx, split = ":")[[1]][1]
-    seed <- sample(1:10000, 1)
-    system(paste0("head -n ", idx.i," ", vcf, " > head.",seed))
-    
-    vcf.tab <- read.table(vcf, stringsAsFactors = F)
-    vcf.init <- vcf.tab[,1:8]
-    AD.colum <- rep("AD", dim(vcf.init)[1])
-    vcf.init <- cbind(vcf.init, AD.colum)
-    
-    rs <- rownames(depths[[1]])
-    vcf.init[,3] <- rs
-    
-    ind.n <- colnames(depths[[1]]) # The names came in different order
-    
-    header <- strsplit(idx, split = "\t")[[1]]
-    ind.vcf <- header[10:length(header)]
-    ind.n <- factor(ind.n, levels = ind.vcf)
-    
-    depths[[1]] <- depths[[1]][,order(ind.n)]
-    depths[[2]] <- depths[[2]][,order(ind.n)]
-    
-    comb.depth <- matrix(paste0(as.matrix(depths[[1]]), ",", as.matrix(depths[[2]])), ncol = ncol(depths[[2]]))
-    colnames(comb.depth) <- ind.vcf
-    #hmc.file <- cbind(rs, comb.depth)
-    
-    vcf.body <- cbind(vcf.init, comb.depth)
-    
-    write.table(vcf.body, file = paste0("temp.body.", seed), quote = FALSE, sep = "\t", row.names = FALSE, col.names = F) 
-    
-    system(paste0("cat head.",seed," temp.body.",seed," > temp.",seed,".vcf"))
-    poly.test <- VCF2RADdata(paste0("temp.",seed,".vcf"), phaseSNPs = FALSE, 
-                             min.ind.with.reads = 0,
-                             min.ind.with.minor.allele = 0)
-    file.remove(paste0("head.",seed), paste0("temp.body.",seed) ,paste0("temp.",seed,".vcf"))
-  } else {
-  
-    poly.test <- VCF2RADdata(vcf, phaseSNPs = FALSE, 
+   poly.test <- VCF2RADdata(vcf, phaseSNPs = FALSE, 
                            min.ind.with.reads = 0,
                            min.ind.with.minor.allele = 0)
-  }
   if(crosstype=="f2 intercross"){
     poly.test <- SetDonorParent(poly.test, f1)
     poly.test <- SetRecurrentParent(poly.test, f1)
