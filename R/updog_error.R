@@ -163,16 +163,16 @@ updog_error <- function(vcfR.object=NULL,
       fout <- updog::flexdog(refvec  = oref[i,],
                              sizevec = osize[i,],
                              ploidy  = 2,
-                             p1ref = pref[i,1],
-                             p1size = psize[i,1],
-                             p2ref = pref[i,2],
-                             p2size = psize[i,2],
+                             p1ref = pref[i,2],
+                             p1size = psize[i,2],
+                             p2ref = pref[i,1],
+                             p2size = psize[i,1],
                              model = "f1")
       fout
     }
     parallel::stopCluster(cl)
-    P1 <- unlist(sapply(sapply(gene_est, "[", 8), "[", 1))
-    P2 <- unlist(sapply(sapply(gene_est, "[", 8), "[", 2))
+    P2 <- unlist(sapply(sapply(gene_est, "[", 8), "[", 1))
+    P1 <- unlist(sapply(sapply(gene_est, "[", 8), "[", 2))
   }
   
   for(i in 1:n.mks)
@@ -235,6 +235,7 @@ updog_error <- function(vcfR.object=NULL,
     conv_geno[idx,][which(geno_matrix[idx,]==2)] <- 1
     segr.type[idx] <- "D1.10"
     segr.type.num[idx] <- 6
+
   } else {
     rm.mk <- which(P1!=1)
     if(length(rm.mk) > 0){
