@@ -38,7 +38,7 @@
 #' @details For better description about MDS method, see MDSMap package vignette.
 #' 
 #' @author Cristiane Taniguti, \email{chtaniguti@@usp.br} 
-#' @seealso  \url{http://cran.r-project.org/web/packages/MDSMap/vignettes/MDSMap.pdf}.
+#' @seealso  \url{https://CRAN.R-project.org/package=MDSMap}.
 #'
 #'
 #' @references 

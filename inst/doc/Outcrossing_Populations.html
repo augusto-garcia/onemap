@@ -13,7 +13,7 @@
 
 <meta name="author" content="Statistical Genetics Lab   Department of Genetics   Luiz de Queiroz College of Agriculture   University of São Paulo" />
 
-<meta name="date" content="2019-08-06" />
+<meta name="date" content="2019-08-26" />
 
 <title>Outcrossing Populations</title>
 
@@ -304,11 +304,11 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">Outcrossing Populations</h1>
 <h4 class="author"><a href="http://statgen.esalq.usp.br">Statistical Genetics Lab</a> <br /> Department of Genetics <br /> Luiz de Queiroz College of Agriculture <br /> University of São Paulo</h4>
-<h4 class="date">2019-08-06</h4>
+<h4 class="date">2019-08-26</h4>
 
 
 
-<p>The following example is intended to show the usage of <code>OneMap</code> functions for linkage mapping in outcrossing (non-inbred) populations. With basic knowledge of R syntax, one should have no problems using it. If you are not familiar with R, we recommend reading the vignette <a href="http://htmlpreview.github.io/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Introduction_R.html">Introduction to R</a>.</p>
+<p>The following example is intended to show the usage of <code>OneMap</code> functions for linkage mapping in outcrossing (non-inbred) populations. With basic knowledge of R syntax, one should have no problems using it. If you are not familiar with R, we recommend reading the vignette <a href="https://htmlpreview.github.io/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Introduction_R.html">Introduction to R</a>.</p>
 <p>Hopefully these examples will be clear enough to help any user to understand its functionality and start using it. You do not need to be an expert in R to build your linkage map, but some concepts are necessary and will help you through the process.</p>
 <p>There is a github <code>OneMap</code> version which is constantly improved, we strong recommend all users to try <a href="https://github.com/augusto-garcia/onemap">this version</a>. In <code>augusto-garcia/onemap</code> github page you can find instructions to install the package from github and also more fancy tutorials.</p>
 <div id="creating-the-data-file" class="section level1">
@@ -1284,7 +1284,7 @@ I1 I2 I3 I4 I5 I6 I7 I8 I9 I10
 <a class="sourceLine" id="cb54-2" data-line-number="2"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb54-3" data-line-number="3"><span class="co">#&gt; order obtained using RCD algorithm:</span></a>
 <a class="sourceLine" id="cb54-4" data-line-number="4"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb54-5" data-line-number="5"><span class="co">#&gt;  27 20 4 23 45 48 9 21 46 16 29 50 24 49 52 51 47 </span></a>
+<a class="sourceLine" id="cb54-5" data-line-number="5"><span class="co">#&gt;  27 20 4 23 45 46 9 21 48 16 47 50 24 49 52 51 29 </span></a>
 <a class="sourceLine" id="cb54-6" data-line-number="6"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb54-7" data-line-number="7"><span class="co">#&gt; calculating multipoint map using tol =  1e-04 .</span></a>
 <a class="sourceLine" id="cb54-8" data-line-number="8">LG2_rcd</a>
@@ -1298,20 +1298,20 @@ I1 I2 I3 I4 I5 I6 I7 I8 I9 I10
 <a class="sourceLine" id="cb54-16" data-line-number="16"><span class="co">#&gt;  4 M4                33.95           a |  | o       o |  | b </span></a>
 <a class="sourceLine" id="cb54-17" data-line-number="17"><span class="co">#&gt; 23 M23               50.26           a |  | o       a |  | o </span></a>
 <a class="sourceLine" id="cb54-18" data-line-number="18"><span class="co">#&gt; 45 SNP17             61.34           a |  | b       a |  | a </span></a>
-<a class="sourceLine" id="cb54-19" data-line-number="19"><span class="co">#&gt; 48 SNP21             71.95           a |  | b       a |  | a </span></a>
+<a class="sourceLine" id="cb54-19" data-line-number="19"><span class="co">#&gt; 46 SNP18             71.95           a |  | b       a |  | a </span></a>
 <a class="sourceLine" id="cb54-20" data-line-number="20"><span class="co">#&gt;  9 M9                76.54           a |  | b       a |  | a </span></a>
 <a class="sourceLine" id="cb54-21" data-line-number="21"><span class="co">#&gt; 21 M21               76.54           o |  | o       a |  | b </span></a>
-<a class="sourceLine" id="cb54-22" data-line-number="22"><span class="co">#&gt; 46 SNP18             83.57           a |  | b       a |  | a </span></a>
-<a class="sourceLine" id="cb54-23" data-line-number="23"><span class="co">#&gt; 16 M16              107.61           a |  | a       b |  | o </span></a>
-<a class="sourceLine" id="cb54-24" data-line-number="24"><span class="co">#&gt; 29 M29              144.92           o |  | a       o |  | o </span></a>
-<a class="sourceLine" id="cb54-25" data-line-number="25"><span class="co">#&gt; 50 SNP23            169.83           a |  | b       a |  | b </span></a>
-<a class="sourceLine" id="cb54-26" data-line-number="26"><span class="co">#&gt; 24 M24              174.94           a |  | b       a |  | b </span></a>
-<a class="sourceLine" id="cb54-27" data-line-number="27"><span class="co">#&gt; 49 SNP22            178.23           a |  | b       a |  | b </span></a>
-<a class="sourceLine" id="cb54-28" data-line-number="28"><span class="co">#&gt; 52 SNP25            183.12           a |  | b       a |  | b </span></a>
-<a class="sourceLine" id="cb54-29" data-line-number="29"><span class="co">#&gt; 51 SNP24            194.02           a |  | b       a |  | b </span></a>
-<a class="sourceLine" id="cb54-30" data-line-number="30"><span class="co">#&gt; 47 SNP20            231.26           a |  | b       a |  | a </span></a>
+<a class="sourceLine" id="cb54-22" data-line-number="22"><span class="co">#&gt; 48 SNP21             84.13           a |  | b       a |  | a </span></a>
+<a class="sourceLine" id="cb54-23" data-line-number="23"><span class="co">#&gt; 16 M16              104.65           a |  | a       b |  | o </span></a>
+<a class="sourceLine" id="cb54-24" data-line-number="24"><span class="co">#&gt; 47 SNP20            104.65           a |  | b       a |  | a </span></a>
+<a class="sourceLine" id="cb54-25" data-line-number="25"><span class="co">#&gt; 50 SNP23            159.85           a |  | b       b |  | a </span></a>
+<a class="sourceLine" id="cb54-26" data-line-number="26"><span class="co">#&gt; 24 M24              164.87           a |  | b       b |  | a </span></a>
+<a class="sourceLine" id="cb54-27" data-line-number="27"><span class="co">#&gt; 49 SNP22            168.20           a |  | b       b |  | a </span></a>
+<a class="sourceLine" id="cb54-28" data-line-number="28"><span class="co">#&gt; 52 SNP25            173.16           a |  | b       b |  | a </span></a>
+<a class="sourceLine" id="cb54-29" data-line-number="29"><span class="co">#&gt; 51 SNP24            184.21           a |  | b       b |  | a </span></a>
+<a class="sourceLine" id="cb54-30" data-line-number="30"><span class="co">#&gt; 29 M29              214.00           o |  | a       o |  | o </span></a>
 <a class="sourceLine" id="cb54-31" data-line-number="31"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb54-32" data-line-number="32"><span class="co">#&gt; 17 markers            log-likelihood: -928.3039</span></a></code></pre></div>
+<a class="sourceLine" id="cb54-32" data-line-number="32"><span class="co">#&gt; 17 markers            log-likelihood: -914.5507</span></a></code></pre></div>
 <p>Use the <code>marker_type</code> function to check the segregation types of all markers in this group:</p>
 <div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" data-line-number="1"><span class="kw">marker_type</span>(LG2)</a>
 <a class="sourceLine" id="cb55-2" data-line-number="2"><span class="co">#&gt;   Marker 4 ( M4 ) is of type A.4 </span></a>
@@ -2172,12 +2172,12 @@ I1 I2 I3 I4 I5 I6 I7 I8 I9 I10
 <a class="sourceLine" id="cb86-113" data-line-number="113"><span class="co">#&gt;   ... 41 40 5 15 11 :   -2.57 ( linkage phases: ... 1 1 1 1 )</span></a>
 <a class="sourceLine" id="cb86-114" data-line-number="114"><span class="co">#&gt;   ... 41 40 11 15 5 :   -2.58 ( linkage phases: ... 1 1 1 1 )</span></a></code></pre></div>
 <p>No better order was observed.</p>
-<p>Alternatively, you can also use <code>mds_onemap</code> function to obtain a first draft for the markers order. The <code>mds_onemap</code> function makes a interface between <code>OneMap</code> and <code>MDSMap</code> package. The ordering approach presented in <code>MDSMap</code> provides a faster and efficient way of ordering markers using multi-dimensional scaling. The method also provides diagnostics graphics and parameters to find outliers to help users to filter the dataset. You can find more informations in <code>MDSMap</code> <a href="https://cran.r-project.org/web/packages/MDSMap/vignettes/MDSMap.pdf">vignette</a>. Here we will show a simple example of how it can be used for ordering our example markers from an outcrossing population.</p>
+<p>Alternatively, you can also use <code>mds_onemap</code> function to obtain a first draft for the markers order. The <code>mds_onemap</code> function makes a interface between <code>OneMap</code> and <code>MDSMap</code> package. The ordering approach presented in <code>MDSMap</code> provides a faster and efficient way of ordering markers using multi-dimensional scaling. The method also provides diagnostics graphics and parameters to find outliers to help users to filter the dataset. You can find more informations in <code>MDSMap</code> <a href="https://CRAN.R-project.org/package=MDSMap">vignette</a>. Here we will show a simple example of how it can be used for ordering our example markers from an outcrossing population.</p>
 <div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb87-1" data-line-number="1">LG1_mds &lt;-<span class="st"> </span><span class="kw">mds_onemap</span>(LG1)</a>
 <a class="sourceLine" id="cb87-2" data-line-number="2"><span class="co">#&gt; Stress: 0.295520848952196</span></a>
 <a class="sourceLine" id="cb87-3" data-line-number="3"><span class="co">#&gt; Mean Nearest Neighbour Fit: 25.9634307642165</span></a>
 <a class="sourceLine" id="cb87-4" data-line-number="4"><span class="co">#&gt; Markers omitted:</span></a></code></pre></div>
-<p>If you only specify the input sequence, mds_onemap will use the default parameters. It will generate MDSMap input file in <code>out.file</code> file and the <code>NULL.pdf</code> file with the diagnostic graphics in your work directory. Also, the default method used is the principal curves, know more about using <code>?mds_onemap</code> and reading the MDSMap <a href="https://cran.r-project.org/web/packages/MDSMap/vignettes/MDSMap.pdf">vignette</a>. By default, we use the OneMap HMM approach to estimate the distances after the MDSMap ordered the markers, but you can have the default output from MDSMap setting <code>hmm = FALSE</code>.</p>
+<p>If you only specify the input sequence, mds_onemap will use the default parameters. It will generate MDSMap input file in <code>out.file</code> file and the <code>NULL.pdf</code> file with the diagnostic graphics in your work directory. Also, the default method used is the principal curves, know more about using <code>?mds_onemap</code> and reading the MDSMap <a href="https://CRAN.R-project.org/package=MDSMap">vignette</a>. By default, we use the OneMap HMM approach to estimate the distances after the MDSMap ordered the markers, but you can have the default output from MDSMap setting <code>hmm = FALSE</code>.</p>
 <div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb88-1" data-line-number="1"><span class="kw">rf_graph_table</span>(LG1_mds)</a></code></pre></div>
 <p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
 <p>Based on the drafts from <code>order_seq</code> or/and <code>mds_onemap</code>, we can remove some doubtful markers accordinly with the graphic, try to positioned them again and decide if and where we will maintain them.</p>
@@ -2725,65 +2725,73 @@ I1 I2 I3 I4 I5 I6 I7 I8 I9 I10
 <a class="sourceLine" id="cb132-19" data-line-number="19"><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></a>
 <a class="sourceLine" id="cb132-20" data-line-number="20"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb132-21" data-line-number="21"><span class="co">#&gt; other attached packages:</span></a>
-<a class="sourceLine" id="cb132-22" data-line-number="22"><span class="co">#&gt; [1] onemap_2.1.1007 rmarkdown_1.14  knitr_1.23     </span></a>
+<a class="sourceLine" id="cb132-22" data-line-number="22"><span class="co">#&gt; [1] onemap_2.1.1008 rmarkdown_1.14  knitr_1.24     </span></a>
 <a class="sourceLine" id="cb132-23" data-line-number="23"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb132-24" data-line-number="24"><span class="co">#&gt; loaded via a namespace (and not attached):</span></a>
 <a class="sourceLine" id="cb132-25" data-line-number="25"><span class="co">#&gt;   [1] minqa_1.2.4             colorspace_1.4-1       </span></a>
-<a class="sourceLine" id="cb132-26" data-line-number="26"><span class="co">#&gt;   [3] rio_0.5.16              htmlTable_1.13.1       </span></a>
-<a class="sourceLine" id="cb132-27" data-line-number="27"><span class="co">#&gt;   [5] base64enc_0.1-3         rstudioapi_0.10        </span></a>
-<a class="sourceLine" id="cb132-28" data-line-number="28"><span class="co">#&gt;   [7] mice_3.6.0              codetools_0.2-16       </span></a>
-<a class="sourceLine" id="cb132-29" data-line-number="29"><span class="co">#&gt;   [9] splines_3.6.0           doParallel_1.0.14      </span></a>
-<a class="sourceLine" id="cb132-30" data-line-number="30"><span class="co">#&gt;  [11] zeallot_0.1.0           Formula_1.2-3          </span></a>
-<a class="sourceLine" id="cb132-31" data-line-number="31"><span class="co">#&gt;  [13] polynom_1.4-0           jsonlite_1.6           </span></a>
-<a class="sourceLine" id="cb132-32" data-line-number="32"><span class="co">#&gt;  [15] nloptr_1.2.1            MDSMap_1.1             </span></a>
-<a class="sourceLine" id="cb132-33" data-line-number="33"><span class="co">#&gt;  [17] broom_0.5.2             cluster_2.1.0          </span></a>
-<a class="sourceLine" id="cb132-34" data-line-number="34"><span class="co">#&gt;  [19] shiny_1.3.2             compiler_3.6.0         </span></a>
-<a class="sourceLine" id="cb132-35" data-line-number="35"><span class="co">#&gt;  [21] backports_1.1.4         assertthat_0.2.1       </span></a>
-<a class="sourceLine" id="cb132-36" data-line-number="36"><span class="co">#&gt;  [23] Matrix_1.2-17           lazyeval_0.2.2         </span></a>
-<a class="sourceLine" id="cb132-37" data-line-number="37"><span class="co">#&gt;  [25] later_0.8.0             acepack_1.4.1          </span></a>
-<a class="sourceLine" id="cb132-38" data-line-number="38"><span class="co">#&gt;  [27] htmltools_0.3.6         tools_3.6.0            </span></a>
-<a class="sourceLine" id="cb132-39" data-line-number="39"><span class="co">#&gt;  [29] gtable_0.3.0            glue_1.3.1             </span></a>
-<a class="sourceLine" id="cb132-40" data-line-number="40"><span class="co">#&gt;  [31] reshape2_1.4.3          dplyr_0.8.3            </span></a>
-<a class="sourceLine" id="cb132-41" data-line-number="41"><span class="co">#&gt;  [33] Rcpp_1.0.1              carData_3.0-2          </span></a>
-<a class="sourceLine" id="cb132-42" data-line-number="42"><span class="co">#&gt;  [35] cellranger_1.1.0        vctrs_0.2.0            </span></a>
-<a class="sourceLine" id="cb132-43" data-line-number="43"><span class="co">#&gt;  [37] gdata_2.18.0            nlme_3.1-140           </span></a>
-<a class="sourceLine" id="cb132-44" data-line-number="44"><span class="co">#&gt;  [39] iterators_1.0.10        crosstalk_1.0.0        </span></a>
-<a class="sourceLine" id="cb132-45" data-line-number="45"><span class="co">#&gt;  [41] xfun_0.8                stringr_1.4.0          </span></a>
-<a class="sourceLine" id="cb132-46" data-line-number="46"><span class="co">#&gt;  [43] openxlsx_4.1.0.1        lme4_1.1-21            </span></a>
-<a class="sourceLine" id="cb132-47" data-line-number="47"><span class="co">#&gt;  [45] mime_0.7                miniUI_0.1.1.1         </span></a>
-<a class="sourceLine" id="cb132-48" data-line-number="48"><span class="co">#&gt;  [47] weights_1.0             gtools_3.8.1           </span></a>
-<a class="sourceLine" id="cb132-49" data-line-number="49"><span class="co">#&gt;  [49] princurve_2.1.4         pan_1.6                </span></a>
-<a class="sourceLine" id="cb132-50" data-line-number="50"><span class="co">#&gt;  [51] candisc_0.8-0           MASS_7.3-51.1          </span></a>
-<a class="sourceLine" id="cb132-51" data-line-number="51"><span class="co">#&gt;  [53] scales_1.0.0            heplots_1.3-5          </span></a>
-<a class="sourceLine" id="cb132-52" data-line-number="52"><span class="co">#&gt;  [55] hms_0.5.0               promises_1.0.1         </span></a>
-<a class="sourceLine" id="cb132-53" data-line-number="53"><span class="co">#&gt;  [57] parallel_3.6.0          smacof_2.0-0           </span></a>
-<a class="sourceLine" id="cb132-54" data-line-number="54"><span class="co">#&gt;  [59] RColorBrewer_1.1-2      yaml_2.2.0             </span></a>
-<a class="sourceLine" id="cb132-55" data-line-number="55"><span class="co">#&gt;  [61] curl_3.3                gridExtra_2.3          </span></a>
-<a class="sourceLine" id="cb132-56" data-line-number="56"><span class="co">#&gt;  [63] ggplot2_3.2.0           rpart_4.1-15           </span></a>
-<a class="sourceLine" id="cb132-57" data-line-number="57"><span class="co">#&gt;  [65] reshape_0.8.8           latticeExtra_0.6-28    </span></a>
-<a class="sourceLine" id="cb132-58" data-line-number="58"><span class="co">#&gt;  [67] stringi_1.4.3           foreach_1.4.4          </span></a>
-<a class="sourceLine" id="cb132-59" data-line-number="59"><span class="co">#&gt;  [69] plotrix_3.7-6           checkmate_1.9.4        </span></a>
-<a class="sourceLine" id="cb132-60" data-line-number="60"><span class="co">#&gt;  [71] boot_1.3-22             zip_2.0.3              </span></a>
-<a class="sourceLine" id="cb132-61" data-line-number="61"><span class="co">#&gt;  [73] manipulateWidget_0.10.0 rlang_0.4.0            </span></a>
-<a class="sourceLine" id="cb132-62" data-line-number="62"><span class="co">#&gt;  [75] pkgconfig_2.0.2         rgl_0.100.26           </span></a>
-<a class="sourceLine" id="cb132-63" data-line-number="63"><span class="co">#&gt;  [77] evaluate_0.14           lattice_0.20-38        </span></a>
-<a class="sourceLine" id="cb132-64" data-line-number="64"><span class="co">#&gt;  [79] purrr_0.3.2             htmlwidgets_1.3        </span></a>
-<a class="sourceLine" id="cb132-65" data-line-number="65"><span class="co">#&gt;  [81] labeling_0.3            tidyselect_0.2.5       </span></a>
-<a class="sourceLine" id="cb132-66" data-line-number="66"><span class="co">#&gt;  [83] plyr_1.8.4              magrittr_1.5           </span></a>
-<a class="sourceLine" id="cb132-67" data-line-number="67"><span class="co">#&gt;  [85] R6_2.4.0                generics_0.0.2         </span></a>
-<a class="sourceLine" id="cb132-68" data-line-number="68"><span class="co">#&gt;  [87] nnls_1.4                Hmisc_4.2-0            </span></a>
-<a class="sourceLine" id="cb132-69" data-line-number="69"><span class="co">#&gt;  [89] mitml_0.3-7             pillar_1.4.2           </span></a>
-<a class="sourceLine" id="cb132-70" data-line-number="70"><span class="co">#&gt;  [91] haven_2.1.1             foreign_0.8-71         </span></a>
-<a class="sourceLine" id="cb132-71" data-line-number="71"><span class="co">#&gt;  [93] survival_2.43-3         abind_1.4-5            </span></a>
-<a class="sourceLine" id="cb132-72" data-line-number="72"><span class="co">#&gt;  [95] nnet_7.3-12             tibble_2.1.3           </span></a>
-<a class="sourceLine" id="cb132-73" data-line-number="73"><span class="co">#&gt;  [97] crayon_1.3.4            car_3.0-3              </span></a>
-<a class="sourceLine" id="cb132-74" data-line-number="74"><span class="co">#&gt;  [99] jomo_2.6-8              wordcloud_2.6          </span></a>
-<a class="sourceLine" id="cb132-75" data-line-number="75"><span class="co">#&gt; [101] ellipse_0.4.1           grid_3.6.0             </span></a>
-<a class="sourceLine" id="cb132-76" data-line-number="76"><span class="co">#&gt; [103] readxl_1.3.1            data.table_1.12.2      </span></a>
-<a class="sourceLine" id="cb132-77" data-line-number="77"><span class="co">#&gt; [105] forcats_0.4.0           digest_0.6.20          </span></a>
-<a class="sourceLine" id="cb132-78" data-line-number="78"><span class="co">#&gt; [107] webshot_0.5.1           xtable_1.8-4           </span></a>
-<a class="sourceLine" id="cb132-79" data-line-number="79"><span class="co">#&gt; [109] tidyr_0.8.3             httpuv_1.5.1           </span></a>
-<a class="sourceLine" id="cb132-80" data-line-number="80"><span class="co">#&gt; [111] munsell_0.5.0</span></a></code></pre></div>
+<a class="sourceLine" id="cb132-26" data-line-number="26"><span class="co">#&gt;   [3] rio_0.5.16              rprojroot_1.3-2        </span></a>
+<a class="sourceLine" id="cb132-27" data-line-number="27"><span class="co">#&gt;   [5] htmlTable_1.13.1        base64enc_0.1-3        </span></a>
+<a class="sourceLine" id="cb132-28" data-line-number="28"><span class="co">#&gt;   [7] fs_1.3.1                rstudioapi_0.10        </span></a>
+<a class="sourceLine" id="cb132-29" data-line-number="29"><span class="co">#&gt;   [9] mice_3.6.0              remotes_2.1.0          </span></a>
+<a class="sourceLine" id="cb132-30" data-line-number="30"><span class="co">#&gt;  [11] codetools_0.2-16        splines_3.6.0          </span></a>
+<a class="sourceLine" id="cb132-31" data-line-number="31"><span class="co">#&gt;  [13] doParallel_1.0.15       zeallot_0.1.0          </span></a>
+<a class="sourceLine" id="cb132-32" data-line-number="32"><span class="co">#&gt;  [15] pkgload_1.0.2           Formula_1.2-3          </span></a>
+<a class="sourceLine" id="cb132-33" data-line-number="33"><span class="co">#&gt;  [17] polynom_1.4-0           jsonlite_1.6           </span></a>
+<a class="sourceLine" id="cb132-34" data-line-number="34"><span class="co">#&gt;  [19] nloptr_1.2.1            MDSMap_1.1             </span></a>
+<a class="sourceLine" id="cb132-35" data-line-number="35"><span class="co">#&gt;  [21] broom_0.5.2             cluster_2.1.0          </span></a>
+<a class="sourceLine" id="cb132-36" data-line-number="36"><span class="co">#&gt;  [23] shiny_1.3.2             compiler_3.6.0         </span></a>
+<a class="sourceLine" id="cb132-37" data-line-number="37"><span class="co">#&gt;  [25] backports_1.1.4         assertthat_0.2.1       </span></a>
+<a class="sourceLine" id="cb132-38" data-line-number="38"><span class="co">#&gt;  [27] Matrix_1.2-17           lazyeval_0.2.2         </span></a>
+<a class="sourceLine" id="cb132-39" data-line-number="39"><span class="co">#&gt;  [29] cli_1.1.0               later_0.8.0            </span></a>
+<a class="sourceLine" id="cb132-40" data-line-number="40"><span class="co">#&gt;  [31] acepack_1.4.1           htmltools_0.3.6        </span></a>
+<a class="sourceLine" id="cb132-41" data-line-number="41"><span class="co">#&gt;  [33] prettyunits_1.0.2       tools_3.6.0            </span></a>
+<a class="sourceLine" id="cb132-42" data-line-number="42"><span class="co">#&gt;  [35] gtable_0.3.0            glue_1.3.1             </span></a>
+<a class="sourceLine" id="cb132-43" data-line-number="43"><span class="co">#&gt;  [37] reshape2_1.4.3          dplyr_0.8.3            </span></a>
+<a class="sourceLine" id="cb132-44" data-line-number="44"><span class="co">#&gt;  [39] Rcpp_1.0.2              carData_3.0-2          </span></a>
+<a class="sourceLine" id="cb132-45" data-line-number="45"><span class="co">#&gt;  [41] cellranger_1.1.0        vctrs_0.2.0            </span></a>
+<a class="sourceLine" id="cb132-46" data-line-number="46"><span class="co">#&gt;  [43] gdata_2.18.0            nlme_3.1-140           </span></a>
+<a class="sourceLine" id="cb132-47" data-line-number="47"><span class="co">#&gt;  [45] iterators_1.0.12        crosstalk_1.0.0        </span></a>
+<a class="sourceLine" id="cb132-48" data-line-number="48"><span class="co">#&gt;  [47] xfun_0.8                stringr_1.4.0          </span></a>
+<a class="sourceLine" id="cb132-49" data-line-number="49"><span class="co">#&gt;  [49] ps_1.3.0                openxlsx_4.1.0.1       </span></a>
+<a class="sourceLine" id="cb132-50" data-line-number="50"><span class="co">#&gt;  [51] testthat_2.1.1          lme4_1.1-21            </span></a>
+<a class="sourceLine" id="cb132-51" data-line-number="51"><span class="co">#&gt;  [53] mime_0.7                miniUI_0.1.1.1         </span></a>
+<a class="sourceLine" id="cb132-52" data-line-number="52"><span class="co">#&gt;  [55] weights_1.0             gtools_3.8.1           </span></a>
+<a class="sourceLine" id="cb132-53" data-line-number="53"><span class="co">#&gt;  [57] devtools_2.1.0          princurve_2.1.4        </span></a>
+<a class="sourceLine" id="cb132-54" data-line-number="54"><span class="co">#&gt;  [59] pan_1.6                 candisc_0.8-0          </span></a>
+<a class="sourceLine" id="cb132-55" data-line-number="55"><span class="co">#&gt;  [61] MASS_7.3-51.1           scales_1.0.0           </span></a>
+<a class="sourceLine" id="cb132-56" data-line-number="56"><span class="co">#&gt;  [63] heplots_1.3-5           hms_0.5.0              </span></a>
+<a class="sourceLine" id="cb132-57" data-line-number="57"><span class="co">#&gt;  [65] promises_1.0.1          parallel_3.6.0         </span></a>
+<a class="sourceLine" id="cb132-58" data-line-number="58"><span class="co">#&gt;  [67] smacof_2.0-0            RColorBrewer_1.1-2     </span></a>
+<a class="sourceLine" id="cb132-59" data-line-number="59"><span class="co">#&gt;  [69] curl_4.0                yaml_2.2.0             </span></a>
+<a class="sourceLine" id="cb132-60" data-line-number="60"><span class="co">#&gt;  [71] memoise_1.1.0           gridExtra_2.3          </span></a>
+<a class="sourceLine" id="cb132-61" data-line-number="61"><span class="co">#&gt;  [73] ggplot2_3.2.1           rpart_4.1-15           </span></a>
+<a class="sourceLine" id="cb132-62" data-line-number="62"><span class="co">#&gt;  [75] reshape_0.8.8           latticeExtra_0.6-28    </span></a>
+<a class="sourceLine" id="cb132-63" data-line-number="63"><span class="co">#&gt;  [77] stringi_1.4.3           desc_1.2.0             </span></a>
+<a class="sourceLine" id="cb132-64" data-line-number="64"><span class="co">#&gt;  [79] foreach_1.4.7           plotrix_3.7-6          </span></a>
+<a class="sourceLine" id="cb132-65" data-line-number="65"><span class="co">#&gt;  [81] checkmate_1.9.4         zip_2.0.3              </span></a>
+<a class="sourceLine" id="cb132-66" data-line-number="66"><span class="co">#&gt;  [83] boot_1.3-22             pkgbuild_1.0.4         </span></a>
+<a class="sourceLine" id="cb132-67" data-line-number="67"><span class="co">#&gt;  [85] manipulateWidget_0.10.0 rlang_0.4.0            </span></a>
+<a class="sourceLine" id="cb132-68" data-line-number="68"><span class="co">#&gt;  [87] pkgconfig_2.0.2         rgl_0.100.30           </span></a>
+<a class="sourceLine" id="cb132-69" data-line-number="69"><span class="co">#&gt;  [89] evaluate_0.14           lattice_0.20-38        </span></a>
+<a class="sourceLine" id="cb132-70" data-line-number="70"><span class="co">#&gt;  [91] purrr_0.3.2             labeling_0.3           </span></a>
+<a class="sourceLine" id="cb132-71" data-line-number="71"><span class="co">#&gt;  [93] htmlwidgets_1.3         processx_3.4.1         </span></a>
+<a class="sourceLine" id="cb132-72" data-line-number="72"><span class="co">#&gt;  [95] tidyselect_0.2.5        plyr_1.8.4             </span></a>
+<a class="sourceLine" id="cb132-73" data-line-number="73"><span class="co">#&gt;  [97] magrittr_1.5            R6_2.4.0               </span></a>
+<a class="sourceLine" id="cb132-74" data-line-number="74"><span class="co">#&gt;  [99] generics_0.0.2          nnls_1.4               </span></a>
+<a class="sourceLine" id="cb132-75" data-line-number="75"><span class="co">#&gt; [101] Hmisc_4.2-0             mitml_0.3-7            </span></a>
+<a class="sourceLine" id="cb132-76" data-line-number="76"><span class="co">#&gt; [103] haven_2.1.1             pillar_1.4.2           </span></a>
+<a class="sourceLine" id="cb132-77" data-line-number="77"><span class="co">#&gt; [105] foreign_0.8-71          withr_2.1.2            </span></a>
+<a class="sourceLine" id="cb132-78" data-line-number="78"><span class="co">#&gt; [107] abind_1.4-5             survival_2.43-3        </span></a>
+<a class="sourceLine" id="cb132-79" data-line-number="79"><span class="co">#&gt; [109] nnet_7.3-12             tibble_2.1.3           </span></a>
+<a class="sourceLine" id="cb132-80" data-line-number="80"><span class="co">#&gt; [111] car_3.0-3               crayon_1.3.4           </span></a>
+<a class="sourceLine" id="cb132-81" data-line-number="81"><span class="co">#&gt; [113] jomo_2.6-9              wordcloud_2.6          </span></a>
+<a class="sourceLine" id="cb132-82" data-line-number="82"><span class="co">#&gt; [115] ellipse_0.4.1           usethis_1.5.1          </span></a>
+<a class="sourceLine" id="cb132-83" data-line-number="83"><span class="co">#&gt; [117] readxl_1.3.1            grid_3.6.0             </span></a>
+<a class="sourceLine" id="cb132-84" data-line-number="84"><span class="co">#&gt; [119] data.table_1.12.2       callr_3.3.1            </span></a>
+<a class="sourceLine" id="cb132-85" data-line-number="85"><span class="co">#&gt; [121] forcats_0.4.0           digest_0.6.20          </span></a>
+<a class="sourceLine" id="cb132-86" data-line-number="86"><span class="co">#&gt; [123] webshot_0.5.1           xtable_1.8-4           </span></a>
+<a class="sourceLine" id="cb132-87" data-line-number="87"><span class="co">#&gt; [125] tidyr_0.8.3             httpuv_1.5.1           </span></a>
+<a class="sourceLine" id="cb132-88" data-line-number="88"><span class="co">#&gt; [127] munsell_0.5.0           sessioninfo_1.1.1</span></a></code></pre></div>
 </div>
 <div id="references" class="section level1">
 <h1>References</h1>

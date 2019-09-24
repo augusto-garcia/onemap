@@ -12,7 +12,7 @@ knitr::opts_chunk$set(collapse = TRUE,
                       cache = TRUE)
 
 
-## ---- echo=FALSE, results='hide'-----------------------------------------
+## ---- echo=FALSE, results='hide', message=FALSE--------------------------
 library(onemap)
 
 ## ---- eval=FALSE---------------------------------------------------------
@@ -328,6 +328,12 @@ rf_graph_table(LG1_frame, mrk.axis = "numbers")
 ripple_seq(LG1_frame)
 
 ## ------------------------------------------------------------------------
+LG1_mds <- mds_onemap(LG1)
+
+## ------------------------------------------------------------------------
+rf_graph_table(LG1_mds)
+
+## ------------------------------------------------------------------------
 LG1_test_seq <- drop_marker(LG1_frame, c(10,11,28,42))
 LG1_test_map <- map(LG1_test_seq)
 
@@ -382,6 +388,8 @@ CHR_mks$sequences$CHR1
 CHR_mks$sequences[[1]]
 
 ## ---- results='hide'-----------------------------------------------------
+CHR1_frame <- mds_onemap(CHR_mks$sequences$CHR1)
+# or
 CHR1_ord <- order_seq(CHR_mks$sequences$CHR1)
 CHR1_frame <- make_seq(CHR1_ord, "force")
 
@@ -407,6 +415,8 @@ CHR1_final <- CHR1_test_map
 ripple_seq(CHR1_final)
 
 ## ---- results='hide'-----------------------------------------------------
+CHR2_frame <- mds_onemap(CHR_mks$sequences$CHR2)
+# or
 CHR2_ord <- order_seq(CHR_mks$sequences$CHR2)
 CHR2_frame <- make_seq(CHR2_ord, "force")
 
@@ -417,6 +427,8 @@ CHR2_frame <- make_seq(CHR2_ord, "force")
 CHR2_final <- CHR2_frame
 
 ## ---- results='hide'-----------------------------------------------------
+CHR3_frame <- mds_onemap(CHR_mks$sequences$CHR3)
+# or
 CHR3_ord <- order_seq(CHR_mks$sequences$CHR3)
 CHR3_frame <- make_seq(CHR3_ord, "force")
 
@@ -441,44 +453,6 @@ rf_graph_table(CHR3_final, inter = FALSE)
 
 ## ------------------------------------------------------------------------
 ripple_seq(CHR3_final)
-
-## ---- eval=FALSE, echo=FALSE---------------------------------------------
-#  data("example.RData")
-
-## ---- eval=FALSE, echo=FALSE---------------------------------------------
-#  segr <- test_segregation(example)
-#  plot(segr) # all markers follow the expected Mendelian segregation pattern
-#  
-#  twopts <- rf_2pts(example)
-#  seq <- make_seq(twopts, "all")
-#  
-#  lgs <- group(seq)
-#  lg1 <- make_seq(lgs,1)
-#  
-
-## ---- eval=FALSE, echo=FALSE---------------------------------------------
-#  #  MDS method
-#  start <- Sys.time()
-#  map.mds3 <- mds_onemap(lg1, out.file = "mds.input.file.txt", displaytext = F, mds.graph.file = "graph.mds.pdf", hmm = T)
-#  end <- Sys.time()
-#  end - start # It will take about 25 minutes
-#  rf_graph_table(map.mds)
-#  
-#  # order_seq method
-#  start <- Sys.time()
-#  map.order <- order_seq(lg1)
-#  end <- Sys.time()
-#  end - start # It will take about 25 mins
-#  map.seq <- make_seq(map.order, "force")
-#  rf_graph_table(map.seq)
-#  
-#  # real order
-#  real.ord <- make_seq(twopts, lg1$seq.num)
-#  start <- Sys.time()
-#  real.map <- map(real.ord)
-#  end <- Sys.time()
-#  end - start # It will take about 25 mins
-#  rf_graph_table(real.map)
 
 ## ---- echo=TRUE, fig=TRUE------------------------------------------------
 map1 <- list(LG1_final, LG2_final, LG3_final)

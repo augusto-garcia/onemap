@@ -236,7 +236,7 @@ print.onemap_segreg_test <- function(x,...) {
 ##' # You can store the graphic in an object, then save it.
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' g <- plot(Out.seg)
-##' ggplot2::ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
+##' # ggplot2::ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
 ##' @method plot onemap_segreg_test
 ##' @export
 plot.onemap_segreg_test <- function(x, order=TRUE,...) {
