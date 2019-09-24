@@ -25,7 +25,7 @@ The following example is intended to show the usage of `OneMap`
 functions for linkage mapping in outcrossing (non-inbred) populations.
 With basic knowledge of R syntax, one should have no problems using
 it. If you are not familiar with R, we recommend reading the vignette
-[Introduction to R](http://htmlpreview.github.io/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Introduction_R.html).
+[Introduction to R](https://htmlpreview.github.io/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Introduction_R.html).
 
 Hopefully these examples will be clear enough to help any user to
 understand its functionality and start using it. You do not need to be
@@ -979,13 +979,13 @@ ripple_seq(LG1_frame)
 
 No better order was observed. 
 
-Alternatively, you can also use `mds_onemap` function to obtain a first draft for the markers order. The `mds_onemap` function makes a interface between `OneMap` and `MDSMap` package. The ordering approach presented in `MDSMap` provides a faster and efficient way of ordering markers using multi-dimensional scaling. The method also provides diagnostics graphics and parameters to find outliers to help users to filter the dataset. You can find more informations in `MDSMap` [vignette](https://cran.r-project.org/web/packages/MDSMap/vignettes/MDSMap.pdf). Here we will show a simple example of how it can be used for ordering our example markers from an outcrossing population.
+Alternatively, you can also use `mds_onemap` function to obtain a first draft for the markers order. The `mds_onemap` function makes a interface between `OneMap` and `MDSMap` package. The ordering approach presented in `MDSMap` provides a faster and efficient way of ordering markers using multi-dimensional scaling. The method also provides diagnostics graphics and parameters to find outliers to help users to filter the dataset. You can find more informations in `MDSMap` [vignette](https://CRAN.R-project.org/package=MDSMap). Here we will show a simple example of how it can be used for ordering our example markers from an outcrossing population.
 
 ```{r}
 LG1_mds <- mds_onemap(LG1)
 ```
 
-If you only specify the input sequence, mds_onemap will use the default parameters. It will generate MDSMap input file in `out.file` file and the `NULL.pdf` file with the diagnostic graphics in your work directory. Also, the default method used is the principal curves, know more about using `?mds_onemap` and reading the MDSMap [vignette](https://cran.r-project.org/web/packages/MDSMap/vignettes/MDSMap.pdf). By default, we use the OneMap HMM approach to estimate the distances after the MDSMap ordered the markers, but you can have the default output from MDSMap setting `hmm = FALSE`.
+If you only specify the input sequence, mds_onemap will use the default parameters. It will generate MDSMap input file in `out.file` file and the `NULL.pdf` file with the diagnostic graphics in your work directory. Also, the default method used is the principal curves, know more about using `?mds_onemap` and reading the MDSMap [vignette]( https://CRAN.R-project.org/package=MDSMap). By default, we use the OneMap HMM approach to estimate the distances after the MDSMap ordered the markers, but you can have the default output from MDSMap setting `hmm = FALSE`.
 
 ```{r}
 rf_graph_table(LG1_mds)
