@@ -118,13 +118,13 @@ rf_graph_table <- function(input.seq,
       stop("This mrk.axis argument is not defined, choose 'names', 'numbers' or 'none'")
 
     ## extracting data
-    if(is(get(input.seq$data.name), "outcross"))
+    if(is(input.seq$data.name, "outcross"))
     {
         if(input.seq$seq.phases[1] == -1 || input.seq$seq.rf[1] == -1 || is.null(input.seq$seq.like))
             stop("You must estimate parameters before running 'rf_graph_table' ")
         ## making a list with necessary information
         n.mrk <- length(input.seq$seq.num)
-        LOD <- lapply(get(input.seq$twopt)$analysis,
+        LOD <- lapply(input.seq$twopt$analysis,
                       function(x, w){
                           m<-matrix(0, length(w), length(w))
                           for(i in 1:(length(w)-1)){
@@ -148,7 +148,7 @@ rf_graph_table <- function(input.seq,
         for(i in 1:(length(input.seq$seq.num)-1)){
             for(j in (i+1):length(input.seq$seq.num)){
                 z<-sort(c(input.seq$seq.num[i],input.seq$seq.num[j]))
-                LOD[j,i]<-LOD[i,j]<-get(input.seq$twopt)$analysis[z[1], z[2]]
+                LOD[j,i]<-LOD[i,j]<-input.seq$twopt$analysis[z[1], z[2]]
             }
         }
         mat<-t(get_mat_rf_in(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
@@ -166,13 +166,13 @@ rf_graph_table <- function(input.seq,
         mat[i+1,i] <- input.seq$seq.rf[i]
     }
     
-    colnames(mat) <- rownames(mat)<- colnames(get(input.seq$data.name, pos=1)$geno)[input.seq$seq.num]
+    colnames(mat) <- rownames(mat)<- colnames(input.seq$data.name$geno)[input.seq$seq.num]
     
     if (mrk.axis == "numbers")
       colnames(mat) <- rownames(mat)<- input.seq$seq.num
     
     ##Write NAs in two-point recombination fractions between markers of type D1 and D2
-    types <- get(input.seq$data.name, pos=1)$segr.type[input.seq$seq.num]
+    types <- input.seq$data.name$segr.type[input.seq$seq.num]
     which.D1D2<-outer((substr(types, 1,2)=="D1"),(substr(types, 1,2)=="D2"))
     which.D1D2<-which.D1D2+t(which.D1D2)
     which.D1D2[which.D1D2==1]<-NA
@@ -180,14 +180,14 @@ rf_graph_table <- function(input.seq,
     diag.si<-rbind(1:(ncol(which.D1D2)-1),2:ncol(which.D1D2))
     for(i in 1:(ncol(which.D1D2)-1)) which.D1D2[diag.si[1,i],diag.si[2,i]] <- which.D1D2[diag.si[2,i],diag.si[1,i]] <- 1
     mat<-mat*which.D1D2
-    missing<-100*apply(get(input.seq$data.name, pos=1)$geno[,input.seq$seq.num],2, function(x) sum(x==0))/get(input.seq$data.name, pos=1)$n.ind
+    missing<-100*apply(input.seq$data.name$geno[,input.seq$seq.num],2, function(x) sum(x==0))/input.seq$data.name$n.ind
 
     ## Building the data.frame to plot
     mat.LOD <- mat.rf <- mat
     mat.LOD[lower.tri(mat.LOD)] <- t(mat.LOD)[lower.tri(mat.LOD)]
     mat.rf[upper.tri(mat.rf)] <- t(mat.rf)[upper.tri(mat.LOD)]
 
-    if(is(get(input.seq$data.name), "outcross")){
+    if(is(input.seq$data.name, "outcross")){
         colnames(LOD$CC) <- rownames(LOD$CC) <- colnames(mat.rf)
         colnames(LOD$CR) <- rownames(LOD$CR) <- colnames(mat.rf)
         colnames(LOD$RC) <- rownames(LOD$RC) <- colnames(mat.rf)
@@ -238,7 +238,7 @@ rf_graph_table <- function(input.seq,
     ## ggplot() just depends on the 'x', 'y', and 'fill' aes arguments
     
     ## If outcross:
-    if(is(get(input.seq$data.name), "outcross")){
+    if(is(input.seq$data.name, "outcross")){
         if(graph.LOD!=TRUE){
             p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, x.missing = x.missing, y.missing = y.missing, fill = rf, LOD.CC=LOD.CC, LOD.CR=LOD.CR, LOD.RC=LOD.RC, LOD.RR=LOD.RR), data=df.graph) +
                 geom_tile() +

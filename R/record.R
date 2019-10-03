@@ -92,7 +92,7 @@ record<-function(input.seq, times=10, LOD=0, max.rf=0.5, tol=10E-5){
 
     ## create reconmbination fraction matrix
 
-    if(class(get(input.seq$twopt))[2]=="outcross")
+    if(class(input.seq$twopt)[2]=="outcross")
         r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
     else
         r<-get_mat_rf_in(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
@@ -100,7 +100,7 @@ record<-function(input.seq, times=10, LOD=0, max.rf=0.5, tol=10E-5){
     diag(r)<-0
 
     ##RECORD algorithm
-    X<-r*get(input.seq$data.name, pos=1)$n.ind ## Obtaining X multiplying the MLE of the recombination
+    X<-r*input.seq$data.name$n.ind ## Obtaining X multiplying the MLE of the recombination
     ## fraction by the number of individuals
 
     COUNT<-function(X, sequence){ ## See eq. 1 on the paper (Van Os et al., 2005)
@@ -108,7 +108,7 @@ record<-function(input.seq, times=10, LOD=0, max.rf=0.5, tol=10E-5){
     }
     ## For two markers
     if(n.mrk==2)
-        return(map(make_seq(get(input.seq$twopt),input.seq$seq.num[1:2],twopt=input.seq$twopt), tol=10E-5))
+        return(map(make_seq(input.seq$twopt,input.seq$seq.num[1:2],twopt=input.seq$twopt), tol=10E-5))
 
     ## For three markers (calculation of 3 possible orders: 3!/2)
     else if(n.mrk==3) {
@@ -196,7 +196,7 @@ record<-function(input.seq, times=10, LOD=0, max.rf=0.5, tol=10E-5){
   }
     ## end of RECORD algorithm
     cat("\norder obtained using RECORD algorithm:\n\n", input.seq$seq.num[avoid_reverse(result.new)], "\n\ncalculating multipoint map using tol", tol, ".\n\n")
-    map(make_seq(get(input.seq$twopt),input.seq$seq.num[avoid_reverse(result.new)],twopt=input.seq$twopt), tol=tol)
+    map(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(result.new)],twopt=input.seq$twopt), tol=tol)
 }
 
 ##end of file

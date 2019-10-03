@@ -180,7 +180,7 @@ order_seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
   else
   {
     ## here, the complete algorithm will be applied
-    cross.type <- class(get(input.seq$data.name, pos=1))[2]
+    cross.type <- class(input.seq$data.name)[2]
     if(cross.type == "f2") FLAG <- "f2"
     else if (cross.type == "backcross" ||
              cross.type == "riself" ||
@@ -212,22 +212,22 @@ order_seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
                            })
         ##if(is.null(tpt.type)) stop("Invalid two point method")
         seq.rest <- input.seq$seq.num[-pmatch(seq.init, input.seq$seq.num)] ##the rest of the markers
-        seq.mis <- apply(as.matrix(get(input.seq$data.name, pos=1)$geno[,seq.rest]), 2, function(x) sum(x==0)) ##checking missing markers for the rest
-        names(seq.mis)<-colnames(get(input.seq$data.name, pos=1)$geno)[seq.rest]
+        seq.mis <- apply(as.matrix(input.seq$data.name$geno[,seq.rest]), 2, function(x) sum(x==0)) ##checking missing markers for the rest
+        names(seq.mis)<-colnames(input.seq$data.name$geno)[seq.rest]
 
         if(FLAG == "bc") {
-          rest.ord <- pmatch(names(seq.mis), colnames(get(input.seq$data.name, pos=1)$geno))
+          rest.ord <- pmatch(names(seq.mis), colnames(input.seq$data.name$geno))
           seq.work <- pmatch(c(seq.init,rest.ord), input.seq$seq.num)
         }
         else if(FLAG == "f2"){
-          seq.type <- get(input.seq$data.name, pos=1)$segr.type.num[seq.rest] ##checking maker type (4: co-dominant; 5: dominant)
+          seq.type <- input.seq$data.name$segr.type.num[seq.rest] ##checking maker type (4: co-dominant; 5: dominant)
           names(seq.type) <- names(seq.mis)
           tp.ord <- sort(seq.type) ##sorting by type, automatically co-dominant markers (4) come first
           rest.ord <- c(sort(seq.mis[pmatch(names(tp.ord)[tp.ord==1],names(seq.mis))]),
                         sort(seq.mis[pmatch(names(tp.ord)[tp.ord==4],names(seq.mis))]),
                         sort(seq.mis[pmatch(names(tp.ord)[tp.ord==2],names(seq.mis))]),
                         sort(seq.mis[pmatch(names(tp.ord)[tp.ord==3],names(seq.mis))]))##within each type of marker, sort by missing
-          rest <- pmatch(names(rest.ord), colnames(get(input.seq$data.name, pos=1)$geno)) ##matching names with the positions on the raw data
+          rest <- pmatch(names(rest.ord), colnames(input.seq$data.name$geno)) ##matching names with the positions on the raw data
           seq.work <- pmatch(c(seq.init,rest), input.seq$seq.num) ##sequence to work with
         }
         else stop("Invalid cross type\n")
@@ -236,7 +236,7 @@ order_seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
         cat("\nCross type: ", cross.type, "\nChoosing initial subset using the 'sample' approach\n")
         LOD.test <- i <- 0
         while(abs(LOD.test) < abs(subset.THRES) && i < subset.n.try){
-          smp.seq <- make_seq(get(input.seq$twopt), sample(input.seq$seq.num, size=n.init), twopt=input.seq$twopt)
+          smp.seq <- make_seq(input.seq$twopt, sample(input.seq$seq.num, size=n.init), twopt=input.seq$twopt)
           res.test <- compare(smp.seq)
           LOD.test <- res.test$best.ord.LOD[2]
           i < -i+1
@@ -244,21 +244,21 @@ order_seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
         if(abs(LOD.test) >= abs(subset.THRES)){
           seq.init <- res.test$best.ord[1,] ##best order based on 'compare'
           seq.rest <- input.seq$seq.num[-pmatch(seq.init, input.seq$seq.num)] ##the rest of the markers
-          seq.mis <- apply(as.matrix(get(input.seq$data.name, pos=1)$geno[,seq.rest]), 2, function(x) sum(x==0)) ##checking missing markers for the rest
-          names(seq.mis)<-colnames(get(input.seq$data.name, pos=1)$geno)[seq.rest]
+          seq.mis <- apply(as.matrix(input.seq$data.name$geno[,seq.rest]), 2, function(x) sum(x==0)) ##checking missing markers for the rest
+          names(seq.mis)<-colnames(input.seq$data.name$geno)[seq.rest]
           if(FLAG == "bc"){
-            rest.ord <- pmatch(names(seq.mis), colnames(get(input.seq$data.name, pos=1)$geno))
+            rest.ord <- pmatch(names(seq.mis), colnames(input.seq$data.name$geno))
             seq.work <- pmatch(c(seq.init,rest.ord), input.seq$seq.num)
           }
           else if(FLAG == "f2"){
-            seq.type <- get(input.seq$data.name, pos=1)$segr.type.num[seq.rest] ##checking maker type (4: co-dominant; 5: dominant)
+            seq.type <- input.seq$data.name$segr.type.num[seq.rest] ##checking maker type (4: co-dominant; 5: dominant)
             names(seq.type) <- names(seq.mis)
             tp.ord <- sort(seq.type) ##sorting by type, automatically co-dominant markers (4) come first
             rest.ord <- c(sort(seq.mis[pmatch(names(tp.ord)[tp.ord==1],names(seq.mis))]),
                           sort(seq.mis[pmatch(names(tp.ord)[tp.ord==4],names(seq.mis))]),
                           sort(seq.mis[pmatch(names(tp.ord)[tp.ord==2],names(seq.mis))]),
                           sort(seq.mis[pmatch(names(tp.ord)[tp.ord==3],names(seq.mis))]))##within each type of marker, sort by missing
-            rest <- pmatch(names(rest.ord),colnames(get(input.seq$data.name, pos=1)$geno)) ##matching names with the positions on the raw data
+            rest <- pmatch(names(rest.ord),colnames(input.seq$data.name$geno)) ##matching names with the positions on the raw data
             seq.work <- pmatch(c(seq.init,rest), input.seq$seq.num) ##sequence to work with
           }
           else stop("Invalid cross type\n")
@@ -269,14 +269,14 @@ order_seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
     }
     else if(FLAG == "outcross") {
       cat("\nCross type: outcross\nUsing segregation types of the markers to choose initial subset\n")
-      segregation.types <- get(input.seq$data.name, pos=1)$segr.type.num[input.seq$seq.num]
+      segregation.types <- input.seq$data.name$segr.type.num[input.seq$seq.num]
       if(sum(segregation.types == 7) > sum(segregation.types == 6)) segregation.types[segregation.types == 6] <- 8 ## if there are more markers of type D2 than D1, try to map those first
       seq.work <- order(segregation.types)
       seq.init <- input.seq$seq.num[seq.work[1:n.init]]
     }
     else stop("Invalid cross type")
     ##apply the 'compare' step to the subset of initial markers
-    seq.ord <- compare(input.seq=make_seq(get(input.seq$twopt), seq.init, twopt=input.seq$twopt), n.best=50)
+    seq.ord <- compare(input.seq=make_seq(input.seq$twopt, seq.init, twopt=input.seq$twopt), n.best=50)
 
     ## 'try' to map remaining markers
     input.seq2 <- make_seq(seq.ord,1)

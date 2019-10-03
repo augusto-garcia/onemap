@@ -104,7 +104,7 @@ rcd <-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5, hmm=FALSE)
 
     ## create reconmbination fraction matrix
 
-    if(class(get(input.seq$twopt))[2]=="outcross")
+    if(class(input.seq$twopt)[2]=="outcross")
         r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
     else
         r<-get_mat_rf_in(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
@@ -161,7 +161,7 @@ rcd <-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5, hmm=FALSE)
     if(hmm==FALSE){
     return(input.seq$seq.num[avoid_reverse(order)])
     } else if (hmm==TRUE){
-      rcd.hmm <- map(make_seq(get(input.seq$twopt),input.seq$seq.num[avoid_reverse(order)],twopt=input.seq$twopt), tol=tol)
+      rcd.hmm <- map(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(order)],twopt=input.seq$twopt), tol=tol)
       return(rcd.hmm)
     } else {
       stop("The definition of hmm argument not correct, use TRUE/FALSE.")

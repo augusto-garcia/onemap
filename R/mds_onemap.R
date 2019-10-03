@@ -69,8 +69,8 @@ mds_onemap <- function(input.seq, out.file= "out.file", mds.graph.file="NULL.pdf
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   
   
-  n_ind <- get(input.seq$data.name)$n.ind
-  obj.class <- class(get(input.seq$data.name))
+  n_ind <- input.seq$data.name$n.ind
+  obj.class <- class(input.seq$data.name)
   if(obj.class[2]=="outcross"){
     mat<-get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1)
   } else {
@@ -101,14 +101,14 @@ mds_onemap <- function(input.seq, out.file= "out.file", mds.graph.file="NULL.pdf
                                   displaytext = displaytext)
   dev.off()
   if(hmm==TRUE){
-    ord_mds <- match(as.character(mds_map$locimap[,2]), colnames(get(input.seq$data.name)$geno)) 
-    seq_mds <- make_seq(get(input.seq$twopt), ord_mds)
+    ord_mds <- match(as.character(mds_map$locimap[,2]), colnames(input.seq$data.name$geno)) 
+    seq_mds <- make_seq(input.seq$twopt, ord_mds)
     seq_mds$twopt <- input.seq$twopt
     mds_map <- map(seq_mds, mds.seq = mds.seq)
   }
   
   if(!is.list(mds_map)) {
-    new.seq <- make_seq(get(input.seq$twopt), mds_map)
+    new.seq <- make_seq(input.seq$twopt, mds_map)
     new.seq$twopt <- input.seq$twopt
     mds_map <- mds_onemap(new.seq, out.file= out.file, mds.graph.file=mds.graph.file, p = NULL, n=NULL, ispc=TRUE,
                           displaytext=displaytext, weightfn=weightfn, mapfn=mapfn, hmm = hmm, mds.seq=mds.seq)

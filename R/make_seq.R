@@ -134,7 +134,7 @@ make_seq <-
              else stop("the length of 'phase' must be equal to the length of the sequence minus 1")
              seq.rf <- -1
              seq.like <- NULL
-             if(is.null(data.name)) data.name <- deparse(substitute(input.obj))
+             if(is.null(data.name)) data.name <- input.obj
              twopt <- NULL
            },
            'rf_2pts' = {
@@ -158,7 +158,7 @@ make_seq <-
              else stop("the length of 'phase' must be equal to the length of the sequence minus 1")
              seq.rf <- -1
              seq.like <- NULL
-             if(is.null(twopt)) twopt <- deparse(substitute(input.obj))
+             if(is.null(twopt)) twopt <- input.obj
            },
            'group' = {
              if(length(arg) == 1 && is.numeric(arg) && arg <= input.obj$n.groups) seq.num <- input.obj$seq.num[which(input.obj$groups == arg)]
@@ -227,7 +227,7 @@ make_seq <-
 ##'@method print sequence
 
 print.sequence <- function(x,...) {
-  marnames <- colnames(get(x$data.name, pos=1)$geno)[x$seq.num]
+  marnames <- colnames(x$data.name$geno)[x$seq.num]
   if(length(x$seq.rf) == 1 && x$seq.rf == -1) {
     # no information available for the order
     cat("\nNumber of markers:",length(marnames))
@@ -259,12 +259,12 @@ print.sequence <- function(x,...) {
     marnumbers <- formatC(x$seq.num, format="d", width=longest.number)
     distances <- formatC(c(0,cumsum(get(get(".map.fun", envir=.onemapEnv))(x$seq.rf))),format="f",digits=2,width=7)
     ## whith diplotypes for class 'outcross'
-    if(any(class(get(x$data.name, pos=1)) == "outcross")){
+    if(any(class(x$data.name) == "outcross")){
       ## create diplotypes from segregation types and linkage phases
       link.phases <- apply(link.phases,1,function(x) paste(as.character(x),collapse="."))
       parents <- matrix("",length(x$seq.num),4)
       for (i in 1:length(x$seq.num))
-        parents[i,] <- return_geno(get(x$data.name, pos=1)$segr.type[x$seq.num[i]],link.phases[i])
+        parents[i,] <- return_geno(x$data.name$segr.type[x$seq.num[i]],link.phases[i])
       cat("\nPrinting map:\n\n")
       cat("Markers",rep("",max(longest.number+longest.name-7,0)+10),"Position",rep("",10),"Parent 1","     ","Parent 2\n\n")
       for (i in 1:length(x$seq.num)) {
@@ -274,7 +274,7 @@ print.sequence <- function(x,...) {
       cat(length(marnames),"markers            log-likelihood:",ifelse(is.null(x$seq.like),"NULL",x$seq.like),"\n\n")
     }
     ## whithout diplotypes for other classes
-    else if(class(get(x$data.name, pos=1))[2] == "backcross" || class(get(x$data.name, pos=1))[2] == "f2" || class(get(x$data.name, pos=1))[2] == "riself" || class(get(x$data.name, pos=1))[2] == "risib"){
+    else if(class(x$data.name)[2] == "backcross" || class(x$data.name)[2] == "f2" || class(x$data.name)[2] == "riself" || class(x$data.name)[2] == "risib"){
       cat("\nPrinting map:\n\n")
       cat("Markers",rep("",max(longest.number+longest.name-7,0)+10),"Position",rep("",10),"\n\n")
       for (i in 1:length(x$seq.num)) {

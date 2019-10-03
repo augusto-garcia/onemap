@@ -103,7 +103,7 @@
 
 ripple_seq<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2)
 {
-    if(is(get(input.seq$data.name), "outcross"))
+    if(is(input.seq$data.name, "outcross"))
         return(ripple_seq_outcross(input.seq=input.seq,
                                    ws=ws,
                                    LOD=LOD,
@@ -179,8 +179,8 @@ ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2) {
             else rf.init[j] <- list.init$rf.init[[ind]][which(list.init$phase.init[[ind]] == phase[j])]
         }
         ## estimate parameters
-        final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
-                                     type=get(input.seq$data.name, pos=1)$segr.type.num[all.ord[i,]],
+        final.map <- est_map_hmm_out(geno=t(input.seq$data.name$geno[,all.ord[i,]]),
+                                     type=input.seq$data.name$segr.type.num[all.ord[i,]],
                                      phase=phase,
                                      rf.vec=rf.init,
                                      verbose=FALSE,
@@ -205,7 +205,7 @@ ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2) {
 	LOD.print <- format(best.ord.LOD,digits=2,nsmall=2)
         cat("\n  Alternative orders:\n")
         for(j in which.LOD) {
-            if(any(class(get(input.seq$data.name, pos=1))=="outcross"))
+            if(any(class(input.seq$data.name)=="outcross"))
                 cat("  ",all.ord[j,1:(ws+1)],ifelse(len > (ws+1),"... : ",": "),LOD.print[j],"( linkage phases:",best.ord.phase[j,1:ws],ifelse(len > (ws+1),"... )\n",")\n"))
             else
                 cat("  ",all.ord[j,1:(ws+1)],ifelse(len > (ws+1),"... : ",": "),LOD.print[j],"\n")
@@ -245,8 +245,8 @@ ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2) {
                     else rf.init[j] <- list.init$rf.init[[ind]][which(list.init$phase.init[[ind]] == phase[j])]
                 }
                 ## estimate parameters
-                final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
-                                             type=get(input.seq$data.name, pos=1)$segr.type.num[all.ord[i,]],
+                final.map <- est_map_hmm_out(geno=t(input.seq$data.name$geno[,all.ord[i,]]),
+                                             type=input.seq$data.name$segr.type.num[all.ord[i,]],
                                              phase=phase,
                                              rf.vec=rf.init,
                                              verbose=FALSE,
@@ -271,7 +271,7 @@ ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2) {
                 LOD.print <- format(best.ord.LOD,digits=2,nsmall=2)
                 cat("\n  Alternative orders:\n")
                 for(j in which.LOD) {
-                    if(any(class(get(input.seq$data.name, pos=1))=="outcross"))
+                    if(any(class(input.seq$data.name)=="outcross"))
                         cat(ifelse(p>2,"  ...","  "),all.ord[j,(p-1):(p+ws)],ifelse((p+ws)<len,"... : ",": "),LOD.print[j],"( linkage phases:",ifelse(p>2,"...","\b"),best.ord.phase[j,(p-1):(p+ws-1)],ifelse((p+ws)<len,"... )\n",")\n"))
                     else
                         cat(ifelse(p>2,"  ...","  "),all.ord[j,(p-1):(p+ws)],ifelse((p+ws)<len,"... : ",": "),LOD.print[j],"\n")
@@ -309,8 +309,8 @@ ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2) {
             else rf.init[j] <- list.init$rf.init[[ind]][which(list.init$phase.init[[ind]] == phase[j])]
         }
         ## estimate parameters
-        final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
-                                     type=get(input.seq$data.name, pos=1)$segr.type.num[all.ord[i,]],
+        final.map <- est_map_hmm_out(geno=t(input.seq$data.name$geno[,all.ord[i,]]),
+                                     type=input.seq$data.name$segr.type.num[all.ord[i,]],
                                      phase=phase,
                                      rf.vec=rf.init,
                                      verbose=FALSE,
@@ -336,7 +336,7 @@ ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2) {
         cat("\n  Alternative orders:\n")
 
         for(j in which.LOD) {
-            if(any(class(get(input.seq$data.name, pos=1))=="outcross"))
+            if(any(class(input.seq$data.name)=="outcross"))
                 cat(ifelse(len > (ws+1),"  ...","  "),all.ord[j,(len-ws):len],": ",LOD.print[j],"( linkage phases:",ifelse(len > (ws+1),"...","\b"),best.ord.phase[j,(len-ws):(len-1)],")\n")
             else
                 cat(ifelse(len > (ws+1),"  ...","  "),all.ord[j,(len-ws):len],": ",LOD.print[j],"\n")
@@ -381,10 +381,10 @@ ripple_seq_inbred<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2)
 
     for(i in 1:nrow(all.ord)){
         ## estimate parameters
-        seq.temp<-make_seq(get(input.seq$twopt), arg=all.ord[i,])
+        seq.temp<-make_seq(input.seq$twopt, arg=all.ord[i,])
         seq.temp$twopt<-input.seq$twopt
         rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
-        final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
+        final.map<-est_map_hmm_f2(geno=t(input.seq$data.name$geno[,all.ord[i,]]),
                                   rf.vec=rf.temp,
                                   verbose=FALSE,
                                   tol=tol)
@@ -424,10 +424,10 @@ ripple_seq_inbred<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2)
             }
             for(i in 1:nrow(all.ord)){
                 ## estimate parameters
-                seq.temp<-make_seq(get(input.seq$twopt), arg=all.ord[i,])
+                seq.temp<-make_seq(input.seq$twopt, arg=all.ord[i,])
                 seq.temp$twopt<-input.seq$twopt
                 rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
-                final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
+                final.map<-est_map_hmm_f2(geno=t(input.seq$data.name$geno[,all.ord[i,]]),
                                           rf.vec=rf.temp,
                                           verbose=FALSE,
                                           tol=tol)
@@ -468,10 +468,10 @@ ripple_seq_inbred<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2)
         all.ord <- t(apply(perm_tot(tail(input.seq$seq.num,ws)),1,function(x) c(input.seq$seq.num[(len-ws-ext.w+1):(len-ws)],x)))
     for(i in 1:nrow(all.ord)){
         ## estimate parameters
-        seq.temp<-make_seq(get(input.seq$twopt), arg=all.ord[i,])
+        seq.temp<-make_seq(input.seq$twopt, arg=all.ord[i,])
         seq.temp$twopt<-input.seq$twopt
         rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
-        final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
+        final.map<-est_map_hmm_f2(geno=t(input.seq$data.name$geno[,all.ord[i,]]),
                                   rf.vec=rf.temp,
                                   verbose=FALSE,
                                   tol=tol)

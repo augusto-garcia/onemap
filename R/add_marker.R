@@ -63,5 +63,5 @@ add_marker<-function(input.seq, mrks)
     if (!any(class(input.seq) == "sequence"))
       stop(sQuote(deparse(substitute(input.seq))), " is not an object of class 'sequence'")
     seq.num<-c(input.seq$seq.num,mrks)
-    return(make_seq(get(input.seq$twopt),seq.num, twopt=input.seq$twopt))
+    return(make_seq(input.seq$twopt,seq.num, twopt=input.seq$twopt))
   }

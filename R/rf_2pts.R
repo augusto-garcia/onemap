@@ -74,7 +74,7 @@ rf_2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE) {
     else if(("risib" %in% class(input.obj)))
         r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=2, verbose = verbose)
         
-    structure(list(data.name=as.character(sys.call())[2], n.mar=input.obj$n.mar, LOD=LOD, max.rf=max.rf,
+    structure(list(data.name= input.obj, n.mar=input.obj$n.mar, LOD=LOD, max.rf=max.rf,
                    input=input.obj$input, CHROM = input.obj$CHROM, POS= input.obj$POS, analysis=r),
               class = c("rf_2pts", class(input.obj)[2]))
 }

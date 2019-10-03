@@ -103,7 +103,7 @@
 ##'@export
 
 compare<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
-    if(is(get(input.seq$data.name), "outcross"))
+    if(is(input.seq$data.name, "outcross"))
         return(compare_outcross(input.seq=input.seq,n.best=n.best,tol=tol,verbose=verbose))
     else
         return(compare_inbred(input.seq=input.seq,n.best=n.best,tol=tol,verbose=verbose))
@@ -174,9 +174,9 @@ compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
                 }
                 for(j in 1:nrow(Ph.Init)){
                     ## estimate parameters
-                    final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
-		    error=get(input.seq$data.name, pos=1)$error[all.ord[i,] + rep(c(0:(get(input.seq$data.name)$n.ind-1))*get(input.seq$data.name)$n.mar, each=length(all.ord[i,])),],
-                                                 type=get(input.seq$data.name, pos=1)$segr.type.num[all.ord[i,]],
+                    final.map <- est_map_hmm_out(geno=t(input.seq$data.name$geno[,all.ord[i,]]),
+		    error=input.seq$data.name$error[all.ord[i,] + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(all.ord[i,])),],
+                                                 type=input.seq$data.name$segr.type.num[all.ord[i,]],
                                                  phase=Ph.Init[j,],
                                                  rf.vec=Rf.Init[j,],
                                                  verbose=FALSE,
@@ -237,9 +237,9 @@ compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
             }
             for(j in 1:nrow(Ph.Init)){
                 ## estimate parameters
-                final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
-		error=get(input.seq$data.name, pos=1)$error[all.ord[i,] + rep(c(0:(get(input.seq$data.name)$n.ind-1))*get(input.seq$data.name)$n.mar, each=length(all.ord[i,])),],
-                                             type=get(input.seq$data.name, pos=1)$segr.type.num[all.ord[i,]],
+                final.map <- est_map_hmm_out(geno=t(input.seq$data.name$geno[,all.ord[i,]]),
+		error=input.seq$data.name$error[all.ord[i,] + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(all.ord[i,])),],
+                                             type=input.seq$data.name$segr.type.num[all.ord[i,]],
                                              phase=Ph.Init[j,],
                                              rf.vec=Rf.Init[j,],
                                              verbose=FALSE,
@@ -313,11 +313,11 @@ compare_inbred<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
             ## print output for each order
             if (verbose) cat("Order", i, ":", all.ord[i,], "\n")
             utils::flush.console()
-            seq.temp<-make_seq(get(input.seq$twopt), arg=all.ord[i,])
+            seq.temp<-make_seq(input.seq$twopt, arg=all.ord[i,])
             seq.temp$twopt<-input.seq$twopt
             rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
-            final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
-	    error=get(input.seq$data.name, pos=1)$error[all.ord[i,] + rep(c(0:(get(input.seq$data.name)$n.ind-1))*get(input.seq$data.name)$n.mar, each=length(all.ord[i,])),],
+            final.map<-est_map_hmm_f2(geno=t(input.seq$data.name$geno[,all.ord[i,]]),
+	    error=input.seq$data.name$error[all.ord[i,] + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(all.ord[i,])),],
                                       rf.vec=rf.temp,
                                       verbose=FALSE,
                                       tol=tol)
@@ -354,7 +354,7 @@ compare_inbred<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
 ##'@method print compare
 print.compare <- function(x,...) {
         FLAG<-0
-        if(!is(get(x$data.name, pos=1), "outcross")) FLAG<-1
+        if(!is(x$data.name, "outcross")) FLAG<-1
 
         phases.char <- c("CC","CR","RC","RR")
         n.ord <- max(which(head(x$best.ord.LOD,-1) != -Inf))

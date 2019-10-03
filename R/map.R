@@ -98,10 +98,10 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
   ##Checking for appropriate number of markers
   if(length(seq.num) < 2) stop("The sequence must have at least 2 markers")
   ##For F2, BC and rils
-  if(class(get(input.seq$data.name, pos=1))[2] == "f2")
+  if(class(input.seq$data.name)[2] == "f2")
   {
-    final.map<- onemap:::est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,seq.num]),
-    error=get(input.seq$data.name, pos=1)$error[seq.num + rep(c(0:(get(input.seq$data.name)$n.ind-1))*get(input.seq$data.name)$n.mar, each=length(seq.num)),],
+    final.map<- onemap:::est_map_hmm_f2(geno=t(input.seq$data.name$geno[,seq.num]),
+    error=input.seq$data.name$error[seq.num + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(seq.num)),],
                               rf.vec=onemap:::get_vec_rf_in(input.seq),
                               verbose=verbose,
                               tol=tol)
@@ -113,19 +113,19 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
                           twopt=input.seq$twopt),
                      class = "sequence"))
   }
-  else if(class(get(input.seq$data.name, pos=1))[2] == "backcross" ||
-          class(get(input.seq$data.name, pos=1))[2] == "riself" ||
-          class(get(input.seq$data.name, pos=1))[2] == "risib")
+  else if(class(input.seq$data.name)[2] == "backcross" ||
+          class(input.seq$data.name)[2] == "riself" ||
+          class(input.seq$data.name)[2] == "risib")
   {
-    final.map<-est_map_hmm_bc(geno=t(get(input.seq$data.name, pos=1)$geno[,seq.num]),
-    error=get(input.seq$data.name, pos=1)$error[seq.num + rep(c(0:(get(input.seq$data.name)$n.ind-1))*get(input.seq$data.name)$n.mar, each=length(seq.num)),],
+    final.map<-est_map_hmm_bc(geno=t(input.seq$data.name$geno[,seq.num]),
+    error=input.seq$data.name$error[seq.num + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(seq.num)),],
                               rf.vec=get_vec_rf_in(input.seq),
                               verbose=verbose,
                               tol=tol)
-    if(class(get(input.seq$data.name, pos=1))[2] == "riself" ||
-       class(get(input.seq$data.name, pos=1))[2] == "risib")
+    if(class(input.seq$data.name)[2] == "riself" ||
+       class(input.seq$data.name)[2] == "risib")
       final.map$rf<-adjust_rf_ril(final.map$rf,
-                                  type=class(get(input.seq$data.name, pos=1))[2],
+                                  type=class(input.seq$data.name)[2],
                                   expand = FALSE)
     return(structure(list(seq.num=seq.num,
                           seq.phases=seq.phases,
@@ -145,12 +145,12 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
     ## linkage map is started with the first two markers in the sequence
     ## gather two-point information for this pair
     phase.init <- vector("list",1)
-    list.init <- phases(make_seq(get(input.seq$twopt,pos = 1),seq.num[1:2],twopt=input.seq$twopt))
+    list.init <- phases(make_seq(input.seq$twopt,seq.num[1:2],twopt=input.seq$twopt))
     phase.init[[1]] <- list.init$phase.init[[1]]
     Ph.Init <- comb_ger(phase.init)
     for(j in 1:nrow(Ph.Init)) {
       ## call to 'map' function with predefined linkage phase
-      temp <- map(make_seq(get(input.seq$twopt),seq.num[1:2],phase=Ph.Init[j],twopt=input.seq$twopt))
+      temp <- map(make_seq(input.seq$twopt,seq.num[1:2],phase=Ph.Init[j],twopt=input.seq$twopt))
       results[[1]][j] <- temp$seq.phases
       results[[2]][j] <- temp$seq.like
     }
@@ -177,13 +177,13 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
         results <- list(rep(NA,4),rep(-Inf,4))
         ## gather two-point information
         phase.init <- vector("list",mrk)
-        list.init <- phases(make_seq(get(input.seq$twopt),c(seq.num[mrk],seq.num[mrk+1]),twopt=input.seq$twopt))
+        list.init <- phases(make_seq(input.seq$twopt,c(seq.num[mrk],seq.num[mrk+1]),twopt=input.seq$twopt))
         phase.init[[mrk]] <- list.init$phase.init[[1]]
         for(j in 1:(mrk-1)) phase.init[[j]] <- seq.phase[j]
         Ph.Init <- comb_ger(phase.init)
         for(j in 1:nrow(Ph.Init)) {
           ## call to 'map' function with predefined linkage phases
-          temp <- map(make_seq(get(input.seq$twopt),seq.num[1:(mrk+1)],phase=Ph.Init[j,],twopt=input.seq$twopt))
+          temp <- map(make_seq(input.seq$twopt,seq.num[1:(mrk+1)],phase=Ph.Init[j,],twopt=input.seq$twopt))
           results[[1]][j] <- temp$seq.phases[mrk]
           results[[2]][j] <- temp$seq.like
         }
@@ -200,7 +200,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
       }
     }
     ## one last call to map function, with the final map
-    map(make_seq(get(input.seq$twopt),seq.num,phase=seq.phase,twopt=input.seq$twopt))
+    map(make_seq(input.seq$twopt,seq.num,phase=seq.phase,twopt=input.seq$twopt))
   }
   else {
     ## if the linkage phases are provided but the recombination fractions have
@@ -208,9 +208,9 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
     ## gather two-point information
     rf.init <- get_vec_rf_out(input.seq, acum=FALSE)
     ## estimate parameters
-    final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,seq.num]),
-    error = get(input.seq$data.name, pos=1)$error[seq.num + rep(c(0:(get(input.seq$data.name)$n.ind-1))*get(input.seq$data.name)$n.mar, each=length(seq.num)),],
-                                 type=get(input.seq$data.name, pos=1)$segr.type.num[seq.num],
+    final.map <- est_map_hmm_out(geno=t(input.seq$data.name$geno[,seq.num]),
+    error = input.seq$data.name$error[seq.num + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(seq.num)),],
+                                 type=input.seq$data.name$segr.type.num[seq.num],
                                  phase=seq.phases,
                                  rf.vec=rf.init,
                                  verbose=FALSE,

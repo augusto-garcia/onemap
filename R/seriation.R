@@ -99,7 +99,7 @@ seriation<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5)
 
     ## create reconmbination fraction matrix
 
-    if(class(get(input.seq$twopt))[2]=="outcross")
+    if(class(input.seq$twopt)[2]=="outcross")
         r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
     else
         r<-get_mat_rf_in(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
@@ -123,7 +123,7 @@ seriation<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5)
 
     ## end of SERIATION algorithm
     cat("\norder obtained using SERIATION algorithm:\n\n", input.seq$seq.num[complete], "\n\ncalculating multipoint map using tol = ", tol, ".\n\n")
-    map(make_seq(get(input.seq$twopt),input.seq$seq.num[complete],twopt=input.seq$twopt), tol=tol)
+    map(make_seq(input.seq$twopt,input.seq$seq.num[complete],twopt=input.seq$twopt), tol=tol)
 }
 
 ##Provides an order given the recombination
