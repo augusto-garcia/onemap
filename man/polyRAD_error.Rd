@@ -5,7 +5,7 @@
 \title{OneMap interface with polyRAD package}
 \usage{
 polyRAD_error(vcf = NULL, onemap.obj = NULL, parent1 = NULL,
-  parent2 = NULL, f1 = NULL, crosstype = NULL)
+  parent2 = NULL, f1 = NULL, crosstype = NULL, tech.issue = TRUE)
 }
 \arguments{
 \item{parent1}{parent 1 identification in vcfR object}

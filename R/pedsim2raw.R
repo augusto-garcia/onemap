@@ -1,6 +1,15 @@
-# This function converts the output of PedigreeSim to onemap raw file
-
-
+#' Converts the output of PedigreeSim to onemap raw file
+#' 
+#' 
+#' @param cross string defining the cross type "outcross" or "f2 intercross"
+#' @param genofile pedigreeSim output .dat
+#' @param parent1 string defining the first parent ID
+#' @param parent2 string defining the seconde parent ID
+#' @param f1 string defining the F1 ID, if cross type "f2 intercross
+#' @param out.file string defining the name of the output file
+#' @param miss.perc double defining the percentage of missing data to be simulated
+#' 
+#' @export
 pedsim2raw <- function(cross = c("outcross", "f2 intercross"),
                        genofile = "sim_out_genotypes.dat",
                        parent1 = "P1",

@@ -10,7 +10,7 @@ run_pedsim(chromosome = c("Chr1", "Chr2", "Chr3"), n.marker = c(18, 19,
   25, 25), pop = c("F1", "F2", "BC"), path.pedsim = NULL,
   name.mapfile = "mapfile.map", name.founderfile = "founderfile.gen",
   name.chromfile = "sim.chrom", name.parfile = "sim.par",
-  name.out = "sim_out")
+  name.out = "sim_out", rm.tempfiles = F)
 }
 \arguments{
 \item{chromosome}{a vector of characters defining the chromosomes names}
@@ -41,6 +41,8 @@ run_pedsim(chromosome = c("Chr1", "Chr2", "Chr3"), n.marker = c(18, 19,
 \item{name.parfile}{a character with the parfile name}
 
 \item{name.out}{a character with the PedigreeSim outputs names}
+
+\item{rm.tempfiles}{logical TRUE/FALSE, if TRUE remove the temporary files generated}
 }
 \value{
 PedigreeSim outputs including the population genotypes

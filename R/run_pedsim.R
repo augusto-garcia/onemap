@@ -74,9 +74,15 @@ run_pedsim <- function(chromosome = c("Chr1", "Chr2", "Chr3"),
   pos <- chr <- vector()
   for(i in 1:length(chromosome)){
     int <- tot.size.cm[i]/n.marker[i]
-    pos <- c(pos,seq(from=1, to=tot.size.cm[i], by=int))
+    pos <- c(pos,seq(from=0, to=tot.size.cm[i], by=int))
     chr <- c(chr,rep(chromosome[i],n.marker[i]))
   }
+
+  if(length(pos) == length(chr) -1)
+    pos <- c(pos,tot.size.cm)  
+  
+  if(length(pos) == length(chr) +1)
+    pos <- pos[-1]
   
   map_file <- data.frame(marker=marker, chromosome=chr, position= pos)
   write.table(map_file, file = name.mapfile, quote = FALSE, col.names = TRUE, row.names = FALSE, sep = "\t")
