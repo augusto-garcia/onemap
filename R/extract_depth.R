@@ -69,7 +69,7 @@ extract_depth <- function(vcfR.object=NULL,
   }
   
   if(recovering==FALSE){
-    rm.mks <- which(pos.vcf %in% pos.onemap==FALSE)
+    rm.mks <- which(as.numeric(pos.vcf) %in% pos.onemap==FALSE)
     rm.ind <- which(IND %in% ind==FALSE)                                                                             
     CHROM <- onemap.object$CHROM
     POS <- onemap.object$POS
