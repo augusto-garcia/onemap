@@ -197,8 +197,6 @@ updog_error <- function(vcfR.object=NULL,
       P2 <- P2[-rm.mk]
       n.mks <- n.mks - length(rm.mk)
       mks <- mks[-rm.mk]
-      onemap_updog$CHROM <- onemap_updog$CHROM[-rm.mk]
-      onemap_updog$POS <- onemap_updog$POS[-rm.mk]
       genotypes_probs <- genotypes_probs[-c(rm.mk + rep(c(0:(dim(osize)[2]-1))*dim(osize)[1], each=length(rm.mk))),]
     }
     conv_geno <- matrix(rep(NA,dim(geno_matrix)[2]*dim(geno_matrix)[1]),nrow=dim(geno_matrix)[1])
@@ -245,8 +243,6 @@ updog_error <- function(vcfR.object=NULL,
       P2 <- P2[-rm.mk]
       n.mks <- n.mks - length(rm.mk)
       mks <- mks[-rm.mk]
-      onemap_updog$CHROM <- onemap_updog$CHROM[-rm.mk]
-      onemap_updog$POS <- onemap_updog$POS[-rm.mk]
       genotypes_probs <- genotypes_probs[-c(rm.mk + rep(c(0:(dim(osize)[2]-1))*dim(osize)[1], each=length(rm.mk))),]
     }
     
@@ -266,7 +262,9 @@ updog_error <- function(vcfR.object=NULL,
   conv_geno[which(is.na(conv_geno))] <- 0
 
   comp <- which(colnames(onemap.object$geno) %in% mks)
-  
+  onemap <- updog$CHROM <- onemap <- updog$CHROM[comp]
+  onemap <- updog$POS <- onemap <- updog$POS[comp]
+     
   # If some marker in onemap object is now non-informative and didn't recover any marker                         
   if(length(colnames(onemap.object$geno)) - length(comp) > 0 & length(mks) == length(comp)){
     cat(length(colnames(onemap.object$geno)) - length(comp),
