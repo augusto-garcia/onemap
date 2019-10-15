@@ -105,13 +105,15 @@
 compare<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
     if(is(get(input.seq$data.name), "outcross"))
         return(compare_outcross(input.seq=input.seq,n.best=n.best,tol=tol,verbose=verbose))
-    else
-        return(compare_inbred(input.seq=input.seq,n.best=n.best,tol=tol,verbose=verbose))
+    else if(is(get(input.seq$data.name), "f2"))
+      return(compare_inbred_f2(input.seq=input.seq,n.best=n.best,tol=tol,verbose=verbose))
+    else 
+      return(compare_inbred_bc(input.seq=input.seq,n.best=n.best,tol=tol,verbose=verbose))
 }
 
 ## Compare all possible orders (exhaustive search) for a given sequence of
 ## markers (for outcrosses)
-compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
+compare_outcross<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
 {
     ## checking for correct objects
     if(!any(class(input.seq)=="sequence"))
@@ -274,7 +276,8 @@ compare_outcross<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE)
 
 ## Compare all possible orders (exhaustive search) for a given sequence of
 ## markers (crosses derived from inbred lines)
-compare_inbred<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
+compare_inbred_bc<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE) 
+{
     ## checking for correct objects
     if(!any(class(input.seq)=="sequence"))
         stop(sQuote(deparse(substitute(input.seq)))," is not an object of class 'sequence'")
@@ -282,7 +285,7 @@ compare_inbred<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
         cat("WARNING: this operation may take a VERY long time\n")
     utils::flush.console()
     if(length(input.seq$seq.num) > 10) {
-        cat("\nIt is not wisely trying to use 'compare' with more than 10 markers \n")
+        cat("\nIt is not wise trying to use 'compare' with more than 10 markers \n")
         ANSWER <- readline("Are you sure you want to proceed? [y or n]\n")
         while(substr(ANSWER, 1, 1) != "n" & substr(ANSWER, 1, 1) != "y")
             ANSWER <- readline("\nPlease answer: 'y' or 'n' \n")
@@ -314,10 +317,15 @@ compare_inbred<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
             seq.temp<-make_seq(get(input.seq$twopt), arg=all.ord[i,])
             seq.temp$twopt<-input.seq$twopt
             rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
-            final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
+            final.map<-est_map_hmm_bc(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
                                       rf.vec=rf.temp,
                                       verbose=FALSE,
                                       tol=tol)
+            if(class(get(input.seq$data.name, pos=1))[2] == "riself" ||
+               class(get(input.seq$data.name, pos=1))[2] == "risib")
+               final.map$rf<-adjust_rf_ril(final.map$rf,
+                                           type=class(get(input.seq$data.name, pos=1))[2],
+                                           expand = FALSE)
             best.ord[(n.best+1),] <- all.ord[i,]
             best.ord.rf[(n.best+1),] <- final.map$rf
             best.ord.like[(n.best+1)] <- final.map$loglike
@@ -344,6 +352,81 @@ compare_inbred<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
                        data.name=input.seq$data.name,
                        twopt=input.seq$twopt), class = "compare")
     }
+}
+
+## Compare all possible orders (exhaustive search) for a given sequence of
+## markers (crosses derived from inbred lines)
+compare_inbred_f2<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE) 
+{
+  ## checking for correct objects
+  if(!any(class(input.seq)=="sequence"))
+    stop(sQuote(deparse(substitute(input.seq)))," is not an object of class 'sequence'")
+  if(length(input.seq$seq.num) > 5)
+    cat("WARNING: this operation may take a VERY long time\n")
+  utils::flush.console()
+  if(length(input.seq$seq.num) > 10) {
+    cat("\nIt is not wise trying to use 'compare' with more than 10 markers \n")
+    ANSWER <- readline("Are you sure you want to proceed? [y or n]\n")
+    while(substr(ANSWER, 1, 1) != "n" & substr(ANSWER, 1, 1) != "y")
+      ANSWER <- readline("\nPlease answer: 'y' or 'n' \n")
+    if (substr(ANSWER, 1, 1) == "n") stop("Execution stopped!")
+  }
+  if(length(input.seq$seq.num) == 2)
+    return(map(input.seq, tol=tol)) ## nothing to be done for 2 markers
+  else
+  {
+    ## allocating variables
+    all.ord <- perm_pars(input.seq$seq.num)
+    rf.init <- matrix(NA,nrow(all.ord),length(input.seq$seq.num)-1)
+    best.ord <- matrix(NA,(n.best+1),length(input.seq$seq.num))
+    best.ord.rf <- matrix(NA,(n.best+1),length(input.seq$seq.num)-1)
+    best.ord.like <- best.ord.LOD <- rep(-Inf,(n.best+1))
+    cat("\nComparing",nrow(all.ord),"orders:     \n\n")
+    if(!verbose)
+    {
+      count <- 0
+      pb <- txtProgressBar(style=3)
+      setTxtProgressBar(pb, 0)
+      cat("    ")
+    }
+    for(i in 1:nrow(all.ord))
+    {
+      ## print output for each order
+      if (verbose) cat("Order", i, ":", all.ord[i,], "\n")
+      utils::flush.console()
+      seq.temp<-make_seq(get(input.seq$twopt), arg=all.ord[i,])
+      seq.temp$twopt<-input.seq$twopt
+      rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
+      final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
+                                rf.vec=rf.temp,
+                                verbose=FALSE,
+                                tol=tol)
+      best.ord[(n.best+1),] <- all.ord[i,]
+      best.ord.rf[(n.best+1),] <- final.map$rf
+      best.ord.like[(n.best+1)] <- final.map$loglike
+      ## arrange orders according to the likelihood
+      like.order <- order(best.ord.like, decreasing=TRUE)
+      best.ord <- best.ord[like.order,]
+      best.ord.rf <- best.ord.rf[like.order,]
+      best.ord.like <- sort(best.ord.like, decreasing=TRUE)
+      if(!verbose)
+      {
+        count<-count+1
+        setTxtProgressBar(pb, count/nrow(all.ord))
+      }
+    }
+    close(pb)
+    ## cat("\nFinished\n\n")
+    cat("\n")
+    best.ord.LOD <- round((best.ord.like-max(best.ord.like))/log(10),4)
+    structure(list(best.ord = best.ord,
+                   best.ord.rf = best.ord.rf,
+                   best.ord.phase = matrix(1, nrow(best.ord.rf), ncol(best.ord.rf)),
+                   best.ord.like = best.ord.like,
+                   best.ord.LOD = best.ord.LOD,
+                   data.name=input.seq$data.name,
+                   twopt=input.seq$twopt), class = "compare")
+  }
 }
 
 ## print method for object class 'compare'
