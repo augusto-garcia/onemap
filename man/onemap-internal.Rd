@@ -6,7 +6,8 @@
 \alias{codif_data}
 \alias{comb}
 \alias{comb_ger}
-\alias{compare_inbred}
+\alias{compare_inbred_f2}
+\alias{compare_inbred_bc}
 \alias{compare_outcross}
 \alias{Cindex}
 \alias{diplo}
@@ -52,7 +53,8 @@ codif_data(geno.in,segr.type.in,cross = c("outcross", "f2", "backcross",
 "riself", "risib"))
 comb(x,y)
 comb_ger(f)
-compare_inbred(input.seq, n.best, tol, verbose = FALSE)
+compare_inbred_bc(input.seq, n.best, tol, verbose = FALSE)
+compare_inbred_f2(input.seq, n.best, tol, verbose = FALSE)
 compare_outcross(input.seq, n.best, tol, verbose)
 Cindex(order,r)
 diplo(w, seq.num, seq.phases)
