@@ -184,7 +184,6 @@ create_probs <- function(onemap.obj = NULL,
       # Sometimes the 1 and 3 are inverted
       # D2.15 when P2 are heterozygote receives 1 instead of 3
       # D1.10 when P1 are heterozygote receives 1 instead of 3
-      
       prob.temp <- matrix(NA, nrow=length(probs$value), ncol = 3)
       
       prob.temp[,2] <- genotypes_probs[,2]
@@ -201,6 +200,21 @@ create_probs <- function(onemap.obj = NULL,
       } else {
         prob.temp[het.idx,1] <- genotypes_probs[het.idx,1]
         prob.temp[het.idx,3] <- genotypes_probs[het.idx,3]
+      }
+      
+      # missing data
+      miss.idx <- which(probs$value == 291)
+      for_miss <- table(apply(genotypes_probs[miss.idx,-2],1, which.max)) 
+      for_miss <- as.numeric(which.max(for_miss))
+      
+      if(length(miss.idx) !=0){
+        if(for_miss == 2){
+          prob.temp[miss.idx,3] <- genotypes_probs[miss.idx,1]
+          prob.temp[miss.idx,1] <- genotypes_probs[miss.idx,3]
+        } else {
+          prob.temp[miss.idx,1] <- genotypes_probs[miss.idx,1]
+          prob.temp[miss.idx,3] <- genotypes_probs[miss.idx,3]
+        }
       }
       
       # We consider that the genotype number is correct and the probability need to be the max at the genotype column
