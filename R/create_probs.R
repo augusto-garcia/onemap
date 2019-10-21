@@ -203,7 +203,7 @@ create_probs <- function(onemap.obj = NULL,
       }
       
       # missing data
-      miss.idx <- which(probs$value == 291)
+      miss.idx <- which(probs$value == 0)
       for_miss <- table(apply(genotypes_probs[miss.idx,-2],1, which.max)) 
       for_miss <- as.numeric(which.max(for_miss))
       
@@ -217,20 +217,23 @@ create_probs <- function(onemap.obj = NULL,
         }
       }
       
+      # with repeted value
+      #repeted <- which(apply(genotypes_probs[-miss.idx,],1, function(x) length(table(x))) == 2)
+      
       # We consider that the genotype number is correct and the probability need to be the max at the genotype column
       # We change the position of the wrong probabilities
-      hom1.idx.prob <- which(apply(genotypes_probs[hom1.idx,],1, which.max) == 1)
+      hom1.idx.prob <- which(apply(genotypes_probs[hom1.idx,-2],1, which.max) == 1)
       prob.temp[hom1.idx[hom1.idx.prob],1] <- genotypes_probs[hom1.idx[hom1.idx.prob], 1]
       prob.temp[hom1.idx[hom1.idx.prob],3] <- genotypes_probs[hom1.idx[hom1.idx.prob], 3]
-      hom1.idx.prob <- which(apply(genotypes_probs[hom1.idx,],1, which.max) == 3)
+      hom1.idx.prob <- which(apply(genotypes_probs[hom1.idx,-2],1, which.max) == 2)
       prob.temp[hom1.idx[hom1.idx.prob],1] <- genotypes_probs[hom1.idx[hom1.idx.prob], 3]
       prob.temp[hom1.idx[hom1.idx.prob],3] <- genotypes_probs[hom1.idx[hom1.idx.prob], 1]
       
       hom3.idx <- which(probs$value == 3)
-      hom3.idx.prob <- which(apply(genotypes_probs[hom3.idx,],1, which.max) == 1)
+      hom3.idx.prob <- which(apply(genotypes_probs[hom3.idx,-2],1, which.max) == 1)
       prob.temp[hom3.idx[hom3.idx.prob],3] <- genotypes_probs[hom3.idx[hom3.idx.prob], 1]
       prob.temp[hom3.idx[hom3.idx.prob],1] <- genotypes_probs[hom3.idx[hom3.idx.prob], 3]
-      hom3.idx.prob <- which(apply(genotypes_probs[hom3.idx,],1, which.max) == 3)
+      hom3.idx.prob <- which(apply(genotypes_probs[hom3.idx,-2],1, which.max) == 2)
       prob.temp[hom3.idx[hom3.idx.prob],3] <- genotypes_probs[hom3.idx[hom3.idx.prob], 3]
       prob.temp[hom3.idx[hom3.idx.prob],1] <- genotypes_probs[hom3.idx[hom3.idx.prob], 1]
       
