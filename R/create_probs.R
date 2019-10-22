@@ -202,26 +202,6 @@ create_probs <- function(onemap.obj = NULL,
         prob.temp[het.idx,3] <- genotypes_probs[het.idx,3]
       }
       
-      # missing data
-      miss.idx <- which(probs$value == 0)
-      if(length(miss.idx) !=0){
-
-      for_miss <- table(apply(genotypes_probs[miss.idx,-2],1, which.max)) 
-      for_miss <- as.numeric(which.max(for_miss))
-
-        if(length(for_miss) != 0 | for_miss == 2){
-          prob.temp[miss.idx,3] <- genotypes_probs[miss.idx,1]
-          prob.temp[miss.idx,1] <- genotypes_probs[miss.idx,3]
-        } else {
-          prob.temp[miss.idx,1] <- genotypes_probs[miss.idx,1]
-          prob.temp[miss.idx,3] <- genotypes_probs[miss.idx,3]
-        }
-            
-      }
-      
-      # with repeted value
-      #repeted <- which(apply(genotypes_probs[-miss.idx,],1, function(x) length(table(x))) == 2)
-      
       # We consider that the genotype number is correct and the probability need to be the max at the genotype column
       # We change the position of the wrong probabilities
       hom1.idx.prob <- which(apply(genotypes_probs[hom1.idx,-2],1, which.max) == 1)
@@ -253,7 +233,7 @@ create_probs <- function(onemap.obj = NULL,
       idx <- which(probs$type == 7)
       prob[idx,] <- cbind(prob.temp[idx,1], prob.temp[idx,2], prob.temp[idx,1], prob.temp[idx,2])
   
-      # Missing data
+      # Missing data -- all genotypes 0 will receive 1 for all possible genotypes probabilities
       idx <- which(probs$value == 0)
       prob[idx,] <- 1
       
