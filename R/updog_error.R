@@ -262,8 +262,8 @@ updog_error <- function(vcfR.object=NULL,
   conv_geno[which(is.na(conv_geno))] <- 0
 
   comp <- which(colnames(onemap.object$geno) %in% mks)
-  onemap_updog$CHROM <- onemap_updog$CHROM[comp]
-  onemap_updog$POS <- onemap_updog$POS[comp]
+  onemap_updog$CHROM <- onemap.object$CHROM[comp]
+  onemap_updog$POS <- onemap.object$POS[comp]
      
   # If some marker in onemap object is now non-informative and didn't recover any marker                         
   if(length(colnames(onemap.object$geno)) - length(comp) > 0 & length(mks) == length(comp)){
