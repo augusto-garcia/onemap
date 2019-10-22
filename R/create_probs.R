@@ -204,17 +204,19 @@ create_probs <- function(onemap.obj = NULL,
       
       # missing data
       miss.idx <- which(probs$value == 0)
+      if(length(miss.idx) !=0){
+
       for_miss <- table(apply(genotypes_probs[miss.idx,-2],1, which.max)) 
       for_miss <- as.numeric(which.max(for_miss))
-      
-      if(length(miss.idx) !=0){
-        if(for_miss == 2){
+
+        if(length(for_miss) != 0 | for_miss == 2){
           prob.temp[miss.idx,3] <- genotypes_probs[miss.idx,1]
           prob.temp[miss.idx,1] <- genotypes_probs[miss.idx,3]
         } else {
           prob.temp[miss.idx,1] <- genotypes_probs[miss.idx,1]
           prob.temp[miss.idx,3] <- genotypes_probs[miss.idx,3]
         }
+            
       }
       
       # with repeted value
