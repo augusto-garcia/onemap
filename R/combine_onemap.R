@@ -123,7 +123,7 @@ combine_onemap <- function(...) {
 
     ## Allocate
     geno <- matrix(0, nrow = n.ind, ncol = n.mar)
-    error <- matrix(0, nrow= n.ind, ncol= n.mar)
+    error <- matrix(1, nrow= n.ind*n.mar, ncol= 4)
     colnames(geno) <- rep(NA, n.mar)
     if (!sampleID.flag) {
         rownames(geno) <- sampleIDs
@@ -142,6 +142,7 @@ combine_onemap <- function(...) {
     ## Merge data
     mrk.start <- 1
     phe.start <- 1
+    
     for (i in 1:n.objs) {
         cur.n.mar <- onemap.objs[[i]]$n.mar
         mrk.end <- mrk.start + cur.n.mar - 1
@@ -154,8 +155,13 @@ combine_onemap <- function(...) {
             ind.matches <- match(rownames(onemap.objs[[i]]$geno), rownames(geno))
         }
         geno[ind.matches, mrk.start:mrk.end] <- onemap.objs[[i]]$geno
-	error[ind.matches, mrk.start:mrk.end] <- onemap.objs[[i]]$error
         colnames(geno)[mrk.start:mrk.end] <- colnames(onemap.objs[[i]]$geno)
+        
+        error_idx_cur <- rep(1:n.ind, each=cur.n.mar)
+        error_idx_joint <- rep(1:n.ind, each=n.mar)
+        for(w in 1:length(ind.matches)){
+          error[which(error_idx_joint == ind.matches[w]),][mrk.start:mrk.end,] <- onemap.objs[[i]]$error[which(error_idx_cur==w),]
+        }
         
         segr.type[mrk.start:mrk.end] <- onemap.objs[[i]]$segr.type
         segr.type.num[mrk.start:mrk.end] <- onemap.objs[[i]]$segr.type.num
