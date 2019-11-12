@@ -14,40 +14,55 @@
 
 ##' A parallelized version of map function
 ##' 
-##'  Based on the strategy propoused by Schiffthaler et al. the markers of a
-##'  linkage group with pre-defined order are divided in user defined batches 
-##'  with overlap markers between them. Each batch runs in a different core
-##'  which increase the speed of the genetic distances estimation. The distances 
-##'  and phases of the previous batch are considered to joint the batches. Also, 
-##'  it is possible to store the differences between the genetic distances 
-##'  between the overlaped markers as a measure of the process quality. In 
-##'  other words, if these differences are to too high, you can considered that
-##'  divide the group in batch did not compromise the distance estimation.
+##' Based on the strategy propoused by Schiffthaler et al. the markers of a
+##' linkage group with pre-defined order are divided in user defined batches 
+##' with overlap markers between them. Each batch runs in a different core
+##' which increase the speed of the genetic distances estimation. The distances 
+##' and phases of the previous batch are considered to joint the batches. Also, 
+##' it is possible to store the differences between the genetic distances 
+##' between the overlaped markers as a measure of the process quality. In 
+##' other words, if these differences are to too high, you can considered that
+##' divide the group in batch did not compromise the distance estimation.
 ##'  
-##'  @param input.seq an object of class \code{sequence}.
-##'  @param cores an integer defining the number of cores to be used and also the
-##'  number of batches generated
-##'  @param overlap number of markers overlapping between batches
-##'  @param tol tolerance for the C routine, i.e., the value used to evaluate
+##' @param input.seq an object of class \code{sequence}.
+##' @param cores an integer defining the number of cores to be used and also the
+##' number of batches generated
+##' @param overlap number of markers overlapping between batches
+##' @param tol tolerance for the C routine, i.e., the value used to evaluate
 ##' convergence.
-##'  @param avoid_link_errors logical. If TRUE markers which do not reach the linkage
-##'  criteria are removed of the sequence and the distances are automatically reestimated.
-##'   If FALSE an error stops the algorithm it find these markers.
+##' @param avoid_link_errors logical. If TRUE markers which do not reach the linkage
+##' criteria are removed of the sequence and the distances are automatically reestimated.
+##' If FALSE an error stops the algorithm it find these markers.
 ##'   
-##'  @return
-##'  @author Cristiane Taniguti \email{chtaniguti@@usp.br} 
-##'  @seealso \code{\link[onemap]{map}}
-##'  @references Schiffthaler, B., Bernhardsson, C., Ingvarsson, P. K., & Street, 
-##'  N. R. (2017). BatchMap: A parallel implementation of the OneMap R package 
-##'  for fast computation of F1 linkage maps in outcrossing species. PLoS ONE, 
-##'  12(12), 1–12. https://doi.org/10.1371/journal.pone.0189256
-##'     
-
+##' @return An object of class \code{sequence}, which is a list containing the
+##' following components: \item{seq.num}{a \code{vector} containing the
+##' (ordered) indices of markers in the sequence, according to the input file.}
+##' \item{seq.phases}{a \code{vector} with the linkage phases between markers
+##' in the sequence, in corresponding positions. \code{-1} means that there are
+##' no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
+##' recombination frequencies between markers in the sequence. \code{-1} means
+##' that there are no estimated recombination frequencies.}
+##' \item{seq.like}{log-likelihood of the corresponding linkage map.}
+##' \item{data.name}{name of the object of class \code{onemap} with the raw
+##' data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
+##' 2-point analyses.}
+##' 
+##' @author Cristiane Taniguti \email{chtaniguti@@usp.br} 
+##' @seealso \code{\link[onemap]{map}}
+##' @references Schiffthaler, B., Bernhardsson, C., Ingvarsson, P. K., & Street, 
+##' N. R. (2017). BatchMap: A parallel implementation of the OneMap R package 
+##' for fast computation of F1 linkage maps in outcrossing species. PLoS ONE, 
+##' 12(12), 1–12. https://doi.org/10.1371/journal.pone.0189256
+##' 
+##' @import parallel
+##'  
+##' @export
 parmap <- function(input.seq=NULL, 
                    cores=3, 
                    overlap=4, 
                    tol=10E-5, 
-                   avoid_link_errors = TRUE){
+                   avoid_link_errors = TRUE,
+                   export_diff = F){
   
   twopts <- input.seq$twopt
   
@@ -102,20 +117,25 @@ parmap <- function(input.seq=NULL,
     diff1 <- c(diff1,end - init)
   }
   
-  cat("The overlap markers have mean ", mean(diff1), " of  recombination fraction diff1erences, and variance of ", var(diff1), "\n")
+  cat("The overlap markers have mean ", mean(diff1), " of  recombination fraction differences, and variance of ", var(diff1), "\n")
   
   joint.map$seq.num <- new.seq.num
   joint.map$seq.phases <- new.seq.phases
   joint.map$seq.rf <- new.seq.rf
   
-  return(list(diff1,joint.map))
+  if(export_diff){
+    return(list(diff1,joint.map))
+  } else {
+    return(joint.map)
+  }
 }
 
+##' @export
 avoid_unlinked <- function(input.seq, tol){
-  map_df <- onemap::map(input.seq, mds.seq = T)
+  map_df <- onemap::map(input.seq, rm_unlinked = T)
   while(class(map_df) == "integer"){
     seq_true <- onemap::make_seq(input.seq$twopt, map_df)
-    map_df <- onemap::map(input.seq = seq_true, mds.seq = T)
+    map_df <- onemap::map(input.seq = seq_true, rm_unlinked = T)
   }
   return(map_df)
 }

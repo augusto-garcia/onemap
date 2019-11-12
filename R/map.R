@@ -36,7 +36,7 @@
 ##' @param tol tolerance for the C routine, i.e., the value used to evaluate
 ##' convergence.
 ##' @param verbose If \code{TRUE}, print tracing information.
-##' @param mds.seq When some pair of markers do not follow the linkage criteria, 
+##' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
 ##' if \code{TRUE} one of the markers is removed and returns a vector with remaining 
 ##' marker numbers (useful for mds_onemap function).
 ##' @return An object of class \code{sequence}, which is a list containing the
@@ -85,7 +85,7 @@
 ##'   markers <- make_seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
 ##'   map(markers)
 ##'@export
-map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
+map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE)
 {
   ## checking for correct object
   if(!("sequence" %in% class(input.seq)))
@@ -155,7 +155,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
       results[[2]][j] <- temp$seq.like
     }
     if (all(is.na(results[[2]]))) {
-      if (mds.seq) {
+      if (rm_unlinked) {
         warning(cat("The linkage between markers", 
                     seq.num[mrk], "and", seq.num[mrk + 1], 
                     "did not reached the OneMap default criteria. They are probably segregating independently. Marker", 
@@ -188,7 +188,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
           results[[2]][j] <- temp$seq.like
         }
         if(all(is.na(results[[2]]))) {
-          if(mds.seq){
+          if(rm_unlinked){
             warning(cat("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], "did not reached the OneMap default criteria. They are probably segregating independently. Marker", seq.num[mrk+1], "will be removed.\n"))
             return(seq.num[-(mrk+1)])
             browser()

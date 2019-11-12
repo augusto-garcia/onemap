@@ -7,7 +7,7 @@
 mds_onemap(input.seq, out.file = "out.file",
   mds.graph.file = "NULL.pdf", p = NULL, n = NULL, ispc = TRUE,
   displaytext = FALSE, weightfn = "lod2", mapfn = "haldane",
-  hmm = TRUE, mds.seq = TRUE)
+  hmm = TRUE, rm_unlinked = TRUE)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}}
@@ -36,7 +36,7 @@ recombination fractions 'haldane' is default, 'kosambi' or 'none'.}
 
 \item{hmm}{Multipoint genetic distance estimation}
 
-\item{mds.seq}{When some pair of markers do not follow the linkage criteria, 
+\item{rm_unlinked}{When some pair of markers do not follow the linkage criteria, 
 if \code{TRUE} one of the markers is removed and mds is performed again.}
 }
 \value{

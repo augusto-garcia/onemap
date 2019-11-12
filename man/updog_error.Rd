@@ -10,9 +10,23 @@ updog_error(vcfR.object = NULL, onemap.object = NULL,
   depths = NULL)
 }
 \arguments{
+\item{vcfR.object}{object output of the vcfR package}
+
+\item{onemap.object}{object of class onemap}
+
+\item{vcf.par}{Field of VCF that informs the depth of alleles}
+
 \item{parent1}{parent 1 identification in vcfR object}
 
 \item{parent2}{parent 2 identification in vcfR objetc}
+
+\item{f1}{f1 individual identification if f2 cross type}
+
+\item{recovering}{logical defining if markers should be recovered from VCF}
+
+\item{mean_phred}{the mean phred score of the sequencer technology}
+
+\item{cores}{number of cores to be used}
 
 \item{depths}{list containing a matrix for ref and other for alt allele counts, samples ID in colum and markers ID in rows}
 }

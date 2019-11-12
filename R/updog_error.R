@@ -4,13 +4,13 @@
 #' considers the genotypes probabilities in for further multipoint 
 #' analysis
 #' 
-#' @param vcfR.object
-#' @param onemap.object
-#' @param vcf.par
-#' @param f1
-#' @param recovering
-#' @param mean_phred
-#' @param cores
+#' @param vcfR.object object output of the vcfR package
+#' @param onemap.object object of class onemap 
+#' @param vcf.par Field of VCF that informs the depth of alleles
+#' @param f1 f1 individual identification if f2 cross type
+#' @param recovering logical defining if markers should be recovered from VCF
+#' @param mean_phred the mean phred score of the sequencer technology
+#' @param cores number of cores to be used
 #' @param depths list containing a matrix for ref and other for alt allele counts, samples ID in colum and markers ID in rows
 #' 
 #' @param parent1 parent 1 identification in vcfR object

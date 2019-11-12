@@ -2,9 +2,14 @@
 #'
 #' Put here a description
 #' 
-#' @param 
+#' @param vcf path to vcf file
+#' @param onemap.obj object of onemap class
 #' @param parent1 parent 1 identification in vcfR object
 #' @param parent2 parent 2 identification in vcfR objetc
+#' @param f1 f1 individual identification if F2 cross type
+#' @param crosstype string defining the cross type, by now it supports only 
+#' outcross and f2 intercross
+#' @param tech.issue need to be fixed
 #' 
 #' @return onemap object with error updated 
 #' 
