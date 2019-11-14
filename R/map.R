@@ -85,7 +85,7 @@
 ##'   markers <- make_seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
 ##'   map(markers)
 ##'@export
-map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE)
+map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cores = 1)
 {
   ## checking for correct object
   if(!("sequence" %in% class(input.seq)))
@@ -100,9 +100,9 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE)
   ##For F2, BC and rils
   if(class(input.seq$data.name)[2] == "f2")
   {
-    final.map<- onemap:::est_map_hmm_f2(geno=t(input.seq$data.name$geno[,seq.num]),
+    final.map<- est_map_hmm_f2(geno=t(input.seq$data.name$geno[,seq.num]),
     error=input.seq$data.name$error[seq.num + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(seq.num)),],
-                              rf.vec=onemap:::get_vec_rf_in(input.seq),
+                              rf.vec=get_vec_rf_in(input.seq),
                               verbose=verbose,
                               tol=tol)
     return(structure(list(seq.num=seq.num,
@@ -148,11 +148,21 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE)
     list.init <- phases(make_seq(input.seq$twopt,seq.num[1:2],twopt=input.seq$twopt))
     phase.init[[1]] <- list.init$phase.init[[1]]
     Ph.Init <- comb_ger(phase.init)
+    phases <- mclapply(1:nrow(Ph.Init),
+                       mc.cores = min(nrow(Ph.Init),phase_cores),
+                       mc.allow.recursive = TRUE,
+                       function(j) {
+                         ## call to 'map' function with predefined linkage phase
+                         map(make_seq(input.seq$twop,
+                                      seq.num[1:2],
+                                      phase=Ph.Init[j],
+                                      twopt=input.seq$twopt))
+                       })
     for(j in 1:nrow(Ph.Init)) {
       ## call to 'map' function with predefined linkage phase
-      temp <- map(make_seq(input.seq$twopt,seq.num[1:2],phase=Ph.Init[j],twopt=input.seq$twopt))
-      results[[1]][j] <- temp$seq.phases
-      results[[2]][j] <- temp$seq.like
+      #temp <- map(make_seq(input.seq$twopt,seq.num[1:2],phase=Ph.Init[j],twopt=input.seq$twopt))
+      results[[1]][j] <- phases[[j]]$seq.phases
+      results[[2]][j] <- phases[[j]]$seq.like
     }
     if (all(is.na(results[[2]]))) {
       if (rm_unlinked) {
@@ -181,11 +191,21 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE)
         phase.init[[mrk]] <- list.init$phase.init[[1]]
         for(j in 1:(mrk-1)) phase.init[[j]] <- seq.phase[j]
         Ph.Init <- comb_ger(phase.init)
+        phases <- mclapply(1:nrow(Ph.Init),
+                           mc.cores = min(nrow(Ph.Init),phase_cores),
+                           mc.allow.recursive = TRUE,
+                           function(j) {
+                             ## call to 'map' function with predefined linkage phases
+                             map(make_seq(input.seq$twopt,
+                                          seq.num[1:(mrk+1)],
+                                          phase=Ph.Init[j,],
+                                          twopt=input.seq$twopt))
+                           })
         for(j in 1:nrow(Ph.Init)) {
           ## call to 'map' function with predefined linkage phases
-          temp <- map(make_seq(input.seq$twopt,seq.num[1:(mrk+1)],phase=Ph.Init[j,],twopt=input.seq$twopt))
-          results[[1]][j] <- temp$seq.phases[mrk]
-          results[[2]][j] <- temp$seq.like
+          #temp <- map(make_seq(input.seq$twopt,seq.num[1:(mrk+1)],phase=Ph.Init[j,],twopt=input.seq$twopt))
+          results[[1]][j] <- phases[[j]]$seq.phases[mrk]
+          results[[2]][j] <- phases[[j]]$seq.like
         }
         if(all(is.na(results[[2]]))) {
           if(rm_unlinked){
@@ -209,7 +229,9 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE)
     rf.init <- get_vec_rf_out(input.seq, acum=FALSE)
     ## estimate parameters
     final.map <- est_map_hmm_out(geno=t(input.seq$data.name$geno[,seq.num]),
-    error = input.seq$data.name$error[seq.num + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(seq.num)),],
+                                 error = input.seq$data.name$error[seq.num + 
+                                                                     rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, 
+                                                                                 each=length(seq.num)),],
                                  type=input.seq$data.name$segr.type.num[seq.num],
                                  phase=seq.phases,
                                  rf.vec=rf.init,
