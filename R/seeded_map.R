@@ -2,8 +2,8 @@
 ##                                                                     ##
 ## Package: BatchMap                                                     ##
 ##                                                                     ##
-## File: seeded.map.R                                                  ##
-## Contains: seeded.map                                                ##
+## File: seeded_map.R                                                  ##
+## Contains: seeded_map                                                ##
 ##                                                                     ##
 ## Written by Bastian Schiffthaler                                     ##
 ## copyright (c) 2017 Bastian Schiffthaler                             ##
@@ -46,7 +46,7 @@
 ##' that there are no estimated recombination frequencies.}
 ##' \item{seq.like}{log-likelihood of the corresponding linkage map.}
 ##' \item{data.name}{name of the object of class \code{outcross} with the raw
-##' data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
+##' data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
 ##' 2-point analyses.}
 ##' @author Adapted from Karl Broman (package 'qtl') by Gabriel R A Margarido,
 ##' \email{gramarga@@usp.br} and Marcelo Mollinari, \email{mmollina@@gmail.com}.
@@ -76,14 +76,14 @@
 ##' @examples
 ##'
 ##'   data(example.out)
-##'   twopt <- rf.2pts(example.out)
+##'   twopt <- rf_2pts(example.out)
 ##'
 ##'   markers <- make_seq(twopt,c(30,12,3,14,2))
-##'   seeded.map(markers, seeds = c(4,2))
+##'   seeded_map(markers, seeds = c(4,2))
 ##'
 ##' @export
 seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
-                       seeds, verbosity = NULL)
+                       seeds, verbosity = NULL, rm_unlinked=F)
 {
   ## checking for correct object
   if(!("sequence" %in% class(input.seq)))
@@ -124,7 +124,7 @@ seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
                          map(make_seq(input.seq$twopt,
                                       seq.num[1:(mrk+1)],
                                       phase=Ph.Init[j,],
-                                      twopt=input.seq$twopt))
+                                      twopt=input.seq$twopt), rm_unlinked = T)
                        })
     for(j in 1:nrow(Ph.Init))
     {
@@ -133,15 +133,20 @@ seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
     }
     if(all(is.na(results[[2]])))
     {
-      warning("Could not determine phase for marker ",
-              input.seq$seq.num[mrk])
+      if(rm_unlinked){
+        warning(cat("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], "did not reached the OneMap default criteria. They are probably segregating independently. Marker", seq.num[mrk+1], "will be removed.\n"))
+        return(seq.num[-(mrk+1)])
+        browser()
+      } else{
+        stop(paste("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], "did not reached the OneMap default criteria. They are probably segregating independently.\n"))
+      }
     }
     # best combination of phases is chosen
     seq.phase[mrk] <- results[[1]][which.max(results[[2]])]
   }
   ## one last call to map function, with the final map
   map(make_seq(input.seq$twopt,seq.num,phase=seq.phase,
-               twopt=input.seq$twopt))
+               twopt=input.seq$twopt), rm_unlinked = T)
 }
 
 ## end of file

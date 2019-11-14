@@ -5,7 +5,7 @@
 \title{Construct the linkage map for a sequence of markers after seeding phases}
 \usage{
 seeded_map(input.seq, tol = 1e-04, phase_cores = 1, seeds,
-  verbosity = NULL)
+  verbosity = NULL, rm_unlinked = F)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}
@@ -34,7 +34,7 @@ recombination frequencies between markers in the sequence. \code{-1} means
 that there are no estimated recombination frequencies.}
 \item{seq.like}{log-likelihood of the corresponding linkage map.}
 \item{data.name}{name of the object of class \code{outcross} with the raw
-data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
+data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
 2-point analyses.}
 }
 \description{
@@ -52,10 +52,10 @@ codes adapted from Broman et al. (2008) were used.
 \examples{
 
   data(example.out)
-  twopt <- rf.2pts(example.out)
+  twopt <- rf_2pts(example.out)
 
   markers <- make_seq(twopt,c(30,12,3,14,2))
-  seeded.map(markers, seeds = c(4,2))
+  seeded_map(markers, seeds = c(4,2))
 
 }
 \references{

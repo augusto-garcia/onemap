@@ -5,10 +5,7 @@
 \title{Mapping overlapping batches}
 \usage{
 map_overlapping_batches(input.seq, size = 50, overlap = 15,
-  fun.order = NULL, phase_cores = 1, ripple.cores = 1,
-  verbosity = NULL, max.dist = Inf, ws = 4, increase.every = 4,
-  max.tries = 10, min.tries = 0, seeds = NULL,
-  optimize = "likelihood", ...)
+  phase_cores = 1, verbosity = NULL, seeds = NULL)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}
@@ -17,45 +14,18 @@ map_overlapping_batches(input.seq, size = 50, overlap = 15,
 
 \item{overlap}{The desired overlap between batches}
 
-\item{fun.order}{A function that is applied to each batch to improve
-marker order. See \code{\link[BatchMap]{ripple.ord}}}
-
 \item{phase_cores}{The number of parallel processes to use when estimating
 the phase of a marker. (Should be no more than 4)}
-
-\item{ripple.cores}{The number of parallel processes to use when calculating
-alternative order.}
 
 \item{verbosity}{A character vector that includes any or all of "batch",
 "order", "position", "time" and "phase" to output progress status
 information.}
 
-\item{max.dist}{The maximum distance (in cM) two markers can have in a batch
-before automatic reordering is triggered (given that \code{fun.order} was
-set).}
-
-\item{ws}{The window size that the reordering function should use}
-
-\item{increase.every}{Increase the window size by one every n-th round when
-re-ordering.}
-
-\item{max.tries}{The maximum number of re-ordering tries. Failing to order
-after max.tries outputs a warning.}
-
-\item{min.tries}{The minimum number of re-ordering tries.}
-
 \item{seeds}{A vector of phase information used as seeds for the first
 batch}
-
-\item{optimize}{Either "likelihood" or "count". Passed to \code{ripple.ord}
-in order to optimize the map's likelihood or the RECORD COUNT criterion.
-Unless you are absolutely sure why, you should use "likelihood".}
-
-\item{...}{Other arguments passed to \code{fun.order}}
 }
 \value{
-A list with the first element \code{Map} being an object of class
-\code{sequence}, which is a list containing the
+An object of class \code{sequence}, which is a list containing the
 following components: \item{seq.num}{a \code{vector} containing the
 (ordered) indices of markers in the sequence, according to the input file.}
 \item{seq.phases}{a \code{vector} with the linkage phases between markers
@@ -66,8 +36,7 @@ that there are no estimated recombination frequencies.}
 \item{seq.like}{log-likelihood of the corresponding linkage map.}
 \item{data.name}{name of the object of class \code{outcross} with the raw
 data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
-2-point analyses.} Secondly \code{batches}, a list of \code{Map}s for each
-of the batches.
+2-point analyses.}
 }
 \description{
 Apply the batch mapping algorithm using overlapping windows.
@@ -76,18 +45,17 @@ Apply the batch mapping algorithm using overlapping windows.
 This algorithm implements the overlapping batch maps for high density
 marker sets. The mapping problem is reduced to a number of subsets (batches)
 which carry information forward in order to more accurately estimate
-recombination fractions and phasing. Further the user has the option of
-setting \code{fun.order} to a function that tries different orders and
-iteratively reorders markers to improve the map. See
-\code{\link[BatchMap]{ripple.ord}} for such an implementation. The ordering
-function is triggered at least \code{min.tries} times per batch, or as
-long as a batch has two markers with a distance greater than
-\code{max.dist}.
+recombination fractions and phasing. It is a adaptated version of
+map.overlapping.batches function of BatchMap package. The main differences are
+that this onemap version do not have the option to reorder the markers 
+according to ripple algothm and, if the it finds markers that do not reach the linkage
+criterias, the algorithm remove the problematic marker and repeat the analysis.
+Than, the output map can have few markers compared with the input.seq.
 }
 \seealso{
-\code{\link[BatchMap]{pick_batch_sizes}}, \code{\link[BatchMap]{map}}
+\code{\link[onemap]{pick_batch_sizes}}, \code{\link[onemap]{map}}
 }
 \author{
-Bastian Schiffthaler, \email{bastian.schiffthaler@umu.se}
+Cristiane Taniguti, \email{chtaniguti@usp.br}
 }
 \keyword{utilities}
