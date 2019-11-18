@@ -172,7 +172,7 @@ est_map_hmm_out<-function(geno, error, type,  phase, rf.vec=NULL, verbose=TRUE, 
     rf.vec<-rep(0.1, (nrow(geno)-1))
   r<-.Call("est_hmm_out",
            geno,
-	   error,
+	         error,
            as.numeric(type),
            as.numeric(phase),
            as.numeric(rf.vec),

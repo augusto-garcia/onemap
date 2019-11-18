@@ -133,7 +133,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
 {
   #TODO: error checks...
   #Create initial set of batches
-  batches <- generate_overlapping_batches(input.seq, size, overlap)
+  batches <- onemap:::generate_overlapping_batches(input.seq, size, overlap)
   if("batch" %in% verbosity)
   {
     message("Have ", length(batches), " batches.")
@@ -171,9 +171,10 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
     }
     #Need to use a seeded map in order to not mess with the overlapping area
     #which we trust more from the previous batch (as that had more information)
+    cat(i,"\n")
     seeds <- tail(LGs[[i - 1]]$seq.phases, overlap)
     batches[[i]][1:(overlap+1)] <- tail(LGs[[i - 1]]$seq.num, overlap + 1)
-    LG <- seeded_map(make_seq(input.seq$twopt,
+    LG <- seeded_map(input.seq = make_seq(input.seq$twopt,
                               batches[[i]],
                               twopt = input.seq$twopt),
                      verbosity = verbosity,
@@ -219,7 +220,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
   #Create final sequence and run
   #final.rf is currently only used for debugging purposes
   s <- make_seq(input.seq$twopt, final.seq, final.phase, input.seq$twopt)
-  mp <- map(s)
+  mp <- map(input.seq = s, rm_unlinked = T)
   
   if(length(unlist(rmed.mks))> 0)
   message("Markers ", paste(unlist(rmed.mks), collapse = ", "), " were removed of the analysis because 

@@ -226,9 +226,9 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
     ## if the linkage phases are provided but the recombination fractions have
     ## not yet been estimated or need to be reestimated, this is done here
     ## gather two-point information
-    rf.init <- get_vec_rf_out(input.seq, acum=FALSE)
+    rf.init <- onemap:::get_vec_rf_out(input.seq, acum=FALSE)
     ## estimate parameters
-    final.map <- est_map_hmm_out(geno=t(input.seq$data.name$geno[,seq.num]),
+    final.map <- onemap:::est_map_hmm_out(geno=t(input.seq$data.name$geno[,seq.num]),
                                  error = input.seq$data.name$error[seq.num + 
                                                                      rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, 
                                                                                  each=length(seq.num)),],

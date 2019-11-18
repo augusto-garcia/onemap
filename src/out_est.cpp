@@ -61,7 +61,7 @@ Rcpp::NumericVector rf_A_A(Rcpp::NumericMatrix n,
   NumericVector r(8);
   int n1, n2, n3, n4;
   double l0, l;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   l0=-2.0*M_LN2*(n_ind-mis);  
   n1=n(4,1)+n(3,2)+n(2,3)+n(1,4);   
   n2=n(4,4)+n(3,3)+n(2,2)+n(1,1);
@@ -83,7 +83,7 @@ Rcpp::NumericVector rf_A_B1(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   /*Likelihoods under h0: r=0.5*/
   l0 = - (M_LN2 * (n(2,1)+n(1,1) + n(4,1)+n(3,1)+2*n(2,2)+2*n(1,3)) +
 	  2 * M_LN2*(n(4,2)+n(3,3)+n(2,3)+n(1,2)+n(4,3)+n(3,2)));
@@ -123,7 +123,7 @@ Rcpp::NumericVector rf_A_B2(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   /*Likelihoods under h0: r=0.5*/
   l0 = - (M_LN2 * (n(2,1)+n(1,1) + n(4,1)+n(3,1)+2*n(2,2)+2*n(1,3)) +
 	  2 * M_LN2*(n(4,2)+n(3,3)+n(2,3)+n(1,2)+n(4,3)+n(3,2)));
@@ -163,7 +163,7 @@ Rcpp::NumericVector rf_A_B3(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   /*Likelihoods under h0: r=0.5*/
   l0= -2.0*M_LN2*(n_ind-mis);
 
@@ -210,7 +210,7 @@ Rcpp::NumericVector rf_A_C(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, r0, r1, r2, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   //Likelihoods under h0: r=0.5
   l0=-2*M_LN2*n(4,2)-(LN4-LN3)*n(4,1)-2*M_LN2*(n(3,2)+n(2,2))-(LN4-LN3)*(n(3,1)+n(2,1))-2*M_LN2*n(1,2)-(LN4-LN3)*n(1,1);
   //EM algorithm
@@ -259,7 +259,7 @@ Rcpp::NumericVector rf_A_D1(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0,  rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   /*Likelihoods under h0: r=0.5*/
   l0 = -M_LN2*(n_ind-mis);
   /*EM algorithm*/
@@ -282,7 +282,7 @@ Rcpp::NumericVector rf_A_D2(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0,  rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   /*Likelihoods under h0: r=0.5*/
   l0 = -M_LN2*(n_ind-mis);
   /*EM algorithm*/
@@ -305,7 +305,7 @@ Rcpp::NumericVector rf_B1_B1(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   /*Likelihoods under h0: r=0.5*/
   l0 = -M_LN2*(2.0*n(3,3)+2.0*n(3,2)+n(3,1)+2.0*n(2,3)+2.0*n(2,2)+n(2,1)+2.0*n(1,3)+2.0*n(1,2)+n(1,1));
   /*EM algorithm*/
@@ -338,7 +338,7 @@ Rcpp::NumericVector rf_B1_B2(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   /*Likelihoods under h0: r=0.5*/
   l0 = -M_LN2*(2*n(3,3)+n(2,1)+n(3,1)+2*n(2,2)+n(1,1))-2*M_LN2*(n(3,2)+n(2,3)+n(1,3)+n(1,2));
   /*EM algorithm*/
@@ -371,7 +371,7 @@ Rcpp::NumericVector rf_B1_B3(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   /*Likelihoods under h0: r=0.5*/
   l0 = -M_LN2*(2.0*n(3,3)+n(3,2)+2.0*n(3,1)+2.0*n(2,3)+n(2,2)+2.0*n(2,1)+2.0*n(1,3)+n(1,2)+2.0*n(1,1));
   /*EM algorithm*/
@@ -412,7 +412,7 @@ Rcpp::NumericVector rf_B1_C(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   /*Likelihoods under h0: r=0.5*/
   l0 = LN_75*(n(3,1) + n(2,1) + n(1,1)) - 2.0*M_LN2*(n(3,2)+n(2,2)+n(1,2));
   /*EM algorithm*/
@@ -463,7 +463,7 @@ Rcpp::NumericVector rf_B1_D1(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   /*Likelihoods under h0: r=0.5*/
   l0 = -M_LN2*(n_ind-mis);
   /*EM algorithm*/
@@ -487,7 +487,7 @@ Rcpp::NumericVector rf_B1_D2(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   /*Likelihoods under h0: r=0.5*/
   l0 = -M_LN2*(n_ind-mis);
   /*EM algorithm*/
@@ -511,7 +511,7 @@ Rcpp::NumericVector rf_B2_B2(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   /*Likelihoods under h0: r=0.5*/
   l0 = -M_LN2*(2.0*n(3,3)+2.0*n(3,2)+n(3,1)+2.0*n(2,3)+2.0*n(2,2)+n(2,1)+2.0*n(1,3)+2.0*n(1,2)+n(1,1));
   /*EM algorithm*/
@@ -548,7 +548,7 @@ Rcpp::NumericVector rf_B2_B3(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   /*Likelihoods under h0: r=0.5*/
   l0 = -M_LN2*(2.0*n(3,3)+n(3,2)+2.0*n(3,1)+2.0*n(2,3)+n(2,2)+2.0*n(2,1)+2.0*n(1,3)+n(1,2)+2.0*n(1,1));
   /*EM algorithm*/
@@ -597,7 +597,7 @@ Rcpp::NumericVector rf_B2_C(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   //Likelihoods under h0: r=0.5
   l0 = LN_75*(n(3,1) + n(2,1) + n(1,1)) - 2.0*M_LN2*(n(3,2) + n(2,2) + n(1,2));
   //EM algorithm
@@ -645,7 +645,7 @@ Rcpp::NumericVector rf_B2_D1(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   /*Likelihoods under h0: r=0.5*/
   l0 = -M_LN2*(n_ind-mis);
   /*EM algorithm*/
@@ -668,7 +668,7 @@ Rcpp::NumericVector rf_B2_D2(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   /*Likelihoods under h0: r=0.5*/
   l0 = -M_LN2*(n_ind-mis);
   /*EM algorithm*/
@@ -691,7 +691,7 @@ Rcpp::NumericVector rf_B3_B3(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   //Likelihoods under h0: r=0.5
   l0 = -M_LN2*(2*n(3,3)+n(3,2)+2*n(3,1)+2*n(2,3)+n(2,2)+2*n(2,1)+2*n(1,3)+n(1,2)+2*n(1,1));
     //EM algorithm
@@ -736,7 +736,7 @@ Rcpp::NumericVector rf_B3_C(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   //Likelihoods under h0: r=0.5
   l0 = LN_75*(n(3,1)+n(2,1)+n(1,1)) - 2*M_LN2*(n(3,2)+n(2,2)+n(1,2));
   //EM algorithm
@@ -786,7 +786,7 @@ Rcpp::NumericVector rf_B3_D1(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   /*Likelihoods under h0: r=0.5*/
   l0 = -M_LN2*(n_ind-mis);
   /*EM algorithm*/
@@ -809,7 +809,7 @@ Rcpp::NumericVector rf_B3_D2(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   /*Likelihoods under h0: r=0.5*/
   l0 = -M_LN2*(n_ind-mis);
   /*EM algorithm*/
@@ -832,7 +832,7 @@ Rcpp::NumericVector rf_C_C(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   //Likelihoods under h0: r=0.5
   l0 = LN_75*(n(2,1)+n(1,1))-2*M_LN2*(n(2,2)+n(1,2));
   //EM algorithm
@@ -877,7 +877,7 @@ Rcpp::NumericVector rf_C_D1(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   /*Likelihoods under h0: r=0.5*/
   l0 = -M_LN2*(n_ind-mis);
   /*EM algorithm*/
@@ -903,7 +903,7 @@ Rcpp::NumericVector rf_C_D2(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   /*Likelihoods under h0: r=0.5*/
   l0 = -M_LN2*(n_ind-mis);
   /*EM algorithm*/
@@ -929,7 +929,7 @@ Rcpp::NumericVector rf_D1_D1(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   /*Likelihoods under h0: r=0.5*/
   l0 = -M_LN2*(n_ind-mis);
   /*EM algorithm*/
@@ -953,7 +953,7 @@ Rcpp::NumericVector rf_D2_D2(Rcpp::NumericMatrix n,
 {
   NumericVector r(8);
   double l, l0, rnew, rold;
-  if((n_ind - mis) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
+  if((n_ind - mis) ==0) Rcpp::Rcout << "\n Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n";
   /*Likelihoods under h0: r=0.5*/
   l0 = -M_LN2*(n_ind-mis);
   /*EM algorithm*/
