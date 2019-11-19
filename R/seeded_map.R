@@ -103,6 +103,7 @@ seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
 
   #Skip all seeds i the phase estimation
   for(mrk in (length(seeds)+1):(length(seq.num)-1)) {
+    cat(mrk, "\n")
     results <- list(rep(NA,4),rep(-Inf,4))
     if("phase" %in% verbosity)
     {
@@ -110,12 +111,12 @@ seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
     }
     ## gather two-point information
     phase.init <- vector("list",mrk)
-    list.init <- phases(make_seq(input.seq$twopt,
+    list.init <- onemap:::phases(make_seq(input.seq$twopt,
                                  c(seq.num[mrk],seq.num[mrk+1]),
                                  twopt=input.seq$twopt))
     phase.init[[mrk]] <- list.init$phase.init[[1]]
     for(j in 1:(mrk-1)) phase.init[[j]] <- seq.phase[j]
-    Ph.Init <- comb_ger(phase.init)
+    Ph.Init <- onemap:::comb_ger(phase.init)
     phases <- mclapply(1:nrow(Ph.Init),
                        mc.cores = min(nrow(Ph.Init),phase_cores),
                        mc.allow.recursive = TRUE,

@@ -142,13 +142,13 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
     message("Processing batch 1...")
   }
   LGs <- list()
-  rmed.mks <- list()
+  rmed.mks <- as.list(rep(0, length(batches)))
   #The first batch is run in full again to get all necessary data (phases etc.)
   if(is.null(seeds))
    {
-    LG <- map(input.seq = make_seq(input.seq$twopt, batches[[1]]), phase_cores = phase_cores, rm_unlinked = T)
+    LG <- onemap:::map(input.seq = make_seq(input.seq$twopt, batches[[1]]), phase_cores = phase_cores, rm_unlinked = T)
     while(class(LG) == "integer"){
-      LG <- map(input.seq = make_seq(input.seq$twopt, LG), phase_cores = phase_cores, rm_unlinked = T)
+      LG <- onemap::map(input.seq = make_seq(input.seq$twopt, LG), phase_cores = phase_cores, rm_unlinked = T)
     }
     rmed.mks[[1]] <- batches[[1]][which(!batches[[1]] %in% LG$seq.num)]
   } else {
@@ -169,6 +169,9 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
       print(LGs[[i - 1]])
       message("Processing batch ",i,"...")
     }
+    # if(all(rmed.mks[[i-1]] != 0)){
+    #   batches[[i]] <- batches[[i]][-which(batches[[i]] %in% rmed.mks[[i-1]])] # remove problematic markers
+    # }
     #Need to use a seeded map in order to not mess with the overlapping area
     #which we trust more from the previous batch (as that had more information)
     cat(i,"\n")

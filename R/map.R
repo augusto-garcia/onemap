@@ -145,15 +145,15 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
     ## linkage map is started with the first two markers in the sequence
     ## gather two-point information for this pair
     phase.init <- vector("list",1)
-    list.init <- phases(make_seq(input.seq$twopt,seq.num[1:2],twopt=input.seq$twopt))
+    list.init <- onemap:::phases(make_seq(input.seq$twopt,seq.num[1:2],twopt=input.seq$twopt))
     phase.init[[1]] <- list.init$phase.init[[1]]
-    Ph.Init <- comb_ger(phase.init)
-    phases <- mclapply(1:nrow(Ph.Init),
+    Ph.Init <- onemap:::comb_ger(phase.init)
+    phases <- parallel::mclapply(1:nrow(Ph.Init),
                        mc.cores = min(nrow(Ph.Init),phase_cores),
                        mc.allow.recursive = TRUE,
                        function(j) {
                          ## call to 'map' function with predefined linkage phase
-                         map(make_seq(input.seq$twop,
+                         onemap::map(make_seq(input.seq$twopt,
                                       seq.num[1:2],
                                       phase=Ph.Init[j],
                                       twopt=input.seq$twopt))
@@ -167,15 +167,15 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
     if (all(is.na(results[[2]]))) {
       if (rm_unlinked) {
         warning(cat("The linkage between markers", 
-                    seq.num[mrk], "and", seq.num[mrk + 1], 
+                    seq.num[1], "and", seq.num[2], 
                     "did not reached the OneMap default criteria. They are probably segregating independently. Marker", 
-                    seq.num[mrk + 1], "will be removed.\n"))
-        return(seq.num[-(mrk + 1)])
+                    seq.num[2], "will be removed.\n"))
+        return(seq.num[-(2)])
         browser()
       }
       else {
         stop(paste("The linkage between markers", 
-                   seq.num[mrk], "and", seq.num[mrk + 1], 
+                   seq.num[1], "and", seq.num[2], 
                    "did not reached the OneMap default criteria. They are probably segregating independently.\n"))
       }
     }
