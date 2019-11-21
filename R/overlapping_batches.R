@@ -169,7 +169,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
       print(LGs[[i - 1]])
       message("Processing batch ",i,"...")
     }
-    # if(all(rmed.mks[[i-1]] != 0)){
+    #if(all(rmed.mks[[i-1]] != 0)){
     #   batches[[i]] <- batches[[i]][-which(batches[[i]] %in% rmed.mks[[i-1]])] # remove problematic markers
     # }
     #Need to use a seeded map in order to not mess with the overlapping area
