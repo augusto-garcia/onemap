@@ -11,3 +11,6 @@ onemap.Rproj
 *.bak
 *.Rproj
 test/
+sim*
+mapfile.map
+founderfile.gen

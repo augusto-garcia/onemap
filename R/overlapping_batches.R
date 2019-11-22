@@ -76,7 +76,7 @@ pick_batch_sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
 {
   test.sizes <- c(size, (size - 1):(size - around), (size + 1):(size + around))
   all.batches <- lapply(test.sizes, function(s){
-    generate_overlapping_batches(input.seq, s, overlap, silent = TRUE)
+    onemap:::generate_overlapping_batches(input.seq, s, overlap, silent = TRUE)
   })
   x <- unlist(lapply(all.batches, function(f){
     ran <- range(unlist(lapply(f,length)))
@@ -129,11 +129,11 @@ pick_batch_sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
 ##' @export
 map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
                                     phase_cores = 1, verbosity = NULL, 
-                                    seeds = NULL)
+                                    seeds = NULL, tol=10E-5, rm_unlinked = T)
 {
   #TODO: error checks...
   #Create initial set of batches
-  batches <- onemap:::generate_overlapping_batches(input.seq, size, overlap)
+  batches <- generate_overlapping_batches(input.seq, size, overlap)
   if("batch" %in% verbosity)
   {
     message("Have ", length(batches), " batches.")
@@ -146,15 +146,15 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
   #The first batch is run in full again to get all necessary data (phases etc.)
   if(is.null(seeds))
    {
-    LG <- onemap:::map(input.seq = make_seq(input.seq$twopt, batches[[1]]), phase_cores = phase_cores, rm_unlinked = T)
+    LG <- map(input.seq = make_seq(input.seq$twopt, batches[[1]]), phase_cores = phase_cores, rm_unlinked = rm_unlinked, tol=tol)
     while(class(LG) == "integer"){
-      LG <- onemap::map(input.seq = make_seq(input.seq$twopt, LG), phase_cores = phase_cores, rm_unlinked = T)
+      LG <- map(input.seq = make_seq(input.seq$twopt, LG), phase_cores = phase_cores, rm_unlinked = rm_unlinked, tol=tol)
     }
     rmed.mks[[1]] <- batches[[1]][which(!batches[[1]] %in% LG$seq.num)]
   } else {
      LG <- seeded_map(input.seq = make_seq(input.seq$twopt, batches[[1]],
-                               twopt = input.seq$twopt), phase_cores = phase_cores,
-                      verbosity = verbosity, seeds = seeds)
+                      twopt = input.seq$twopt), phase_cores = phase_cores,
+                      verbosity = verbosity, seeds = seeds, tol=tol)
    }
   
   round <- 1
@@ -174,21 +174,21 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
     # }
     #Need to use a seeded map in order to not mess with the overlapping area
     #which we trust more from the previous batch (as that had more information)
-    cat(i,"\n")
     seeds <- tail(LGs[[i - 1]]$seq.phases, overlap)
     batches[[i]][1:(overlap+1)] <- tail(LGs[[i - 1]]$seq.num, overlap + 1)
     LG <- seeded_map(input.seq = make_seq(input.seq$twopt,
-                              batches[[i]],
-                              twopt = input.seq$twopt),
+                                          batches[[i]],
+                                          twopt = input.seq$twopt),
                      verbosity = verbosity,
-                     seeds = seeds, rm_unlinked = T)
+                     seeds = seeds, rm_unlinked = rm_unlinked,
+                     tol=tol)
     while(class(LG) == "integer"){ # Instead of reordering the marker that didn't reached the linkage criterias
       # we remove the marker and repet the analysis
       LG <- seeded_map(make_seq(input.seq$twopt,
                                 LG,
                                 twopt = input.seq$twopt),
                        verbosity = verbosity,
-                       seeds = seeds, rm_unlinked = T)
+                       seeds = seeds, rm_unlinked = rm_unlinked, tol=tol)
     }
     rmed.mks[[i]] <- batches[[i]][which(!batches[[i]] %in% LG$seq.num)]
     LGs[[i]] <- LG
@@ -223,7 +223,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
   #Create final sequence and run
   #final.rf is currently only used for debugging purposes
   s <- make_seq(input.seq$twopt, final.seq, final.phase, input.seq$twopt)
-  mp <- map(input.seq = s, rm_unlinked = T)
+  mp <- map(input.seq = s, rm_unlinked = rm_unlinked, tol=tol)
   
   if(length(unlist(rmed.mks))> 0)
   message("Markers ", paste(unlist(rmed.mks), collapse = ", "), " were removed of the analysis because 

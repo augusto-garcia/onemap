@@ -57,6 +57,7 @@ same in both parents. Hidden Markov chain codes adapted from Broman et al.
 
   markers <- make_seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
   map(markers)
+  
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.

@@ -84,6 +84,9 @@
 ##'
 ##'   markers <- make_seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
 ##'   map(markers)
+##'   
+##'@import parallel
+##'
 ##'@export
 map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cores = 1)
 {
@@ -145,18 +148,18 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
     ## linkage map is started with the first two markers in the sequence
     ## gather two-point information for this pair
     phase.init <- vector("list",1)
-    list.init <- onemap:::phases(make_seq(input.seq$twopt,seq.num[1:2],twopt=input.seq$twopt))
+    list.init <- phases(make_seq(input.seq$twopt,seq.num[1:2],twopt=input.seq$twopt))
     phase.init[[1]] <- list.init$phase.init[[1]]
-    Ph.Init <- onemap:::comb_ger(phase.init)
-    phases <- parallel::mclapply(1:nrow(Ph.Init),
+    Ph.Init <- comb_ger(phase.init)
+    phases <- mclapply(1:nrow(Ph.Init),
                        mc.cores = min(nrow(Ph.Init),phase_cores),
                        mc.allow.recursive = TRUE,
                        function(j) {
                          ## call to 'map' function with predefined linkage phase
-                         onemap::map(make_seq(input.seq$twopt,
+                         map(make_seq(input.seq$twopt,
                                       seq.num[1:2],
                                       phase=Ph.Init[j],
-                                      twopt=input.seq$twopt))
+                                      twopt=input.seq$twopt), tol=tol)
                        })
     for(j in 1:nrow(Ph.Init)) {
       ## call to 'map' function with predefined linkage phase
@@ -226,9 +229,9 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
     ## if the linkage phases are provided but the recombination fractions have
     ## not yet been estimated or need to be reestimated, this is done here
     ## gather two-point information
-    rf.init <- onemap:::get_vec_rf_out(input.seq, acum=FALSE)
+    rf.init <- get_vec_rf_out(input.seq, acum=FALSE)
     ## estimate parameters
-    final.map <- onemap:::est_map_hmm_out(geno=t(input.seq$data.name$geno[,seq.num]),
+    final.map <- est_map_hmm_out(geno=t(input.seq$data.name$geno[,seq.num]),
                                  error = input.seq$data.name$error[seq.num + 
                                                                      rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, 
                                                                                  each=length(seq.num)),],

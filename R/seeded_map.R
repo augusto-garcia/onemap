@@ -103,7 +103,6 @@ seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
 
   #Skip all seeds i the phase estimation
   for(mrk in (length(seeds)+1):(length(seq.num)-1)) {
-    cat(mrk, "\n")
     results <- list(rep(NA,4),rep(-Inf,4))
     if("phase" %in% verbosity)
     {
@@ -111,12 +110,12 @@ seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
     }
     ## gather two-point information
     phase.init <- vector("list",mrk)
-    list.init <- onemap:::phases(make_seq(input.seq$twopt,
+    list.init <- phases(make_seq(input.seq$twopt,
                                  c(seq.num[mrk],seq.num[mrk+1]),
                                  twopt=input.seq$twopt))
     phase.init[[mrk]] <- list.init$phase.init[[1]]
     for(j in 1:(mrk-1)) phase.init[[j]] <- seq.phase[j]
-    Ph.Init <- onemap:::comb_ger(phase.init)
+    Ph.Init <- comb_ger(phase.init)
     phases <- mclapply(1:nrow(Ph.Init),
                        mc.cores = min(nrow(Ph.Init),phase_cores),
                        mc.allow.recursive = TRUE,
@@ -125,7 +124,7 @@ seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
                          map(make_seq(input.seq$twopt,
                                       seq.num[1:(mrk+1)],
                                       phase=Ph.Init[j,],
-                                      twopt=input.seq$twopt), rm_unlinked = T)
+                                      twopt=input.seq$twopt), tol=tol)
                        })
     for(j in 1:nrow(Ph.Init))
     {
@@ -147,7 +146,7 @@ seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
   }
   ## one last call to map function, with the final map
   map(make_seq(input.seq$twopt,seq.num,phase=seq.phase,
-               twopt=input.seq$twopt), rm_unlinked = T)
+               twopt=input.seq$twopt), rm_unlinked = rm_unlinked, tol=tol)
 }
 
 ## end of file

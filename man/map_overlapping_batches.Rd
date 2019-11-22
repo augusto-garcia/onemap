@@ -5,7 +5,8 @@
 \title{Mapping overlapping batches}
 \usage{
 map_overlapping_batches(input.seq, size = 50, overlap = 15,
-  phase_cores = 1, verbosity = NULL, seeds = NULL)
+  phase_cores = 1, verbosity = NULL, seeds = NULL, tol = 1e-04,
+  rm_unlinked = T)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}
