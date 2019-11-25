@@ -5,7 +5,7 @@
 \title{Construct the linkage map for a sequence of markers after seeding phases}
 \usage{
 seeded_map(input.seq, tol = 1e-04, phase_cores = 1, seeds,
-  verbosity = NULL, rm_unlinked = F)
+  verbosity = F, rm_unlinked = F)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}
@@ -19,9 +19,11 @@ the phase of a marker. (Should be no more than 4)}
 \item{seeds}{A vector given the integer encoding of phases for the first
 \emph{N} positions of the map}
 
-\item{verbosity}{A character vector that includes any or all of "batch",
-"order", "position", "time" and "phase" to output progress status
+\item{verbosity}{A logical, if TRUE it output progress status
 information.}
+
+\item{rm_unlinked}{When some pair of markers do not follow the linkage criteria, 
+if \code{TRUE} one of the markers is removed and map is performed again.}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the

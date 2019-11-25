@@ -2,7 +2,7 @@
 ##                                                                     ##
 ## Package: onemap                                                     ##
 ##                                                                     ##
-## Contains: parmap and avoid_unlinked                                 ##
+## Contains: parmap and map_avoid_unlinked                             ##
 ##                                                                     ##
 ## Written by Cristiane Taniguti                                       ##
 ## copyright (c) 2019, Cristiane Taniguti                              ##
@@ -88,9 +88,9 @@ parmap <- function(input.seq=NULL,
   
   
   clust <- makeCluster(cores)
-  clusterExport(clust, c("avoid_unlinked"))
+  clusterExport(clust, c("map_avoid_unlinked"))
   if(avoid_link_errors){
-    new.maps <- parLapply(clust, list_seq, function(x) avoid_unlinked(x, tol=tol))      
+    new.maps <- parLapply(clust, list_seq, function(x) map_avoid_unlinked(x, tol=tol))      
   } else {
     new.maps <- parLapply(clust, list_seq, function(x) onemap::map(x, tol=tol))
   }
@@ -131,11 +131,11 @@ parmap <- function(input.seq=NULL,
 }
 
 ##' @export
-avoid_unlinked <- function(input.seq, tol){
-  map_df <- onemap::map(input.seq, rm_unlinked = T)
+map_avoid_unlinked <- function(input.seq, tol){
+  map_df <- map(input.seq, rm_unlinked = T)
   while(class(map_df) == "integer"){
-    seq_true <- onemap::make_seq(input.seq$twopt, map_df)
-    map_df <- onemap::map(input.seq = seq_true, rm_unlinked = T)
+    seq_true <- make_seq(input.seq$twopt, map_df)
+    map_df <- map(input.seq = seq_true, rm_unlinked = T)
   }
   return(map_df)
 }

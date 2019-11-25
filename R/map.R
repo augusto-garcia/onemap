@@ -6,11 +6,10 @@
 ## Contains: map                                                       ##
 ##                                                                     ##
 ## Written by Gabriel Rodrigues Alves Margarido and Marcelo Mollinari  ##
-## with minor changes by Cristiane Taniguti
+## with minor changes by Cristiane Taniguti                            ##
 ## copyright (c) 2009, Gabriel R A Margarido                           ##
 ##                                                                     ##
 ## First version: 02/27/2009                                           ##
-## Last update: 01/14/2016                                             ##
 ## License: GNU General Public License version 2 (June, 1991) or later ##
 ##                                                                     ##
 #######################################################################
@@ -38,7 +37,7 @@
 ##' @param verbose If \code{TRUE}, print tracing information.
 ##' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
 ##' if \code{TRUE} one of the markers is removed and returns a vector with remaining 
-##' marker numbers (useful for mds_onemap function).
+##' marker numbers (useful for mds_onemap and map_avoid_unlinked functions).
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}
@@ -52,7 +51,8 @@
 ##' data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
 ##' 2-point analyses.}
 ##' @author Adapted from Karl Broman (package 'qtl') by Gabriel R A Margarido,
-##' \email{gramarga@@usp.br} and Marcelo Mollinari, \email{mmollina@@gmail.com}
+##' \email{gramarga@@usp.br} and Marcelo Mollinari, \email{mmollina@@gmail.com},
+##' with minor changes by Cristiane Taniguti and Bastian Schiffthaler 
 ##' @seealso \code{\link[onemap]{make_seq}}
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
