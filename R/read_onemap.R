@@ -293,7 +293,7 @@ read_onemap <- function (inputfile=NULL, dir=NULL) {
                  n.phe = n.phe, pheno = pheno, CHROM = CHROM, POS = POS,
                  input = inputfile),
             class = c("onemap", crosstype))
-  new.onemap.obj <- create_probs(onemap.obj)
+  new.onemap.obj <- create_probs(onemap.obj, global_error = 10^-5)
   return(new.onemap.obj)
 }
 

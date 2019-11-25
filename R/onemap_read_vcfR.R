@@ -341,7 +341,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
                                      input = "vcfR.object"),
                                 class=c("onemap",legacy_crosses[cross]))
         
-        new.onemap.obj <- create_probs(onemap.obj)
+        new.onemap.obj <- create_probs(onemap.obj, global_error = 10^-5)
         return(new.onemap.obj)
     }
 }

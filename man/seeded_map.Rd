@@ -80,7 +80,7 @@ Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage mapping of
 sex-specific differences. \emph{Genetical Research} 79: 85-96
 }
 \seealso{
-\code{\link[BatchMap]{make_seq}}
+\code{\link[onemap]{make_seq}}
 }
 \author{
 Adapted from Karl Broman (package 'qtl') by Gabriel R A Margarido,

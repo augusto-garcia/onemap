@@ -1,15 +1,15 @@
 #######################################################################
 ##                                                                     ##
-## Package: BatchMap                                                     ##
+## Package: Onemap                                                     ##
 ##                                                                     ##
 ## File: seeded_map.R                                                  ##
 ## Contains: seeded_map                                                ##
 ##                                                                     ##
-## Written by Bastian Schiffthaler                                     ##
-## copyright (c) 2017 Bastian Schiffthaler                             ##
+## Written by Cristiane Taniguti adaptaded from BatchMap               ##
+## copyright (c) 2019 Cristiane Taniguti                               ##
 ##                                                                     ##
 ##                                                                     ##
-## First version: 07/03/2017                                           ##
+## First version: 22/11/2019                                           ##
 ## License: GNU General Public License version 2 (June, 1991) or later ##
 ##                                                                     ##
 #######################################################################
@@ -52,7 +52,7 @@
 ##' \email{gramarga@@usp.br} and Marcelo Mollinari, \email{mmollina@@gmail.com}.
 ##' Modified to use seeded phases by Bastian Schiffthaler
 ##' \email{bastian.schiffthaler@umu.se}
-##' @seealso \code{\link[BatchMap]{make_seq}}
+##' @seealso \code{\link[onemap]{make_seq}}
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
 ##' 1.09-43

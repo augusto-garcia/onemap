@@ -4,12 +4,12 @@
 \alias{read_mapmaker}
 \title{Read data from a Mapmaker raw file}
 \usage{
-read_mapmaker(dir = NULL, file = NULL)
+read_mapmaker(file = NULL, dir = NULL)
 }
 \arguments{
-\item{dir}{directory where the input file is located.}
-
 \item{file}{the name of the input file which contains the data to be read.}
+
+\item{dir}{directory where the input file is located.}
 }
 \value{
 An object of class \code{onemap}, i.e., a list with the following
