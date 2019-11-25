@@ -5,7 +5,7 @@
 \title{Mapping overlapping batches}
 \usage{
 map_overlapping_batches(input.seq, size = 50, overlap = 15,
-  phase_cores = 1, verbosity = NULL, seeds = NULL, tol = 1e-04,
+  phase_cores = 1, verbosity = F, seeds = NULL, tol = 1e-04,
   rm_unlinked = T)
 }
 \arguments{
@@ -18,12 +18,14 @@ map_overlapping_batches(input.seq, size = 50, overlap = 15,
 \item{phase_cores}{The number of parallel processes to use when estimating
 the phase of a marker. (Should be no more than 4)}
 
-\item{verbosity}{A character vector that includes any or all of "batch",
-"order", "position", "time" and "phase" to output progress status
+\item{verbosity}{A logical, if TRUE its output progress status
 information.}
 
 \item{seeds}{A vector of phase information used as seeds for the first
 batch}
+
+\item{rm_unlinked}{When some pair of markers do not follow the linkage criteria, 
+if \code{TRUE} one of the markers is removed and map is performed again.}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the

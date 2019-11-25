@@ -1,15 +1,16 @@
 #######################################################################
 ##                                                                     ##
-## Package: BatchMap                                                     ##
+## Package: BatchMap                                                   ##
 ##                                                                     ##
 ## File: seeded_map.R                                                  ##
 ## Contains: seeded_map                                                ##
 ##                                                                     ##
-## Written by Bastian Schiffthaler                                     ##
-## copyright (c) 2017 Bastian Schiffthaler                             ##
+## Adaptated by Cristiane Taniguti from the original in                ##
+## BatchMap package                                                    ##
+## copyright (c) 2019 Cristiane Taniguti                               ##
 ##                                                                     ##
 ##                                                                     ##
-## First version: 07/03/2017                                           ##
+## First version: 22/11/2019                                           ##
 ## License: GNU General Public License version 2 (June, 1991) or later ##
 ##                                                                     ##
 #######################################################################
@@ -29,13 +30,14 @@
 ##' @param input.seq an object of class \code{sequence}.
 ##' @param tol tolerance for the C routine, i.e., the value used to evaluate
 ##' convergence.
-##' @param verbosity A character vector that includes any or all of "batch",
-##' "order", "position", "time" and "phase" to output progress status
+##' @param verbosity A logical, if TRUE it output progress status
 ##' information.
 ##' @param seeds A vector given the integer encoding of phases for the first
 ##' \emph{N} positions of the map
 ##' @param phase_cores The number of parallel processes to use when estimating
 ##' the phase of a marker. (Should be no more than 4)
+##' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
+##' if \code{TRUE} one of the markers is removed and map is performed again.
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}
@@ -52,7 +54,7 @@
 ##' \email{gramarga@@usp.br} and Marcelo Mollinari, \email{mmollina@@gmail.com}.
 ##' Modified to use seeded phases by Bastian Schiffthaler
 ##' \email{bastian.schiffthaler@umu.se}
-##' @seealso \code{\link[BatchMap]{make_seq}}
+##' @seealso \code{\link[onemap]{make_seq}}
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
 ##' 1.09-43
@@ -83,7 +85,7 @@
 ##'
 ##' @export
 seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
-                       seeds, verbosity = NULL, rm_unlinked=F)
+                       seeds, verbosity = F, rm_unlinked=F)
 {
   ## checking for correct object
   if(!("sequence" %in% class(input.seq)))
@@ -104,7 +106,7 @@ seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
   #Skip all seeds i the phase estimation
   for(mrk in (length(seeds)+1):(length(seq.num)-1)) {
     results <- list(rep(NA,4),rep(-Inf,4))
-    if("phase" %in% verbosity)
+    if(verbosity)
     {
       message("Phasing marker ", input.seq$seq.num[mrk])
     }

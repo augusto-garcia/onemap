@@ -17,7 +17,7 @@ convergence.}
 
 \item{rm_unlinked}{When some pair of markers do not follow the linkage criteria, 
 if \code{TRUE} one of the markers is removed and returns a vector with remaining 
-marker numbers (useful for mds_onemap function).}
+marker numbers (useful for mds_onemap and map_avoid_unlinked functions).}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the
@@ -85,6 +85,7 @@ sex-specific differences. \emph{Genetical Research} 79: 85-96
 }
 \author{
 Adapted from Karl Broman (package 'qtl') by Gabriel R A Margarido,
-\email{gramarga@usp.br} and Marcelo Mollinari, \email{mmollina@gmail.com}
+\email{gramarga@usp.br} and Marcelo Mollinari, \email{mmollina@gmail.com},
+with minor changes by Cristiane Taniguti and Bastian Schiffthaler
 }
 \keyword{utilities}

@@ -105,11 +105,12 @@ pick_batch_sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
 ##' @param overlap The desired overlap between batches
 ##' @param phase_cores The number of parallel processes to use when estimating
 ##' the phase of a marker. (Should be no more than 4)
-##' @param verbosity A character vector that includes any or all of "batch",
-##' "order", "position", "time" and "phase" to output progress status
+##' @param verbosity A logical, if TRUE its output progress status
 ##' information.
 ##' @param seeds A vector of phase information used as seeds for the first
 ##' batch
+##' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
+##' if \code{TRUE} one of the markers is removed and map is performed again.
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}
@@ -128,13 +129,13 @@ pick_batch_sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
 ##' @keywords utilities
 ##' @export
 map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
-                                    phase_cores = 1, verbosity = NULL, 
+                                    phase_cores = 1, verbosity = F, 
                                     seeds = NULL, tol=10E-5, rm_unlinked = T)
 {
   #TODO: error checks...
   #Create initial set of batches
   batches <- generate_overlapping_batches(input.seq, size, overlap)
-  if("batch" %in% verbosity)
+  if(verbosity)
   {
     message("Have ", length(batches), " batches.")
     message("The number of markers in the final batch is: ",
@@ -164,7 +165,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
   #Start processing all following batches
   for(i in 2:length(batches))
   {
-    if("batch" %in% verbosity) #Print previous batch-map segment
+    if(verbosity) #Print previous batch-map segment
     {
       print(LGs[[i - 1]])
       message("Processing batch ",i,"...")
@@ -216,7 +217,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
                      LGs[[i]]$seq.rf[(overlap + 1):length(LGs[[i]]$seq.rf)])
 
   }
-  if("batch" %in% verbosity)
+  if(verbosity)
   {
     message("Final call to map...")
   }
