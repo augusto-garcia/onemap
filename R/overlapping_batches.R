@@ -76,7 +76,7 @@ pick_batch_sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
 {
   test.sizes <- c(size, (size - 1):(size - around), (size + 1):(size + around))
   all.batches <- lapply(test.sizes, function(s){
-    onemap:::generate_overlapping_batches(input.seq, s, overlap, silent = TRUE)
+    generate_overlapping_batches(input.seq, s, overlap, silent = TRUE)
   })
   x <- unlist(lapply(all.batches, function(f){
     ran <- range(unlist(lapply(f,length)))
@@ -130,7 +130,7 @@ pick_batch_sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
 ##' @export
 map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
                                     phase_cores = 1, verbosity = F, 
-                                    seeds = NULL, tol=10E-5, rm_unlinked = T)
+                                    seeds = NULL, tol=10E-5, rm_unlinked = T, max.gap=F)
 {
   #TODO: error checks...
   #Create initial set of batches
@@ -226,9 +226,30 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
   s <- make_seq(input.seq$twopt, final.seq, final.phase, input.seq$twopt)
   mp <- map(input.seq = s, rm_unlinked = rm_unlinked, tol=tol)
   
-  if(length(unlist(rmed.mks))> 0)
-  message("Markers ", paste(unlist(rmed.mks), collapse = ", "), " were removed of the analysis because 
+  if(length(unlist(rmed.mks))> 0 & unlist(rmed.mks)[1] != 0)
+    message("Markers ", paste(unlist(rmed.mks), collapse = ", "), " were removed of the analysis because 
           they did not reach the linkage criterias")
   
-  return(list(mp))
+  if(max.gap){ # the marker will be removed if it have gaps higher than the threshold in both sides
+    idx <- which(kosambi(mp$seq.rf) > max.gap)
+    rm.seq <- vector()
+    for(i in 1:(length(idx) -1)){
+      if(idx[i] == 1){
+        rm.seq <- c(rm.seq, 1)
+        if(idx[i+1] == 2)
+          rm.seq <- c(rm.seq,2)
+      } else {
+        if(idx[i + 1] == idx[i] + 1)
+          rm.seq <- c(rm.seq, idx[i+1])
+      }
+    }
+    new.seq <- make_seq(mp$twopt, mp$seq.num[-rm.seq])
+    cat("Markers", mp$seq.num[rm.seq], "were remove because they cause gaps higher than ", max.gap, " cM with both neighboors markers.")
+    mp <- map_overlapping_batches(input.seq = new.seq,
+                                size = size, overlap = overlap,
+                                phase_cores = phase_cores, verbosity = verbosity , 
+                                seeds = seeds, tol=tol, rm_unlinked = rm_unlinked, max.gap=max.gap)
+  }
+  
+  return(mp)
 }

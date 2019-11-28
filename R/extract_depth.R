@@ -70,7 +70,7 @@ extract_depth <- function(vcfR.object=NULL,
   
   if(recovering==FALSE){
     rm.mks <- which(as.numeric(pos.vcf) %in% pos.onemap==FALSE)
-    rm.ind <- which(IND %in% ind==FALSE)                                                                             
+    rm.ind <- which(IND[-parents] %in% ind==FALSE)                                                                             
     CHROM <- onemap.object$CHROM
     POS <- onemap.object$POS
   } else {
@@ -177,10 +177,10 @@ extract_depth <- function(vcfR.object=NULL,
         oref <- ref_matrix[,-idx]
         osize <- size_matrix[,-idx]
       } else {
-        IND <- IND
-        oalt <- alt_matrix
-        oref <- ref_matrix
-        osize <- size_matrix
+        IND <- IND[-parents]
+        oalt <- alt_matrix[,-parents]
+        oref <- ref_matrix[,-parents]
+        osize <- size_matrix[,-parents]
       }
     }
     

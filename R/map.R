@@ -204,6 +204,15 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
                                           phase=Ph.Init[j,],
                                           twopt=input.seq$twopt))
                            })
+        if(all(is.null(unlist(phases)))) {
+          if(rm_unlinked){
+            warning(cat("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], "did not reached the OneMap default criteria. They are probably segregating independently. Marker", seq.num[mrk+1], "will be removed.\n"))
+            return(seq.num[-(mrk+1)])
+            browser()
+          } else{
+            stop(paste("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], "did not reached the OneMap default criteria. They are probably segregating independently.\n"))
+          }
+        }
         for(j in 1:nrow(Ph.Init)) {
           ## call to 'map' function with predefined linkage phases
           #temp <- map(make_seq(input.seq$twopt,seq.num[1:(mrk+1)],phase=Ph.Init[j,],twopt=input.seq$twopt))
@@ -230,6 +239,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
     ## not yet been estimated or need to be reestimated, this is done here
     ## gather two-point information
     rf.init <- get_vec_rf_out(input.seq, acum=FALSE)
+
     ## estimate parameters
     final.map <- est_map_hmm_out(geno=t(input.seq$data.name$geno[,seq.num]),
                                  error = input.seq$data.name$error[seq.num + 

@@ -104,8 +104,8 @@ get_vec_rf_in<- function(input.seq, LOD=FALSE, acum=TRUE) {
                  phases <- which((LODs >= min.LOD) & rfs <= max.rf)
                  if(length(phases) == 0)
                  {
-                     r[i,j] <- NA
-                     r[j,i] <- NA
+                     r[i,j] <- 0.5
+                     r[j,i] <- 0
                  }
                  else
                  {
@@ -128,7 +128,8 @@ get_vec_rf_in<- function(input.seq, LOD=FALSE, acum=TRUE) {
                  phases <- which((LODs >= min.LOD) & rfs <= max.rf)
                  if(length(phases) == 0)
                  {
-                   r[j,i] <- r[i,j] <- NA
+                   r[j,i] <- 0.5
+                    r[i,j] <- 0
                  }
                  else
                  {
@@ -149,7 +150,7 @@ get_vec_rf_out<- function(input.seq, LOD=FALSE, max.rf=0.5, min.LOD=0, acum=TRUE
     if(!any(class(input.seq)=="sequence"))
         stop(deparse(substitute(input.seq))," is not an object of class 'sequnece'")
     if(length(input.seq$seq.num) < 2) stop("The sequence must have at least 2 markers")
-    mat<-get_mat_rf_out(input.seq=input.seq, LOD=LOD, max.rf=max.rf, min.LOD=min.LOD)
+    mat<- get_mat_rf_out(input.seq=input.seq, LOD=LOD, max.rf=max.rf, min.LOD=min.LOD)
     mrk.names<-colnames(mat)
     r<-numeric(length(input.seq$seq.num)-1)
     pair.names<-character(ncol(mat)-1)

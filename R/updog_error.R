@@ -84,9 +84,18 @@ updog_error <- function(vcfR.object=NULL,
       
     }
     
+    if(recovering==FALSE){
+      palt <- palt[which(rownames(palt) %in% colnames(onemap.object$geno)),]
+      pref <- pref[which(rownames(pref) %in% colnames(onemap.object$geno)),]
+      psize <- psize[which(rownames(psize) %in% colnames(onemap.object$geno)),]
+      oalt <- oalt[which(rownames(oalt) %in% colnames(onemap.object$geno)),]
+      oref <- oref[which(rownames(oref) %in% colnames(onemap.object$geno)),]
+      osize <- osize[which(rownames(osize) %in% colnames(onemap.object$geno)),]
+    }
+    
     depth_matrix <- list("palt"=palt, "pref"=pref, "psize"=psize, 
                          "oalt"=as.matrix(oalt), "oref"=as.matrix(oref), "osize"=as.matrix(osize), 
-                         n.mks = dim(depths[[1]])[1], n.ind = dim(oalt)[2],
+                         n.mks = dim(oalt)[1], n.ind = dim(oalt)[2],
                          inds = colnames(oalt), mks = rownames(oalt),
                          CHROM = sapply(strsplit(rownames(oalt), split="_"), "[",1),
                          POS = sapply(strsplit(rownames(oalt), split="_"), "[",2),
