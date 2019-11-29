@@ -1,0 +1,2 @@
+CountsFrom SNPCall GenoCall n_markers distorted_markers redundant_markers
+vcf gatk updog 471 194 68

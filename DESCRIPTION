@@ -32,9 +32,10 @@ Imports: ggplot2 (>= 2.2.1),
         utils,
         grDevices,
         MDSMap,
-	doParallel,
-	updog,
-	polyRAD
+	      doParallel,
+	      updog,
+	      polyRAD,
+	      tidyr
 Suggests: qtl (>= 1.36-6), 
           knitr (>= 1.10), 
           rmarkdown, 

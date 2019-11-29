@@ -30,7 +30,7 @@
 #' and Diploids. Plant and Animal Genome Conference XXVI, 
 #' January 13-17, San Diego, California, USA. doi:10.13140/RG.2.2.27134.08001
 #'
-#' @import polyRAD
+#' @import polyRAD 
 #'   
 #' @export
 polyRAD_error <- function(vcf=NULL, 

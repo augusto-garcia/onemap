@@ -1,0 +1,100 @@
+---
+title: "OneMap High Throughput"
+date: "`r Sys.Date()`"
+author: "[Statistical Genetics Lab](http://statgen.esalq.usp.br) <br/> Department of Genetics <br/> Luiz de Queiroz College of Agriculture <br/> University of São Paulo"
+output:
+    rmdformats::readthedown:
+      css: readthedownstatgen.css
+---
+
+```{r knitr_init, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+
+opts_knit$set(width=75)
+```
+
+```{r, echo=FALSE, results='hide'}
+library(onemap)
+```
+
+# Simulate data
+
+## Simulate vcf file
+
+```{r}
+run_pedsim(chromosome = c("Chr1"), n.marker = 150, tot.size.cm = c(100), centromere = c(50),
+            n.ind = 200, mk.types = c("B3.7","D1.10", "D2.15"),
+            n.types = rep(50,3), pop = "F1", path.pedsim = "~/Programs/PedigreeSim/",
+            name.mapfile = "mapfile.map", name.founderfile="founderfile.gen",
+            name.chromfile="sim.chrom", name.parfile="sim.par",
+            name.out="sim_out")
+
+
+pedsim2vcf(inputfile = "sim_out_genotypes.dat", 
+           map.file = "mapfile.map", 
+           chrom.file = "sim.chrom", 
+           out.file = "simu.vcf",
+           miss.perc = 0, 
+           counts = TRUE, 
+           mean.depth = 100, 
+           p.mean.depth = 100, 
+           chr.mb = 10, method = "neg.binom", #updog ta com pau
+           mean.phred = 20)
+
+vcfR.obj <- read.vcfR("simu.vcf")
+vcf <- onemap_read_vcfR(vcfR.object = vcfR.obj, cross = "outcross", parent1 = "P1", parent2 = "P2")
+twopts <- rf_2pts(vcf)
+seq1 <- make_seq(twopts, "all")
+lgs <- group(seq1)
+lg1 <- make_seq(lgs,1)
+
+batch_size <- pick_batch_sizes(input.seq = lg1, 
+                                   size = 80, 
+                                   overlap = 30, 
+                                   around = 10)
+    
+batch.time <- system.time(batch.map <- map_overlapping_batches(input.seq = lg1,
+                                         size = batch_size,
+                                         phase_cores = 4,
+                                         overlap = 30, rm_unlinked = T))
+
+```
+
+## Simulate raw data
+
+```{r}
+run_pedsim(chromosome = c("Chr1"), n.marker = 150, tot.size.cm = c(100), centromere = c(50),
+            n.ind = 200, mk.types = c("B3.7","D1.10", "D2.15"),
+            n.types = rep(50,3), pop = "F1", path.pedsim = "~/Programs/PedigreeSim/",
+            name.mapfile = "mapfile.map", name.founderfile="founderfile.gen",
+            name.chromfile="sim.chrom", name.parfile="sim.par",
+            name.out="sim_out")
+
+pedsim2raw(cross="outcross", genofile = "sim_out_genotypes.dat", parent1 = "P1", parent2 = "P2", out.file = "sim_out.example1.raw", miss.perc = 0)
+
+df <- read_onemap("sim_out.example1.raw")
+
+twopts <- rf_2pts(df)
+
+seq1 <- make_seq(twopts, "all")
+
+batch_size <- pick_batch_sizes(input.seq = seq1, 
+                               size = 60, 
+                               overlap = 25, 
+                               around = 10)
+
+batch.time <- rbind(batch.time, system.time(batch.map <- map_overlapping_batches(input.seq = seq1,
+                                                                                 size = batch_size,
+                                                                                 phase_cores = 4,
+                                                                                 overlap = 25, rm_unlinked = T)))
+map_all <- map(seq1)
+
+```
+
+## Simulate Illumina reads
+
+See errors_workflow pipeline

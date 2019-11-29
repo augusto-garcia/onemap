@@ -195,7 +195,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
         for(j in 1:(mrk-1)) phase.init[[j]] <- seq.phase[j]
         Ph.Init <- comb_ger(phase.init)
         phases <- mclapply(1:nrow(Ph.Init),
-                           mc.cores = min(nrow(Ph.Init),phase_cores),
+                           mc.cores = min(nrow(Ph.Init), phase_cores),
                            mc.allow.recursive = TRUE,
                            function(j) {
                              ## call to 'map' function with predefined linkage phases
@@ -239,7 +239,10 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
     ## not yet been estimated or need to be reestimated, this is done here
     ## gather two-point information
     rf.init <- get_vec_rf_out(input.seq, acum=FALSE)
-
+    if(any(is.na(rf.init))) {
+      warning("Linkage criterias could not be reached")
+      return(NULL)
+    }
     ## estimate parameters
     final.map <- est_map_hmm_out(geno=t(input.seq$data.name$geno[,seq.num]),
                                  error = input.seq$data.name$error[seq.num + 
