@@ -84,6 +84,18 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   for(i in 2:(n.ind+1))
     GT_matrix[,i-1] <- unlist(lapply(strsplit(vcf@gt[,i], split=":"), "[[", GT))
   
+  
+  # This function doesn't consider phased genotypes
+  if(any(grepl("|", GT_matrix))){
+    GT_matrix[GT_matrix=="1|0"] <- GT_matrix[GT_matrix=="0|1"] <- "0/1"
+    GT_matrix[GT_matrix=="0|0"] <- "0/0"
+    GT_matrix[GT_matrix=="1|1"] <- "1/1"
+  }
+  
+  if(any(GT_matrix == "1/0")){
+    GT_matrix[GT_matrix=="1/0"] <- "0/1"
+  }
+  
   # Checking marker segregation according with parents
   P1 <- which(dimnames(vcf@gt)[[2]]==parent1) - 1
   P2 <- which(dimnames(vcf@gt)[[2]]==parent2) - 1
