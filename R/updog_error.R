@@ -40,7 +40,9 @@ updog_error <- function(vcfR.object=NULL,
                         f1=NULL,
                         recovering = FALSE,
                         mean_phred = 20, cores = 2,
-                        depths = NULL){
+                        depths = NULL,
+                        use_probs = TRUE,
+                        global_error=1){
   
   if(is.null(depths)){
     depth_matrix <- extract_depth(vcfR.object=vcfR.object,
@@ -144,7 +146,7 @@ updog_error <- function(vcfR.object=NULL,
   osize[idx] <- NA
   oref[idx] <- NA
   
-  geno_matrix <- matrix(rep(NA,dim(osize)[2]*dim(osize)[1]),nrow=dim(osize)[1])
+  geno_matrix <- maxpostprob <- matrix(rep(NA,dim(osize)[2]*dim(osize)[1]),nrow=dim(osize)[1])
   P1 <- P2 <- rep(NA, n.mks)
   if(class(onemap.object)[2] == "f2"){
     cl <- parallel::makeCluster(cores)
@@ -176,7 +178,7 @@ updog_error <- function(vcfR.object=NULL,
                              p1size = psize[i,2],
                              p2ref = pref[i,1],
                              p2size = psize[i,1],
-                             model = "f1")
+                             model = "f1",bias_init = exp(c(-0.7, -0.2, 0, 0.2, 0.7)))
       fout
     }
     parallel::stopCluster(cl)
@@ -184,10 +186,17 @@ updog_error <- function(vcfR.object=NULL,
     P1 <- unlist(sapply(sapply(gene_est, "[", 8), "[", 2))
   }
   
-  for(i in 1:n.mks)
-    geno_matrix[i,] <- lapply(gene_est, "[[", 9)[[i]]
+  
+  temp1 <- lapply(gene_est, "[[", 9)
+  temp2 <- lapply(gene_est, "[[", 10)
+
+  for(i in 1:n.mks){
+    geno_matrix[i,] <- temp1[[i]]
+    maxpostprob[i,] <- temp2[[i]]
+  }
   
   postmat <- lapply(gene_est, "[", 6)
+  
   genotypes_probs <- postmat[[1]]$postmat
   for(i in 2:length(postmat)) # Order: mk 1 1 1 ind 1 2 3
     genotypes_probs <- rbind(genotypes_probs, postmat[[i]]$postmat)
@@ -202,6 +211,7 @@ updog_error <- function(vcfR.object=NULL,
     if(length(rm.mk) > 0){
       cat("markers", length(mks[rm.mk]), "were reestimated as non-informative and removed of analysis \n")
       geno_matrix <- geno_matrix[-rm.mk,]
+      maxpostprob <- maxpostprob[-rm.mk,]
       P1 <- P1[-rm.mk]
       P2 <- P2[-rm.mk]
       n.mks <- n.mks - length(rm.mk)
@@ -248,6 +258,7 @@ updog_error <- function(vcfR.object=NULL,
     if(length(rm.mk) > 0){
       cat("markers", length(mks[rm.mk]), "were estimated as non-informative and removed of analysis \n")
       geno_matrix <- geno_matrix[-rm.mk,]
+      maxpostprob <- maxpostprob[-rm.mk,]
       P1 <- P1[-rm.mk]
       P2 <- P2[-rm.mk]
       n.mks <- n.mks - length(rm.mk)
@@ -300,8 +311,9 @@ n")
   }
   
   cat("New onemap object contains", length(mks), "markers")
-  colnames(conv_geno)  <- mks
-  inds <- rownames(conv_geno)  <- rownames(onemap.object$geno)
+  maxpostprob <- t(1- maxpostprob)
+  colnames(conv_geno)  <- colnames(maxpostprob) <- mks
+  inds <- rownames(conv_geno)  <- rownames(maxpostprob) <- rownames(onemap.object$geno)
   
   onemap_updog$geno <- conv_geno
   onemap_updog$n.ind <- length(inds)
@@ -309,8 +321,12 @@ n")
   onemap_updog$segr.type.num <- segr.type.num
   onemap_updog$segr.type <- segr.type
   
-  onemap_updog.new <- create_probs(onemap.obj = onemap_updog, genotypes_probs = genotypes_probs)
-  
+  if(use_probs){
+    onemap_updog.new <- create_probs(onemap.obj = onemap_updog, genotypes_probs = genotypes_probs)
+  } else {
+    maxpostprob <- maxpostprob*global_error
+    onemap_updog.new <- create_probs(onemap.obj = onemap_updog, genotypes_errors = maxpostprob)
+  }
   structure(onemap_updog.new)
 }
 

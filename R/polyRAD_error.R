@@ -39,7 +39,8 @@ polyRAD_error <- function(vcf=NULL,
                           parent2=NULL,
                           f1=NULL,
                           crosstype=NULL,
-                          tech.issue=TRUE){
+                          tech.issue=TRUE,
+                          global_error = 1){
   # Do the checks
    poly.test <- VCF2RADdata(vcf, phaseSNPs = FALSE, 
                            min.ind.with.reads = 0,
@@ -64,15 +65,10 @@ polyRAD_error <- function(vcf=NULL,
   
   file.remove(paste0("temp.file.",seed.uniq))
   
-  # this will change according to the vcf - bug!!
-  pos <- sapply(strsplit(as.character(genotypes$V1), split = "_"),"[",1)
-  if(length(unique(pos)) ==1){
-    pos <- sapply(strsplit(as.character(genotypes$V1), split = "_"),"[",2)
-    pos <- paste0(sapply(strsplit(as.character(genotypes$V1), split = "_"),"[",1), "_", pos)
-  }  else {
-  if(tech.issue) # Muda conforme o software de chamada, tem q ver como deixar universal
-    pos <- gsub(":", "_", pos)
-  }
+  # this will change according to the vcf - bug!! Need attention!
+  temp_list <- strsplit(as.character(genotypes$V1), split = "_")
+  pos <- sapply(temp_list, function(x) if(length(x) > 2) paste0(x[-length(x)], collapse = "_"))
+  pos <- gsub(":", "_", pos)
   
   pos.onemap <- colnames(onemap.obj$geno)
   genotypes <- genotypes[which(pos%in%pos.onemap),]
@@ -119,7 +115,10 @@ polyRAD_error <- function(vcf=NULL,
   onemap.obj$CHROM <- onemap.obj$CHROM[keep.mks]
   onemap.obj$POS <- onemap.obj$POS[keep.mks]
   
-  polyrad.one <- create_probs(onemap.obj = onemap.obj, genotypes_probs =  genotypes[,3:5])
+  probs <- as.matrix(genotypes[,3:5]*(1- global_error))
+  probs[which(probs == 0)] <- global_error
+  
+  polyrad.one <- create_probs(onemap.obj = onemap.obj, genotypes_probs =  probs)
   
   return(polyrad.one)
 }

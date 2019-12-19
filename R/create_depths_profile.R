@@ -35,7 +35,7 @@
 #'@import tidyr ggplot2
 #'@export
 create_depths_profile <- function(onemap.obj = NULL, 
-                                  vcf.file = NULL, 
+                                  vcfR.object = NULL, 
                                   parent1 = NULL,
                                   parent2 = NULL,
                                   vcf.par = "AD",
@@ -46,7 +46,7 @@ create_depths_profile <- function(onemap.obj = NULL,
                                   alpha=1,
                                   rds.file = "data.rds"){
   # do the checks
-  depths <- extract_depth(vcf, df, vcf.par, parent1, parent2, recovering = recovering)
+  depths <- extract_depth(vcfR.object = vcfR.object, onemap.object = onemap.obj, vcf.par, parent1, parent2, recovering = recovering)
   
   # parents depth
   alt <- depths$palt %>% data.frame(mks=depths$mks) %>% gather("ind", "alt", -"mks")
@@ -70,9 +70,13 @@ create_depths_profile <- function(onemap.obj = NULL,
   parents <- merge(parents, p.gt)
   
   # parents vcf genotypes
-  id.parents <- which(colnames(vcf@gt[,-1]) %in% c(parent1, parent2))
-  gts <- vcf@gt[,-1] %>% strsplit(":") %>% sapply("[",1) %>% matrix(ncol = dim(vcf@gt)[2] -1)
-  p.gt <- data.frame(mks = paste0(vcf@fix[,1], "_", vcf@fix[,2]), gts[,id.parents])
+  id.parents <- which(colnames(vcfR.object@gt[,-1]) %in% c(parent1, parent2))
+  gts <- vcfR.object@gt[,-1] %>% strsplit(":") %>% sapply("[",1) %>% matrix(ncol = dim(vcfR.object@gt)[2] -1)
+  
+  MKS <- vcfR.object@fix[,3]
+  if (any(MKS == "." | is.na(MKS))) MKS <- paste0(vcfR.object@fix[,1],"_", vcfR.object@fix[,2])
+  
+  p.gt <- data.frame(mks = MKS, gts[,id.parents])
   colnames(p.gt) <- c("mks", parent1, parent2)
   p.gt <- gather(p.gt, "ind", "gt.vcf", -"mks")
   parents <- merge(parents, p.gt)
@@ -88,8 +92,8 @@ create_depths_profile <- function(onemap.obj = NULL,
   progeny <- merge(progeny, gt)
   
   # progeny vcf genotypes
-  pro.gt <- data.frame(mks = paste0(vcf@fix[,1], "_", vcf@fix[,2]), gts[,-id.parents])
-  colnames(pro.gt) <- c("mks", colnames(vcf@gt)[-1][-id.parents])
+  pro.gt <- data.frame(mks = MKS, gts[,-id.parents])
+  colnames(pro.gt) <- c("mks", colnames(vcfR.object@gt)[-1][-id.parents])
   pro.gt <- gather(pro.gt, "ind", "gt.vcf", -"mks")
   progeny <- merge(progeny, pro.gt)
   data <- rbind(parents, progeny)

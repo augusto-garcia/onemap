@@ -229,8 +229,6 @@ print.group_seq <- function(x, detailed=TRUE,...) {
   if(!any(class(x)=="group_seq")) stop(deparse(substitute(x))," is not an object of class 'group_seq'")
 
   cat("  This is an object of class 'group_seq'\n")
-  cat(paste("  It was generated from the object \"", x[[1]][[1]],
-            "\"\n\n",sep=""))
 
   ## criteria
   cat("  Criteria used to assign markers to groups:\n")
