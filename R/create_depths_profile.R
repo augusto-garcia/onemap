@@ -125,14 +125,26 @@ create_depths_profile <- function(onemap.obj = NULL,
     p <- data %>% ggplot(aes(x=ref, y=alt, color=gt.onemap)) + 
       geom_point(alpha = alpha) +
       labs(title= "Depths",x="ref", y = "alt", color="Genotypes") +
-      scale_colour_manual(name="Genotypes", values = colors)
+      scale_colour_manual(name="Genotypes", values = colors) +
+      guides(colour = guide_legend(override.aes = list(alpha = 1))) + 
+      xlim(0,5*summary(data$ref[-which(data$ref == 0)])[5]) +
+      ylim(0,5*summary(data$alt[-which(data$alt == 0)])[5])
   } else if(GTfrom == "vcf"){
     p <- data %>% ggplot(aes(x=ref, y=alt, color=gt.vcf)) + 
       geom_point(alpha=alpha) +
-      labs(title= "Depths",x="ref", y = "alt", color="Genotypes") 
+      labs(title= "Depths",x="ref", y = "alt", color="Genotypes") +
+      guides(colour = guide_legend(override.aes = list(alpha = 1)))+ 
+      xlim(0,5*summary(data$ref[-which(data$ref == 0)])[5]) +
+      ylim(0,5*summary(data$alt[-which(data$alt == 0)])[5])
   }
   
   saveRDS(data, file = rds.file)
+  
+  cat("Summary of reference counts: \n")
+  print(summary(data$ref[-which(data$ref == 0)]))
+  
+  cat("Summary of alternative counts: \n")
+  print(summary(data$alt[-which(data$alt == 0)]))
   
   return(p)
   

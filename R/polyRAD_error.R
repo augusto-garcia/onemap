@@ -66,9 +66,10 @@ polyRAD_error <- function(vcf=NULL,
   file.remove(paste0("temp.file.",seed.uniq))
   
   # this will change according to the vcf - bug!! Need attention!
-  temp_list <- strsplit(as.character(genotypes$V1), split = "_")
-  pos <- sapply(temp_list, function(x) if(length(x) > 2) paste0(x[-length(x)], collapse = "_"))
-  pos <- gsub(":", "_", pos)
+  temp <- gsub(":", "_", as.character(genotypes$V1))
+  temp_list <- strsplit(temp, split = "_")
+  pos <- sapply(temp_list, function(x) if(length(x) > 2) paste0(x[1:2], collapse = "_"))
+  
   
   pos.onemap <- colnames(onemap.obj$geno)
   genotypes <- genotypes[which(pos%in%pos.onemap),]

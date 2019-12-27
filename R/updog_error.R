@@ -178,7 +178,7 @@ updog_error <- function(vcfR.object=NULL,
                              p1size = psize[i,2],
                              p2ref = pref[i,1],
                              p2size = psize[i,1],
-                             model = "f1",bias_init = exp(c(-0.7, -0.2, 0, 0.2, 0.7)))
+                             model = "f1")
       fout
     }
     parallel::stopCluster(cl)
