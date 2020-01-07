@@ -105,7 +105,7 @@ polyRAD_error <- function(vcf=NULL,
   genotypes <- genotypes[order(genotypes$V2),]
   
   # Print how many genotypes changed
-  cat("This approach changed", (1- sum(new.geno == onemap.obj$geno)/length(new.geno))*100,"% of the genotypes")
+  cat("This approach changed", (1- sum(new.geno == onemap.obj$geno)/length(new.geno))*100,"% of the genotypes\n")
   
   onemap.obj$geno <- new.geno
   

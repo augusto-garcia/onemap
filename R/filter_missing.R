@@ -29,7 +29,7 @@
 ##'@export
 filter_missing <- function(onemap.obj=NULL, threshold= 0.25){
   if(class(onemap.obj)[1]!="onemap"){
-    stop("onemap.obj should be of class onemap")
+    stop("onemap.obj should be of class onemap\n")
   }
   perc.mis <- apply(onemap.obj$geno, 2, function(x) sum(x == 0)/length(x))
   idx <- which(!perc.mis > threshold)
@@ -42,6 +42,6 @@ filter_missing <- function(onemap.obj=NULL, threshold= 0.25){
   new.onemap.obj$CHROM <- onemap.obj$CHROM[idx]
   new.onemap.obj$POS <- onemap.obj$POS[idx]
   new.onemap.obj$error <- onemap.obj$error[idx + rep(c(0:(onemap.obj$n.ind-1))*onemap.obj$n.mar, each=length(idx)),]
-  cat("Number of markers removed from the onemap object: ", length(which(perc.mis > threshold)))
+  cat("Number of markers removed from the onemap object: ", length(which(perc.mis > threshold)), "\n")
   return(new.onemap.obj)
 }

@@ -310,7 +310,7 @@ n")
     cat("This approach changed", (sum(conv_geno != onemap.object$geno)/length(onemap.object$geno))*100, "% of the genotypes\n")
   }
   
-  cat("New onemap object contains", length(mks), "markers")
+  cat("New onemap object contains", length(mks), "markers\n")
   maxpostprob <- t(1- maxpostprob)
   colnames(conv_geno)  <- colnames(maxpostprob) <- mks
   inds <- rownames(conv_geno)  <- rownames(maxpostprob) <- rownames(onemap.object$geno)
@@ -366,14 +366,14 @@ plot_error_dist <- function(onemap.obj = NULL, mk.type = TRUE,
   if(!is.null(select.ind)){
     idx <- which(as.character(M$Var1) %in% select.ind)
     if(length(idx)==0){
-      stop("This individual does not exist in the given onemap object")
+      stop("This individual does not exist in the given onemap object\n")
     } else{ M <- M[idx,] }
   }
   
   if(!is.null(select.mk)){
     idx <- which(as.character(M$Var2) %in% select.mk)
     if(length(idx)==0){
-      stop("This marker does not exist in the given onemap object")
+      stop("This marker does not exist in the given onemap object\n")
     }
     M <- M[idx,]
   }
@@ -383,7 +383,7 @@ plot_error_dist <- function(onemap.obj = NULL, mk.type = TRUE,
       breaks <- pretty(range(M$value), n = nclass.FD(M$value), min.n = 1)
       binwidth <- breaks[2]-breaks[1]
     } else {
-      stop("Choose a n.int value for your graphic")
+      stop("Choose a n.int value for your graphic\n")
     }
   } else {
     breaks <- pretty(range(M$value), n = n.int, min.n = 1)
