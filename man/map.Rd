@@ -4,8 +4,13 @@
 \alias{map}
 \title{Construct the linkage map for a sequence of markers}
 \usage{
-map(input.seq, tol = 1e-04, verbose = FALSE, rm_unlinked = FALSE,
-  phase_cores = 1)
+map(
+  input.seq,
+  tol = 1e-04,
+  verbose = FALSE,
+  rm_unlinked = FALSE,
+  phase_cores = 1
+)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}

@@ -4,9 +4,16 @@
 \alias{rf_graph_table}
 \title{Plots pairwise recombination fractions and LOD Scores in a heatmap}
 \usage{
-rf_graph_table(input.seq, graph.LOD = FALSE, main = NULL,
-  inter = FALSE, html.file = NULL, mrk.axis = "numbers",
-  lab.xy = NULL, n.colors = 4)
+rf_graph_table(
+  input.seq,
+  graph.LOD = FALSE,
+  main = NULL,
+  inter = FALSE,
+  html.file = NULL,
+  mrk.axis = "numbers",
+  lab.xy = NULL,
+  n.colors = 4
+)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence} with a predefined

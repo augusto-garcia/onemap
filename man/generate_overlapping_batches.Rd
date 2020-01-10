@@ -4,8 +4,12 @@
 \alias{generate_overlapping_batches}
 \title{Function to divide the sequence in batches with user defined size}
 \usage{
-generate_overlapping_batches(input.seq, size = 50, overlap = 15,
-  silent = FALSE)
+generate_overlapping_batches(
+  input.seq,
+  size = 50,
+  overlap = 15,
+  silent = FALSE
+)
 }
 \description{
 Function to divide the sequence in batches with user defined size

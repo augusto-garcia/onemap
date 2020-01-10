@@ -4,8 +4,12 @@
 \alias{create_probs}
 \title{Build genotype probabilities matrix for hmm}
 \usage{
-create_probs(onemap.obj = NULL, global_error = NULL,
-  genotypes_errors = NULL, genotypes_probs = NULL)
+create_probs(
+  onemap.obj = NULL,
+  global_error = NULL,
+  genotypes_errors = NULL,
+  genotypes_probs = NULL
+)
 }
 \arguments{
 \item{onemap.obj}{an object of class \code{onemap}.}

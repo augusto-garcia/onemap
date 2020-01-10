@@ -4,9 +4,15 @@
 \alias{pedsim2raw}
 \title{Converts the output of PedigreeSim to onemap raw file}
 \usage{
-pedsim2raw(cross = c("outcross", "f2 intercross"),
-  genofile = "sim_out_genotypes.dat", parent1 = "P1", parent2 = "P2",
-  f1 = "F1", out.file = "sim_out.raw", miss.perc = 10)
+pedsim2raw(
+  cross = c("outcross", "f2 intercross"),
+  genofile = "sim_out_genotypes.dat",
+  parent1 = "P1",
+  parent2 = "P2",
+  f1 = "F1",
+  out.file = "sim_out.raw",
+  miss.perc = 10
+)
 }
 \arguments{
 \item{cross}{string defining the cross type "outcross" or "f2 intercross"}

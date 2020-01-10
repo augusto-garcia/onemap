@@ -4,13 +4,23 @@
 \alias{run_pedsim}
 \title{Generate input files for PedigreeSim software}
 \usage{
-run_pedsim(chromosome = c("Chr1", "Chr2", "Chr3"), n.marker = c(18, 19,
-  20), tot.size.cm = c(18, 19, 20), centromere = c(9, 9, 10),
-  n.ind = 150, mk.types = c("A1", "D1.10", "D2.15"), n.types = c(7,
-  25, 25), pop = c("F1", "F2", "BC"), path.pedsim = NULL,
-  name.mapfile = "mapfile.map", name.founderfile = "founderfile.gen",
-  name.chromfile = "sim.chrom", name.parfile = "sim.par",
-  name.out = "sim_out", rm.tempfiles = F)
+run_pedsim(
+  chromosome = c("Chr1", "Chr2", "Chr3"),
+  n.marker = c(18, 19, 20),
+  tot.size.cm = c(18, 19, 20),
+  centromere = c(9, 9, 10),
+  n.ind = 150,
+  mk.types = c("A1", "D1.10", "D2.15"),
+  n.types = c(7, 25, 25),
+  pop = c("F1", "F2", "BC"),
+  path.pedsim = NULL,
+  name.mapfile = "mapfile.map",
+  name.founderfile = "founderfile.gen",
+  name.chromfile = "sim.chrom",
+  name.parfile = "sim.par",
+  name.out = "sim_out",
+  rm.tempfiles = F
+)
 }
 \arguments{
 \item{chromosome}{a vector of characters defining the chromosomes names}

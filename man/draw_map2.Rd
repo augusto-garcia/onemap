@@ -4,13 +4,25 @@
 \alias{draw_map2}
 \title{Draw a linkage map}
 \usage{
-draw_map2(..., tag = NULL, id = TRUE, pos = TRUE, cex.label = NULL,
-  main = NULL, group.names = NULL, centered = F, y.axis = TRUE,
-  space = NULL, col.group = NULL, col.mark = NULL, col.tag = NULL,
-  output = NULL)
+draw_map2(
+  ...,
+  tag = NULL,
+  id = TRUE,
+  pos = TRUE,
+  cex.label = NULL,
+  main = NULL,
+  group.names = NULL,
+  centered = F,
+  y.axis = TRUE,
+  space = NULL,
+  col.group = NULL,
+  col.mark = NULL,
+  col.tag = NULL,
+  output = NULL
+)
 }
 \arguments{
-\item{...}{sequence(s). Object(s) of class \code{sequence} with a predefined order, linkage phase, recombination fraction and likelihood. Can be used list(s) of sequences.}
+\item{...}{map(s). Object(s) of class \code{sequence} and/or \code{data.frame}. If \code{data.frame}, it must have two columns: column 1: marker id; column 2: position (cM) (\code{numeric}).}
 
 \item{tag}{name(s) of the marker(s) to highlight. If "all", all markers will be highlighted. Default is \code{NULL}.}
 

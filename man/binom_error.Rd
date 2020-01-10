@@ -4,9 +4,16 @@
 \alias{binom_error}
 \title{Estimates genotype error probabilities using binomial distribution for allele counts}
 \usage{
-binom_error(vcfR.object = NULL, onemap.object = NULL,
-  vcf.par = c("AD", "DPR"), parent1 = "P1", parent2 = "P2",
-  recovering = FALSE, mean_phred = 20, depths = NULL)
+binom_error(
+  vcfR.object = NULL,
+  onemap.object = NULL,
+  vcf.par = c("AD", "DPR"),
+  parent1 = "P1",
+  parent2 = "P2",
+  recovering = FALSE,
+  mean_phred = 20,
+  depths = NULL
+)
 }
 \arguments{
 \item{mean_phred}{mean quality phred value of the sequencing}

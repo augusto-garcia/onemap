@@ -4,8 +4,16 @@
 \alias{polyRAD_error}
 \title{OneMap interface with polyRAD package}
 \usage{
-polyRAD_error(vcf = NULL, onemap.obj = NULL, parent1 = NULL,
-  parent2 = NULL, f1 = NULL, crosstype = NULL, tech.issue = TRUE)
+polyRAD_error(
+  vcf = NULL,
+  onemap.obj = NULL,
+  parent1 = NULL,
+  parent2 = NULL,
+  f1 = NULL,
+  crosstype = NULL,
+  tech.issue = TRUE,
+  global_error = 1
+)
 }
 \arguments{
 \item{vcf}{path to vcf file}

@@ -24,7 +24,7 @@
 #' @param recovering logical. If TRUE, all markers in vcf are considere, if FALSE only those in onemap.obj
 #' @param mks a vector of characters specifying the markers names to be considered or NULL to consider all markers
 #' @param inds a vector of characters specifying the individual names to be considered or NULL to consider all individuals
-#' @param GTfrom the graphic should contain the genotypes from onemap.obj or from the vcf? Specify using "onemap" or "vcf".
+#' @param GTfrom the graphic should contain the genotypes from onemap.obj or from the vcf? Specify using "onemap", "vcf" or "prob".
 #' @param alpha define the transparency of the dots in the graphic
 #'
 #' @return an rds file and a ggplot graphic.
@@ -81,6 +81,8 @@ create_depths_profile <- function(onemap.obj = NULL,
   p.gt <- gather(p.gt, "ind", "gt.vcf", -"mks")
   parents <- merge(parents, p.gt)
   
+  parents <- data.frame(parents, A=NA, AB=NA, BA=NA, B=NA)
+  
   # progeny depth
   alt <- depths$oalt %>% data.frame(mks=depths$mks) %>% gather("ind", "alt", -"mks")
   ref <- depths$oref %>% data.frame(mks=depths$mks) %>% gather("ind", "ref", -"mks")
@@ -89,6 +91,9 @@ create_depths_profile <- function(onemap.obj = NULL,
   # progeny onemap genotypes
   gt <- data.frame(ind = rownames(onemap.obj$geno), onemap.obj$geno)
   gt <- gather(gt,  "mks","gt.onemap", -"ind")
+  temp <- match(paste0(gt$mks, "_", gt$ind), rownames(onemap.obj$error))
+  gt <- data.frame(gt, onemap.obj$error[temp,])
+  colnames(gt) <- c("ind", "mks", "gt.onemap", "A", "AB", "BA", "B")
   progeny <- merge(progeny, gt)
   
   # progeny vcf genotypes
@@ -101,7 +106,6 @@ create_depths_profile <- function(onemap.obj = NULL,
   data$gt.onemap[which(data$gt.onemap==1)] <- "homozygous"
   data$gt.onemap[which(data$gt.onemap==2)] <- "heterozygote"
   data$gt.onemap[which(data$gt.onemap==3)] <- "homozygous"
-  
   
   # removing phased
   data$gt.vcf <- gsub(pattern = "[|]", replacement = "/", data$gt.vcf)
@@ -133,6 +137,22 @@ create_depths_profile <- function(onemap.obj = NULL,
     p <- data %>% ggplot(aes(x=ref, y=alt, color=gt.vcf)) + 
       geom_point(alpha=alpha) +
       labs(title= "Depths",x="ref", y = "alt", color="Genotypes") +
+      guides(colour = guide_legend(override.aes = list(alpha = 1)))+ 
+      xlim(0,5*summary(data$ref[-which(data$ref == 0)])[5]) +
+      ylim(0,5*summary(data$alt[-which(data$alt == 0)])[5])
+  } else if(GTfrom == "prob"){
+    errors <- apply(data[,7:10], 1, function(x) {
+      if(all(is.na(x))) {
+        return(NA) 
+        } else { 
+          z <- 1 - x[which.max(x)]
+          return(z)
+          }
+      })
+    p <- data %>% ggplot(aes(x=ref, y=alt, color=errors)) + 
+      geom_point(alpha=alpha) +
+      labs(title= "Depths",x="ref", y = "alt", color="Genotypes") +
+      scale_colour_gradient(low = "#F62A2C", high = "#70ED57")+
       guides(colour = guide_legend(override.aes = list(alpha = 1)))+ 
       xlim(0,5*summary(data$ref[-which(data$ref == 0)])[5]) +
       ylim(0,5*summary(data$alt[-which(data$alt == 0)])[5])

@@ -4,15 +4,22 @@
 \alias{create_depths_profile}
 \title{Create database and ggplot graphic of allele reads depths}
 \usage{
-create_depths_profile(onemap.obj = NULL, vcf.file = NULL,
-  parent1 = NULL, parent2 = NULL, vcf.par = "AD",
-  recovering = TRUE, mks = NULL, inds = NULL, GTfrom = "onemap",
-  alpha = 1, rds.file = "data.rds")
+create_depths_profile(
+  onemap.obj = NULL,
+  vcfR.object = NULL,
+  parent1 = NULL,
+  parent2 = NULL,
+  vcf.par = "AD",
+  recovering = TRUE,
+  mks = NULL,
+  inds = NULL,
+  GTfrom = "onemap",
+  alpha = 1,
+  rds.file = "data.rds"
+)
 }
 \arguments{
 \item{onemap.obj}{an object of class \code{onemap}.}
-
-\item{vcf.file}{an object of class \code{vcfR}.}
 
 \item{parent1}{a character specifying the first parent ID}
 
@@ -26,9 +33,11 @@ create_depths_profile(onemap.obj = NULL, vcf.file = NULL,
 
 \item{inds}{a vector of characters specifying the individual names to be considered or NULL to consider all individuals}
 
-\item{GTfrom}{the graphic should contain the genotypes from onemap.obj or from the vcf? Specify using "onemap" or "vcf".}
+\item{GTfrom}{the graphic should contain the genotypes from onemap.obj or from the vcf? Specify using "onemap", "vcf" or "prob".}
 
 \item{alpha}{define the transparency of the dots in the graphic}
+
+\item{vcf.file}{an object of class \code{vcfR}.}
 }
 \value{
 an rds file and a ggplot graphic.
