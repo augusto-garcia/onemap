@@ -142,7 +142,7 @@ create_depths_profile <- function(onemap.obj = NULL,
       ylim(0,5*summary(data$alt[-which(data$alt == 0)])[5])
   } else if(GTfrom == "prob"){
     errors <- apply(data[,7:10], 1, function(x) {
-      if(all(is.na(x))) {
+      if(all(is.na(x)) | all(x == 1)) {
         return(NA) 
         } else { 
           z <- 1 - x[which.max(x)]
@@ -152,7 +152,7 @@ create_depths_profile <- function(onemap.obj = NULL,
     p <- data %>% ggplot(aes(x=ref, y=alt, color=errors)) + 
       geom_point(alpha=alpha) +
       labs(title= "Depths",x="ref", y = "alt", color="Genotypes") +
-      scale_colour_gradient(low = "#F62A2C", high = "#70ED57")+
+      scale_colour_gradient(low = "#70ED57", high = "#F62A2C")+
       guides(colour = guide_legend(override.aes = list(alpha = 1)))+ 
       xlim(0,5*summary(data$ref[-which(data$ref == 0)])[5]) +
       ylim(0,5*summary(data$alt[-which(data$alt == 0)])[5])
