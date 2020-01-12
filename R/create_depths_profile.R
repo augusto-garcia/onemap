@@ -110,6 +110,11 @@ create_depths_profile <- function(onemap.obj = NULL,
   # removing phased
   data$gt.vcf <- gsub(pattern = "[|]", replacement = "/", data$gt.vcf)
   
+  if(length(grep(pattern = ",", data$gt.vcf)) > 0){ # If the vcf do not have GT field
+    data$gt.vcf[grep(pattern = ",", data$gt.vcf)] <- NA
+    data$gt.vcf <- droplevels(data$gt.vcf)
+  }
+  
   data$ind <- as.factor(data$ind)
   data$gt.onemap <- as.factor(data$gt.onemap)
   data$gt.vcf <- as.factor(data$gt.vcf)
