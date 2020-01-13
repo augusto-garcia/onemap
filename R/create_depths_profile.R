@@ -112,7 +112,6 @@ create_depths_profile <- function(onemap.obj = NULL,
   
   if(length(grep(pattern = ",", data$gt.vcf)) > 0){ # If the vcf do not have GT field
     data$gt.vcf[grep(pattern = ",", data$gt.vcf)] <- NA
-    data$gt.vcf <- droplevels(data$gt.vcf)
   }
   
   data$ind <- as.factor(data$ind)
