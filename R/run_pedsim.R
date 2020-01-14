@@ -74,7 +74,7 @@ run_pedsim <- function(chromosome = c("Chr1", "Chr2", "Chr3"),
   pos <- chr <- vector()
   for(i in 1:length(chromosome)){
     int <- tot.size.cm[i]/n.marker[i]
-    pos <- c(pos,seq(from=0, to=tot.size.cm[i], by=int))
+    pos <- c(pos,seq(from=0, to=tot.size.cm[i], by=int)[-1])
     chr <- c(chr,rep(chromosome[i],n.marker[i]))
   }
 

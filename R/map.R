@@ -161,6 +161,21 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
                                       phase=Ph.Init[j],
                                       twopt=input.seq$twopt), tol=tol)
                        })
+    if(all(is.null(unlist(phases))){
+      if (rm_unlinked) {
+        warning(cat("The linkage between markers", 
+                    seq.num[1], "and", seq.num[2], 
+                    "did not reached the OneMap default criteria. They are probably segregating independently. Marker", 
+                    seq.num[2], "will be removed.\n"))
+        return(seq.num[-(2)])
+        browser()
+      }
+      else {
+        stop(paste("The linkage between markers", 
+                   seq.num[1], "and", seq.num[2], 
+                   "did not reached the OneMap default criteria. They are probably segregating independently.\n"))
+      }
+    }
     for(j in 1:nrow(Ph.Init)) {
       ## call to 'map' function with predefined linkage phase
       #temp <- map(make_seq(input.seq$twopt,seq.num[1:2],phase=Ph.Init[j],twopt=input.seq$twopt))
