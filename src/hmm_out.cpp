@@ -109,30 +109,33 @@ RcppExport SEXP est_hmm_out(SEXP geno_R, SEXP type_R, SEXP phase_R, SEXP rf_R, S
           alpha(v,j) *= emit_out(geno(j,i),v+1,error_prob,type(j));
         } 
       } 
-      for(j=0; j<n_mar-1; j++) {
-        // calculate gamma = log Pr(v1, v2, O)
-        for(v=0, s=0.0; v<n_gen; v++) {
-          for(v2=0; v2<n_gen; v2++) {
-            gamma(v,v2) = alpha(v,j) * 
-              beta(v2,j+1) * 
-              emit_out(geno(j+1,i), v2+1, error_prob, type(j+1)) * 
-              tr(v, j*n_gen+v2);  
-            if(v==0 && v2==0) s = gamma(v,v2);
-            else s += gamma(v,v2);
+      for(j=0; j<n_mar; j++) {
+        if(j == n_mar -1){
+        } else {
+          // calculate gamma = log Pr(v1, v2, O)
+          for(v=0, s=0.0; v<n_gen; v++) {
+            for(v2=0; v2<n_gen; v2++) {
+              gamma(v,v2) = alpha(v,j) * 
+                beta(v2,j+1) * 
+                emit_out(geno(j+1,i), v2+1, error_prob, type(j+1)) * 
+                tr(v, j*n_gen+v2);  
+              if(v==0 && v2==0) s = gamma(v,v2);
+              else s += gamma(v,v2);
+            }
+          }
+          for(v=0; v<n_gen; v++) {
+            for(v2=0; v2<n_gen; v2++) {
+              rf(j) += nrec_out(v+1, v2+1, phase(j)) * gamma(v,v2)/s;
+            }
           }
         }
-        for(v=0; v<n_gen; v++) {
-          for(v2=0; v2<n_gen; v2++) {
-            rf(j) += nrec_out(v+1, v2+1, phase(j)) * gamma(v,v2)/s;
-          }
-          /* Store genotypes probabilities*/
-          long double w = 0.0;
-          for(v=0; v<n_gen; v++){
-            w += alpha(v,j) * beta(v,j);
-          }
-          for(v=0; v<n_gen; v++){
-            probs(v,j+i*n_mar) = (alpha(v,j) * beta(v,j)/w);
-          }
+        /* Store genotypes probabilities*/
+        long double w = 0.0;
+        for(v=0; v<n_gen; v++){
+          w += alpha(v,j) * beta(v,j);
+        }
+        for(v=0; v<n_gen; v++){
+          probs(v,j+i*n_mar) = (alpha(v,j) * beta(v,j)/w);
         }
       }
     } // loop over individuals
