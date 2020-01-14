@@ -7,3 +7,6 @@ copying
 ^NEWS\.md$
 
 ^\.Rproj\.user$
+^README.md
+^vignettes_highres
+Dockerfile
