@@ -176,7 +176,7 @@ est_map_hmm_out<-function(geno, type,  phase, rf.vec=NULL, verbose=TRUE, tol=1e-
            as.numeric(verbose),
            as.numeric(tol),
            PACKAGE = "onemap")
-  names(r)<-c("rf", "loglike")
+  names(r)<-c("rf", "loglike", "probs")
   return(r)
 }
 #end of the file
