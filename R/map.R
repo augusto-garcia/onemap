@@ -104,10 +104,10 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
   if(class(input.seq$data.name)[2] == "f2")
   {
     final.map<- est_map_hmm_f2(geno=t(input.seq$data.name$geno[,seq.num]),
-    error=input.seq$data.name$error[seq.num + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(seq.num)),],
-                              rf.vec=get_vec_rf_in(input.seq),
-                              verbose=verbose,
-                              tol=tol)
+                               error=input.seq$data.name$error[seq.num + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(seq.num)),],
+                               rf.vec=get_vec_rf_in(input.seq),
+                               verbose=verbose,
+                               tol=tol)
     return(structure(list(seq.num=seq.num,
                           seq.phases=seq.phases,
                           seq.rf=final.map$rf,
@@ -121,7 +121,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
           class(input.seq$data.name)[2] == "risib")
   {
     final.map<-est_map_hmm_bc(geno=t(input.seq$data.name$geno[,seq.num]),
-    error=input.seq$data.name$error[seq.num + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(seq.num)),],
+                              error=input.seq$data.name$error[seq.num + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(seq.num)),],
                               rf.vec=get_vec_rf_in(input.seq),
                               verbose=verbose,
                               tol=tol)
@@ -161,7 +161,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
                                       phase=Ph.Init[j],
                                       twopt=input.seq$twopt), tol=tol)
                        })
-    if(all(is.null(unlist(phases))){
+    if(all(is.null(unlist(phases)))){
       if (rm_unlinked) {
         warning(cat("The linkage between markers", 
                     seq.num[1], "and", seq.num[2], 
@@ -219,7 +219,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
                                           phase=Ph.Init[j,],
                                           twopt=input.seq$twopt))
                            })
-        if(all(is.null(unlist(phases)))) {
+        if(all(is.null(unlist(phases)))){
           if(rm_unlinked){
             warning(cat("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], "did not reached the OneMap default criteria. They are probably segregating independently. Marker", seq.num[mrk+1], "will be removed.\n"))
             return(seq.num[-(mrk+1)])
@@ -262,7 +262,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
     final.map <- est_map_hmm_out(geno=t(input.seq$data.name$geno[,seq.num]),
                                  error = input.seq$data.name$error[seq.num + 
                                                                      rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, 
-                                                                                 each=length(seq.num)),],
+                                                                         each=length(seq.num)),],
                                  type=input.seq$data.name$segr.type.num[seq.num],
                                  phase=seq.phases,
                                  rf.vec=rf.init,
