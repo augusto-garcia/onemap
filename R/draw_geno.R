@@ -4,6 +4,8 @@
 ##'
 ##'@import ggplot2
 ##'@import dplyr
+##'@import tidyr
+##'
 ##'
 ##' @param input.map map(s). Object(s) of class \code{sequence}.
 ##' @param ind Individual number
@@ -55,10 +57,15 @@ draw_geno <- function(input.map, ind, most.likely = F, position = "stack", main 
     gather(allele, prob, a, b, c, d) %>% 
     mutate(homolog = factor(if_else(allele %in% c("a","b"), 1, 2), levels = c(2,1)),
            allele = factor(allele, levels = c("d","c","b","a")),) %>% 
-    ggplot() +
-    #scale_color_manual(values = c("red","darkgreen","darkblue","orange"))+
-    facet_wrap(~ind, nrow = ceiling(length(ind.select)^.5)) + ggtitle(main)
-  if(position == "stack") p <- p + geom_line(aes(x = mar, y = homolog, col = allele, alpha = prob),size = 5, show.legend = F)
-  if(position == "split") p <- p + geom_line(aes(x = mar, y = allele, col = allele, alpha = prob),size = 5, show.legend = F)
+    ggplot(aes(x = mar, col = allele, alpha = prob)) + ggtitle(main)+
+    facet_wrap(~ind, nrow = ceiling(length(ind.select)^.5))
+    #scale_color_manual(values = c("red","darkgreen","darkblue","orange"))
+    
+  if(position == "stack"){
+    p <- p + geom_line(aes(y = homolog),size = 5, show.legend = F)
+  } 
+  if(position == "split"){
+    p <- p + geom_line(aes(y = allele),size = 5, show.legend = F)
+  } 
   p
 }
