@@ -108,6 +108,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
                           seq.rf=final.map$rf,
                           seq.like=final.map$loglike,
                           data.name=input.seq$data.name,
+                          probs = final.map$probs,
                           twopt=input.seq$twopt),
                      class = "sequence"))
   }
@@ -129,6 +130,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
                           seq.rf=final.map$rf,
                           seq.like=final.map$loglike,
                           data.name=input.seq$data.name,
+                          probs = final.map$probs,
                           twopt=input.seq$twopt), class = "sequence"))
   }
   
