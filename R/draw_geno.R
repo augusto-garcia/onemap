@@ -7,11 +7,15 @@
 ##'@import tidyr
 ##'
 ##'
-##' @param input.map map(s). Object(s) of class \code{sequence}.
-##' @param ind Individual number
-##' @param most.likely TRUE or FALSE
-##' @param position "split" or "stack"
-##' @param main an overall title for the plot. Default is \code{NULL}.
+##' @param ... Map(s) or list(s) of maps. Object(s) of class sequence.
+##' @param ind The individual number to be ploted.
+##' @param most.likely logical; if  \code{TRUE}, the most likely genotype is plotted; if FALSE (default) the genotype probability is plotted.
+##' @param col Color of parentes' homologous.
+##' @param position "split" or "stack"; if "split" (default) the parents' homologous are plotted separately. if "stack" the parents' homologous are plotted together.
+##' @param type "point", "line" or "both".
+##' @param group.names Names of the groups.
+##' @param main An overall title for the plot; default is \code{NULL}.
+##'
 ##' @author Getulio Caixeta Ferreira, \email{getulio.caifer@@gmail.com}
 ##' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
 ##' @keywords utilities
@@ -39,33 +43,81 @@
 ##' }
 ##'@export
 
-draw_geno <- function(input.map, ind, most.likely = F, position = "stack", main = "Genotypes"){
-  probs <- as.data.frame(t(input.map$probs))
-  n.mar <- length(input.map$seq.num)
-  n.ind <- nrow(probs)/n.mar
+draw_geno <- function(..., ind, most.likely = FALSE, col = NULL, position = "stack", type = "both", group.names = NULL, main = "Genotypes"){
+  #input map
+  input <- list(...)
+  if(length(input) == 0) stop("argument '...' missing, with no default")
+  input.map <- list()
+  for(i in seq(input)) input.map <- c(input.map, if(lapply(input,class)[i]!="list") input[i] else do.call(c,input[i]))
+  if(!all(sapply(input.map,class) == "sequence")) stop(paste("\n'",names(input.map)[sapply(input.map,class) != "sequence"],"' is not an object of class 'sequence'",sep=""))
+  if(is.null(group.names)) group.names <- paste("Group",seq(input.map), sep = " - ")
+  n.mar <- sapply(input.map, function(x) length(x$seq.num))
+  n.ind <- sapply(input.map, function(x) ncol(x$probs))/n.mar
   ind.select <- ind
+  
+  probs <- lapply(1:length(input.map), function(x) cbind(ind = rep(1:n.ind[x], each = n.mar[x]),
+                                                         grp = group.names[x],
+                                                         marker = input.map[[x]]$seq.num,
+                                                         pos = c(0,cumsum(kosambi(input.map[[x]]$seq.rf))),
+                                                         as.data.frame(t(input.map[[x]]$probs))))
+  probs <- do.call(rbind, probs)
+
   if(most.likely){
-    probs <- as.data.frame(t(apply(probs, 1, function(x) as.numeric(x == max(x))))  )
+    probs[,5:8] <- t(apply(probs[,5:8], 1, function(x) as.numeric(x == max(x))))
   }
-  p <- cbind(expand.grid(mar = c(0,cumsum(kosambi(input.map$seq.rf))),ind = 1:n.ind), probs) %>% 
+  probs <- probs %>%
     filter(ind %in% ind.select) %>% 
-    mutate(a = V1 + V2,
-           b = V3 + V4,
-           c = V1 + V3,
-           d = V2 + V4) %>% 
-    select(ind, mar, a, b, c, d) %>% 
-    gather(allele, prob, a, b, c, d) %>% 
-    mutate(homolog = factor(if_else(allele %in% c("a","b"), 1, 2), levels = c(2,1)),
-           allele = factor(allele, levels = c("d","c","b","a")),) %>% 
-    ggplot(aes(x = mar, col = allele, alpha = prob)) + ggtitle(main)+
-    facet_wrap(~ind, nrow = ceiling(length(ind.select)^.5))
-    #scale_color_manual(values = c("red","darkgreen","darkblue","orange"))
-    
+    group_by(ind, grp) %>%
+    do(rbind(.,.[nrow(.),])) %>% 
+    do(mutate(.,
+              pos2 = c(0,pos[-1]-diff(pos)/2),
+              pos = c(pos[-nrow(.)], NA))) %>% 
+    mutate(P1_1 = V1 + V2,
+           P1_2 = V3 + V4,
+           P2_1 = V1 + V3,
+           P2_2 = V2 + V4) %>% 
+    select(ind, grp, pos, pos2, P1_1, P1_2, P2_1, P2_2) %>% 
+    gather(allele, prob, P1_1, P1_2, P2_1, P2_2) %>% 
+    mutate(homolog = factor(if_else(allele %in% c("P1_1","P1_2"), "P1", "P2"), levels = c("P2","P1")),
+           allele = factor(allele, levels = c("P2_2", "P2_1", "P1_2", "P1_1")))
+  
+  p <- ggplot(probs, aes(x = pos, col = allele, alpha = prob)) + ggtitle(main) +
+    facet_grid(grp ~ ind,switch = "y") +
+    scale_alpha_continuous(range = c(0,1))
+  
+  if(is.null(col)) p <- p + scale_color_brewer(palette="Set1")
+  else p <- p + scale_color_manual(values = rev(col))
+  
   if(position == "stack"){
-    p <- p + geom_line(aes(y = homolog),size = 5, show.legend = F)
+    if(type %in% c("line", "both")) p <- p + geom_line(aes(x = pos2, y = homolog), size = ifelse(type == "line", 5, 2.5))
+    if(type %in% c("point", "both")) p <- p + geom_point(aes(y = homolog), size = 5, na.rm = T)
   } 
   if(position == "split"){
-    p <- p + geom_line(aes(y = allele),size = 5, show.legend = F)
+    if(type %in% c("line", "both")) p <- p + geom_line(aes(x = pos2, y = allele), size = ifelse(type == "line", 5, 2.5))
+    if(type %in% c("point", "both"))  p <- p + geom_point(aes(y = allele), size = 5, na.rm = T)
   } 
-  p
+  return(p)
 }
+
+#if(phase = "CC"){}
+
+#if(phase = "CR"){
+#  1 = 2
+#  2 = 1
+#  3 = 4
+#  4 = 3
+#}
+#if(phase = "RC"){
+#  1 = 3
+#  2 = 4
+#  3 = 1
+#  4 = 2
+#}
+#if(phase = "RR"){
+#  1 = 4
+#  2 = 3
+#  3 = 2
+#  4 = 1
+#}
+
+
