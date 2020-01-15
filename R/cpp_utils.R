@@ -108,7 +108,7 @@ est_map_hmm_f2<-function(geno, rf.vec=NULL, verbose=TRUE, tol=1e-6)
              as.numeric(verbose),
              as.numeric(tol),
              PACKAGE = "onemap" )
-    names(r)<-c("rf", "loglike")
+    names(r)<-c("rf", "loglike", "probs")
     return(r)
 }
 
@@ -125,7 +125,7 @@ est_map_hmm_bc<-function(geno, rf.vec=NULL, verbose=TRUE, tol=1e-6)
              as.numeric(verbose),
              as.numeric(tol),
              PACKAGE = "onemap" )
-    names(r)<-c("rf", "loglike")
+    names(r)<-c("rf", "loglike", "probs")
     return(r)
 }
 

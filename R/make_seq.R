@@ -199,6 +199,7 @@ make_seq <-
                seq.phases <- input.obj$ord$seq.phases
                seq.rf <- input.obj$ord$seq.rf
                seq.like <- input.obj$ord$seq.like
+               probs <- input.obj$probs2
              }
              else {
                ## order with all markers
@@ -206,6 +207,7 @@ make_seq <-
                seq.phases <- input.obj$ord.all$seq.phases
                seq.rf <- input.obj$ord.all$seq.rf
                seq.like <- input.obj$ord.all$seq.like
+               probs <- input.obj$probs3
              }
              twopt <- input.obj$twopt
            }
@@ -217,9 +219,14 @@ make_seq <-
     if (!is(input.obj, "onemap")) {
         data.name <- input.obj$data.name
     }
-
+    
+    if(class(input.obj)[1] == "order"){
     structure(list(seq.num=seq.num, seq.phases=seq.phases, seq.rf=seq.rf, seq.like=seq.like,
-                   data.name=data.name, twopt=twopt), class = "sequence")
+                   data.name=data.name, probs = probs, twopt=twopt), class = "sequence")
+    } else {
+      structure(list(seq.num=seq.num, seq.phases=seq.phases, seq.rf=seq.rf, seq.like=seq.like,
+                     data.name=data.name, twopt=twopt), class = "sequence")
+    }
   }
 
 # print method for object class 'sequence'
