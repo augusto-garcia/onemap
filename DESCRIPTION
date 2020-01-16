@@ -32,9 +32,10 @@ Imports: ggplot2 (>= 2.2.1),
         utils,
         grDevices,
         MDSMap,
-	doParallel,
-	updog,
-	polyRAD
+	      doParallel,
+	      updog,
+	      polyRAD,
+	      tidyr
 Suggests: qtl (>= 1.36-6), 
           knitr (>= 1.10), 
           rmarkdown, 
@@ -50,5 +51,5 @@ Repository: CRAN
 Packaged: 2017-10-18 22:25:43 UTC; cris
 NeedsCompilation: yes
 Date/Publication: 2017-10-18 22:48:07 UTC
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 biocViews:

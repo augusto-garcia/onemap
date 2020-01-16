@@ -121,9 +121,13 @@ RcppExport SEXP est_hmm_out(SEXP geno_R, SEXP error_R, SEXP type_R, SEXP phase_R
             else s += gamma(v,v2);
           }
         }
+        if(s==0) s = 0.000001; // avoiding NaN
         for(v=0; v<n_gen; v++) {
           for(v2=0; v2<n_gen; v2++) {
             rf(j) += nrec_out(v+1, v2+1, phase(j)) * gamma(v,v2)/s;
+            if(ISNAN(rf(j))) {
+              stop("Can not be estimated\n");
+            }
           }
         }
       }

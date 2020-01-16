@@ -75,7 +75,7 @@ globalVariables(c("mkt.wrg"))
 ##'     names(mapmaker_example_f2)
 ##'   }
 ##'@export
-read_mapmaker<-function (dir=NULL, file=NULL)
+read_mapmaker<-function (file=NULL, dir=NULL)
 {
     ## create file name
     if (is.null(file))
@@ -307,14 +307,14 @@ read_mapmaker<-function (dir=NULL, file=NULL)
             cat("\t",formatC(paste(colnames(pheno)[i],":",sep=""),width=max(nchar(paste(colnames(pheno),":",sep="")))), miss.value.pheno[i], "\n")
         }
     }
-    error <- matrix(rep(0.00001, n.mar*n.ind), nrow = n.ind, ncol = n.mar)
-    colnames(error) <- colnames(geno)
-    rownames(error) <- rownames(geno)
     
-    structure(list(geno = geno, n.ind = n.ind, n.mar = n.mar,
-                   segr.type = segr.type, segr.type.num=segr.type.num,
-		   error=error,
-                   input=file, n.phe=n.phe, pheno = pheno),  class = cl)
+    onemap.obj <- list(geno = geno, n.ind = n.ind, n.mar = n.mar,
+                       segr.type = segr.type, segr.type.num=segr.type.num,
+                       input=file, n.phe=n.phe, pheno = pheno)
+    class(onemap.obj) <- cl
+    new.onemap.obj <- create_probs(onemap.obj, global_error = 10^-5)
+    
+    structure(new.onemap.obj)
 }
 
 ## end of file

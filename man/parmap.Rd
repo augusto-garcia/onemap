@@ -4,8 +4,14 @@
 \alias{parmap}
 \title{A parallelized version of map function}
 \usage{
-parmap(input.seq = NULL, cores = 3, overlap = 4, tol = 1e-04,
-  avoid_link_errors = TRUE, export_diff = F)
+parmap(
+  input.seq = NULL,
+  cores = 3,
+  overlap = 4,
+  tol = 1e-04,
+  avoid_link_errors = TRUE,
+  export_diff = F
+)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}

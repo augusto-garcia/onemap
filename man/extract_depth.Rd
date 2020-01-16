@@ -4,9 +4,16 @@
 \alias{extract_depth}
 \title{Extract allele counts of progeny and parents of vcf file}
 \usage{
-extract_depth(vcfR.object = NULL, onemap.object = NULL,
-  vcf.par = c("GQ", "AD", "DPR"), parent1 = "P1", parent2 = "P2",
-  f1 = "F1", mean_phred = 20, recovering = FALSE)
+extract_depth(
+  vcfR.object = NULL,
+  onemap.object = NULL,
+  vcf.par = c("GQ", "AD", "DPR"),
+  parent1 = "P1",
+  parent2 = "P2",
+  f1 = "F1",
+  mean_phred = 20,
+  recovering = FALSE
+)
 }
 \arguments{
 \item{vcfR.object}{object output from vcfR package}

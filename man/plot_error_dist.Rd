@@ -4,8 +4,13 @@
 \alias{plot_error_dist}
 \title{Plot a barplot with error probabilities values}
 \usage{
-plot_error_dist(onemap.obj = NULL, mk.type = TRUE, select.ind = NULL,
-  select.mk = NULL, n.int = NULL)
+plot_error_dist(
+  onemap.obj = NULL,
+  mk.type = TRUE,
+  select.ind = NULL,
+  select.mk = NULL,
+  n.int = NULL
+)
 }
 \arguments{
 \item{onemap.obj}{an object of class \code{onemap} coming from \code{read_onemap}, 

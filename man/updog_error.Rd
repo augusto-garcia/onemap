@@ -4,10 +4,20 @@
 \alias{updog_error}
 \title{OneMap interface with updog package}
 \usage{
-updog_error(vcfR.object = NULL, onemap.object = NULL,
-  vcf.par = c("AD", "DPR"), parent1 = "P1", parent2 = "P2",
-  f1 = NULL, recovering = FALSE, mean_phred = 20, cores = 2,
-  depths = NULL)
+updog_error(
+  vcfR.object = NULL,
+  onemap.object = NULL,
+  vcf.par = c("AD", "DPR"),
+  parent1 = "P1",
+  parent2 = "P2",
+  f1 = NULL,
+  recovering = FALSE,
+  mean_phred = 20,
+  cores = 2,
+  depths = NULL,
+  use_probs = TRUE,
+  global_error = 1
+)
 }
 \arguments{
 \item{vcfR.object}{object output of the vcfR package}

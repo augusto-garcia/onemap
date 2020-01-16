@@ -4,10 +4,19 @@
 \alias{mds_onemap}
 \title{OneMap interface with MDSMap package with possibilitie of multipoint distances estimation}
 \usage{
-mds_onemap(input.seq, out.file = "out.file",
-  mds.graph.file = "NULL.pdf", p = NULL, n = NULL, ispc = TRUE,
-  displaytext = FALSE, weightfn = "lod2", mapfn = "haldane",
-  hmm = TRUE, rm_unlinked = TRUE)
+mds_onemap(
+  input.seq,
+  out.file = "out.file",
+  mds.graph.file = "NULL.pdf",
+  p = NULL,
+  n = NULL,
+  ispc = TRUE,
+  displaytext = FALSE,
+  weightfn = "lod2",
+  mapfn = "haldane",
+  hmm = TRUE,
+  rm_unlinked = TRUE
+)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}}

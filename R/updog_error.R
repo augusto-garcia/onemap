@@ -40,7 +40,9 @@ updog_error <- function(vcfR.object=NULL,
                         f1=NULL,
                         recovering = FALSE,
                         mean_phred = 20, cores = 2,
-                        depths = NULL){
+                        depths = NULL,
+                        use_probs = TRUE,
+                        global_error=1){
   
   if(is.null(depths)){
     depth_matrix <- extract_depth(vcfR.object=vcfR.object,
@@ -84,9 +86,18 @@ updog_error <- function(vcfR.object=NULL,
       
     }
     
+    if(recovering==FALSE){
+      palt <- palt[which(rownames(palt) %in% colnames(onemap.object$geno)),]
+      pref <- pref[which(rownames(pref) %in% colnames(onemap.object$geno)),]
+      psize <- psize[which(rownames(psize) %in% colnames(onemap.object$geno)),]
+      oalt <- oalt[which(rownames(oalt) %in% colnames(onemap.object$geno)),]
+      oref <- oref[which(rownames(oref) %in% colnames(onemap.object$geno)),]
+      osize <- osize[which(rownames(osize) %in% colnames(onemap.object$geno)),]
+    }
+    
     depth_matrix <- list("palt"=palt, "pref"=pref, "psize"=psize, 
                          "oalt"=as.matrix(oalt), "oref"=as.matrix(oref), "osize"=as.matrix(osize), 
-                         n.mks = dim(depths[[1]])[1], n.ind = dim(oalt)[2],
+                         n.mks = dim(oalt)[1], n.ind = dim(oalt)[2],
                          inds = colnames(oalt), mks = rownames(oalt),
                          CHROM = sapply(strsplit(rownames(oalt), split="_"), "[",1),
                          POS = sapply(strsplit(rownames(oalt), split="_"), "[",2),
@@ -135,7 +146,7 @@ updog_error <- function(vcfR.object=NULL,
   osize[idx] <- NA
   oref[idx] <- NA
   
-  geno_matrix <- matrix(rep(NA,dim(osize)[2]*dim(osize)[1]),nrow=dim(osize)[1])
+  geno_matrix <- maxpostprob <- matrix(rep(NA,dim(osize)[2]*dim(osize)[1]),nrow=dim(osize)[1])
   P1 <- P2 <- rep(NA, n.mks)
   if(class(onemap.object)[2] == "f2"){
     cl <- parallel::makeCluster(cores)
@@ -175,10 +186,17 @@ updog_error <- function(vcfR.object=NULL,
     P1 <- unlist(sapply(sapply(gene_est, "[", 8), "[", 2))
   }
   
-  for(i in 1:n.mks)
-    geno_matrix[i,] <- lapply(gene_est, "[[", 9)[[i]]
+  
+  temp1 <- lapply(gene_est, "[[", 9)
+  temp2 <- lapply(gene_est, "[[", 10)
+
+  for(i in 1:n.mks){
+    geno_matrix[i,] <- temp1[[i]]
+    maxpostprob[i,] <- temp2[[i]]
+  }
   
   postmat <- lapply(gene_est, "[", 6)
+  
   genotypes_probs <- postmat[[1]]$postmat
   for(i in 2:length(postmat)) # Order: mk 1 1 1 ind 1 2 3
     genotypes_probs <- rbind(genotypes_probs, postmat[[i]]$postmat)
@@ -193,6 +211,7 @@ updog_error <- function(vcfR.object=NULL,
     if(length(rm.mk) > 0){
       cat("markers", length(mks[rm.mk]), "were reestimated as non-informative and removed of analysis \n")
       geno_matrix <- geno_matrix[-rm.mk,]
+      maxpostprob <- maxpostprob[-rm.mk,]
       P1 <- P1[-rm.mk]
       P2 <- P2[-rm.mk]
       n.mks <- n.mks - length(rm.mk)
@@ -239,6 +258,7 @@ updog_error <- function(vcfR.object=NULL,
     if(length(rm.mk) > 0){
       cat("markers", length(mks[rm.mk]), "were estimated as non-informative and removed of analysis \n")
       geno_matrix <- geno_matrix[-rm.mk,]
+      maxpostprob <- maxpostprob[-rm.mk,]
       P1 <- P1[-rm.mk]
       P2 <- P2[-rm.mk]
       n.mks <- n.mks - length(rm.mk)
@@ -290,9 +310,10 @@ n")
     cat("This approach changed", (sum(conv_geno != onemap.object$geno)/length(onemap.object$geno))*100, "% of the genotypes\n")
   }
   
-  cat("New onemap object contains", length(mks), "markers")
-  colnames(conv_geno)  <- mks
-  inds <- rownames(conv_geno)  <- rownames(onemap.object$geno)
+  cat("New onemap object contains", length(mks), "markers\n")
+  maxpostprob <- t(1- maxpostprob)
+  colnames(conv_geno)  <- colnames(maxpostprob) <- mks
+  inds <- rownames(conv_geno)  <- rownames(maxpostprob) <- rownames(onemap.object$geno)
   
   onemap_updog$geno <- conv_geno
   onemap_updog$n.ind <- length(inds)
@@ -300,8 +321,12 @@ n")
   onemap_updog$segr.type.num <- segr.type.num
   onemap_updog$segr.type <- segr.type
   
-  onemap_updog.new <- create_probs(onemap.obj = onemap_updog, genotypes_probs = genotypes_probs)
-  
+  if(use_probs){
+    onemap_updog.new <- create_probs(onemap.obj = onemap_updog, genotypes_probs = genotypes_probs)
+  } else {
+    maxpostprob <- maxpostprob*global_error
+    onemap_updog.new <- create_probs(onemap.obj = onemap_updog, genotypes_errors = maxpostprob)
+  }
   structure(onemap_updog.new)
 }
 
@@ -341,14 +366,14 @@ plot_error_dist <- function(onemap.obj = NULL, mk.type = TRUE,
   if(!is.null(select.ind)){
     idx <- which(as.character(M$Var1) %in% select.ind)
     if(length(idx)==0){
-      stop("This individual does not exist in the given onemap object")
+      stop("This individual does not exist in the given onemap object\n")
     } else{ M <- M[idx,] }
   }
   
   if(!is.null(select.mk)){
     idx <- which(as.character(M$Var2) %in% select.mk)
     if(length(idx)==0){
-      stop("This marker does not exist in the given onemap object")
+      stop("This marker does not exist in the given onemap object\n")
     }
     M <- M[idx,]
   }
@@ -358,7 +383,7 @@ plot_error_dist <- function(onemap.obj = NULL, mk.type = TRUE,
       breaks <- pretty(range(M$value), n = nclass.FD(M$value), min.n = 1)
       binwidth <- breaks[2]-breaks[1]
     } else {
-      stop("Choose a n.int value for your graphic")
+      stop("Choose a n.int value for your graphic\n")
     }
   } else {
     breaks <- pretty(range(M$value), n = n.int, min.n = 1)

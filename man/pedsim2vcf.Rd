@@ -4,12 +4,26 @@
 \alias{pedsim2vcf}
 \title{Function to simulate depths and to convert PedigreeSim file to vcf file}
 \usage{
-pedsim2vcf(inputfile = NULL, map.file = NULL, chrom.file = NULL,
-  out.file = "out.pedsim2vcf.txt", miss.perc = 0, counts = TRUE,
-  mean.depth = 20, p.mean.depth = 20, disper.par = 2, chr.mb = 10,
-  method = c("updog", "neg.binom", "poisson"), mean.phred = 20,
-  bias = 0, od = 0, pos = NULL, haplo.ref = NULL, chr = NULL,
-  phase = FALSE)
+pedsim2vcf(
+  inputfile = NULL,
+  map.file = NULL,
+  chrom.file = NULL,
+  out.file = "out.pedsim2vcf.txt",
+  miss.perc = 0,
+  counts = TRUE,
+  mean.depth = 20,
+  p.mean.depth = 20,
+  disper.par = 2,
+  chr.mb = 10,
+  method = c("updog", "neg.binom", "poisson"),
+  mean.phred = 20,
+  bias = 0,
+  od = 0,
+  pos = NULL,
+  haplo.ref = NULL,
+  chr = NULL,
+  phase = FALSE
+)
 }
 \arguments{
 \item{inputfile}{file .dat output from PedigreeSim software}
