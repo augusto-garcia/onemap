@@ -5,7 +5,7 @@
 \title{Draw Genotypes}
 \usage{
 draw_geno(..., ind, most.likely = FALSE, col = NULL,
-  position = "stack", type = "both", group.names = NULL,
+  position = "stack", show.markers = TRUE, group.names = NULL,
   main = "Genotypes")
 }
 \arguments{
@@ -19,7 +19,7 @@ draw_geno(..., ind, most.likely = FALSE, col = NULL,
 
 \item{position}{"split" or "stack"; if "split" (default) the parents' homologous are plotted separately. if "stack" the parents' homologous are plotted together.}
 
-\item{type}{"point", "line" or "both".}
+\item{show.markers}{logical; if  \code{TRUE}, the markers (default) are plotted.}
 
 \item{group.names}{Names of the groups.}
 
