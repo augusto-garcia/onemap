@@ -12,7 +12,7 @@
 ##' @param most.likely logical; if  \code{TRUE}, the most likely genotype is plotted; if FALSE (default) the genotype probability is plotted.
 ##' @param col Color of parentes' homologous.
 ##' @param position "split" or "stack"; if "split" (default) the parents' homologous are plotted separately. if "stack" the parents' homologous are plotted together.
-##' @param type "point", "line" or "both".
+##' @param show.markers logical; if  \code{TRUE}, the markers (default) are plotted.
 ##' @param group.names Names of the groups.
 ##' @param main An overall title for the plot; default is \code{NULL}.
 ##'
@@ -43,7 +43,7 @@
 ##' }
 ##'@export
 
-draw_geno <- function(..., ind, most.likely = FALSE, col = NULL, position = "stack", type = "both", group.names = NULL, main = "Genotypes"){
+draw_geno <- function(..., ind, most.likely = FALSE, col = NULL, position = "stack", show.markers = TRUE, group.names = NULL, main = "Genotypes"){
   #input map
   input <- list(...)
   if(length(input) == 0) stop("argument '...' missing, with no default")
@@ -54,19 +54,32 @@ draw_geno <- function(..., ind, most.likely = FALSE, col = NULL, position = "sta
   n.mar <- sapply(input.map, function(x) length(x$seq.num))
   n.ind <- sapply(input.map, function(x) ncol(x$probs))/n.mar
   ind.select <- ind
+  phase <- list('1' = c(1,2,3,4),
+                '2' = c(2,1,4,3),
+                '3' = c(3,4,1,2),
+                "4" = c(4,3,2,1))
+  
+  seq.phase <- lapply(input.map, function(x) c(1,x$seq.phases))
   
   probs <- lapply(1:length(input.map), function(x) cbind(ind = rep(1:n.ind[x], each = n.mar[x]),
                                                          grp = group.names[x],
                                                          marker = input.map[[x]]$seq.num,
                                                          pos = c(0,cumsum(kosambi(input.map[[x]]$seq.rf))),
                                                          as.data.frame(t(input.map[[x]]$probs))))
-  probs <- do.call(rbind, probs)
-
+  probs <- lapply(probs, function(x) split.data.frame(x, x$ind)[ind])
+  
+  for(g in seq_along(input.map)){
+    for(i in seq_along(ind)){
+      for(m in seq(n.mar[g])){
+        probs[[g]][[i]][m:n.mar[g],5:8] <- probs[[g]][[i]][m:n.mar[g],phase[[seq.phase[[g]][m]]]+4]
+      }
+    }
+  }
+  probs <- do.call(rbind,lapply(probs, function(x) do.call(rbind, x)))
   if(most.likely){
-    probs[,5:8] <- t(apply(probs[,5:8], 1, function(x) as.numeric(x == max(x))))
+    probs[,5:8] <- t(apply(probs[,5:8], 1, function(x) as.numeric(x == max(x))/sum(x == max(x))))
   }
   probs <- probs %>%
-    filter(ind %in% ind.select) %>% 
     group_by(ind, grp) %>%
     do(rbind(.,.[nrow(.),])) %>% 
     do(mutate(.,
@@ -83,18 +96,19 @@ draw_geno <- function(..., ind, most.likely = FALSE, col = NULL, position = "sta
   
   p <- ggplot(probs, aes(x = pos, col = allele, alpha = prob)) + ggtitle(main) +
     facet_grid(grp ~ ind,switch = "y") +
-    scale_alpha_continuous(range = c(0,1))
+    scale_alpha_continuous(range = c(0,1)) +
+    guides(fill = guide_legend(reverse = TRUE))
   
   if(is.null(col)) p <- p + scale_color_brewer(palette="Set1")
   else p <- p + scale_color_manual(values = rev(col))
   
   if(position == "stack"){
-    if(type %in% c("line", "both")) p <- p + geom_line(aes(x = pos2, y = homolog), size = ifelse(type == "line", 5, 2.5))
-    if(type %in% c("point", "both")) p <- p + geom_point(aes(y = homolog), size = 5, na.rm = T)
+    p <- p + geom_line(aes(x = pos2, y = homolog), size = ifelse(show.markers, 4, 5))
+    if(show.markers) p <- p + geom_point(aes(y = homolog), size = 5, stroke = 2, na.rm = T, shape = "|")
   } 
   if(position == "split"){
-    if(type %in% c("line", "both")) p <- p + geom_line(aes(x = pos2, y = allele), size = ifelse(type == "line", 5, 2.5))
-    if(type %in% c("point", "both"))  p <- p + geom_point(aes(y = allele), size = 5, na.rm = T)
+    p <- p + geom_line(aes(x = pos2, y = allele), size = ifelse(show.markers, 4, 5))
+    if(show.markers) p <- p + geom_point(aes(y = allele), size = 5, stroke = 2, na.rm = T, shape = "|")
   } 
   return(p)
 }
