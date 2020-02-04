@@ -4,8 +4,7 @@
 \alias{select_segreg}
 \title{Show markers with/without segregation distortion}
 \usage{
-select_segreg(x, distorted = FALSE, numbers = FALSE,
-  threshold = NULL)
+select_segreg(x, distorted = FALSE, numbers = FALSE, threshold = NULL)
 }
 \arguments{
 \item{x}{an object of class onemap_segreg_test}

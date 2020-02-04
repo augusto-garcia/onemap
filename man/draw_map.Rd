@@ -4,8 +4,14 @@
 \alias{draw_map}
 \title{Draw a genetic map}
 \usage{
-draw_map(map.list, horizontal = FALSE, names = FALSE, grid = FALSE,
-  cex.mrk = 1, cex.grp = 0.75)
+draw_map(
+  map.list,
+  horizontal = FALSE,
+  names = FALSE,
+  grid = FALSE,
+  cex.mrk = 1,
+  cex.grp = 0.75
+)
 }
 \arguments{
 \item{map.list}{a map, i.e. an object of class \code{sequence} with a

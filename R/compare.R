@@ -321,11 +321,11 @@ compare_inbred_bc<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
                                       rf.vec=rf.temp,
                                       verbose=FALSE,
                                       tol=tol)
-            if(class(get(input.seq$data.name, pos=1))[2] == "riself" ||
-               class(get(input.seq$data.name, pos=1))[2] == "risib")
-               final.map$rf<-adjust_rf_ril(final.map$rf,
-                                           type=class(get(input.seq$data.name, pos=1))[2],
-                                           expand = FALSE)
+            if(is(get(input.seq$data.name, pos=1), "riself") ||
+               is(get(input.seq$data.name, pos=1), "risib"))
+              final.map$rf<-adjust_rf_ril(final.map$rf,
+                                                   type=class(get(input.seq$data.name, pos=1))[2],
+                                                   expand = FALSE)
             best.ord[(n.best+1),] <- all.ord[i,]
             best.ord.rf[(n.best+1),] <- final.map$rf
             best.ord.like[(n.best+1)] <- final.map$loglike
