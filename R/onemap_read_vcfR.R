@@ -65,7 +65,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   if (is.null(parent1) || is.null(parent2)) {
     stop("You must specify samples as parents 1 and 2.")
   }
-  if(class(vcfR.object)!="vcfR"){
+  if(!is(vcfR.object,"vcfR")){
     stop("You must specify one vcfR object.")
   }
   
@@ -360,7 +360,7 @@ write_onemap_raw <- function(onemap.obj=NULL,
   
   geno.mat <- onemap.obj$geno
   
-  if(class(onemap.obj)[2] == "outcross"){
+  if(is(onemap.obj, "outcross")){
     
     geno.mat[which(geno.mat == 0)] <- "-"
     
@@ -413,7 +413,7 @@ write_onemap_raw <- function(onemap.obj=NULL,
     geno.mat[,idx][which(geno.mat[,idx]== 1)] <- "a"
     geno.mat[,idx][which(geno.mat[,idx]== 2)] <- "o"
   }
-    if(class(onemap.obj)[2] == "f2" | class(onemap.obj)[2] == "backcross"){
+    if(is(onemap.obj, c("f2","backcross"))){
 
       geno.mat[which(geno.mat == 0)] <- "-"
       
@@ -430,7 +430,7 @@ write_onemap_raw <- function(onemap.obj=NULL,
       geno.mat[,idx][which(geno.mat[,idx]== 1)] <- "a"
       geno.mat[,idx][which(geno.mat[,idx]== 5)] <- "c"
     }
-    if(class(onemap.obj)[2] == "riself" || class(onemap.obj)[2] == "risib"){
+    if(is(onemap.obj, c("riself", "risib"))){
 
       geno.mat[which(geno.mat == 0)] <- "-"
       geno.mat[which(geno.mat == 1)] <- "a"
