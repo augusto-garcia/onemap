@@ -116,7 +116,7 @@ compare<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
 compare_outcross<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
 {
     ## checking for correct objects
-    if(!any(class(input.seq)=="sequence"))
+    if(!is(input.seq,"sequence"))
         stop(sQuote(deparse(substitute(input.seq)))," is not an object of class 'sequence'")
     if(length(input.seq$seq.num) > 5)
         cat("WARNING: this operation may take a VERY long time\n")
@@ -169,7 +169,7 @@ compare_outcross<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
                     rm.ab<-rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=all.ord[i,])
                     Ph.Init <- Ph.Init[rm.ab,]
                     Rf.Init <- Rf.Init[rm.ab,]
-                    if(class(Ph.Init)=="integer"){
+                    if(is(Ph.Init,"integer")){
                         Ph.Init<-matrix(Ph.Init,nrow=1)
                         Rf.Init<-matrix(Rf.Init,nrow=1)
                     }
@@ -231,7 +231,7 @@ compare_outcross<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
                 rm.ab<-rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=all.ord[i,])
                 Ph.Init <- Ph.Init[rm.ab,]
                 Rf.Init <- Rf.Init[rm.ab,]
-                if(class(Ph.Init)=="integer"){
+                if(is(Ph.Init,"integer")){
                     Ph.Init<-matrix(Ph.Init,nrow=1)
                     Rf.Init<-matrix(Rf.Init,nrow=1)
                 }
@@ -279,7 +279,7 @@ compare_outcross<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
 compare_inbred_bc<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE) 
 {
     ## checking for correct objects
-    if(!any(class(input.seq)=="sequence"))
+    if(!is(input.seq,"sequence"))
         stop(sQuote(deparse(substitute(input.seq)))," is not an object of class 'sequence'")
     if(length(input.seq$seq.num) > 5)
         cat("WARNING: this operation may take a VERY long time\n")
@@ -359,7 +359,7 @@ compare_inbred_bc<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
 compare_inbred_f2<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE) 
 {
   ## checking for correct objects
-  if(!any(class(input.seq)=="sequence"))
+  if(!is(input.seq,"sequence"))
     stop(sQuote(deparse(substitute(input.seq)))," is not an object of class 'sequence'")
   if(length(input.seq$seq.num) > 5)
     cat("WARNING: this operation may take a VERY long time\n")

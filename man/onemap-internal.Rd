@@ -33,7 +33,8 @@
 \alias{ripple_seq_inbred}
 \alias{ripple_seq_outcross}
 \alias{ser_ord}
-\alias{try_seq_inbred}
+\alias{try_seq_inbred_f2}
+\alias{try_seq_inbred_bc}
 \alias{try_seq_outcross}
 \alias{print.compare}
 \alias{print.onemap}

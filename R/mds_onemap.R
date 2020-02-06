@@ -65,13 +65,13 @@ mds_onemap <- function(input.seq, out.file= "out.file", mds.graph.file="NULL.pdf
                        displaytext=FALSE, weightfn='lod2', mapfn='haldane', hmm = TRUE, mds.seq=TRUE){
   
   ## checking for correct object
-  if(!("sequence" %in% class(input.seq)))
+  if(!is(input.seq, "sequence"))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   
   
   n_ind <- get(input.seq$data.name)$n.ind
   obj.class <- class(get(input.seq$data.name))
-  if(obj.class[2]=="outcross"){
+  if(is(obj.class,"outcross")){
     mat<-get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1)
   } else {
     mat<-get_mat_rf_in(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1)
