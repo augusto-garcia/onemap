@@ -45,7 +45,7 @@ create_data_bins <- function(input.obj, bins)
   if(!is(input.obj,"onemap"))
     stop(deparse(substitute(input.obj))," is not an object of class 'onemap'")
 
-  if(is(bins, "onemap_bin"))
+  if(!is(bins, "onemap_bin"))
     stop(deparse(substitute(bins))," is not an object of class 'onemap_bin'")
 
   if (input.obj$n.mar<2) stop("there must be at least two markers to proceed with analysis")

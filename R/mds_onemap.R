@@ -70,8 +70,7 @@ mds_onemap <- function(input.seq, out.file= "out.file", mds.graph.file="NULL.pdf
   
   
   n_ind <- get(input.seq$data.name)$n.ind
-  obj.class <- class(get(input.seq$data.name))
-  if(is(obj.class,"outcross")){
+  if(is(get(input.seq$data.name),"outcross")){
     mat<-get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1)
   } else {
     mat<-get_mat_rf_in(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1)
