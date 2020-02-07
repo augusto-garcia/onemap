@@ -140,7 +140,7 @@ try_seq<-function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
 try_seq_inbred_f2 <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
 {
   # checking for correct objects
-  if(!any(class(input.seq)=="sequence"))
+  if(!is(input.seq,"sequence"))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   if(input.seq$seq.rf[1] == -1 ||
      is.null(input.seq$seq.like))
@@ -219,11 +219,11 @@ try_seq_inbred_f2 <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
 }
 
 ## Try to map a marker into every possible position between markers
-## in a given map (for crosses derived from f2 inbred lines)
+## in a given map (for crosses derived from bc and rils inbred lines)
 try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
 {
   # checking for correct objects
-  if(!any(class(input.seq)=="sequence"))
+  if(!is(input.seq,"sequence"))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   if(input.seq$seq.rf[1] == -1 ||
      is.null(input.seq$seq.like))
@@ -320,7 +320,7 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
 try_seq_outcross<- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
 {
     ## checking for correct objects
-    if(!any(class(input.seq)=="sequence"))
+    if(!is(input.seq,"sequence"))
         stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
     if(input.seq$seq.phases[1] == -1 ||
        input.seq$seq.rf[1] == -1 ||
@@ -362,7 +362,7 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
         rm.ab<-rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=c(mrk,input.seq$seq.num))
         Ph.Init <- Ph.Init[rm.ab,]
         Rf.Init <- Rf.Init[rm.ab,]
-        if(class(Ph.Init) == "numeric" || class(Ph.Init) == "integer"){
+        if(is(Ph.Init, "numeric") || is(Ph.Init,"integer")){
             Ph.Init<-matrix(Ph.Init,nrow=1)
             Rf.Init<-matrix(Rf.Init,nrow=1)
         }
@@ -420,7 +420,7 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
             rm.ab<-rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)]))
             Ph.Init <- Ph.Init[rm.ab,]
             Rf.Init <- Rf.Init[rm.ab,]
-            if(class(Ph.Init) == "numeric" || class(Ph.Init) == "integer"){
+            if(is(Ph.Init, "numeric") || is(Ph.Init,"integer")){
                 Ph.Init<-matrix(Ph.Init,nrow=1)
                 Rf.Init<-matrix(Rf.Init,nrow=1)
             }
@@ -465,7 +465,7 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
         rm.ab<-rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=c(input.seq$seq.num,mrk))
         Ph.Init <- Ph.Init[rm.ab,]
         Rf.Init <- Rf.Init[rm.ab,]
-        if(class(Ph.Init) == "numeric" || class(Ph.Init)=="integer"){
+        if(is(Ph.Init, "numeric") || is(Ph.Init,"integer")){
             Ph.Init<-matrix(Ph.Init,nrow=1)
             Rf.Init<-matrix(Rf.Init,nrow=1)
         }
