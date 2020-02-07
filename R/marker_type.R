@@ -61,10 +61,10 @@
 marker_type <-
 function(input.seq) {
   ## checking for correct objects
-  if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+  if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
 
   ## printing marker type
-  if(any(class(get(input.seq$data.name, pos=1))=="outcross")) {
+  if(is(get(input.seq$data.name, pos=1),"outcross")) {
     for(i in 1:length(input.seq$seq.num))
       cat("  Marker", input.seq$seq.num[i], "(", colnames(get(input.seq$twopt)$analysis[[1]])[input.seq$seq.num[i]], ") is of type", get(input.seq$data.name, pos=1)$segr.type[input.seq$seq.num[i]], "\n")
   }
