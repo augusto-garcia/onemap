@@ -8,3 +8,4 @@ copying
 ^vignettes_highres$
 ^\.Rproj\.user$
 Dockerfile
+^README\.md$
