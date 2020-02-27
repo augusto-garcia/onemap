@@ -93,12 +93,13 @@ group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
         {
             if(verbose) cat("\t  group   ", i,"\n\t   ")
             g<-c(g,gt)
-            while(!is.na(g[j])){
+            while(!is.na(g[j+1])){
                 if(verbose)
                     {
                         cat(".")
                         if(j %% 60 == 0) cat("\n\t   ")
-                    }
+                }
+                
                 tp<-check_linkage(i=g[j+1], s=tp$unlk, cl=cl, geno=geno, st=st, max.rf=max.rf, LOD=LOD)
                 gt<-tp$lk
                 g<-c(g,gt)
