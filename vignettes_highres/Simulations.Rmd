@@ -1,0 +1,107 @@
+---
+title: "Simulations"
+date: "`r Sys.Date()`"
+author: "[Statistical Genetics Lab](http://statgen.esalq.usp.br) <br/> Department of Genetics <br/> Luiz de Queiroz College of Agriculture <br/> University of São Paulo"
+output:
+    rmdformats::readthedown:
+      css: readthedownstatgen.css
+---
+
+```{r knitr_init, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+
+opts_knit$set(width=75)
+```
+
+```{r, echo=FALSE, results='hide'}
+library(onemap)
+```
+
+OneMap 3.0 also make a interface with PedigreeSim software to perform simulations. There are three different ways to simulate maps in OneMap:
+
+* Converting PedigreeSim output to OneMap raw data: function `pedsim2raw`
+
+This function just convert the PedigreeSim files to OneMap raw data. The only source of errors are inputated missing data controled by `miss.perc` argument.
+
+* Converting PedigreeSim output to VCF file simulating allele depth with different distributions: function `pedsim2vcf`
+
+Simulating the VCF you can include other sources of errors. The map is simulated in PedigreeSim, and according with each genotype, the choosed statistical distribuition will simulated the reference and alternative alleles counts. The genotypes can be reestimated according with the alleles counts simulated using the genotype callers Updog (function `updog_error`), polyRAD (function `polyRAD_error`) and Supermassa (function `supermassa_error` of [`supermassa4onemap` package](https://github.com/Cristianetaniguti/supermassa4onemap).
+
+* Use a chromossome of the reference genome to simulate SNPs, the bi-parental cross and Illumina reads for each individual: workflow `SimulateReads.wdl`
+
+The workflow `SimulatedReads` is available in [onemap_workflows]() repository in github. It performs the simulation of Illumina reads for outcrossing population, the SNP calling in Freebayes and GATK software, the genotype calling in updog, supermassa and polyRAD, and build genetics maps using every combination in OneMap and gusmap. The workflow is wroten in WDL cromwell worflow system and the parameters of every software implented can be easily changed. All the results can be evaluated in a [shiny app](https://github.com/Cristianetaniguti/onemap_workflows_shiny). See the [workflow tutorial](https://github.com/Cristianetaniguti/onemap_workflows) to perfom this analysis.
+
+
+# Run PedigreeSim
+
+First, download [PedigreeSim java file](https://github.com/PBR/pedigreeSim). It will require java version up to ?? installed. You can run PedigreeSim directly and just use the output files in OneMap or you can use a function named `run_pedsim` that facilitates this procedure.
+
+The function do not provide every possibilities offered by PedigreeSim software. If you want to change any parameter that is not available in the function, please use directly the PedigreeSim software. Here is the [software documentation](https://github.com/PBR/pedigreeSim/tree/master/Manual) for more information.
+
+```{r, eval=FALSE}
+run_pedsim(chromosome = "Chr1", n.marker = 150, tot.size.cm = 100, centromere = 50,
+            n.ind = 200, mk.types = c("B3.7","D1.10", "D2.15"),
+            n.types = rep(50,3), pop = "F1", path.pedsim = "~/Programs/PedigreeSim/",
+            name.mapfile = "mapfile.map", name.founderfile="founderfile.gen",
+            name.chromfile="sim.chrom", name.parfile="sim.par",
+            name.out="sim_out")
+```
+
+The function allows to create F2 and backcross populations from bi-parental cross of inbred lines and segregating F1 population from bi-parental cross of heterozygous parents. You can define it in `pop` argument. You must change the `path.pedsim` to the path where the PedigreeSim.jar is stores in your system. You can also define the number of chromosomes (argument `chromosome`), the number of markers in each chromosome (`n.marker`), the total size of the groups in cM (`tot.size.cm`), the position of centromere (`centromere`), number of individuals in the population (`n.ind`), the marker types (`mk.types`, see the table in session `Creating the data file` of [Outcrossing populations vignette](http://augusto-garcia.github.io/onemap/vignettes_highres/Outcrossing_Populations.html)) and the number of markers of each type (`n.types`). 
+
+We suggest you to open the output files `founderfile`, `chromfile`, `mapfile` and `parfile` to check if they agree with your intentions before proceed to other analysis.
+
+# Simulate OneMap raw data
+
+Once you run PedigreeSim, you should have the output file `genotypes.dat`. To convert this to OneMap raw file, you just need to specify the cross type (`cross`), which ones are the parents (`parent1` and `parent2`) and if you want to include missing genotypes (`miss.perc`).
+
+```{r, eval=F}
+pedsim2raw(genofile = "sim_out_genotypes.dat", cross="outcross", parent1 = "P1", parent2 = "P2", out.file = "sim_out.example1.raw", miss.perc = 0)
+
+onemap.obj <- read_onemap("sim_out.example1.raw")
+```
+
+# Simulate VCF file
+
+The same output file from PedigreeSim, the `genotypes.dat` can be used to simulate a VCF file together with the PedigreeSim `mapfile` and `chrom`. The advantages to simulate a VCF instead of onemap raw file is that VCF is a standard file format and can store a lot of other information included the allele counts, usually in the field `AD` or `DPR`. The `pedsim2vcf` function can also simulate the allele counts using poisson, negative binomial or updog distribuitions (argument `method`). The main paramenters for the distributions are defined with arguments `mean.depth`, that defines the mean allele depth in the progeny, `p.mean.depth` that defines the mean allele depth in the parents, argument `disper.par` defines the dispersion parameter, `mean.phred` defines the mean phred score of the sequencing technology used. The function can also simulate missing data (`miss.perc`). Throught argument `pos` and `chr` you can define vectors with phisical position and chromosome of each marker. With argument `haplo.ref` you define which one of the haplotypes in `genotypes.dat` will the considered the reference. Stablishing `phase` as TRUE, the VCF will have phased genotypes. After allele counts are simulated, the genotypes are reestimated using a binomial distribution.
+
+```{r}
+pedsim2vcf(inputfile = "sim_out_genotypes.dat", 
+           map.file = "mapfile.map", 
+           chrom.file = "sim.chrom", 
+           out.file = "simu.vcf",
+           miss.perc = 0, 
+           counts = TRUE, 
+           mean.depth = 100, 
+           p.mean.depth = 100, 
+           chr.mb = 10, 
+           method = "neg.binom", #updog ta com pau
+           mean.phred = 20)
+
+vcfR.obj <- read.vcfR("simu.vcf")
+onemap.obj <- onemap_read_vcfR(vcfR.object = vcfR.obj, cross = "outcross", parent1 = "P1", parent2 = "P2")
+```
+
+## Reestimate genotypes
+
+If you choose to simulate allele counts in `pedsim2vcf` it is also possible to reestimate the genotypes using this simulated allele counts with other distributions. This will include in your data errors comming from random sampling if considering only poisson or negative binomial distribuitions and/or dispersion, outliers and bias errors if using updog model. Other advantage is that reestimating genotypes with any of this softwares you can obtain genotypes probabilities to be used in the map building instead of only genotypes.
+
+### With updog
+
+
+
+### With polyRAD
+
+### With supermassa
+
+## Example test
+
+
+
+# Simulate Illumina reads
+
+This one is a bit more complex and the its tools is stored in the github repository [onemap_workflows](https://github.com/Cristianetaniguti/onemap_workflows). Please, access [it](https://github.com/Cristianetaniguti/onemap_workflows) to more information.
