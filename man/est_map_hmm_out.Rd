@@ -4,6 +4,7 @@
 \alias{est_map_hmm_out}
 \title{C++ routine for multipoint analysis in outcrossing populations}
 \usage{
+<<<<<<< HEAD
 est_map_hmm_out(
   geno,
   error,
@@ -13,6 +14,9 @@ est_map_hmm_out(
   verbose = TRUE,
   tol = 1e-06
 )
+=======
+est_map_hmm_out(geno, type, phase, rf.vec = NULL, verbose = TRUE, tol = 1e-06)
+>>>>>>> 1d86c0b81792bada3c7665b6477f653e46c1aafc
 }
 \arguments{
 \item{geno}{matrix of genotypes. Rows represent marker and columns

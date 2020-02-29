@@ -12,8 +12,12 @@ rf_graph_table(
   html.file = NULL,
   mrk.axis = "numbers",
   lab.xy = NULL,
+<<<<<<< HEAD
   n.colors = 4,
   display = T
+=======
+  n.colors = 4
+>>>>>>> 1d86c0b81792bada3c7665b6477f653e46c1aafc
 )
 }
 \arguments{

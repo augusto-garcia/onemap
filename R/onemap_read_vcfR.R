@@ -55,76 +55,75 @@
 ##'@export                  
 
 onemap_read_vcfR <- function(vcfR.object=NULL,
-                             cross = c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"),
+			     cross = c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"),
                              parent1 =NULL,
                              parent2 =NULL,
                              f1=NULL){
+  
+  if (is.null(vcfR.object)) {
+    stop("You must specify one vcfR object.")
+  }
+  if (is.null(parent1) || is.null(parent2)) {
+    stop("You must specify samples as parents 1 and 2.")
+  }
+  if(!is(vcfR.object,"vcfR")){
+    stop("You must specify one vcfR object.")
+  }
+  
+  vcf <- vcfR.object
+  n.mk <- dim(vcf@gt)[1]
+  n.ind <- dim(vcf@gt)[2]-1
+  INDS <- dimnames(vcf@gt)[[2]][-1]
+ 
+  MKS <- vcf@fix[,3]
+  if (any(MKS == "." | is.na(MKS))) MKS <- paste0(vcf@fix[,1],"_", vcf@fix[,2])
     
-    if (is.null(vcfR.object)) {
-        stop("You must specify one vcfR object.")
-    }
-    if (is.null(parent1) || is.null(parent2)) {
-        stop("You must specify samples as parents 1 and 2.")
-    }
-    if(class(vcfR.object)!="vcfR"){
-        stop("You must specify one vcfR object.")
-    }
+  # Geno matrix
+  GT_matrix <- matrix(rep(NA,n.ind*n.mk), ncol=n.ind, nrow=n.mk)
+  GT <- which(strsplit(vcf@gt[1,1], split=":")[[1]]=="GT")
+  
+  for(i in 2:(n.ind+1))
+    GT_matrix[,i-1] <- unlist(lapply(strsplit(vcf@gt[,i], split=":"), "[[", GT))
+  
+  
+  # This function doesn't consider phased genotypes
+  if(any(grepl("|", GT_matrix))){
+    GT_matrix[GT_matrix=="1|0"] <- GT_matrix[GT_matrix=="0|1"] <- "0/1"
+    GT_matrix[GT_matrix=="0|0"] <- "0/0"
+    GT_matrix[GT_matrix=="1|1"] <- "1/1"
+  }
+  
+  if(any(GT_matrix == "1/0")){
+    GT_matrix[GT_matrix=="1/0"] <- "0/1"
+  }
+  
+  # Checking marker segregation according with parents
+  P1 <- which(dimnames(vcf@gt)[[2]]==parent1) - 1
+  P2 <- which(dimnames(vcf@gt)[[2]]==parent2) - 1
+  
+  if(length(P1)==0 | length(P2)==0) stop("One or both parents names could not be found in your data")
+  
+  mk.type <- rep(NA, n.mk)
+  if (cross == "outcross"){
+    # Marker types
+    mk.type[which(GT_matrix[,P1] == "0/1" & GT_matrix[,P2] == "0/0")] <- "D1.10.1"
+    mk.type[which(GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "0/1")] <- "D2.15.1"
+    mk.type[which(GT_matrix[,P1] == "0/1" & GT_matrix[,P2] == "1/1")] <- "D1.10.2"
+    mk.type[which(GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "0/1")] <- "D2.15.2"
+    mk.type[which(GT_matrix[,P1] == "0/1" & GT_matrix[,P2] == "0/1")] <- "B3.7"
     
-    vcf <- vcfR.object
-    n.mk <- dim(vcf@gt)[1]
-    n.ind <- dim(vcf@gt)[2]-1
-    INDS <- dimnames(vcf@gt)[[2]][-1]
-    
-    MKS <- vcf@fix[,3]
-    if (any(MKS == "." | is.na(MKS))) MKS <- paste0(vcf@fix[,1],"_", vcf@fix[,2])
-    
-                                        # Geno matrix
-    GT_matrix <- matrix(rep(NA,n.ind*n.mk), ncol=n.ind, nrow=n.mk)
-    GT <- which(strsplit(vcf@gt[1,1], split=":")[[1]]=="GT")
-    
-    for(i in 2:(n.ind+1))
-        GT_matrix[,i-1] <- unlist(lapply(strsplit(vcf@gt[,i], split=":"), "[[", GT))
-    
-    # This function doesn't consider phased genotypes (by now)
-    if(any(grepl("|", GT_matrix))){
-        GT_matrix[GT_matrix=="1|0"] <- GT_matrix[GT_matrix=="0|1"] <- "0/1"
-        GT_matrix[GT_matrix=="0|0"] <- "0/0"
-        GT_matrix[GT_matrix=="1|1"] <- "1/1"
-    }
-    
-    if(any(GT_matrix == "1/0")){
-      GT_matrix[GT_matrix=="1/0"] <- "0/1"
-    }
-    
-                                        # Checking marker segregation according with parents
-    P1 <- which(dimnames(vcf@gt)[[2]]==parent1) - 1
-    P2 <- which(dimnames(vcf@gt)[[2]]==parent2) - 1
-    
-    if(length(P1)==0 | length(P2)==0) stop("One or both parents names could not be found in your data")
-
-    F1 <- which(dimnames(vcf@gt)[[2]]==f1) - 1
-
-    mk.type <- rep(NA, n.mk)
-    if (cross == "outcross"){
-                                        # Marker types
-        mk.type[which(GT_matrix[,P1] == "0/1" & GT_matrix[,P2] == "0/0")] <- "D1.10.1"
-        mk.type[which(GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "0/1")] <- "D2.15.1"
-        mk.type[which(GT_matrix[,P1] == "0/1" & GT_matrix[,P2] == "1/1")] <- "D1.10.2"
-        mk.type[which(GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "0/1")] <- "D2.15.2"
-        mk.type[which(GT_matrix[,P1] == "0/1" & GT_matrix[,P2] == "0/1")] <- "B3.7"
-        
-                                        # Informs to user why markers are being removed
-        idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./.")
-        if (length(idx) > 0)
-            cat(length(MKS[idx]), "Markers were removed of the dataset because one or both of parents have no informed genotypes (are missing data)\n")
-        
-        idx <- which((GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "0/0")|
-                     (GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "1/1") |
-                     (GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "1/1")|
-                     (GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "0/0"))
-        
-        if (length(idx) > 0)
-            cat( length(MKS[idx]), "Markers were removed from the dataset because both of parents are homozygotes, these markers are considered non-informative in outcrossing populations.\n")
+    # Informs to user why markers are being removed
+    idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./.")
+    if (length(idx) > 0)
+      cat(length(MKS[idx]), "Markers were removed of the dataset because one or both of parents have no informed genotypes (are missing data)\n")
+     
+    idx <- which((GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "0/0")|
+                   (GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "1/1") |
+                   (GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "1/1")|
+                   (GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "0/0"))
+      
+    if (length(idx) > 0)
+      cat( length(MKS[idx]), "Markers were removed from the dataset because both of parents are homozygotes, these markers are considered non-informative in outcrossing populations.\n")
         
                                         # Excluding non-informative markers
         rm_mk <- which(is.na(mk.type))
@@ -395,7 +394,7 @@ write_onemap_raw <- function(onemap.obj=NULL,
   
   geno.mat <- onemap.obj$geno
   
-  if(class(onemap.obj)[2] == "outcross"){
+  if(is(onemap.obj, "outcross")){
     
     geno.mat[which(geno.mat == 0)] <- "-"
     
@@ -448,7 +447,7 @@ write_onemap_raw <- function(onemap.obj=NULL,
     geno.mat[,idx][which(geno.mat[,idx]== 1)] <- "a"
     geno.mat[,idx][which(geno.mat[,idx]== 2)] <- "o"
   }
-    if(class(onemap.obj)[2] == "f2" | class(onemap.obj)[2] == "backcross"){
+    if(is(onemap.obj, c("f2","backcross"))){
 
       geno.mat[which(geno.mat == 0)] <- "-"
       
@@ -465,7 +464,7 @@ write_onemap_raw <- function(onemap.obj=NULL,
       geno.mat[,idx][which(geno.mat[,idx]== 1)] <- "a"
       geno.mat[,idx][which(geno.mat[,idx]== 5)] <- "c"
     }
-    if(class(onemap.obj)[2] == "riself" || class(onemap.obj)[2] == "risib"){
+    if(is(onemap.obj, c("riself", "risib"))){
 
       geno.mat[which(geno.mat == 0)] <- "-"
       geno.mat[which(geno.mat == 1)] <- "a"

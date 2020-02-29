@@ -24,7 +24,7 @@ knitr::opts_chunk$set(collapse = TRUE,
 
 ```
 
-```{r, echo=FALSE, results='hide'}
+```{r, echo=FALSE, results='hide', message=FALSE}
 library(onemap)
 ```
 
@@ -32,7 +32,7 @@ The following example is intended to show the usage of `OneMap`
 functions for linkage mapping in outcrossing (non-inbred) populations.
 With basic knowledge of R syntax, one should have no problems using
 it. If you are not familiar with R, we recommend reading the vignette
-[Introduction to R](http://htmlpreview.github.io/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Introduction_R.html).
+[Introduction to R](https://htmlpreview.github.io/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Introduction_R.html).
 
 Hopefully these examples will be clear enough to help any user to
 understand its functionality and start using it. You do not need to be
@@ -986,7 +986,19 @@ ripple_seq(LG1_frame)
 
 No better order was observed. 
 
-As we made for LG2, we can remove some doubtful markers accordinly with the graphic, try to positioned them again and decide if and where we will maintain them.
+Alternatively, you can also use `mds_onemap` function to obtain a first draft for the markers order. The `mds_onemap` function makes a interface between `OneMap` and `MDSMap` package. The ordering approach presented in `MDSMap` provides a faster and efficient way of ordering markers using multi-dimensional scaling. The method also provides diagnostics graphics and parameters to find outliers to help users to filter the dataset. You can find more informations in `MDSMap` [vignette](https://CRAN.R-project.org/package=MDSMap). Here we will show a simple example of how it can be used for ordering our example markers from an outcrossing population.
+
+```{r}
+LG1_mds <- mds_onemap(LG1)
+```
+
+If you only specify the input sequence, mds_onemap will use the default parameters. It will generate MDSMap input file in `out.file` file and the `NULL.pdf` file with the diagnostic graphics in your work directory. Also, the default method used is the principal curves, know more about using `?mds_onemap` and reading the MDSMap [vignette]( https://CRAN.R-project.org/package=MDSMap). By default, we use the OneMap HMM approach to estimate the distances after the MDSMap ordered the markers, but you can have the default output from MDSMap setting `hmm = FALSE`.
+
+```{r}
+rf_graph_table(LG1_mds)
+```
+
+Based on the drafts from `order_seq` or/and `mds_onemap`, we can remove some doubtful markers accordinly with the graphic, try to positioned them again and decide if and where we will maintain them.
 
 ```{r}
 LG1_test_seq <- drop_marker(LG1_frame, c(10,11,28,42))
@@ -1098,6 +1110,8 @@ To order those groups, first we will use `order_seq` function to access a prelim
 ## Genetic mapping of linkage group 1 (with reference genome informations)
 
 ```{r, results='hide'}
+CHR1_frame <- mds_onemap(CHR_mks$sequences$CHR1)
+# or
 CHR1_ord <- order_seq(CHR_mks$sequences$CHR1)
 CHR1_frame <- make_seq(CHR1_ord, "force")
 ```
@@ -1138,6 +1152,8 @@ ripple_seq(CHR1_final)
 ## Genetic mapping of linkage group 2 (with reference genome informations)
 
 ```{r, results='hide'}
+CHR2_frame <- mds_onemap(CHR_mks$sequences$CHR2)
+# or
 CHR2_ord <- order_seq(CHR_mks$sequences$CHR2)
 CHR2_frame <- make_seq(CHR2_ord, "force")
 ```
@@ -1155,6 +1171,8 @@ CHR2_final <- CHR2_frame
 ## Genetic mapping of linkage group 3 (with reference genome informations)
 
 ```{r, results='hide'}
+CHR3_frame <- mds_onemap(CHR_mks$sequences$CHR3)
+# or
 CHR3_ord <- order_seq(CHR_mks$sequences$CHR3)
 CHR3_frame <- make_seq(CHR3_ord, "force")
 ```
@@ -1193,6 +1211,7 @@ Checking for better orders:
 ripple_seq(CHR3_final)
 ```
 
+<<<<<<< HEAD
 <!---
 # Ordering large amount of markers
 
@@ -1255,6 +1274,8 @@ These are simulated data, with five percent of missing data. The correct order w
 
 The group has originally 100 cM, the incorrect order of the markers inflate it.
 --->
+=======
+>>>>>>> 1d86c0b81792bada3c7665b6477f653e46c1aafc
 
 # Drawing the genetic maps
 

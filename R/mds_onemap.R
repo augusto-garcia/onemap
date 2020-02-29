@@ -38,7 +38,7 @@
 #' @details For better description about MDS method, see MDSMap package vignette.
 #' 
 #' @author Cristiane Taniguti, \email{chtaniguti@@usp.br} 
-#' @seealso  \url{http://cran.r-project.org/web/packages/MDSMap/vignettes/MDSMap.pdf}.
+#' @seealso  \url{https://CRAN.R-project.org/package=MDSMap}.
 #'
 #'
 #' @references 
@@ -65,13 +65,11 @@ mds_onemap <- function(input.seq, out.file= "out.file", mds.graph.file="NULL.pdf
                        displaytext=FALSE, weightfn='lod2', mapfn='haldane', hmm = TRUE, rm_unlinked=TRUE){
   
   ## checking for correct object
-  if(!("sequence" %in% class(input.seq)))
+  if(!is(input.seq, "sequence"))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   
-  
   n_ind <- input.seq$data.name$n.ind
-  obj.class <- class(input.seq$data.name)
-  if(obj.class[2]=="outcross"){
+  if(is(input.seq$data.name,"outcross")){
     mat<-get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1)
   } else {
     mat<-get_mat_rf_in(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1)

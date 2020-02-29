@@ -20,8 +20,8 @@
 #fraction/LOD matrix for crosses derived from inbred lines (F2, BC,
 #RILs)
 get_mat_rf_in<- function(input.seq, LOD=FALSE, max.rf=0.5, min.LOD=0) {
-    if(!any(class(input.seq)=="sequence"))
-        stop(deparse(substitute(input.seq))," is not an object of class 'sequnece'")
+    if(!is(input.seq,"sequence"))
+        stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
     if(length(input.seq$seq.num) < 2)
         stop("The sequence must have at least 2 markers")
     n.mrk<-length(input.seq$seq.num)
@@ -62,7 +62,7 @@ get_mat_rf_in<- function(input.seq, LOD=FALSE, max.rf=0.5, min.LOD=0) {
 #fraction/LOD vector for crosses derived from inbred lines (F2, BC,
 #RILs)
 get_vec_rf_in<- function(input.seq, LOD=FALSE, acum=TRUE) {
-    if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequnece'")
+    if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequnece'")
     if(length(input.seq$seq.num) < 2) stop("The sequence must have at least 2 markers")
     mrk.names <- colnames(input.seq$data.name$geno)[input.seq$seq.num]
     r<-numeric(length(input.seq$seq.num)-1)
@@ -86,7 +86,7 @@ get_vec_rf_in<- function(input.seq, LOD=FALSE, acum=TRUE) {
 #For a guiven sequence, this function gets the recombination
 #fraction/LOD matrix for outcrossing
  get_mat_rf_out<- function(input.seq, LOD=FALSE, max.rf=0.5, min.LOD=0) {
-     if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequnece'")
+     if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequnece'")
      if(length(input.seq$seq.num) < 2) stop("The sequence must have at least 2 markers")
      n.mrk<-length(input.seq$seq.num)
      mrk.names <- colnames(input.seq$data.name$geno)[input.seq$seq.num]
@@ -146,8 +146,8 @@ get_vec_rf_in<- function(input.seq, LOD=FALSE, acum=TRUE) {
 #fraction/LOD matrix for outcrossing
 get_vec_rf_out<- function(input.seq, LOD=FALSE, max.rf=0.5, min.LOD=0, acum=TRUE)
 {
-    if(!any(class(input.seq)=="sequence"))
-        stop(deparse(substitute(input.seq))," is not an object of class 'sequnece'")
+    if(!is(input.seq,"sequence"))
+        stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
     if(length(input.seq$seq.num) < 2) stop("The sequence must have at least 2 markers")
     mat<- get_mat_rf_out(input.seq=input.seq, LOD=LOD, max.rf=max.rf, min.LOD=min.LOD)
     mrk.names<-colnames(mat)

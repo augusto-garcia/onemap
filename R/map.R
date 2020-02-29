@@ -75,7 +75,7 @@
 ##' sex-specific differences. \emph{Genetical Research} 79: 85-96
 ##' @keywords utilities
 ##' @examples
-##'
+##' \dontrun{
 ##'   data(onemap_example_out)
 ##'   twopt <- rf_2pts(onemap_example_out)
 ##'
@@ -84,14 +84,14 @@
 ##'
 ##'   markers <- make_seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
 ##'   map(markers)
-##'   
+##'   }
 ##'@import parallel
 ##'
 ##'@export
 map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cores = 1)
 {
   ## checking for correct object
-  if(!("sequence" %in% class(input.seq)))
+  if(!(is(input.seq, "sequence")))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   ##Gathering sequence information
   seq.num<-input.seq$seq.num
@@ -101,7 +101,8 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
   ##Checking for appropriate number of markers
   if(length(seq.num) < 2) stop("The sequence must have at least 2 markers")
   ##For F2, BC and rils
-  if(class(input.seq$data.name)[2] == "f2")
+
+  if(is(input.seq$data.name), "f2")
   {
     final.map<- est_map_hmm_f2(geno=t(input.seq$data.name$geno[,seq.num]),
                                error=input.seq$data.name$error[seq.num + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(seq.num)),],
@@ -116,17 +117,17 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
                           twopt=input.seq$twopt),
                      class = "sequence"))
   }
-  else if(class(input.seq$data.name)[2] == "backcross" ||
-          class(input.seq$data.name)[2] == "riself" ||
-          class(input.seq$data.name)[2] == "risib")
+
+  else if(is(input.seq$data.name, c("backcross", "riself", "risib")))
+>>>>>>> 1d86c0b81792bada3c7665b6477f653e46c1aafc
   {
     final.map<-est_map_hmm_bc(geno=t(input.seq$data.name$geno[,seq.num]),
                               error=input.seq$data.name$error[seq.num + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(seq.num)),],
                               rf.vec=get_vec_rf_in(input.seq),
                               verbose=verbose,
                               tol=tol)
-    if(class(input.seq$data.name)[2] == "riself" ||
-       class(input.seq$data.name)[2] == "risib")
+
+    if(is(input.seq$data.name, c("riself", "risib")))
       final.map$rf<-adjust_rf_ril(final.map$rf,
                                   type=class(input.seq$data.name)[2],
                                   expand = FALSE)
@@ -138,7 +139,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
                           twopt=input.seq$twopt), class = "sequence"))
   }
   
-  if((seq.phases == -1) && (seq.rf == -1) && is.null(seq.like)) {
+  if(all(seq.phases == -1) && all(seq.rf == -1) && all(is.null(seq.like))) {
     ## if only the marker order is provided, without predefined linkage phases,
     ## a search for the best combination of phases is performed and recombination
     ## fractions are estimated

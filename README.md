@@ -46,7 +46,7 @@ automatically installed on your computer.
 `OneMap` can also be installed by downloading the appropriate files
 directly at the CRAN web site and following the instructions given in
 the section `6.3 Installing Packages` of the
-[R Installation and Administration](http://cran.r-project.org/doc/manuals/R-admin.pdf)
+[R Installation and Administration](https://cran.r-project.org/doc/manuals/R-admin.pdf)
 manual.
 
 ## From github (version under development)
@@ -69,15 +69,23 @@ Then, to install `OneMap` from github (this very repo):
 install_github("augusto-garcia/onemap")
 ```
 
+## From docker hub
+
+`OneMap` requires several dependencies that you may not have in your system. To overcome the need of installing all of them, you can use the `OneMap` image in docker hub. Install docker (see more about [here](https://docs.docker.com/get-started/)) and use:
+
+```bash
+docker pull cristaniguti/onemap_git:v2.1.1008
+```
+
 # Tutorials
 
 You can read _OneMap_ tutorials going to the vignettes of the
 installed package, or clicking below. Please, start with the overview,
 that will guide you through other chapters.
 
-1. [Overview](http://augusto-garcia.github.io/onemap/vignettes_highres/Overview.html)
+1. [Overview](https://augusto-garcia.github.io/onemap/vignettes_highres/Overview.html)
 
-2. [Introduction to R](http://augusto-garcia.github.io/onemap/vignettes_highres/Introduction_R.html)
+2. [Introduction to R](https://augusto-garcia.github.io/onemap/vignettes_highres/Introduction_R.html)
 
 3. [How to build a linkage map for inbred-bases populations (F2, RIL and BC)](http://augusto-garcia.github.io/onemap/vignettes_highres/Inbred_Based_Populations.html)
 

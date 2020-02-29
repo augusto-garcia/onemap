@@ -8,8 +8,12 @@ onemap_read_vcfR(
   vcfR.object = NULL,
   cross = c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"),
   parent1 = NULL,
+<<<<<<< HEAD
   parent2 = NULL,
   f1 = NULL
+=======
+  parent2 = NULL
+>>>>>>> 1d86c0b81792bada3c7665b6477f653e46c1aafc
 )
 }
 \arguments{

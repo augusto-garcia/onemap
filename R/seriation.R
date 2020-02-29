@@ -93,13 +93,13 @@
 seriation<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5)
 {
     ## checking for correct object
-    if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is
+    if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is
     not an object of class 'sequence'")
     n.mrk <- length(input.seq$seq.num)
 
     ## create reconmbination fraction matrix
 
-    if(class(input.seq$twopt)[2]=="outcross")
+    if(is(input.seq$twopt,"outcross"))
         r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
     else
         r<-get_mat_rf_in(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)

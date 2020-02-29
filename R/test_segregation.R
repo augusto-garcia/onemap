@@ -89,7 +89,7 @@ test_segregation_of_a_marker <- function(x, marker) {
       qui <- chisq.test(as.vector(c(c1,c2)), p=p.d, correct = FALSE)
       H0 <- "1:1"
     }
-    else if (grepl("A",x$segr.type[marker]) & class(x)[2]=="outcross") {
+    else if (grepl("A",x$segr.type[marker]) & is(x,"outcross")) {
       if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
       if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
       if (is.element(3,x$geno[,marker])) c3 <- count[names(count)==3] else c3 <- 0
@@ -97,20 +97,20 @@ test_segregation_of_a_marker <- function(x, marker) {
       qui <- chisq.test(as.vector(c(c1,c2,c3,c4)), p=p.a, correct = FALSE)
       H0 <- "1:1:1:1"
     }
-    else if (grepl("B",x$segr.type[marker]) & class(x)[2]=="outcross") {
+    else if (grepl("B",x$segr.type[marker]) & is(x,"outcross")) {
       if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
       if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
       if (is.element(3,x$geno[,marker])) c3 <- count[names(count)==3] else c3 <- 0
       qui <- chisq.test(as.vector(c(c1,c2,c3)), p=p.b, correct = FALSE)
       H0 <- "1:2:1"
     }
-    else if (grepl("C",x$segr.type[marker]) & class(x)[2]=="outcross") {
+    else if (grepl("C",x$segr.type[marker]) & is(x,"outcross")) {
       if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
       if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
       qui <- chisq.test(as.vector(c(c1,c2)), p=p.c, correct = FALSE)
       H0 <- "3:1"
     }
-    else if (grepl("D",x$segr.type[marker]) & class(x)[2]=="outcross") {
+    else if (grepl("D",x$segr.type[marker]) & is(x,"outcross")) {
       if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
       if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
       qui <- chisq.test(as.vector(c(c1,c2)), p=p.d, correct = FALSE)
@@ -236,7 +236,7 @@ print.onemap_segreg_test <- function(x,...) {
 ##' # You can store the graphic in an object, then save it.
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' g <- plot(Out.seg)
-##' ggplot2::ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
+##' # ggplot2::ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
 ##' @method plot onemap_segreg_test
 ##' @export
 plot.onemap_segreg_test <- function(x, order=TRUE,...) {
