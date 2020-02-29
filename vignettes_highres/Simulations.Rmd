@@ -45,7 +45,7 @@ The function do not provide every possibilities offered by PedigreeSim software.
 ```{r, eval=FALSE}
 run_pedsim(chromosome = "Chr1", n.marker = 150, tot.size.cm = 100, centromere = 50,
             n.ind = 200, mk.types = c("B3.7","D1.10", "D2.15"),
-            n.types = rep(50,3), pop = "F1", path.pedsim = "~/Programs/PedigreeSim/",
+            n.types = rep(50,3), pop = "F1", path.pedsim = "/home/rstudio/work/",
             name.mapfile = "mapfile.map", name.founderfile="founderfile.gen",
             name.chromfile="sim.chrom", name.parfile="sim.par",
             name.out="sim_out")

@@ -104,9 +104,7 @@ globalVariables(c("LOD.CR", "LOD.RC", "LOD.RR"))
 ##'@export
 
 rf_graph_table <- function(input.seq,
-
-
-			   graph.LOD=FALSE,
+                           graph.LOD=FALSE,
                            main=NULL,
                            inter=FALSE,
                            html.file = NULL,
@@ -116,7 +114,7 @@ rf_graph_table <- function(input.seq,
                            display=T){
   
   ## checking for correct objects
-  if(!any(is(input.seq,"sequence"))
+  if(!any(is(input.seq,"sequence")))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   if(!(mrk.axis=="names" | mrk.axis=="numbers" | mrk.axis=="none"))
     stop("This mrk.axis argument is not defined, choose 'names', 'numbers' or 'none'")
@@ -141,53 +139,11 @@ rf_graph_table <- function(input.seq,
                   }, input.seq$seq.num
     )
     mat<-t(get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
-  }else
-  {
+  } else {
     if(input.seq$seq.rf[1] == -1 || is.null(input.seq$seq.like))
       stop("You must estimate parameters before running 'rf_graph_table' ")
     ## making a list with necessary information
     n.mrk <- length(input.seq$seq.num)
-        LOD <- lapply(input.seq$twopt$analysis,
-                      function(x, w){
-                          m<-matrix(0, length(w), length(w))
-                          for(i in 1:(length(w)-1)){
-                              for(j in (i+1):length(w)){
-                                  z<-sort(c(w[i],w[j]))
-                                  m[j,i]<-m[i,j]<-x[z[1], z[2]]
-                              }
-                          }
-                          return(m)
-                      }, input.seq$seq.num
-                      )
-        mat<-t(get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
-    }else
-    {
-        if(input.seq$seq.rf[1] == -1 || is.null(input.seq$seq.like))
-            stop("You must estimate parameters before running 'rf_graph_table' ")
-        ## making a list with necessary information
-        n.mrk <- length(input.seq$seq.num)
-
-        LOD<-matrix(0, length(input.seq$seq.num), length(input.seq$seq.num))
-        for(i in 1:(length(input.seq$seq.num)-1)){
-            for(j in (i+1):length(input.seq$seq.num)){
-                z<-sort(c(input.seq$seq.num[i],input.seq$seq.num[j]))
-                LOD[j,i]<-LOD[i,j]<-input.seq$twopt$analysis[z[1], z[2]]
-            }
-        }
-        mat<-t(get_mat_rf_in(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
-    }
-
-    ##Scaling the LODs to print them properly
-    ## range.LOD<-range(as.dist(t(mat)), na.rm=TRUE)
-    ## range.rf<-range(as.dist(mat), na.rm=TRUE)
-    mat[row(mat) > col(mat) & mat > 0.5] <- 0.5 ## if there are recombinations greater than 0.5 (for numerical convergence problems), assuming 0.5
-    mat[row(mat) < col(mat)][mat[row(mat) < col(mat)] < 10E-2]<-10E-2
-    diag(mat)<-NA
-
-    ##Write multipoint estimates
-    for (i in 1:(n.mrk-1)){
-        mat[i+1,i] <- input.seq$seq.rf[i]
-    }
     
     LOD<-matrix(0, length(input.seq$seq.num), length(input.seq$seq.num))
     for(i in 1:(length(input.seq$seq.num)-1)){
