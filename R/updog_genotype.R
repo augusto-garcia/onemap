@@ -32,7 +32,7 @@
 #' @import foreach doParallel updog
 #'   
 #' @export
-updog_error <- function(vcfR.object=NULL,
+updog_genotype <- function(vcfR.object=NULL,
                         onemap.object= NULL,
                         vcf.par = c("AD", "DPR"),
                         parent1="P1",
@@ -333,7 +333,7 @@ n")
 ##' Plot a barplot with error probabilities values
 ##' 
 ##' @param onemap.obj an object of class \code{onemap} coming from \code{read_onemap}, 
-##' \code{read_mapmaker}, \code{onemap_read_vcfR}, \code{updog_error} functions
+##' \code{read_mapmaker}, \code{onemap_read_vcfR}, \code{updog_genotype} functions
 ##' 
 ##' @param mk.type a TRUE/FALSE value to define if genotypes will colored by marker type
 ##' 

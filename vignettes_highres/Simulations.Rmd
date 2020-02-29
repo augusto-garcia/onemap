@@ -90,7 +90,13 @@ onemap.obj <- onemap_read_vcfR(vcfR.object = vcfR.obj, cross = "outcross", paren
 
 If you choose to simulate allele counts in `pedsim2vcf` it is also possible to reestimate the genotypes using this simulated allele counts with other distributions. This will include in your data errors comming from random sampling if considering only poisson or negative binomial distribuitions and/or dispersion, outliers and bias errors if using updog model. Other advantage is that reestimating genotypes with any of this softwares you can obtain genotypes probabilities to be used in the map building instead of only genotypes.
 
+[Updog](https://github.com/dcgerard/updog), [polyRAD](https://github.com/lvclark/polyRAD) and [supermassa](https://github.com/guilherme-pereira/vcf2sm) are software designed for genotyping polyploid species. This is a more complex procedure compared with diploid species. These software consider not only the proportion of alleles to define the genotypes, but other aspects as the expected distribuition in the progeny according with parents genotypes. See more about them in respective manuals.
+
 ### With updog
+
+The function `updog_genotype` make interface of OneMap with Updog.
+
+
 
 
 

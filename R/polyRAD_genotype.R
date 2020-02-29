@@ -33,7 +33,7 @@
 #' @import polyRAD 
 #'   
 #' @export
-polyRAD_error <- function(vcf=NULL, 
+polyRAD_genotype <- function(vcf=NULL, 
                           onemap.obj = NULL,
                           parent1=NULL,
                           parent2=NULL,

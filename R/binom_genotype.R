@@ -17,7 +17,7 @@
 #' Sequencing Data When Constructing Genetic Maps Using Biparental Outcrossed Populations.
 #' \emph{Genetics}. ISSN 0016-6731.
 #' @export
-binom_error <- function(vcfR.object=NULL,
+binom_genotype <- function(vcfR.object=NULL,
                         onemap.object= NULL,
                         vcf.par = c("AD", "DPR"),
                         parent1="P1",
