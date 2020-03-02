@@ -33,7 +33,8 @@
 \alias{ripple_seq_inbred}
 \alias{ripple_seq_outcross}
 \alias{ser_ord}
-\alias{try_seq_inbred}
+\alias{try_seq_inbred_f2}
+\alias{try_seq_inbred_bc}
 \alias{try_seq_outcross}
 \alias{print.compare}
 \alias{print.onemap}
@@ -77,7 +78,7 @@ return_geno(segr.type, link.phases)
 ripple_seq_inbred(input.seq, ws, ext.w, LOD, tol)
 ripple_seq_outcross(input.seq, ws, LOD, tol)
 ser_ord(r,i)
-try_seq_inbred(input.seq, mrk, tol, pos, verbose)
+try_seq_inbred_f2(input.seq, mrk, tol, pos, verbose)
 try_seq_outcross(input.seq, mrk, tol, pos, verbose)
 \method{print}{compare}(x, \dots)
 \method{print}{onemap}(x, \dots)

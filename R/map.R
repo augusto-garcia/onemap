@@ -87,7 +87,7 @@
 map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
 {
   ## checking for correct object
-  if(!("sequence" %in% class(input.seq)))
+  if(!(is(input.seq, "sequence")))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   ##Gathering sequence information
   seq.num<-input.seq$seq.num
@@ -97,7 +97,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
   ##Checking for appropriate number of markers
   if(length(seq.num) < 2) stop("The sequence must have at least 2 markers")
   ##For F2, BC and rils
-  if(class(get(input.seq$data.name, pos=1))[2] == "f2")
+  if(is(get(input.seq$data.name, pos=1), "f2"))
   {
     final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,seq.num]),
                               rf.vec=get_vec_rf_in(input.seq),
@@ -111,16 +111,13 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
                           twopt=input.seq$twopt),
                      class = "sequence"))
   }
-  else if(class(get(input.seq$data.name, pos=1))[2] == "backcross" ||
-          class(get(input.seq$data.name, pos=1))[2] == "riself" ||
-          class(get(input.seq$data.name, pos=1))[2] == "risib")
+  else if(is(get(input.seq$data.name, pos=1), c("backcross", "riself", "risib")))
   {
     final.map<-est_map_hmm_bc(geno=t(get(input.seq$data.name, pos=1)$geno[,seq.num]),
                               rf.vec=get_vec_rf_in(input.seq),
                               verbose=verbose,
                               tol=tol)
-    if(class(get(input.seq$data.name, pos=1))[2] == "riself" ||
-       class(get(input.seq$data.name, pos=1))[2] == "risib")
+    if(is(get(input.seq$data.name, pos=1), c("riself", "risib")))
       final.map$rf<-adjust_rf_ril(final.map$rf,
                                   type=class(get(input.seq$data.name, pos=1))[2],
                                   expand = FALSE)

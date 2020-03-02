@@ -4,8 +4,7 @@
 \alias{make_seq}
 \title{Create a sequence of markers}
 \usage{
-make_seq(input.obj, arg = NULL, phase = NULL, data.name = NULL,
-  twopt = NULL)
+make_seq(input.obj, arg = NULL, phase = NULL, data.name = NULL, twopt = NULL)
 }
 \arguments{
 \item{input.obj}{an object of class \code{onemap}, \code{rf_2pts},

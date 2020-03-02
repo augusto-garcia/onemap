@@ -23,7 +23,7 @@
 ##'@importFrom graphics segments
 ##'@importFrom grDevices bmp dev.off jpeg pdf png postscript tiff
 ##'
-##' @param ... sequence(s). Object(s) of class \code{sequence} with a predefined order, linkage phase, recombination fraction and likelihood. Can be used list(s) of sequences.
+##' @param ... map(s). Object(s) of class \code{sequence} and/or \code{data.frame}. If \code{data.frame}, it must have two columns: column 1: marker id; column 2: position (cM) (\code{numeric}).
 ##' @param tag name(s) of the marker(s) to highlight. If "all", all markers will be highlighted. Default is \code{NULL}.
 ##' @param id logical. If \code{TRUE} (default), shows name(s) of tagged marker(s).
 ##' @param pos logical. If \code{TRUE} (default), shows position(s) of tagged marker(s).
@@ -63,34 +63,45 @@
 ##' }
 ##'@export
 draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL,group.names=NULL,centered=F,y.axis=TRUE,space=NULL,col.group=NULL,col.mark=NULL,col.tag=NULL,output=NULL){
-  #check sequences
-  input<-setNames(list(...),as.list(substitute(list(...)))[-1L])
-  if(length(input)==0) stop("sequence required")
+  #check input
+  input<-list(...)
+  if(length(input)==0) stop("argument '...' missing, with no default")
   map.data<-list()
-  for(i in seq(input)) map.data<-c(map.data,if(lapply(input,class)[i]!="list") input[i] else do.call(c,input[i]))
-  if(F%in%(lapply(map.data,class)=="sequence")) stop(paste("\n'",names(map.data)[lapply(map.data,class)!="sequence"],"' is not an object of class 'sequence'",sep=""))
-  #check data
-  data.name<-vector()
+  for(i in seq(input)) map.data<-c(map.data, if(inherits(input[[i]], "list")) input[[i]] else input[i])
+  if(!all(sapply(map.data, function(x) (is(x, "sequence") || is(x,"data.frame"))))) stop(paste("\nObject '",seq(map.data)[!sapply(map.data, function(x)  (is(x, "sequence") || is(x,"data.frame")))],"' is not an object of class 'sequence' or 'data.frame",sep=""))
+
+  #sequence to data.frame
   for(i in seq_along(map.data)){
-    data.name<-c(data.name,map.data[[i]]$data.name)
+    if(is(map.data[[i]], "sequence")){
+      if(is.character(map.data[[i]]$data.name)){
+        if (!map.data[[i]]$data.name %in% ls(.GlobalEnv)) stop(paste("Object data missing:", map.data[[i]]$data.name))
+        map.data[[i]]$data.name <- get(map.data[[i]]$data.name, envir = .GlobalEnv)
+      }
+      map.data[[i]] <- data.frame(marker=colnames(map.data[[i]]$data.name$geno)[map.data[[i]]$seq.num], pos=c(0,cumsum(kosambi(map.data[[i]]$seq.rf))), chr=i)
+    } else {map.data[[i]] <- cbind(map.data[[i]], chr=i)}
   }
-  data.name<-data.name[!duplicated(data.name)]
-  if(F %in% (data.name%in%ls(envir=.GlobalEnv))) stop(paste("Object(s) data not found:",paste("'",data.name[!data.name%in%ls()],"'",collapse = " ",sep = "")))
-  data<-list()
-  for(i in seq_along(data.name)) data[[i]]<-get(data.name[i],envir =.GlobalEnv)
-  data<-setNames(data,as.list(data.name))
-  
-  dmaps <- list()
-  for(i in seq_along(map.data)) dmaps[[i]] <-data.frame(mark=colnames(data[[map.data[[i]]$data.name]]$geno)[map.data[[i]]$seq.num], pos=c(0,cumsum(kosambi(map.data[[i]]$seq.rf))), chr=i)
-  nchr<-length(dmaps)
-  max.pos<-ceiling(max(do.call("rbind",dmaps)$pos)/10)*10
-  for(i in seq_along(dmaps))dmaps[[i]]$coord<--dmaps[[i]]$pos*100/max.pos
+
+  #check data.frame
+  for(i in seq_along(map.data)){
+    if(ncol(map.data[[i]]) != 3) stop(paste("\n", names(map.data)[i],"has incorrect number of columns."))
+    if(any(duplicated(map.data[[i]][,1]))) stop(paste("\n", names(map.data)[i],"has duplicated marker names."))
+    if(!is.numeric(map.data[[i]][,2])) stop(paste("\n", names(map.data)[i],", position column (2) must be numeric"))
+    colnames(map.data[[i]]) <- c("marker", "pos", "chr")
+    map.data[[i]]$marker <- as.character(map.data[[i]]$marker)
+    map.data[[i]] <- map.data[[i]][order(map.data[[i]]$pos),]
+  }
+
+  nchr<-length(map.data)
+  max.pos<-ceiling(max(do.call("rbind",map.data)$pos)/10)*10
+  for(i in seq_along(map.data))map.data[[i]]$coord<--map.data[[i]]$pos*100/max.pos
   
   if(is.null(main)) main<-""
-  if(is.null(group.names)) group.names<-names(map.data)
+  if(is.null(group.names)) group.names <- seq(map.data)
+  if(is.null(tag)) pos <- id <- F
+  if("all"%in%tag) tag<-unique(unlist(lapply(map.data,function(x) x$marker),use.names = F))
   if(is.null(space)) space<-1+pos+id
   if(centered==T){
-    for(i in seq_along(dmaps)){dmaps[[i]]$coord<-dmaps[[i]]$coord-(100+min(dmaps[[i]]$coord))/2}
+    for(i in seq_along(map.data)){map.data[[i]]$coord<-map.data[[i]]$coord-(100+min(map.data[[i]]$coord))/2}
     y.axis<-F
   }
   if(y.axis==T){
@@ -104,7 +115,7 @@ draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL,grou
   if(is.null(col.mark)) col.mark<-"#cc662f"
   if(is.null(col.tag)) col.tag<-"#003350"
   if(is.null(output)) output<-"map"
-  if("all"%in%tag) tag<-unlist(lapply(data,function(x) colnames(x$geno)))
+  
   
   # Split output
   if(strsplit(output,"")[[1]][length(strsplit(output,"")[[1]])]=="/") output<-paste(output,"map",sep = "")
@@ -153,18 +164,18 @@ draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL,grou
   plot(NA,NA,xlim=c(0,nchr*(1+space)),ylim = c(-100,5),type = "n",axes = F,ylab = yl,main=main)
   text(seq((1+space)/2,(nchr-.5)*(1+space),1+space),5,group.names)
   if(y.axis==T){
-    axis(2,at=seq(0,-100,-10),labels = seq(0,max.pos,max.pos/10))
+    axis(2,at=seq(0,-100, -1000/max.pos),labels = seq(0,max.pos, 10), las = 2)
   }
   #Drawing Group(s)
-  segments(seq((1+space)/2,(nchr-.5)*(1+space),1+space),tapply(do.call("rbind",dmaps)$coord,do.call("rbind",dmaps)$chr,max),
-           seq((1+space)/2,(nchr-.5)*(1+space),1+space),tapply(do.call("rbind",dmaps)$coord,do.call("rbind",dmaps)$chr,min),
+  segments(seq((1+space)/2,(nchr-.5)*(1+space),1+space),tapply(do.call("rbind",map.data)$coord,do.call("rbind",map.data)$chr,max),
+           seq((1+space)/2,(nchr-.5)*(1+space),1+space),tapply(do.call("rbind",map.data)$coord,do.call("rbind",map.data)$chr,min),
            lwd = 20,col = col.group)
-  segments((do.call("rbind",dmaps)$chr-.5)*(1+space)-.25,do.call("rbind",dmaps)$coord,
-           (do.call("rbind",dmaps)$chr-.5)*(1+space)+.25,do.call("rbind",dmaps)$coord,
+  segments((do.call("rbind",map.data)$chr-.5)*(1+space)-.25,do.call("rbind",map.data)$coord,
+           (do.call("rbind",map.data)$chr-.5)*(1+space)+.25,do.call("rbind",map.data)$coord,
            lwd = 2,col = col.mark)
   
   #Labeling
-  tag.data<-do.call("rbind",dmaps)[do.call("rbind",dmaps)$mark%in%tag,]
+  tag.data<-do.call("rbind",map.data)[do.call("rbind",map.data)$marker%in%tag,]
   tag.data$coord2<-tag.data$coord
   tag.data<-split(tag.data,tag.data$chr)
   if(length(tag.data)>0){
@@ -217,7 +228,7 @@ draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL,grou
       segments((tag.data$chr-.5)*(1+space)+.275,tag.data$coord,
                (tag.data$chr-.5)*(1+space)+.5,tag.data$coord2,lwd = .5,col = col.tag)
       text((tag.data$chr-.5)*(1+space)+.4,tag.data$coord2,
-           pos = 4,tag.data$mark,col = col.tag,cex = cex.label)
+           pos = 4,tag.data$marker,col = col.tag,cex = cex.label)
     }
     if(pos==T){
       segments((tag.data$chr-.5)*(1+space)-.275,tag.data$coord,

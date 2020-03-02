@@ -76,3 +76,19 @@
 
 * mds_onemap function
 * Vignette update
+
+# onemap.2.1.2
+
+* Submitted to CRAN
+
+# onemap 2.1.2001
+
+* Adapt compare to rils and backcross
+
+# onemap 2.1.3
+
+* draw_map2 now receives data.frames
+* Changing class functions to is
+* Adapt try_seq to rils and backcross
+* onemap_read_vcfR also accept phased VCF
+* Submitted to CRAN
