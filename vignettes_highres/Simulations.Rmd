@@ -43,15 +43,26 @@ First, download [PedigreeSim java file](https://github.com/PBR/pedigreeSim). It 
 The function do not provide every possibilities offered by PedigreeSim software. If you want to change any parameter that is not available in the function, please use directly the PedigreeSim software. Here is the [software documentation](https://github.com/PBR/pedigreeSim/tree/master/Manual) for more information.
 
 ```{r, eval=FALSE}
+# For outcrossing population
 run_pedsim(chromosome = "Chr1", n.marker = 150, tot.size.cm = 100, centromere = 50,
-            n.ind = 200, mk.types = c("B3.7","D1.10", "D2.15"),
+            n.ind = 200, mk.types = c("B3.7","A1", "D2.15"),
             n.types = rep(50,3), pop = "F1", path.pedsim = "/home/rstudio/work/",
             name.mapfile = "mapfile.map", name.founderfile="founderfile.gen",
             name.chromfile="sim.chrom", name.parfile="sim.par",
             name.out="sim_out")
+
+# For F2 population
+run_pedsim(chromosome = c("Chr1", "Chr2"), n.marker = c(75, 75), 
+           tot.size.cm = c(100,100), centromere = c(50,50),
+            n.ind = 200, mk.types = c("A.H.B","C.A", "D.B"),
+            n.types = rep(50,3), pop = "F2", path.pedsim = "/home/rstudio/work/",
+            name.mapfile = "mapfile.map", name.founderfile="founderfile.gen",
+            name.chromfile="sim.chrom", name.parfile="sim.par",
+            name.out="sim_f2")
+
 ```
 
-The function allows to create F2 and backcross populations from bi-parental cross of inbred lines and segregating F1 population from bi-parental cross of heterozygous parents. You can define it in `pop` argument. You must change the `path.pedsim` to the path where the PedigreeSim.jar is stores in your system. You can also define the number of chromosomes (argument `chromosome`), the number of markers in each chromosome (`n.marker`), the total size of the groups in cM (`tot.size.cm`), the position of centromere (`centromere`), number of individuals in the population (`n.ind`), the marker types (`mk.types`, see the table in session `Creating the data file` of [Outcrossing populations vignette](http://augusto-garcia.github.io/onemap/vignettes_highres/Outcrossing_Populations.html)) and the number of markers of each type (`n.types`). 
+The function allows to create f2 intercross and backcross populations from bi-parental cross of inbred lines and segregating F1 population from bi-parental cross of heterozygous parents. You can define it in `pop` argument. You must change the `path.pedsim` to the path where the PedigreeSim.jar is stores in your system. You can also define the number of chromosomes (argument `chromosome`), the number of markers in each chromosome (`n.marker`), the total size of the groups in cM (`tot.size.cm`), the position of centromere (`centromere`), number of individuals in the population (`n.ind`), the marker types (`mk.types`, see the table in session `Creating the data file` of [Outcrossing populations vignette](http://augusto-garcia.github.io/onemap/vignettes_highres/Outcrossing_Populations.html)) and the number of markers of each type (`n.types`). 
 
 We suggest you to open the output files `founderfile`, `chromfile`, `mapfile` and `parfile` to check if they agree with your intentions before proceed to other analysis.
 
@@ -60,14 +71,24 @@ We suggest you to open the output files `founderfile`, `chromfile`, `mapfile` an
 Once you run PedigreeSim, you should have the output file `genotypes.dat`. To convert this to OneMap raw file, you just need to specify the cross type (`cross`), which ones are the parents (`parent1` and `parent2`) and if you want to include missing genotypes (`miss.perc`).
 
 ```{r, eval=F}
-pedsim2raw(genofile = "sim_out_genotypes.dat", cross="outcross", parent1 = "P1", parent2 = "P2", out.file = "sim_out.example1.raw", miss.perc = 0)
+pedsim2raw(genofile = "sim_out_genotypes.dat", cross="outcross", parent1 = "P1", parent2 = "P2", out.file = "sim_out.example.raw", miss.perc = 0)
 
-onemap.obj <- read_onemap("sim_out.example1.raw")
+onemap.obj <- read_onemap("sim_out.example.raw")
+
+plot(onemap.obj, all = F)
+
+
+pedsim2raw(genofile = "sim_f2_genotypes.dat", cross="f2 intercross", parent1 = "P1", parent2 = "P2", out.file = "sim_f2.example.raw", miss.perc = 0)
+
+onemap.obj <- read_onemap("sim_f2.example.raw")
+
+plot(onemap.obj, all = F)
+
 ```
 
 # Simulate VCF file
 
-The same output file from PedigreeSim, the `genotypes.dat` can be used to simulate a VCF file together with the PedigreeSim `mapfile` and `chrom`. The advantages to simulate a VCF instead of onemap raw file is that VCF is a standard file format and can store a lot of other information included the allele counts, usually in the field `AD` or `DPR`. The `pedsim2vcf` function can also simulate the allele counts using poisson, negative binomial or updog distribuitions (argument `method`). The main paramenters for the distributions are defined with arguments `mean.depth`, that defines the mean allele depth in the progeny, `p.mean.depth` that defines the mean allele depth in the parents, argument `disper.par` defines the dispersion parameter, `mean.phred` defines the mean phred score of the sequencing technology used. The function can also simulate missing data (`miss.perc`). Throught argument `pos` and `chr` you can define vectors with phisical position and chromosome of each marker. With argument `haplo.ref` you define which one of the haplotypes in `genotypes.dat` will the considered the reference. Stablishing `phase` as TRUE, the VCF will have phased genotypes. After allele counts are simulated, the genotypes are reestimated using a binomial distribution.
+The same output file from PedigreeSim, the `genotypes.dat` can be used to simulate a VCF file together with the PedigreeSim `mapfile` and `chrom`. The advantages to simulate a VCF instead of onemap raw file is that VCF is a standard file format and can store a lot of other information included the allele counts, usually in the field `AD` or `DPR`. The `pedsim2vcf` function can  simulate the allele counts using poisson, negative binomial or updog distribuitions (argument `method`). The main paramenters for the distributions are defined with arguments `mean.depth`, that defines the mean allele depth in the progeny, `p.mean.depth` that defines the mean allele depth in the parents, argument `disper.par` defines the dispersion parameter, `mean.phred` defines the mean phred score of the sequencing technology used. The function can also simulate missing data (`miss.perc`). Throught argument `pos` and `chr` you can define vectors with phisical position and chromosome of each marker. With argument `haplo.ref` you define which one of the haplotypes in `genotypes.dat` will the considered the reference. Stablishing `phase` as TRUE, the VCF will have phased genotypes. After allele counts are simulated, the genotypes are reestimated using a binomial distribution. The VCF generated by this function only have one or two FORMAT fields, the GT and AD (if `counts = TRUE`).
 
 ```{r}
 pedsim2vcf(inputfile = "sim_out_genotypes.dat", 
@@ -79,11 +100,21 @@ pedsim2vcf(inputfile = "sim_out_genotypes.dat",
            mean.depth = 100, 
            p.mean.depth = 100, 
            chr.mb = 10, 
-           method = "neg.binom", #updog ta com pau
-           mean.phred = 20)
+           method = "neg.binom", 
+           mean.phred = 20,
+           bias=0, 
+           od=0,
+           pos=NULL,
+           chr=NULL,
+           phase = FALSE,
+           disper.par=2)
 
+library(vcfR)
 vcfR.obj <- read.vcfR("simu.vcf")
-onemap.obj <- onemap_read_vcfR(vcfR.object = vcfR.obj, cross = "outcross", parent1 = "P1", parent2 = "P2")
+onemap.obj <- onemap_read_vcfR(vcfR.object = vcfR.obj, cross = "outcross", parent1 = "P1", parent2 = "P2") # change here to read multiallelic markers (take modifications from spalla)
+
+plot(onemap.obj, all=F)
+
 ```
 
 ## Reestimate genotypes
