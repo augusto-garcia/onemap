@@ -42,11 +42,11 @@ First, download [PedigreeSim java file](https://github.com/PBR/pedigreeSim). It 
 
 The function do not provide every possibilities offered by PedigreeSim software. If you want to change any parameter that is not available in the function, please use directly the PedigreeSim software. Here is the [software documentation](https://github.com/PBR/pedigreeSim/tree/master/Manual) for more information.
 
-```{r, eval=FALSE}
+```{r}
 # For outcrossing population
-run_pedsim(chromosome = "Chr1", n.marker = 150, tot.size.cm = 100, centromere = 50,
-            n.ind = 200, mk.types = c("B3.7","A1", "D2.15"),
-            n.types = rep(50,3), pop = "F1", path.pedsim = "/home/rstudio/work/",
+run_pedsim(chromosome = "Chr1", n.marker = 154, tot.size.cm = 100, centromere = 50,
+            n.ind = 200, mk.types = c("A1", "A2", "B3.7", "D1.9", "D1.10", "D2.14", "D2.15"),
+            n.types = rep(22,7), pop = "F1", path.pedsim = "/home/rstudio/work/",
             name.mapfile = "mapfile.map", name.founderfile="founderfile.gen",
             name.chromfile="sim.chrom", name.parfile="sim.par",
             name.out="sim_out")
@@ -70,7 +70,7 @@ We suggest you to open the output files `founderfile`, `chromfile`, `mapfile` an
 
 Once you run PedigreeSim, you should have the output file `genotypes.dat`. To convert this to OneMap raw file, you just need to specify the cross type (`cross`), which ones are the parents (`parent1` and `parent2`) and if you want to include missing genotypes (`miss.perc`).
 
-```{r, eval=F}
+```{r}
 pedsim2raw(genofile = "sim_out_genotypes.dat", cross="outcross", parent1 = "P1", parent2 = "P2", out.file = "sim_out.example.raw", miss.perc = 0)
 
 onemap.obj <- read_onemap("sim_out.example.raw")
@@ -114,7 +114,7 @@ vcfR.obj <- read.vcfR("simu.vcf")
 onemap.obj <- onemap_read_vcfR(vcfR.object = vcfR.obj, cross = "outcross", parent1 = "P1", parent2 = "P2") # change here to read multiallelic markers (take modifications from spalla)
 
 plot(onemap.obj, all=F)
-
+str(onemap.obj)
 ```
 
 ## Reestimate genotypes
@@ -142,3 +142,11 @@ The function `updog_genotype` make interface of OneMap with Updog.
 # Simulate Illumina reads
 
 This one is a bit more complex and the its tools is stored in the github repository [onemap_workflows](https://github.com/Cristianetaniguti/onemap_workflows). Please, access [it](https://github.com/Cristianetaniguti/onemap_workflows) to more information.
+
+
+### Remove generated files
+
+```{r}
+system("rm sim* founderfile* mapfile*")
+```
+
