@@ -378,6 +378,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       rownames(GT_matrix)  <- MKS
       colnames(GT_matrix)  <-  INDS[-c(P1,P2)] 
     } else{
+      F1 <- which(dimnames(vcf@gt)[[2]]==f1) - 1
       GT_matrix <- apply(GT_matrix[,-c(P1,P2,F1)],2,as.numeric)
       rownames(GT_matrix)  <- MKS
       colnames(GT_matrix)  <-  INDS[-c(P1,P2,F1)] 

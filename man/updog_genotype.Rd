@@ -15,8 +15,9 @@ updog_genotype(
   mean_phred = 20,
   cores = 2,
   depths = NULL,
-  use_probs = TRUE,
-  global_error = 1
+  global_error = NULL,
+  use_genotypes_errors = TRUE,
+  use_genotypes_probs = FALSE
 )
 }
 \arguments{
@@ -36,16 +37,23 @@ updog_genotype(
 
 \item{mean_phred}{the mean phred score of the sequencer technology}
 
-\item{cores}{number of cores to be used}
+\item{cores}{number of threads}
 
 \item{depths}{list containing a matrix for ref and other for alt allele counts, samples ID in colum and markers ID in rows}
+
+\item{global_error}{number from 0 to 1 defining the global error to be considered together 
+with the genotype errors or the genotype probabilities or NULL to not considered any global error}
+
+\item{use_genotypes_errors}{if \code{TRUE} the error probability of each genotype will be considered in emission function of HMM}
+
+\item{use_genotype_probs}{if \code{TRUE} the probability of each possible genotype will be considered in emission function of HMM}
 }
 \value{
-onemap object with error updated
+onemap object with genotype probabilities updated
 }
 \description{
 Uses alelle counts to re-estimate genotypes with updog approach and 
-considers the genotypes probabilities in for further multipoint 
+stores the genotypes probabilities for further multipoint 
 analysis
 }
 \references{
@@ -55,7 +63,7 @@ Messy Sequencing Data. bioRxiv. doi: 10.1101/281550.
 }
 \seealso{
 \code{\link[onemap]{extract_depth}} 
-    \code{\link[onemap]{binom_error}} and 
+    \code{\link[onemap]{binom_genotype}} and 
     \url{https://github.com/dcgerard/updog}.
 }
 \author{

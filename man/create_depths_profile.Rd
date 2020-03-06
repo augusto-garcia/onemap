@@ -9,6 +9,7 @@ create_depths_profile(
   vcfR.object = NULL,
   parent1 = NULL,
   parent2 = NULL,
+  f1 = NULL,
   vcf.par = "AD",
   recovering = TRUE,
   mks = NULL,
@@ -36,6 +37,8 @@ create_depths_profile(
 \item{GTfrom}{the graphic should contain the genotypes from onemap.obj or from the vcf? Specify using "onemap", "vcf" or "prob".}
 
 \item{alpha}{define the transparency of the dots in the graphic}
+
+\item{rds.file}{rds file name to store the data frame with values used to build the graphic}
 
 \item{vcf.file}{an object of class \code{vcfR}.}
 }

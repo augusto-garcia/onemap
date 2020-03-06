@@ -61,12 +61,8 @@ same in both parents. Hidden Markov chain codes adapted from Broman et al.
   map(markers)
 
   markers <- make_seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
-<<<<<<< HEAD
   map(markers)
-  
-=======
-  map(markers)}
->>>>>>> 1d86c0b81792bada3c7665b6477f653e46c1aafc
+  }
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.

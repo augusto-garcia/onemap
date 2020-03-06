@@ -15,11 +15,7 @@ mds_onemap(
   weightfn = "lod2",
   mapfn = "haldane",
   hmm = TRUE,
-<<<<<<< HEAD
   rm_unlinked = TRUE
-=======
-  mds.seq = TRUE
->>>>>>> 1d86c0b81792bada3c7665b6477f653e46c1aafc
 )
 }
 \arguments{

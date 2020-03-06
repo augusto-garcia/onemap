@@ -21,7 +21,7 @@ opts_knit$set(width=75)
 library(onemap)
 ```
 
-OneMap 3.0 also make a interface with PedigreeSim software to perform simulations. There are three different ways to simulate maps in OneMap:
+OneMap 3.0 also makes a interface with PedigreeSim software to perform simulations. There are three different ways to simulate maps in OneMap:
 
 * Converting PedigreeSim output to OneMap raw data: function `pedsim2raw`
 
@@ -33,12 +33,12 @@ Simulating the VCF you can include other sources of errors. The map is simulated
 
 * Use a chromossome of the reference genome to simulate SNPs, the bi-parental cross and Illumina reads for each individual: workflow `SimulateReads.wdl`
 
-The workflow `SimulatedReads` is available in [onemap_workflows]() repository in github. It performs the simulation of Illumina reads for outcrossing population, the SNP calling in Freebayes and GATK software, the genotype calling in updog, supermassa and polyRAD, and build genetics maps using every combination in OneMap and gusmap. The workflow is wroten in WDL cromwell worflow system and the parameters of every software implented can be easily changed. All the results can be evaluated in a [shiny app](https://github.com/Cristianetaniguti/onemap_workflows_shiny). See the [workflow tutorial](https://github.com/Cristianetaniguti/onemap_workflows) to perfom this analysis.
+The workflow `SimulatedReads` is available in [onemap_workflows](https://github.com/Cristianetaniguti/onemap_workflows) repository in github. It performs the simulation of Illumina reads for outcrossing population, the SNP calling in Freebayes and GATK software, the genotype calling in updog, supermassa and polyRAD, and build genetics maps using every combination in OneMap and gusmap. The workflow is wroten in WDL cromwell worflow system and the parameters of every software implented can be easily changed. All the results can be evaluated in a [shiny app](https://github.com/Cristianetaniguti/onemap_workflows_shiny). See the [workflow tutorial](https://github.com/Cristianetaniguti/onemap_workflows) to perfom this analysis.
 
 
 # Run PedigreeSim
 
-First, download [PedigreeSim java file](https://github.com/PBR/pedigreeSim). It will require java version up to ?? installed. You can run PedigreeSim directly and just use the output files in OneMap or you can use a function named `run_pedsim` that facilitates this procedure.
+First, download [PedigreeSim java file](https://github.com/PBR/pedigreeSim). It will require java installed. You can run PedigreeSim directly and just use the output files in OneMap or you can use a function named `run_pedsim` that facilitates this procedure.
 
 The function do not provide every possibilities offered by PedigreeSim software. If you want to change any parameter that is not available in the function, please use directly the PedigreeSim software. Here is the [software documentation](https://github.com/PBR/pedigreeSim/tree/master/Manual) for more information.
 
@@ -56,8 +56,8 @@ run_pedsim(chromosome = c("Chr1", "Chr2"), n.marker = c(75, 75),
            tot.size.cm = c(100,100), centromere = c(50,50),
             n.ind = 200, mk.types = c("A.H.B","C.A", "D.B"),
             n.types = rep(50,3), pop = "F2", path.pedsim = "/home/rstudio/work/",
-            name.mapfile = "mapfile.map", name.founderfile="founderfile.gen",
-            name.chromfile="sim.chrom", name.parfile="sim.par",
+            name.mapfile = "mapfile_f2.map", name.founderfile="founderfile_f2.gen",
+            name.chromfile="sim_f2.chrom", name.parfile="sim_f2.par",
             name.out="sim_f2")
 
 ```
@@ -68,29 +68,31 @@ We suggest you to open the output files `founderfile`, `chromfile`, `mapfile` an
 
 # Simulate OneMap raw data
 
-Once you run PedigreeSim, you should have the output file `genotypes.dat`. To convert this to OneMap raw file, you just need to specify the cross type (`cross`), which ones are the parents (`parent1` and `parent2`) and if you want to include missing genotypes (`miss.perc`).
+Once you run PedigreeSim, you should have the output file `genotypes.dat`. To convert this to OneMap raw file, you just need to specify the cross type (`cross`), which ones are the parents (`parent1` and `parent2`) and if you want to include missing genotypes (`miss.perc`). Only cross types `outcross` and `f2 intercross` are supported by now.
 
 ```{r}
+# For outcrossing population
 pedsim2raw(genofile = "sim_out_genotypes.dat", cross="outcross", parent1 = "P1", parent2 = "P2", out.file = "sim_out.example.raw", miss.perc = 0)
 
 onemap.obj <- read_onemap("sim_out.example.raw")
 
 plot(onemap.obj, all = F)
 
-
+# For F2 population
 pedsim2raw(genofile = "sim_f2_genotypes.dat", cross="f2 intercross", parent1 = "P1", parent2 = "P2", out.file = "sim_f2.example.raw", miss.perc = 0)
 
 onemap.obj <- read_onemap("sim_f2.example.raw")
 
-plot(onemap.obj, all = F)
+plot(onemap.obj)
 
 ```
 
 # Simulate VCF file
 
-The same output file from PedigreeSim, the `genotypes.dat` can be used to simulate a VCF file together with the PedigreeSim `mapfile` and `chrom`. The advantages to simulate a VCF instead of onemap raw file is that VCF is a standard file format and can store a lot of other information included the allele counts, usually in the field `AD` or `DPR`. The `pedsim2vcf` function can  simulate the allele counts using poisson, negative binomial or updog distribuitions (argument `method`). The main paramenters for the distributions are defined with arguments `mean.depth`, that defines the mean allele depth in the progeny, `p.mean.depth` that defines the mean allele depth in the parents, argument `disper.par` defines the dispersion parameter, `mean.phred` defines the mean phred score of the sequencing technology used. The function can also simulate missing data (`miss.perc`). Throught argument `pos` and `chr` you can define vectors with phisical position and chromosome of each marker. With argument `haplo.ref` you define which one of the haplotypes in `genotypes.dat` will the considered the reference. Stablishing `phase` as TRUE, the VCF will have phased genotypes. After allele counts are simulated, the genotypes are reestimated using a binomial distribution. The VCF generated by this function only have one or two FORMAT fields, the GT and AD (if `counts = TRUE`).
+The same output file from PedigreeSim, the `genotypes.dat` can be used to simulate a VCF file together with the PedigreeSim `mapfile` and `chrom`. The advantages to simulate a VCF instead of onemap raw file is that VCF is a standard file format and can store a lot of other information included the allele counts, usually in the field `AD` or `DPR`. The `pedsim2vcf` function can  simulate the allele counts using negative binomial or updog distribuitions (argument `method`). The main paramenters for the distributions are defined with arguments `mean.depth`, that defines the mean allele depth in the progeny, `p.mean.depth` that defines the mean allele depth in the parents, argument `disper.par` defines the dispersion parameter, `mean.phred` defines the mean phred score of the sequencing technology used. The function can also simulate missing data (`miss.perc`). Throught argument `pos` and `chr` you can define vectors with phisical position and chromosome of each marker. With argument `haplo.ref` you define which one of the haplotypes in `genotypes.dat` will the considered the reference. Stablishing `phase` as TRUE, the VCF will have phased genotypes. After allele counts are simulated, the genotypes are reestimated using a binomial distribution. The VCF generated by this function only have one or two FORMAT fields, the GT and AD (if `counts = TRUE`).
 
 ```{r}
+# For outcrossing population
 pedsim2vcf(inputfile = "sim_out_genotypes.dat", 
            map.file = "mapfile.map", 
            chrom.file = "sim.chrom", 
@@ -100,33 +102,138 @@ pedsim2vcf(inputfile = "sim_out_genotypes.dat",
            mean.depth = 100, 
            p.mean.depth = 100, 
            chr.mb = 10, 
-           method = "neg.binom", 
+           method = "updog", 
            mean.phred = 20,
-           bias=0, 
-           od=0,
+           bias=1, 
+           od=0.00001,
            pos=NULL,
            chr=NULL,
            phase = FALSE,
            disper.par=2)
 
 library(vcfR)
-vcfR.obj <- read.vcfR("simu.vcf")
-onemap.obj <- onemap_read_vcfR(vcfR.object = vcfR.obj, cross = "outcross", parent1 = "P1", parent2 = "P2") # change here to read multiallelic markers (take modifications from spalla)
+vcfR_out.obj <- read.vcfR("simu.vcf")
+onemap_out.obj <- onemap_read_vcfR(vcfR.object = vcfR_out.obj, cross = "outcross", parent1 = "P1", parent2 = "P2")
+
+plot(onemap_out.obj, all=F)
+
+# For F2 population
+# Just a example to remember that dominant markers are not supported by this function
+run_pedsim(chromosome = c("Chr1", "Chr2"), n.marker = c(75, 75), 
+           tot.size.cm = c(100,100), centromere = c(50,50),
+            n.ind = 200, mk.types = c("A.H.B"),
+            n.types = 150, pop = "F2", path.pedsim = "/home/rstudio/work/",
+            name.mapfile = "mapfile_f2.map", name.founderfile="founderfile_f2.gen",
+            name.chromfile="sim_f2.chrom", name.parfile="sim_f2.par",
+            name.out="sim_f2")
+
+pedsim2vcf(inputfile = "sim_f2_genotypes.dat", 
+           map.file = "mapfile_f2.map", 
+           chrom.file = "sim_f2.chrom", 
+           out.file = "simu_f2.vcf",
+           miss.perc = 0, 
+           counts = TRUE, 
+           mean.depth = 100, 
+           p.mean.depth = 100, 
+           chr.mb = 10, 
+           method = "updog", 
+           mean.phred = 20,
+           bias=1, 
+           od=0.001,
+           pos=NULL,
+           chr=NULL,
+           phase = FALSE,
+           disper.par=2)
+
+vcfR_f2.obj <- read.vcfR("simu_f2.vcf")
+onemap_f2.obj <- onemap_read_vcfR(vcfR.object = vcfR_f2.obj, cross = "f2 intercross", parent1 = "P1", parent2 = "P2", f1 = "F1") 
 
 plot(onemap.obj, all=F)
-str(onemap.obj)
 ```
+
+## Graphical view of genotypes and allele counts
+
+Function `create_depth_profile` generates dispertion graphics with x and y axis pointing respectively the reference and alternative allele counts. The function is only available for biallelic markers and for outcrossing and f2 intercross population. Each dot represent a genotype considering `mks` markers and `inds` individuals. If are stablished NULL for both arguments, all markers and individuals are considered. The color of the dots are according with the genotypes present in onemap object (`GTfrom = onemap`) or in VCF file (`GTfrom = vcf`) or the color can represent the error rate (1 - highest genotype probability) of each genotype in onemap object (`GTfrom = prob`). A rds file is generated with the data in the graphic (`rds.file`). The `alpha` argument control the transparency of color of each dot, regulate this parameter is a good idea when having big amount of markers and individuals.
+
+```{r}
+# For outcrossing population
+create_depths_profile(onemap.obj = onemap_out.obj,
+                      vcfR.object = vcfR_out.obj, 
+                      parent1 = "P1", 
+                      parent2 = "P2", 
+                      vcf.par = "AD", 
+                      recovering = FALSE, 
+                      mks = NULL, 
+                      inds = NULL, 
+                      GTfrom = "prob", 
+                      alpha = 0.1,
+                      rds.file = "depths_out.rds")
+
+
+# For f2 intercross population
+create_depths_profile(onemap.obj = onemap_f2.obj,
+                      vcfR.object = vcfR_f2.obj, 
+                      parent1 = "P1", 
+                      parent2 = "P2", 
+                      f1 = "F1",
+                      vcf.par = "AD", 
+                      recovering = FALSE, 
+                      mks = NULL, 
+                      inds = NULL, 
+                      GTfrom = "vcf", 
+                      alpha = 0.1,
+                      rds.file = "depths_f2.rds")
+
+```
+
+
 
 ## Reestimate genotypes
 
 If you choose to simulate allele counts in `pedsim2vcf` it is also possible to reestimate the genotypes using this simulated allele counts with other distributions. This will include in your data errors comming from random sampling if considering only poisson or negative binomial distribuitions and/or dispersion, outliers and bias errors if using updog model. Other advantage is that reestimating genotypes with any of this softwares you can obtain genotypes probabilities to be used in the map building instead of only genotypes.
 
+**warning**: The reestimation of genotypes is only performed in biallelic codominant markers. If you have multiallelic markers in your VCF, they will be keept with the same genotype.
+
 [Updog](https://github.com/dcgerard/updog), [polyRAD](https://github.com/lvclark/polyRAD) and [supermassa](https://github.com/guilherme-pereira/vcf2sm) are software designed for genotyping polyploid species. This is a more complex procedure compared with diploid species. These software consider not only the proportion of alleles to define the genotypes, but other aspects as the expected distribuition in the progeny according with parents genotypes. See more about them in respective manuals.
+
+## Genotypes probabilities usage
+
+OneMap 3.0 have three options to define error probability in HMM emission phase. The default method is consider a global error rate for every genotype $10^{-5}$. Until this present version, only this procedure was implemented. Now, with the function `create_probs`, we offer the option to change the global error rate (`global_error` argument), or consider a error rate by genotype (`genotypes_errors`) or a genotype probability for each genotype (`genotypes_probs`).
+
+## Parei aqui! alterar create_probs para misturar global erro com os dois anteriores e adaptar a polyRAD e supermassa com essa alteração
+rodar tres familias com probs, errors e errors + global erro de 0.01 para ver qual é melhor - verificar qual o metodo utilizado nas cinco familias q ja foram rodadas adicionar uma simulação variando o erro global para verificar diferença nos haplotipos depois
+
 
 ### With updog
 
-The function `updog_genotype` make interface of OneMap with Updog.
+The function `updog_genotype` make interface of OneMap with Updog, this time to perform the genotype calling. 
 
+```{r}
+onemap_geno.updog <- updog_genotype(vcfR.object=vcfR_out.obj, 
+                                    onemap.object= onemap_out.obj,
+                                    vcf.par = "AD",
+                                    parent1="P1",
+                                    parent2="P2",
+                                    f1=NULL,
+                                    recovering = FALSE,
+                                    mean_phred = 20, 
+                                    cores = 2,
+                                    depths = NULL,
+                                    global_error = NULL,
+                                    use_genotypes_errors = FALSE,
+                                    use_genotypes_probs = TRUE)
+
+multi <- colnames(onemap_geno.updog$geno)[which(!(onemap_geno.updog$segr.type %in% c("B3.7", "D1.10", "D2.15")))]
+onemaps <- split_onemap(onemap_geno.updog, multi)
+onemaps
+
+create_depths_profile(onemap.obj = onemaps[[1]], 
+                      vcfR.object = vcfR_out.obj, 
+                      parent1 = "P1",
+                      parent2 = "P2",
+                      vcf.par = "AD", recovering = FALSE, GTfrom = "prob") # xabu na segregação, verificar nos outros
+
+```
 
 
 

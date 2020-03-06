@@ -1,7 +1,7 @@
 #' OneMap interface with updog package
 #'
 #' Uses alelle counts to re-estimate genotypes with updog approach and 
-#' considers the genotypes probabilities in for further multipoint 
+#' stores the genotypes probabilities for further multipoint 
 #' analysis
 #' 
 #' @param vcfR.object object output of the vcfR package
@@ -10,17 +10,20 @@
 #' @param f1 f1 individual identification if f2 cross type
 #' @param recovering logical defining if markers should be recovered from VCF
 #' @param mean_phred the mean phred score of the sequencer technology
-#' @param cores number of cores to be used
+#' @param cores number of threads 
 #' @param depths list containing a matrix for ref and other for alt allele counts, samples ID in colum and markers ID in rows
-#' 
 #' @param parent1 parent 1 identification in vcfR object
 #' @param parent2 parent 2 identification in vcfR objetc
+#' @param global_error number from 0 to 1 defining the global error to be considered together 
+#' with the genotype errors or the genotype probabilities or NULL to not considered any global error
+#' @param use_genotypes_errors if \code{TRUE} the error probability of each genotype will be considered in emission function of HMM
+#' @param use_genotype_probs if \code{TRUE} the probability of each possible genotype will be considered in emission function of HMM
 #' 
-#' @return onemap object with error updated 
+#' @return onemap object with genotype probabilities updated 
 #' 
 #' @author Cristiane Taniguti, \email{chtaniguti@@usp.br} 
 #' @seealso \code{\link[onemap]{extract_depth}} 
-#'     \code{\link[onemap]{binom_error}} and 
+#'     \code{\link[onemap]{binom_genotype}} and 
 #'     \url{https://github.com/dcgerard/updog}.
 #'
 #' @references 
@@ -33,16 +36,25 @@
 #'   
 #' @export
 updog_genotype <- function(vcfR.object=NULL,
-                        onemap.object= NULL,
-                        vcf.par = c("AD", "DPR"),
-                        parent1="P1",
-                        parent2="P2",
-                        f1=NULL,
-                        recovering = FALSE,
-                        mean_phred = 20, cores = 2,
-                        depths = NULL,
-                        use_probs = TRUE,
-                        global_error=1){
+                           onemap.object= NULL,
+                           vcf.par = c("AD", "DPR"),
+                           parent1="P1",
+                           parent2="P2",
+                           f1=NULL,
+                           recovering = FALSE,
+                           mean_phred = 20, 
+                           cores = 2,
+                           depths = NULL,
+                           global_error = NULL,
+                           use_genotypes_errors = TRUE,
+                           use_genotypes_probs = FALSE){
+  
+  # checks
+  if(use_genotypes_errors & use_genotypes_probs){
+    stop("You must choose only one of the offered approaches to be considered in emission function of HMM. `use_genotype_errors` or `use_genotype_probs`")
+  } else if (!(use_genotypes_errors | use_genotypes_probs)){
+    stop("You should choose one approach to be considered in emission function of HMM.`use_genotype_errors` or `use_genotype_probs`")
+  }
   
   if(is.null(depths)){
     depth_matrix <- extract_depth(vcfR.object=vcfR.object,
@@ -111,6 +123,29 @@ updog_genotype <- function(vcfR.object=NULL,
   }
   
   onemap_updog <- onemap.object
+  
+  # removing the multiallelics from the vcf
+  multi <- grepl(",",vcfR.object@fix[,5])
+  multi.mks <- vcfR.object@fix[,3][multi]
+  
+  if(any(multi)){ 
+    idx <- which(rownames(palt) %in% multi.mks)
+    palt <- palt[-idx,]
+    pref <- pref[-idx,]
+    psize <- psize[-idx,]
+    oalt <- oalt[-idx,]
+    oref <- oref[-idx,]
+    osize <- osize[-idx,]
+    n.mks = dim(oalt)[1]
+    mks = rownames(oalt)
+    CHROM = CHROM[-idx]
+    POS = POS[-idx]
+  }
+  
+  # removing the multiallelics from the onemap object
+  split.onemap <- split_onemap(onemap.object, multi.mks)
+  mult.obj <- split.onemap[[2]]
+  onemap.object <- split.onemap[[1]]
   
   # Missing data                                                                                                 
   if(class(onemap.object)[2] == "f2"){
@@ -186,10 +221,9 @@ updog_genotype <- function(vcfR.object=NULL,
     P1 <- unlist(sapply(sapply(gene_est, "[", 8), "[", 2))
   }
   
-  
   temp1 <- lapply(gene_est, "[[", 9)
   temp2 <- lapply(gene_est, "[[", 10)
-
+  
   for(i in 1:n.mks){
     geno_matrix[i,] <- temp1[[i]]
     maxpostprob[i,] <- temp2[[i]]
@@ -204,7 +238,7 @@ updog_genotype <- function(vcfR.object=NULL,
   # sort - order mk 1 2 3 ind 1 1 1 
   idx <- rep(1:dim(osize)[2], dim(osize)[1])
   genotypes_probs <- genotypes_probs[order(idx), ]
-    
+  
   if(class(onemap.object)[2] == "outcross"){
     rm.mk <- which(P1==0 & P2 == 2 | P2 == 0 & P1 == 0 | P1==2 & P2 == 2 | P1==2 & P2 ==0)
     
@@ -252,7 +286,7 @@ updog_genotype <- function(vcfR.object=NULL,
     conv_geno[idx,][which(geno_matrix[idx,]==2)] <- 1
     segr.type[idx] <- "D1.10"
     segr.type.num[idx] <- 6
-
+    
   } else {
     rm.mk <- which(P1!=1)
     if(length(rm.mk) > 0){
@@ -280,7 +314,7 @@ updog_genotype <- function(vcfR.object=NULL,
   
   conv_geno <-  t(conv_geno)
   conv_geno[which(is.na(conv_geno))] <- 0
-
+  
   comp <- which(colnames(onemap.object$geno) %in% mks)
   onemap_updog$CHROM <- onemap.object$CHROM[comp]
   onemap_updog$POS <- onemap.object$POS[comp]
@@ -288,7 +322,7 @@ updog_genotype <- function(vcfR.object=NULL,
   comp1 <- which(depth_matrix$mks %in% mks)
   onemap_updog$CHROM <- depth_matrix$CHROM[comp1]
   onemap_updog$POS <- depth_matrix$POS[comp1]
-     
+  
   # If some marker in onemap object is now non-informative and didn't recover any marker                         
   if(length(colnames(onemap.object$geno)) - length(comp) > 0 & length(mks) == length(comp)){
     cat(length(colnames(onemap.object$geno)) - length(comp),
@@ -305,12 +339,13 @@ n")
     # If any marker in onemap object were considered non-informative and some marker were recovered from vcf       
   } else if(length(colnames(onemap.object$geno)) - length(comp) == 0 & length(mks) > length(comp)){
     comp1 <- which(mks %in% colnames(onemap.object$geno))
-    cat("This approach changed", (sum(conv_geno[,comp1] != onemap.object$geno)/length(onemap.object$geno))*100, "% of the genotypes\n")
+    cat("This approach changed", (sum(conv_geno[,comp1] != onemap.object$geno)/length(onemap.object$geno))*100, "% of the genotypes from biallelic markers\n")
   } else{
-    cat("This approach changed", (sum(conv_geno != onemap.object$geno)/length(onemap.object$geno))*100, "% of the genotypes\n")
+    cat("This approach changed", (sum(conv_geno != onemap.object$geno)/length(onemap.object$geno))*100, "% of the genotypes from biallelic markers\n")
   }
   
-  cat("New onemap object contains", length(mks), "markers\n")
+  cat("New onemap object contains", length(mks), "biallelic markers\n")
+  
   maxpostprob <- t(1- maxpostprob)
   colnames(conv_geno)  <- colnames(maxpostprob) <- mks
   inds <- rownames(conv_geno)  <- rownames(maxpostprob) <- rownames(onemap.object$geno)
@@ -321,12 +356,19 @@ n")
   onemap_updog$segr.type.num <- segr.type.num
   onemap_updog$segr.type <- segr.type
   
-  if(use_probs){
-    onemap_updog.new <- create_probs(onemap.obj = onemap_updog, genotypes_probs = genotypes_probs)
-  } else {
-    maxpostprob <- maxpostprob*global_error
-    onemap_updog.new <- create_probs(onemap.obj = onemap_updog, genotypes_errors = maxpostprob)
+  if(use_genotypes_probs){
+    onemap_updog.new <- create_probs(onemap.obj = onemap_updog,
+                                     genotypes_probs = genotypes_probs,
+                                     global_error = global_error)
+  } else if(use_genotypes_error){
+    onemap_updog.new <- create_probs(onemap.obj = onemap_updog,
+                                     genotypes_errors = maxpostprob,
+                                     global_error = global_error)
   }
+  
+  if(length(multi.mks) > 0)
+    onemap_updog.new <- combine_onemap(onemap_updog.new, mult.obj)
+  
   structure(onemap_updog.new)
 }
 

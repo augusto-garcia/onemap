@@ -12,12 +12,8 @@ rf_graph_table(
   html.file = NULL,
   mrk.axis = "numbers",
   lab.xy = NULL,
-<<<<<<< HEAD
   n.colors = 4,
   display = T
-=======
-  n.colors = 4
->>>>>>> 1d86c0b81792bada3c7665b6477f653e46c1aafc
 )
 }
 \arguments{
@@ -40,6 +36,8 @@ marker numbers and "none" to display axis free of labels.}
 \item{lab.xy}{character vector with length 2, first component is the label of x axis and second of the y axis.}
 
 \item{n.colors}{integer. Number of colors in the pallete.}
+
+\item{display}{logical. If inter \code{TRUE} and display \code{TRUE} iteractive graphic is plotted in browser automatically when run the function}
 }
 \description{
 Plots a matrix of pairwise recombination fraction or

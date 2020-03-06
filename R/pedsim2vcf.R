@@ -18,9 +18,9 @@
 #' @param pos Phisical map position of each marker
 #' @param chr Chromosome where the marker is positioned
 #' @param phase if TRUE the genotypes in VCF will be phased
-#' @param bias
-#' @param od
-#' @param disper.par
+#' @param bias The bias parameter for updog model. Pr(a read after selected) / Pr(A read after selected).
+#' @param od The overdispersion parameter for updog model. See the Details of the rho variable in betabinom.
+#' @param disper.par Dispertion parameter for negative binomial 
 #' 
 #' @return vcf file located in out.file defined path
 #' 
@@ -49,17 +49,16 @@ pedsim2vcf <- function(inputfile=NULL,
                        mean.depth=20, 
                        p.mean.depth = 20, 
                        chr.mb= 10, 
-                       method = c("updog", "neg.binom", "poisson"), 
+                       method = c("updog", "neg.binom"), 
                        mean.phred=20, 
-                       bias=0, 
-                       od=0,
+                       bias=1, 
+                       od=0.001,
                        disper.par=2,
                        pos=NULL,
                        chr=NULL,
                        phase = FALSE){
   
   # Do the checks here
-  
   data <- read.table(paste(inputfile), stringsAsFactors = FALSE, header = TRUE)
   
   # Infos
@@ -100,7 +99,7 @@ pedsim2vcf <- function(inputfile=NULL,
   }
   
   if(counts==TRUE){
-    if(method=="neg.binom" | method=="poisson"){
+    if(method=="neg.binom" ){
       # Negative binomial to estimate the depths (code adaptaded from Gusmap)
       depth <- prob.mat <- matrix(rep(NA, n.ind*n.mk),nrow=n.mk, ncol=n.ind)
       
@@ -108,35 +107,19 @@ pedsim2vcf <- function(inputfile=NULL,
       prob.mat[het_matrix] <- 0.5
       prob.mat[is.na(prob.mat)] <- (10^(-mean.phred/10))
       
-      if(method=="neg.binom"){
-        depth[which(!is.na(gt_matrix))] <- rnbinom(sum(!is.na(gt_matrix)),mu=mean.depth,size=2)
-        
-        # Avoiding missing
+      depth[which(!is.na(gt_matrix))] <- rnbinom(sum(!is.na(gt_matrix)),mu=mean.depth,size = disper.par)
+      
+      # Avoiding missing
+      idx <- which(depth==0)
+      
+      while(length(idx) >0){
+        depth[which(depth==0)] <- rnbinom(length(idx),mu=mean.depth,size=disper.par)
         idx <- which(depth==0)
-        
-        while(length(idx) >0){
-          depth[which(depth==0)] <- rnbinom(length(idx),mu=mean.depth,size=2)
-          idx <- which(depth==0)
-        }
-        ref_matrix <- matrix(rbinom(n.ind*n.mk, depth, prob.mat), nrow = n.mk)
-        
-      } else {
-        depth[which(!is.na(gt_matrix))] <- rpois(sum(!is.na(gt_matrix)),mean.depth)
-        
-        # Avoiding missing
-        idx <- which(depth==0)
-        
-        while(length(idx) >0){
-          depth[which(depth==0)] <- rpois(length(idx),mean.depth)
-          idx <- which(depth==0)
-        }
-        ref_matrix <- matrix(rbinom(n.ind*n.mk, depth, prob.mat), nrow = n.mk)
       }
+      ref_matrix <- matrix(rbinom(n.ind*n.mk, depth, prob.mat), nrow = n.mk)
+      
       
       alt_matrix <- depth-ref_matrix      
-      
-      # AD matrix
-      ad_matrix <- matrix(paste0(ref_matrix,",",alt_matrix), nrow = n.mk)
       
       info <- paste0("DP=", apply(depth,1,sum))
       
@@ -175,8 +158,6 @@ pedsim2vcf <- function(inputfile=NULL,
       }
       
       alt_matrix <- size_matrix-ref_matrix
-      
-      ad_matrix <- matrix(paste0(alt_matrix, ",", ref_matrix), nrow = dim(up_matrix)[1])
       
       info <- apply(size_matrix, 1, sum)
     }
@@ -261,6 +242,38 @@ pedsim2vcf <- function(inputfile=NULL,
     #   }
     # }
     
+    
+    ad_matrix <- matrix(NA, nrow = nrow(check_matrix), ncol = ncol(check_matrix))
+    for(j in 1:dim(check_matrix)[1]){
+      for(i in c(3,2,1)){
+        if(any(grepl(i, check_matrix[j,]))){
+          ncol <- i + 1
+          break
+        }
+      }
+      ad_matrix_temp <- matrix(0, nrow= dim(check_matrix)[2], ncol = ncol)
+      for(i in 0:(ncol-1)){
+        idx <- which(gt_ref[j,] == i & gt_alt[j,] == i)
+        idx.sub <- which(ref_matrix[j,idx] != 0)
+        ad_matrix_temp[idx[idx.sub],i+1] <- ref_matrix[j,idx[idx.sub]]
+        idx.sub <- which(alt_matrix[j,idx] != 0)
+        ad_matrix_temp[idx[idx.sub],i+1] <- alt_matrix[j,idx[idx.sub]]
+        
+        idx <- which(gt_ref[j,] == i & gt_alt[j,] != i)  
+        idx.sub <- gt_ref[j,][idx] == i
+        ad_matrix_temp[idx[idx.sub],i+1] <- ref_matrix[j,idx[idx.sub]]
+        idx.sub <- gt_alt[j,][idx] == i
+        ad_matrix_temp[idx[idx.sub],i+1] <- alt_matrix[j,idx[idx.sub]]
+        
+        idx <- which(gt_ref[j,] != i & gt_alt[j,] == i)  
+        idx.sub <- gt_ref[j,][idx] == i
+        ad_matrix_temp[idx[idx.sub],i+1] <- ref_matrix[j,idx[idx.sub]]
+        idx.sub <- gt_alt[j,][idx] == i
+        ad_matrix_temp[idx[idx.sub],i+1] <- alt_matrix[j,idx[idx.sub]]
+      }
+      ad_matrix[j,] <- apply(ad_matrix_temp, 1, function(x) paste0(x, collapse = ","))
+    }
+    
     vcf_format <- matrix(paste0(check_matrix, ":", ad_matrix), nrow = n.mk)
     
   } else {
@@ -300,6 +313,7 @@ pedsim2vcf <- function(inputfile=NULL,
   alt <- rep(NA, length(ref))
   ## ALT
   done <- vector() # vector to store markers already avaliated
+  guide <- 1:dim(check_matrix)[1]
   for(j in c(3,2,1)){
     if(length(done) != 0){
       alleles <- apply(check_matrix[-done,], 1, function(x) any(grepl(j, x)))
@@ -308,7 +322,9 @@ pedsim2vcf <- function(inputfile=NULL,
     }
     if(sum(alleles) != 0){
       alt_temp <- matrix(NA, nrow=sum(alleles), ncol = 3)
-      ref_temp <- ref[alleles]
+      if(length(done) != 0)
+        ref_temp <- ref[-done][alleles]
+      else ref_temp <- ref[alleles]
       
       for(i in 1:sum(alleles)){
         temp <- sample(c("A","T", "C", "G"), 4, replace = F)
@@ -322,12 +338,13 @@ pedsim2vcf <- function(inputfile=NULL,
         if(is(alt_temp, "matrix"))
           alt[-done][alleles] <- apply(alt_temp, 1, function(x) paste0(x, collapse = ","))
         else alt[-done][alleles] <- alt_temp
+        done <- c(done,guide[-done][alleles])
       } else {
         if(is(alt_temp, "matrix"))
           alt[alleles] <- apply(alt_temp, 1, function(x) paste0(x, collapse = ","))
         else alt[alleles] <- alt_temp
+        done <- c(done,guide[alleles])
       }
-      done <- c(done,which(alleles))
     }
   }
   

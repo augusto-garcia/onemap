@@ -69,9 +69,7 @@ create_probs <- function(onemap.obj = NULL,
   
   if(!is.null(global_error) | !is.null(genotypes_errors)){
     
-    if(!is.null(global_error)){
-      error <- rep(global_error, length(probs$value))
-    } else {
+    if(!is.null(genotypes_errors)){
       # checks
       if(!all(colnames(onemap.obj$geno)%in%colnames(genotypes_errors))){
         stop("Not all markers in onemap object have corresponding genotype errors in matrix")
@@ -88,7 +86,18 @@ create_probs <- function(onemap.obj = NULL,
       if(!all(rownames(onemap.obj$geno)%in%rownames(genotypes_errors))){
         stop("There are more individuals in errors matrix than in onemap object")
       }
+    }
+    
+    if(!is.null(global_error) & !is.null(genotypes_errors)){  # mix of global error and genotypes_errors
+      genotypes_errors <- genotypes_errors*(global_error+1)
+      genotypes_errors[which(genotypes_errors > 1)] <- 1 - global_error # don't let to have 0
+      genotypes_errors[which(genotypes_errors == 0)] <- global_error 
+      error <- reshape2::melt(t(genotypes_errors))
+      error <- error$value
       
+    } else if(!is.null(global_error)) {
+      error <- rep(global_error, length(probs$value))
+    } else {
       error <- reshape2::melt(t(genotypes_errors))
       error <- error$value
     }
@@ -179,6 +188,11 @@ create_probs <- function(onemap.obj = NULL,
   
   if(!is.null(genotypes_probs)){
     
+    if(!is.null(global_error)){ # mix of global error and genotypes_probs
+      genotypes_probs <- genotypes_probs*(1-global_error)
+      genotypes_probs[which(genotypes_probs == 0)] <- global_error 
+    }
+    
     # Only for biallelic markers codominant markers
     if(crosstype == "outcross"){
       # Sometimes the 1 and 3 are inverted
@@ -232,7 +246,7 @@ create_probs <- function(onemap.obj = NULL,
       # D2
       idx <- which(probs$type == 7)
       prob[idx,] <- cbind(prob.temp[idx,1], prob.temp[idx,2], prob.temp[idx,1], prob.temp[idx,2])
-  
+      
       # Missing data -- all genotypes 0 will receive 1 for all possible genotypes probabilities
       idx <- which(probs$value == 0)
       prob[idx,] <- 1
@@ -286,12 +300,11 @@ create_probs <- function(onemap.obj = NULL,
       }
     }
   }
- 
+  
   rownames(prob) <- paste0(probs$Var1, "_", probs$Var2)
   
-  # Values can't be zero
-  # prob[prob == 0] <- 10^-6
-  # prob[prob > 1 - 10^-6] <- 1-10^-6
+  
+  
   onemap.obj$error <- prob
   
   return(onemap.obj)

@@ -13,14 +13,13 @@ pedsim2vcf(
   counts = TRUE,
   mean.depth = 20,
   p.mean.depth = 20,
-  disper.par = 2,
   chr.mb = 10,
-  method = c("updog", "neg.binom", "poisson"),
+  method = c("updog", "neg.binom"),
   mean.phred = 20,
-  bias = 0,
-  od = 0,
+  bias = 1,
+  od = 0.001,
+  disper.par = 2,
   pos = NULL,
-  haplo.ref = NULL,
   chr = NULL,
   phase = FALSE
 )
@@ -38,17 +37,19 @@ pedsim2vcf(
 
 \item{mean.depth}{mean of the negative binomial distribution to generate depth counts}
 
-\item{disper.par}{dispersion parameter for negative binomial distribution}
-
 \item{chr.mb}{Chromossome size in mega base.}
 
-\item{method}{Choose negative binomial ("neg.binom") distribution or updog ("updog") model to simulate counts values}
+\item{method}{Choose negative binomial ("neg.binom"), poisson ("poisson") distributions or updog ("updog") model to simulate counts values}
 
 \item{mean.phred}{Sequencing error parameter}
 
-\item{pos}{Phisical map position of each marker}
+\item{bias}{The bias parameter for updog model. Pr(a read after selected) / Pr(A read after selected).}
 
-\item{haplo.ref}{The homologue or haplotype which correspond to the reference genome}
+\item{od}{The overdispersion parameter for updog model. See the Details of the rho variable in betabinom.}
+
+\item{disper.par}{Dispertion parameter for negative binomial}
+
+\item{pos}{Phisical map position of each marker}
 
 \item{chr}{Chromosome where the marker is positioned}
 
@@ -59,9 +60,9 @@ vcf file located in out.file defined path
 }
 \description{
 Given PedigreeSim .dat .map and .chrom files generate vcf file with depths count
-in AD format field estimated by negative binomial. Works only for biallelic markers, 
-the allels can be named as A (reference) and B, or by DNA bases A, T, C and G. In this last case, 
-a vector indicanting the reference allele is needed.
+in AD format field estimated by negative binomial. The function receives genotypes codification in
+genotypes.dat according with Wu et. al 2002a table I observed bands. The a allele will be considered
+the reference allele. Null alleles are not supported.
 }
 \references{
 Voorrips, R. E. , Maliepaard, C. A. (2012) The simulation of meiosis in 
