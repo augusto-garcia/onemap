@@ -303,6 +303,7 @@ pedsim2vcf <- function(inputfile=NULL,
   if(is.null(pos)){
     pos.info <- read.table(chrom.file, header = TRUE, stringsAsFactors = FALSE)
     pos <- chr.info$position*((chr.mb*1000)/mean(pos.info$length))
+    pos <- round(pos,0)
   } 
   
   id <- rownames(data)

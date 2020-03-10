@@ -124,6 +124,7 @@ combine_onemap <- function(...) {
     ## Allocate
     geno <- matrix(0, nrow = n.ind, ncol = n.mar)
     error <- matrix(1, nrow= n.ind*n.mar, ncol= 4)
+    rownames.error <- rep(0,n.ind*n.mar)
     colnames(geno) <- rep(NA, n.mar)
     if (!sampleID.flag) {
         rownames(geno) <- sampleIDs
@@ -161,8 +162,9 @@ combine_onemap <- function(...) {
         error_idx_joint <- rep(1:n.ind, each=n.mar)
         for(w in 1:length(ind.matches)){
           error[which(error_idx_joint == ind.matches[w]),][mrk.start:mrk.end,] <- onemap.objs[[i]]$error[which(error_idx_cur==w),]
+          rownames.error[which(error_idx_joint == ind.matches[w])[mrk.start:mrk.end]] <- rownames(onemap.objs[[i]]$error)[which(error_idx_cur==w)]
         }
-        
+         
         segr.type[mrk.start:mrk.end] <- onemap.objs[[i]]$segr.type
         segr.type.num[mrk.start:mrk.end] <- onemap.objs[[i]]$segr.type.num
         if (!is.null(onemap.objs[[i]]$CHROM)) {
@@ -183,6 +185,7 @@ combine_onemap <- function(...) {
         phe.start <- phe.start + cur.n.phe
     }
 
+    rownames(error) <- rownames.error
     if (anyDuplicated(colnames(geno))) {
         warning("Duplicate marker names found. Please check.")
     }
@@ -237,8 +240,10 @@ split_onemap <- function(onemap.obj=NULL, mks=NULL){
     new.obj$POS <- onemap.obj$POS[idx.mks]
     old.obj$POS <- onemap.obj$POS[-idx.mks]
     new.obj$error <- onemap.obj$error[idx.mks + rep(c(0:(onemap.obj$n.ind-1))*onemap.obj$n.mar, each=length(idx.mks)),]
+#    rownames(new.obj$error) <- rownames(onemap.obj$error[idx.mks + rep(c(0:(onemap.obj$n.ind-1))*onemap.obj$n.mar, each=length(idx.mks)),])
     old.obj$error <- onemap.obj$error[rev.mks + rep(c(0:(onemap.obj$n.ind-1))*onemap.obj$n.mar, each=length(rev.mks)),]
-
+#    rownames(old.obj$error) <- rownames(onemap.obj$error[rev.mks + rep(c(0:(onemap.obj$n.ind-1))*onemap.obj$n.mar, each=length(rev.mks)),])
+    
     return(list(old.obj, new.obj))
 }
 

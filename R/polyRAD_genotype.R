@@ -9,7 +9,10 @@
 #' @param f1 f1 individual identification if F2 cross type
 #' @param crosstype string defining the cross type, by now it supports only 
 #' outcross and f2 intercross
-#' @param tech.issue need to be fixed
+#' @param global_error number from 0 to 1 defining the global error to be considered together 
+#' with the genotype errors or the genotype probabilities or NULL to not considered any global error
+#' @param use_genotypes_errors if \code{TRUE} the error probability of each genotype will be considered in emission function of HMM
+#' @param use_genotype_probs if \code{TRUE} the probability of each possible genotype will be considered in emission function of HMM
 #' 
 #' @return onemap object with error updated 
 #' 
@@ -39,8 +42,9 @@ polyRAD_genotype <- function(vcf=NULL,
                           parent2=NULL,
                           f1=NULL,
                           crosstype=NULL,
-                          tech.issue=TRUE,
-                          global_error = 1){
+                          global_error = NULL,
+                          use_genotypes_errors = TRUE,
+                          use_genotypes_probs = FALSE){
   # Do the checks
    poly.test <- VCF2RADdata(vcf, phaseSNPs = FALSE, 
                            min.ind.with.reads = 0,
@@ -68,8 +72,21 @@ polyRAD_genotype <- function(vcf=NULL,
   # this will change according to the vcf - bug!! Need attention!
   temp <- gsub(":", "_", as.character(genotypes$V1))
   temp_list <- strsplit(temp, split = "_")
-  pos <- sapply(temp_list, function(x) if(length(x) > 2) paste0(x[1:2], collapse = "_"))
+  pos <- sapply(temp_list, function(x) paste0(x[-length(x)], collapse = "_"))
   
+  # Remove multiallelic markers
+  multi <- names(which(table(pos) > onemap.obj$n.ind))
+  if(length(multi) != 0){
+    ## From vcf
+    multi.idx <- which(pos %in% multi)
+    genotypes <- droplevels(genotypes[-multi.idx,])
+    pos <- pos[-multi.idx]
+    
+    # removing the multiallelics from the onemap object
+    split.onemap <- split_onemap(onemap.obj, mks= multi)
+    mult.obj <- split.onemap[[2]]
+    onemap.obj <- split.onemap[[1]]
+  }
   
   pos.onemap <- colnames(onemap.obj$geno)
   genotypes <- genotypes[which(pos%in%pos.onemap),]
@@ -84,7 +101,7 @@ polyRAD_genotype <- function(vcf=NULL,
   # Updating geno matrix
   onemap.obj$geno <- onemap.obj$geno[,keep.mks]
   
-  new.geno <- vector()
+  new.geno <- maxpostprob <- vector()
   for(i in 1:dim(genotypes)[1]){
     if(which.max(genotypes[i,3:5]) == 3){
       new.geno[i] <- 3
@@ -93,11 +110,13 @@ polyRAD_genotype <- function(vcf=NULL,
     } else if(which.max(genotypes[i,3:5]) == 1){
       new.geno[i] <- 1
     }
+    maxpostprob[i] <- unlist(genotypes[i,3:5][which.max(genotypes[i,3:5])])
   }
   
   new.geno <- matrix(new.geno,nrow = onemap.obj$n.ind, ncol = length(keep.mks))
-  colnames(new.geno) <- colnames(onemap.obj$geno)
-  rownames(new.geno) <- rownames(onemap.obj$geno)
+  maxpostprob <- matrix(maxpostprob,nrow = onemap.obj$n.ind, ncol = length(keep.mks))
+  colnames(new.geno) <- colnames(maxpostprob) <- colnames(onemap.obj$geno)
+  rownames(new.geno) <- rownames(maxpostprob) <- rownames(onemap.obj$geno)
   
   # Same order priority: individuals, markers
   genotypes$V2 <- factor(genotypes$V2, levels = genotypes$V2[1:onemap.obj$n.ind])
@@ -116,10 +135,23 @@ polyRAD_genotype <- function(vcf=NULL,
   onemap.obj$CHROM <- onemap.obj$CHROM[keep.mks]
   onemap.obj$POS <- onemap.obj$POS[keep.mks]
   
-  probs <- as.matrix(genotypes[,3:5]*(1- global_error))
-  probs[which(probs == 0)] <- global_error
+  probs <- as.matrix(genotypes[,3:5])
   
-  polyrad.one <- create_probs(onemap.obj = onemap.obj, genotypes_probs =  probs)
+  if(use_genotypes_probs){
+    onemap.obj.new <- create_probs(onemap.obj = onemap.obj,
+                                     genotypes_probs = genotypes_probs,
+                                     global_error = global_error)
+  } else if(use_genotypes_errors){
+    onemap.obj.new <- create_probs(onemap.obj = onemap.obj,
+                                     genotypes_errors = 1- maxpostprob,
+                                     global_error = global_error)
+  } else if(!is.null(global_error)){
+    onemap.obj.new <- create_probs(onemap.obj = onemap.obj,
+                                     global_error = global_error)
+  }
   
-  return(polyrad.one)
+  if(length(multi) > 0)
+    onemap.obj.new <- combine_onemap(onemap.obj.new, mult.obj)
+  
+  return(onemap.obj.new)
 }

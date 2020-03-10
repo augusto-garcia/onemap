@@ -360,15 +360,18 @@ n")
     onemap_updog.new <- create_probs(onemap.obj = onemap_updog,
                                      genotypes_probs = genotypes_probs,
                                      global_error = global_error)
-  } else if(use_genotypes_error){
+  } else if(use_genotypes_errors){
     onemap_updog.new <- create_probs(onemap.obj = onemap_updog,
                                      genotypes_errors = maxpostprob,
+                                     global_error = global_error)
+  } else if(!is.null(global_error)){
+    onemap_updog.new <- create_probs(onemap.obj = onemap_updog,
                                      global_error = global_error)
   }
   
   if(length(multi.mks) > 0)
     onemap_updog.new <- combine_onemap(onemap_updog.new, mult.obj)
-  
+
   structure(onemap_updog.new)
 }
 
