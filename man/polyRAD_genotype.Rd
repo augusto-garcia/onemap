@@ -11,8 +11,9 @@ polyRAD_genotype(
   parent2 = NULL,
   f1 = NULL,
   crosstype = NULL,
-  tech.issue = TRUE,
-  global_error = 1
+  global_error = NULL,
+  use_genotypes_errors = TRUE,
+  use_genotypes_probs = FALSE
 )
 }
 \arguments{
@@ -29,7 +30,12 @@ polyRAD_genotype(
 \item{crosstype}{string defining the cross type, by now it supports only 
 outcross and f2 intercross}
 
-\item{tech.issue}{need to be fixed}
+\item{global_error}{number from 0 to 1 defining the global error to be considered together 
+with the genotype errors or the genotype probabilities or NULL to not considered any global error}
+
+\item{use_genotypes_errors}{if \code{TRUE} the error probability of each genotype will be considered in emission function of HMM}
+
+\item{use_genotype_probs}{if \code{TRUE} the probability of each possible genotype will be considered in emission function of HMM}
 }
 \value{
 onemap object with error updated

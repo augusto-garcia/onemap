@@ -21,6 +21,8 @@
 #' @param bias The bias parameter for updog model. Pr(a read after selected) / Pr(A read after selected).
 #' @param od The overdispersion parameter for updog model. See the Details of the rho variable in betabinom.
 #' @param disper.par Dispertion parameter for negative binomial 
+#' @param haplo.ref character indicating the reference haplotype of genotypes.dat file
+#' @param use.as.alleles if \code{TRUE} uses codification in genotypes dat to define the reference and alternative alleles fields in VCF
 #' 
 #' @return vcf file located in out.file defined path
 #' 
@@ -56,7 +58,9 @@ pedsim2vcf <- function(inputfile=NULL,
                        disper.par=2,
                        pos=NULL,
                        chr=NULL,
-                       phase = FALSE){
+                       phase = FALSE,
+                       haplo.ref=NULL,
+                       use.as.alleles=FALSE){
   
   # Do the checks here
   data <- read.table(paste(inputfile), stringsAsFactors = FALSE, header = TRUE)
@@ -72,14 +76,25 @@ pedsim2vcf <- function(inputfile=NULL,
   gt_matrix <- gt_ref <- gt_alt <-  het_matrix <- matrix(rep(NA,n.ind*n.mk), nrow = n.mk, ncol = n.ind)
   
   data <- as.matrix(data)
+  keep.alleles <- data
   
   if(any(data == "o"))
     stop("Null alleles are not supported.")
   
-  data[which(data == "a")] <- "0"
-  data[which(data == "b")] <- "1"
-  data[which(data == "c")] <- "2"
-  data[which(data == "d")] <- "3"
+  if(is.null(haplo.ref)){
+    h.ref <- data[,1]
+  } else{
+    h.ref <- data[,which(colnames(data) == haplo.ref)]
+  }
+  
+  alt <- list()
+  for(i in 1:n.mk){
+    alt <- levels(factor(unlist(data[i,])))[which(levels(factor(unlist(data[i,]))) != h.ref[i])]
+    data[i,][which(data[i,]== h.ref[i])] <- "0"
+    for(w in 1:length(alt)){
+      data[i,][which(data[i,]== alt[w])] <- w
+    }
+  }
   
   for(i in 1:(length(idx)/2)){
     gt_matrix[,i] <- paste0(data[,which(idx == i)[1]], "|", data[,which(idx == i)[2]])
@@ -308,9 +323,13 @@ pedsim2vcf <- function(inputfile=NULL,
   
   id <- rownames(data)
   
-  # Defininf alleles in field REF and ALT
+  # Defining alleles in field REF and ALT
   ## REF
-  ref <- sample(c("A","T", "C", "G"), n.mk, replace = TRUE)
+  if(use.as.alleles){
+    ref <- h.ref
+  } else{
+    ref <- sample(c("A","T", "C", "G"), n.mk, replace = TRUE)
+  }
   alt <- rep(NA, length(ref))
   ## ALT
   done <- vector() # vector to store markers already avaliated
@@ -322,20 +341,24 @@ pedsim2vcf <- function(inputfile=NULL,
       alleles <- apply(check_matrix, 1, function(x) any(grepl(j, x)))
     }
     if(sum(alleles) != 0){
-      alt_temp <- matrix(NA, nrow=sum(alleles), ncol = 3)
+      alt_temp <- vector()
       if(length(done) != 0)
         ref_temp <- ref[-done][alleles]
       else ref_temp <- ref[alleles]
       
-      for(i in 1:sum(alleles)){
-        temp <- sample(c("A","T", "C", "G"), 4, replace = F)
-        alt_temp[i,] <- temp[-which(temp == ref_temp[i])]
+      for(i in 1:length(alleles)){
+        if(use.as.alleles){
+          if(length(done) == 0)
+            temp <- levels(factor(keep.alleles[which(alleles)[i],]))
+          else temp <- levels(factor(keep.alleles[-done,][which(alleles)[i],]))
+        } else  temp <- sample(c("A","T", "C", "G"), 4, replace = F)
+        alt_temp <- rbind(alt_temp, temp[-which(temp == ref_temp[i])])
       }
       rm.colum <- 3-j
-      if(rm.colum != 0){
+      if(rm.colum != 0 & !use.as.alleles){
         alt_temp <- alt_temp[,-c(1:rm.colum)]
       }
-      if(length(done) != 0){
+      if(length(done) != 0){ 
         if(is(alt_temp, "matrix"))
           alt[-done][alleles] <- apply(alt_temp, 1, function(x) paste0(x, collapse = ","))
         else alt[-done][alleles] <- alt_temp

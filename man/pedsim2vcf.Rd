@@ -21,7 +21,9 @@ pedsim2vcf(
   disper.par = 2,
   pos = NULL,
   chr = NULL,
-  phase = FALSE
+  phase = FALSE,
+  haplo.ref = NULL,
+  use.as.alleles = FALSE
 )
 }
 \arguments{
@@ -54,6 +56,10 @@ pedsim2vcf(
 \item{chr}{Chromosome where the marker is positioned}
 
 \item{phase}{if TRUE the genotypes in VCF will be phased}
+
+\item{haplo.ref}{character indicating the reference haplotype of genotypes.dat file}
+
+\item{use.as.alleles}{if \code{TRUE} uses codification in genotypes dat to define the reference and alternative alleles fields in VCF}
 }
 \value{
 vcf file located in out.file defined path

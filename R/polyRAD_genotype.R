@@ -139,7 +139,7 @@ polyRAD_genotype <- function(vcf=NULL,
   
   if(use_genotypes_probs){
     onemap.obj.new <- create_probs(onemap.obj = onemap.obj,
-                                     genotypes_probs = genotypes_probs,
+                                     genotypes_probs = probs,
                                      global_error = global_error)
   } else if(use_genotypes_errors){
     onemap.obj.new <- create_probs(onemap.obj = onemap.obj,
