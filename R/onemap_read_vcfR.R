@@ -120,23 +120,23 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     idx <- apply(GT_parents, 1, function(x) (length(x) -1) == length(unique(x)))
     idx.sub <- which(P1_1[idx] != P1_2[idx] & P2_1[idx] != P2_2[idx])
     mk.type[idx][idx.sub] <- "A.2"
-    mk.type.num[idx] <- 1
+    mk.type.num[idx][idx.sub] <- 1
     idx.sub <- which(P1_1[idx] != P1_2[idx] & P2_1[idx] == P2_2[idx])
     mk.type[idx][idx.sub] <- "D1.9"
-    mk.type.num[idx] <- 6
+    mk.type.num[idx][idx.sub] <- 6
     idx.sub <- which(P1_1[idx] == P1_2[idx] & P2_1[idx] != P2_2[idx])
     mk.type[idx][idx.sub] <- "D2.14"
-    mk.type.num[idx] <- 7
+    mk.type.num[idx][idx.sub] <- 7
     idx <- apply(GT_parents, 1, function(x) (length(x) -2) == length(unique(x)))
     idx.sub <- which(P1_1[idx] != P1_2[idx] & P2_1[idx] != P2_2[idx])
     mk.type[idx][idx.sub] <- "B3.7"
-    mk.type.num[idx] <- 4
+    mk.type.num[idx][idx.sub] <- 4
     idx.sub <- which(P1_1[idx] != P1_2[idx] & P2_1[idx] == P2_2[idx])
     mk.type[idx][idx.sub] <- "D1.10"
-    mk.type.num[idx] <- 6
+    mk.type.num[idx][idx.sub] <- 6
     idx.sub <- which(P1_1[idx] == P1_2[idx] & P2_1[idx] != P2_2[idx])
     mk.type[idx][idx.sub] <- "D2.15"
-    mk.type.num[idx] <- 7
+    mk.type.num[idx][idx.sub] <- 7
     
     # It informs to user why markers are being removed
     idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./.")

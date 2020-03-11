@@ -101,7 +101,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
   ##Checking for appropriate number of markers
   if(length(seq.num) < 2) stop("The sequence must have at least 2 markers")
   ##For F2, BC and rils
-
+  
   if(is(input.seq$data.name, "f2"))
   {
     final.map<- est_map_hmm_f2(geno=t(input.seq$data.name$geno[,seq.num]),
@@ -123,7 +123,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
                               rf.vec=get_vec_rf_in(input.seq),
                               verbose=verbose,
                               tol=tol)
-
+    
     if(is(input.seq$data.name, c("riself", "risib")))
       final.map$rf<-adjust_rf_ril(final.map$rf,
                                   type=class(input.seq$data.name)[2],

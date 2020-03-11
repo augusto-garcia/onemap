@@ -277,7 +277,7 @@ pedsim2vcf <- function(inputfile=NULL,
     vcf_format <- matrix(paste0(check_matrix, ":", ad_matrix), nrow = n.mk)
     
   } else {
-    vcf_format <- gt_matrix
+    vcf_format <- check_matrix <- gt_matrix
     format <- rep("GT", n.mk)
     info <- "."
   }

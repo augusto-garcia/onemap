@@ -133,7 +133,7 @@ make_seq <-
       else stop("the length of 'phase' must be equal to the length of the sequence minus 1")
       seq.rf <- -1
       seq.like <- NULL
-      if(is.null(data.name)) data.name <- deparse(substitute(input.obj))
+      if(is.null(data.name)) data.name <- input.obj
       twopt <- NULL
     } else if (is(input.obj, "rf_2pts")){
       if (length(arg) == 1 && is.character(arg) && arg != "all") {
@@ -156,7 +156,7 @@ make_seq <-
       else stop("the length of 'phase' must be equal to the length of the sequence minus 1")
       seq.rf <- -1
       seq.like <- NULL
-      if(is.null(twopt)) twopt <- deparse(substitute(input.obj))
+      if(is.null(twopt)) twopt <- input.obj
     } else if (is(input.obj, "group")){
       if(length(arg) == 1 && is.numeric(arg) && arg <= input.obj$n.groups) seq.num <- input.obj$seq.num[which(input.obj$groups == arg)]
       else stop("for this object of class 'group', \"arg\" must be an integer less than or equal to ",input.obj$n.groups)
