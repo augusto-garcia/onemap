@@ -113,6 +113,8 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     # Marker types
     
     GT_parents <- cbind(P1_1, P1_2,P2_1, P2_2)
+    idx <- which(P1_1 == "." | P2_1 == "." |  P1_2 == "." | P2_2 == ".")
+    GT_parents[idx,] <- NA
     
     idx <- apply(GT_parents, 1, function(x) length(x) == length(unique(x)))
     mk.type[idx] <- "A.1"
@@ -139,7 +141,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     mk.type.num[idx][idx.sub] <- 7
     
     # It informs to user why markers are being removed
-    idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./.")
+    idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./." |  GT_matrix[,P2] == "." | GT_matrix[,P1] == ".")
     if (length(idx) > 0)
       cat(length(MKS[idx]), "Markers were removed of the dataset because one or both of parents have no informed genotypes (are missing data)\n")
     

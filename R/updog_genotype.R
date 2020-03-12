@@ -47,7 +47,8 @@ updog_genotype <- function(vcfR.object=NULL,
                            depths = NULL,
                            global_error = NULL,
                            use_genotypes_errors = TRUE,
-                           use_genotypes_probs = FALSE){
+                           use_genotypes_probs = FALSE,
+                           rm_multiallelic = TRUE){
   
   # checks
   if(use_genotypes_errors & use_genotypes_probs){
@@ -140,12 +141,12 @@ updog_genotype <- function(vcfR.object=NULL,
     mks = rownames(oalt)
     CHROM = CHROM[-idx]
     POS = POS[-idx]
+    
+    # removing the multiallelics from the onemap object
+    split.onemap <- split_onemap(onemap.object, multi.mks)
+    mult.obj <- split.onemap[[2]]
+    onemap.object <- split.onemap[[1]]
   }
-  
-  # removing the multiallelics from the onemap object
-  split.onemap <- split_onemap(onemap.object, multi.mks)
-  mult.obj <- split.onemap[[2]]
-  onemap.object <- split.onemap[[1]]
   
   # Missing data                                                                                                 
   if(class(onemap.object)[2] == "f2"){
@@ -369,9 +370,10 @@ n")
                                      global_error = global_error)
   }
   
-  if(length(multi.mks) > 0)
-    onemap_updog.new <- combine_onemap(onemap_updog.new, mult.obj)
-
+  if(!rm_multiallelic){
+    if(length(multi.mks) > 0)
+      onemap_updog.new <- combine_onemap(onemap_updog.new, mult.obj)
+  }
   structure(onemap_updog.new)
 }
 
