@@ -214,6 +214,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 2
       
       GT_matrix[grepl("/", GT_matrix)] <- 0
+      GT_matrix[grepl("[.]", GT_matrix)] <- 0
     }    
   } else if(cross== "f2 intercross"){
     # Marker type

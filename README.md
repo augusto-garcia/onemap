@@ -90,3 +90,7 @@ that will guide you through other chapters.
 3. [How to build a linkage map for inbred-bases populations (F2, RIL and BC)](http://augusto-garcia.github.io/onemap/vignettes_highres/Inbred_Based_Populations.html)
 
 4. [How to build a linkage map for outcrossing populations](http://augusto-garcia.github.io/onemap/vignettes_highres/Outcrossing_Populations.html)
+
+5. [How to simulate maps](http://critianetaniguti.github.io/onemap/vignettes_highres/Simulations.html)
+
+6. [How to build a high density  maps with markers from high-throughput sequencing](http://critianetaniguti.github.io/onemap/vignettes_highres/High_density_maps.html)
