@@ -72,7 +72,7 @@ polyRAD_genotype <- function(vcf=NULL,
   # this will change according to the vcf - bug!! Need attention!
   temp <- gsub(":", "_", as.character(genotypes$V1))
   temp_list <- strsplit(temp, split = "_")
-  pos <- sapply(temp_list, function(x) paste0(x[-length(x)], collapse = "_"))
+  pos <- sapply(temp_list, function(x) if(length(x) > 2) paste0(x[-length(x)], collapse = "_"))
   
   # Remove multiallelic markers
   multi <- names(which(table(pos) > onemap.obj$n.ind))
