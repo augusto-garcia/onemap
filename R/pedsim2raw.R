@@ -9,6 +9,16 @@
 #' @param out.file string defining the name of the output file
 #' @param miss.perc double defining the percentage of missing data to be simulated
 #' 
+#' 
+#' @examples 
+#' # Outcrossing population
+#' pedsim2raw(cross="outcross", genofile = "sim_out_genotypes.dat", parent1 = "P1", parent2 = "P2", out.file = "sim_out.example1.raw")
+#' # F2 intercross
+#' pedsim2raw(cross="f2 intercross", genofile = "sim_out.f2_genotypes.dat", parent1 = "P1", parent2 = "P2", f1 = "F1", 
+#'            out.file = "sim_out.example2.raw", miss.perc = 10)
+#' 
+#' df <- read_onemap(inputfile = "sim_out.example2.raw")
+#' 
 #' @export
 pedsim2raw <- function(cross = c("outcross", "f2 intercross"),
                        genofile = "sim_out_genotypes.dat",
@@ -310,11 +320,4 @@ pedsim2raw <- function(cross = c("outcross", "f2 intercross"),
   
 }
 
-# Example
-# outcross
-# pedsim2raw(cross="outcross", genofile = "sim_out_genotypes.dat", parent1 = "P1", parent2 = "P2", out.file = "sim_out.example1.raw")
-# #F2
-# pedsim2raw(cross="f2 intercross", genofile = "sim_out.f2_genotypes.dat", parent1 = "P1", parent2 = "P2", f1 = "F1", 
-#            out.file = "sim_out.example2.raw", miss.perc = 10)
-# 
-# df <- read_onemap(inputfile = "sim_out.example2.raw")
+

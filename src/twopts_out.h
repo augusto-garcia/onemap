@@ -43,5 +43,5 @@ using namespace std;
 RcppExport SEXP est_rf_out_wrap(SEXP geno_R, SEXP mrk_R, SEXP segreg_type_R, SEXP n_ind_R, SEXP verbose_R);
 Rcpp::List est_rf_out(Rcpp::NumericVector geno, 
 		      int mrk, 
-		      Rcpp::NumericVector segreg_type, 
+		      Rcpp::IntegerVector segreg_type, 
 		      int n_ind, int verbose);

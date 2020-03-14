@@ -20,7 +20,7 @@
 phases <- function(input.seq, LOD=0, max.rf=0.50)
 {
     ## checking for correct object
-    if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+    if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
     
     tot <- choose(length(input.seq$seq.num),2)
     ## initial values for the recombination fraction

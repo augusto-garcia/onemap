@@ -3,7 +3,7 @@
 # Package: onemap                                                     #
 #                                                                     #
 # File: combine_onemap.R                                              #
-# Contains: combine_onemap                                            #
+# Contains: combine_onemap split_onemap                               #
 #                                                                     #
 # Written by Gabriel Rodrigues Alves Margarido                        #
 # copyright (c) 2016, Gabriel R A Margarido                           #
@@ -76,7 +76,7 @@ combine_onemap <- function(...) {
         stop("You must provide a list of OneMap objects as input.")
     }
     for (i in 1:n.objs) {
-        if(class(onemap.objs[[i]])[1] != "onemap")
+        if(!is(onemap.objs[[i]], "onemap"))
             stop("All objects must be of class 'onemap'.")
     }
     if (n.objs == 1) {
@@ -86,7 +86,7 @@ combine_onemap <- function(...) {
     ## Check if all objects are of the same cross type
     crosstype <- class(onemap.objs[[1]])[2]
     for (i in 2:n.objs) {
-        if(class(onemap.objs[[i]])[2] != crosstype)
+        if(!is(onemap.objs[[i]], crosstype))
             stop("All objects must be of the same cross type.")
     }
 
@@ -124,6 +124,7 @@ combine_onemap <- function(...) {
     ## Allocate
     geno <- matrix(0, nrow = n.ind, ncol = n.mar)
     error <- matrix(1, nrow= n.ind*n.mar, ncol= 4)
+    rownames.error <- rep(0,n.ind*n.mar)
     colnames(geno) <- rep(NA, n.mar)
     if (!sampleID.flag) {
         rownames(geno) <- sampleIDs
@@ -161,8 +162,9 @@ combine_onemap <- function(...) {
         error_idx_joint <- rep(1:n.ind, each=n.mar)
         for(w in 1:length(ind.matches)){
           error[which(error_idx_joint == ind.matches[w]),][mrk.start:mrk.end,] <- onemap.objs[[i]]$error[which(error_idx_cur==w),]
+          rownames.error[which(error_idx_joint == ind.matches[w])[mrk.start:mrk.end]] <- rownames(onemap.objs[[i]]$error)[which(error_idx_cur==w)]
         }
-        
+         
         segr.type[mrk.start:mrk.end] <- onemap.objs[[i]]$segr.type
         segr.type.num[mrk.start:mrk.end] <- onemap.objs[[i]]$segr.type.num
         if (!is.null(onemap.objs[[i]]$CHROM)) {
@@ -183,6 +185,7 @@ combine_onemap <- function(...) {
         phe.start <- phe.start + cur.n.phe
     }
 
+    rownames(error) <- rownames.error
     if (anyDuplicated(colnames(geno))) {
         warning("Duplicate marker names found. Please check.")
     }
@@ -202,3 +205,45 @@ combine_onemap <- function(...) {
                    error=error, input = input),
               class = c("onemap", crosstype))
 }
+
+#' Split onemap data sets
+#' 
+#' Receives one onemap object and a vector with markers names to be 
+#' removed from the input onemap object and inserted in a new one. The output
+#' is a list containing the two onemap objects.
+#' 
+#' @param onemap.obj object of class onemap
+#' @param mks markers names to be removed and added to a new onemap object
+#' 
+#' @return  a list containing in first level the original onemap object without 
+#' the indicated markers and the second level the new onemap object with only 
+#' the indicated markers 
+#' 
+#' @export
+split_onemap <- function(onemap.obj=NULL, mks=NULL){
+
+    idx.mks <- which(colnames(onemap.obj$geno) %in% mks)
+    rev.mks <- which(!colnames(onemap.obj$geno) %in% mks)
+    
+    new.obj <- old.obj <- onemap.obj
+    
+    new.obj$geno <- onemap.obj$geno[,idx.mks]
+    old.obj$geno <- onemap.obj$geno[,-idx.mks]
+    new.obj$n.mar <- length(idx.mks)
+    old.obj$n.mar <- onemap.obj$n.mar - length(idx.mks)
+    new.obj$segr.type <- onemap.obj$segr.type[idx.mks]
+    old.obj$segr.type <- onemap.obj$segr.type[-idx.mks]
+    new.obj$segr.type.num <- onemap.obj$segr.type.num[idx.mks]
+    old.obj$segr.type.num <- onemap.obj$segr.type.num[-idx.mks]
+    new.obj$CHROM <- onemap.obj$CHROM[idx.mks]
+    old.obj$CHROM <- onemap.obj$CHROM[-idx.mks]
+    new.obj$POS <- onemap.obj$POS[idx.mks]
+    old.obj$POS <- onemap.obj$POS[-idx.mks]
+    new.obj$error <- onemap.obj$error[idx.mks + rep(c(0:(onemap.obj$n.ind-1))*onemap.obj$n.mar, each=length(idx.mks)),]
+#    rownames(new.obj$error) <- rownames(onemap.obj$error[idx.mks + rep(c(0:(onemap.obj$n.ind-1))*onemap.obj$n.mar, each=length(idx.mks)),])
+    old.obj$error <- onemap.obj$error[rev.mks + rep(c(0:(onemap.obj$n.ind-1))*onemap.obj$n.mar, each=length(rev.mks)),]
+#    rownames(old.obj$error) <- rownames(onemap.obj$error[rev.mks + rep(c(0:(onemap.obj$n.ind-1))*onemap.obj$n.mar, each=length(rev.mks)),])
+    
+    return(list(old.obj, new.obj))
+}
+

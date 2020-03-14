@@ -21,7 +21,8 @@
 #' @param name.out a character with the PedigreeSim outputs names
 #' @param rm.tempfiles logical TRUE/FALSE, if TRUE remove the temporary files generated 
 #' 
-#' @return PedigreeSim outputs including the population genotypes 
+#' @return PedigreeSim outputs including the population genotypes codified as the observed bands genotypes
+#' according to Wu et. al 2002 table I
 #' 
 #' @author Cristiane Taniguti, \email{chtaniguti@@usp.br} 
 #'
@@ -37,8 +38,8 @@
 #'run_pedsim(chromosome = c("Chr1", "Chr10"), n.marker = c(4,6), tot.size.cm = c(100,150), centromere = c(50, 75),
 #'            n.ind = 200, mk.types = c("A.H.B", "C.A", "D.B"), n.types = c(2,3,5), pop = "F2", path.pedsim = "~/Programs/PedigreeSimv2.0/",
 #'            name.mapfile = "mapfile.map", name.founderfile="founderfile.gen", name.chromfile="sim.chrom", name.parfile="sim.par",
-#'            name.out="sim_out.f2")
-#' # For F1
+#'            name.out="sim_out.F2")
+#' # For outcross
 #' run_pedsim(chromosome = c("Chr1", "Chr2","Chr10"), n.marker = c(40,30,20), tot.size.cm = c(100,150, 100), centromere = c(50, 75,50),
 #'            n.ind = 200, mk.types = c("A1", "A2", "A3", "A4", "B1.5", "B2.6", "B3.7",
 #'                                      "C.8", "D1.9", "D1.10", "D1.11", "D1.12", "D1.13",

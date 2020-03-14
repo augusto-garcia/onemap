@@ -120,7 +120,7 @@ ripple_seq<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2)
 ## orders of subsets of markers (for outcrosses)
 ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2) {
     ## checking for correct objects
-    if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+    if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
     if(ws < 2) stop("ws must be greater than or equal to 2")
     if(ws > 5) cat("WARNING: this operation may take a VERY long time\n\n")
     utils::flush.console()
@@ -205,7 +205,7 @@ ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2) {
 	LOD.print <- format(best.ord.LOD,digits=2,nsmall=2)
         cat("\n  Alternative orders:\n")
         for(j in which.LOD) {
-            if(any(class(input.seq$data.name)=="outcross"))
+            if(is(input.seq$data.name,"outcross"))
                 cat("  ",all.ord[j,1:(ws+1)],ifelse(len > (ws+1),"... : ",": "),LOD.print[j],"( linkage phases:",best.ord.phase[j,1:ws],ifelse(len > (ws+1),"... )\n",")\n"))
             else
                 cat("  ",all.ord[j,1:(ws+1)],ifelse(len > (ws+1),"... : ",": "),LOD.print[j],"\n")
@@ -271,7 +271,7 @@ ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2) {
                 LOD.print <- format(best.ord.LOD,digits=2,nsmall=2)
                 cat("\n  Alternative orders:\n")
                 for(j in which.LOD) {
-                    if(any(class(input.seq$data.name)=="outcross"))
+                    if(is(input.seq$data.name,"outcross"))
                         cat(ifelse(p>2,"  ...","  "),all.ord[j,(p-1):(p+ws)],ifelse((p+ws)<len,"... : ",": "),LOD.print[j],"( linkage phases:",ifelse(p>2,"...","\b"),best.ord.phase[j,(p-1):(p+ws-1)],ifelse((p+ws)<len,"... )\n",")\n"))
                     else
                         cat(ifelse(p>2,"  ...","  "),all.ord[j,(p-1):(p+ws)],ifelse((p+ws)<len,"... : ",": "),LOD.print[j],"\n")
@@ -336,7 +336,7 @@ ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2) {
         cat("\n  Alternative orders:\n")
 
         for(j in which.LOD) {
-            if(any(class(input.seq$data.name)=="outcross"))
+            if(is(input.seq$data.name,"outcross"))
                 cat(ifelse(len > (ws+1),"  ...","  "),all.ord[j,(len-ws):len],": ",LOD.print[j],"( linkage phases:",ifelse(len > (ws+1),"...","\b"),best.ord.phase[j,(len-ws):(len-1)],")\n")
             else
                 cat(ifelse(len > (ws+1),"  ...","  "),all.ord[j,(len-ws):len],": ",LOD.print[j],"\n")
@@ -352,7 +352,7 @@ ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2) {
 ripple_seq_inbred<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2)
 {
     ## checking for correct objects
-    if(!any(class(input.seq)=="sequence"))
+    if(!is(input.seq,"sequence"))
         stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
     if(ws < 2)
         stop("ws must be greater than or equal to 2")

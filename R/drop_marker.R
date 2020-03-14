@@ -61,7 +61,7 @@
 
 drop_marker<-function(input.seq, mrks)
   {
-    if (!any(class(input.seq) == "sequence"))
+    if (!is(input.seq,"sequence"))
       stop(deparse(substitute(input.seq)), " is not an object of class 'sequence'")
     seq.num<-input.seq$seq.num;count<-numeric()
     for(i in 1:length(mrks)){

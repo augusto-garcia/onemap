@@ -38,7 +38,7 @@ mapping in outcrossing species; please read the proper vignette.
 
 If you are not familiar with `R`, we recommend first the reading of
 vignette
-[Introduction to R](http://htmlpreview.github.io/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Introduction_R.html).
+[Introduction to R](https://htmlpreview.github.io/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Introduction_R.html).
 You do not need to be an expert in R to build your linkage map, but
 some concepts are necessary and will help you through the process.
 
@@ -66,7 +66,7 @@ readily used for QTL mapping using `R/qtl` (Broman et al., 2008) or
 
 Here, we briefly present how to set up this data file. For more
 detailed information see the `MAPMAKER/EXP` manual (Lincon et al.,
-1993), available [here](http://home.cc.umanitoba.ca/~psgendb/birchhomedir/doc/mapmaker/mapmaker.tutorial.pdf).
+1993), available [here](https://home.cc.umanitoba.ca/~psgendb/birchhomedir/doc/mapmaker/mapmaker.tutorial.pdf).
 
 The first line of your data file should be:
 
@@ -226,7 +226,7 @@ so modify it accordingly. The second one is the data file name.
 In this example, an object named `mapmaker_example_f2.raw` was created. Notice
 that if you leave the argument `dir` blank, the file will be read from
 your current _working directory_. To set a working directory, see
-[Introduction to R (Importing and Exporting Data)](http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/vignettes_html/Introduction_R.html).
+[Introduction to R (Importing and Exporting Data)](https://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/vignettes_html/Introduction_R.html).
 
 ```{r, eval=FALSE}
 mapmaker_example_f2 <- read_mapmaker(file= system.file("extdata/mapmaker_example_f2.raw", 
@@ -1257,7 +1257,11 @@ In our examples until now we had few markers compared with those obtained by hig
 and `try_seq` can be a hardy and slow work. To help this task, we create the function `mds_onemap`
 wich makes a interface between `OneMap` and `MDSMap` package. The ordering approach presented in
 `MDSMap` provides a faster and efficient way of ordering markers using multi-dimensional scaling. 
+<<<<<<< HEAD
 The method also provides diagnostics graphics and parameters to find outliers to help users to filter the dataset. You can find more informations in `MDSMap` [vignette](https://cran.r-project.org/web/packages/MDSMap/vignettes/MDSMap.pdf). Here we will show a simples example of how it can be used for a outcrossing dataset.
+=======
+The method also provides diagnostics graphics and parameters to find outliers to help users to filter the dataset. You can find more informations in `MDSMap` [vignette](https://CRAN.R-project.org/package=MDSMap). Here we will show a simples example of how it can be used for a outcrossing dataset.
+>>>>>>> 1d86c0b81792bada3c7665b6477f653e46c1aafc
 
 
 # Map estimation for an arbitrary order
@@ -1493,7 +1497,7 @@ linkage maps and QTLs. **_Journal of Heredity_** 93, 77-78, 2002.
 Wang S., Basten, C. J. and Zeng Z.-B. Windows QTL Cartographer 2.5.
 Department of Statistics, North Carolina State University, Raleigh,
 NC, 2010.
-[http://statgen.ncsu.edu/qtlcart/WQTLCart.htm](http://statgen.ncsu.edu/qtlcart/WQTLCart.htm)
+[https://brcwebportal.cos.ncsu.edu/qtlcart/](https://brcwebportal.cos.ncsu.edu/qtlcart/)
 
 Wu, R., Ma, C.X., Painter, I. and Zeng, Z.-B. Simultaneous maximum
 likelihood estimation of linkage and linkage phases in outcrossing

@@ -26,6 +26,7 @@
 #' @param inds a vector of characters specifying the individual names to be considered or NULL to consider all individuals
 #' @param GTfrom the graphic should contain the genotypes from onemap.obj or from the vcf? Specify using "onemap", "vcf" or "prob".
 #' @param alpha define the transparency of the dots in the graphic
+#' @param rds.file rds file name to store the data frame with values used to build the graphic
 #'
 #' @return an rds file and a ggplot graphic.
 #' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
@@ -38,6 +39,7 @@ create_depths_profile <- function(onemap.obj = NULL,
                                   vcfR.object = NULL, 
                                   parent1 = NULL,
                                   parent2 = NULL,
+                                  f1 = NULL,
                                   vcf.par = "AD",
                                   recovering=TRUE,
                                   mks = NULL,
@@ -45,39 +47,74 @@ create_depths_profile <- function(onemap.obj = NULL,
                                   GTfrom= "onemap",
                                   alpha=1,
                                   rds.file = "data.rds"){
+  
+  # Exclude multiallelic markers
+  if(is(onemap.obj, "outcross")){
+    idx.mks <- colnames(onemap.obj$geno)[which(!(onemap.obj$segr.type %in% c("B3.7", "D1.10", "D2.15")))]
+    if(length(idx.mks) > 0){
+      warning("Only biallelic codominant markers are supported. The multiallelic markers present in onemap object will not be plotted.\n") 
+      onemaps <- split_onemap(onemap.obj, mks= idx.mks)
+      onemap.obj <- onemaps[[1]]
+    }
+  } else if(any(names(class(onemap.obj)) == "f2 intercross")){
+    idx.mks <- colnames(onemap.obj$geno)[which(!(onemap.obj$segr.type %in% c("A.H.B")))]
+    if(length(idx.mks) > 0){
+      warning("Only codominant markers are supported. The dominant markers present in onemap object will not be plotted.\n") 
+      onemaps <- split_onemap(onemap.obj, mks= idx.mks)
+      onemap.obj <- onemaps[[1]]
+    }
+  } else{
+    stop("By now, this function is only available for outcrossing and f2 intercross populations\n")
+  }
+  
   # do the checks
   depths <- extract_depth(vcfR.object = vcfR.object, onemap.object = onemap.obj, vcf.par, parent1, parent2, recovering = recovering)
   
-  # parents depth
-  alt <- depths$palt %>% data.frame(mks=depths$mks) %>% gather("ind", "alt", -"mks")
-  ref <- depths$pref %>% data.frame(mks=depths$mks) %>% gather("ind", "ref", -"mks")
-  parents <- merge(alt,ref)
-  
   # parents onemap genotypes
-  ## By now, only for biallelic <<<<<<<<
+  ## Only for biallelic codominant markers
   p1 <- p2 <- vector()
-  p1[which(onemap.obj$segr.type == "D1.10")] <- 2
-  p1[which(onemap.obj$segr.type == "D2.15")] <- 1
-  p1[which(onemap.obj$segr.type == "B3.7")] <- 2
+  if(is(onemap.obj, "outcross")){
+    # parents depth
+    alt <- depths$palt %>% data.frame(mks=depths$mks) %>% gather("ind", "alt", -"mks")
+    ref <- depths$pref %>% data.frame(mks=depths$mks) %>% gather("ind", "ref", -"mks")
+    parents <- merge(alt,ref)
+    
+    p1[which(onemap.obj$segr.type == "D1.10")] <- 2
+    p1[which(onemap.obj$segr.type == "D2.15")] <- 1
+    p1[which(onemap.obj$segr.type == "B3.7")] <- 2
+    
+    p2[which(onemap.obj$segr.type == "D1.10")] <- 1
+    p2[which(onemap.obj$segr.type == "D2.15")] <- 2
+    p2[which(onemap.obj$segr.type == "B3.7")] <- 2
+    id.parents <- c(parent1, parent2)
+    p.gt <- data.frame(mks=colnames(onemap.obj$geno), p1, p2)
+  } else if(any(names(class(onemap.obj)) == "f2 intercross")){
+    # parents depth
+    alt <- depths$palt %>% data.frame(mks=depths$mks)
+    alt <- cbind(alt, f1)
+    colnames(alt) <- c("alt", "mks", "ind")
+    ref <- depths$pref %>% data.frame(mks=depths$mks)
+    ref <- cbind(ref, f1)
+    colnames(ref) <- c("ref", "mks", "ind")
+    parents <- merge(alt,ref)
+    p1 <- 2
+    id.parents <- f1
+    p.gt <- data.frame(mks=colnames(onemap.obj$geno), p1)
+  } 
   
-  p2[which(onemap.obj$segr.type == "D1.10")] <- 1
-  p2[which(onemap.obj$segr.type == "D2.15")] <- 2
-  p2[which(onemap.obj$segr.type == "B3.7")] <- 2
-  
-  p.gt <- data.frame(mks=colnames(onemap.obj$geno), p1, p2)
-  colnames(p.gt) <- c("mks", parent1, parent2)
+  colnames(p.gt) <- c("mks", id.parents)
   p.gt <- gather(p.gt, "ind", "gt.onemap", -"mks")
   parents <- merge(parents, p.gt)
   
   # parents vcf genotypes
-  id.parents <- which(colnames(vcfR.object@gt[,-1]) %in% c(parent1, parent2))
+  idx.parents <- which(colnames(vcfR.object@gt[,-1]) %in% id.parents)
   gts <- vcfR.object@gt[,-1] %>% strsplit(":") %>% sapply("[",1) %>% matrix(ncol = dim(vcfR.object@gt)[2] -1)
   
   MKS <- vcfR.object@fix[,3]
   if (any(MKS == "." | is.na(MKS))) MKS <- paste0(vcfR.object@fix[,1],"_", vcfR.object@fix[,2])
   
-  p.gt <- data.frame(mks = MKS, gts[,id.parents])
-  colnames(p.gt) <- c("mks", parent1, parent2)
+  p.gt <- data.frame(mks = MKS, gts[,idx.parents])
+  colnames(p.gt) <- c("mks", id.parents)
   p.gt <- gather(p.gt, "ind", "gt.vcf", -"mks")
   parents <- merge(parents, p.gt)
   
@@ -97,8 +134,8 @@ create_depths_profile <- function(onemap.obj = NULL,
   progeny <- merge(progeny, gt)
   
   # progeny vcf genotypes
-  pro.gt <- data.frame(mks = MKS, gts[,-id.parents])
-  colnames(pro.gt) <- c("mks", colnames(vcfR.object@gt)[-1][-id.parents])
+  pro.gt <- data.frame(mks = MKS, gts[,-idx.parents])
+  colnames(pro.gt) <- c("mks", colnames(vcfR.object@gt)[-1][-idx.parents])
   pro.gt <- gather(pro.gt, "ind", "gt.vcf", -"mks")
   progeny <- merge(progeny, pro.gt)
   data <- rbind(parents, progeny)
@@ -148,11 +185,11 @@ create_depths_profile <- function(onemap.obj = NULL,
     errors <- apply(data[,7:10], 1, function(x) {
       if(all(is.na(x)) | all(x == 1)) {
         return(NA) 
-        } else { 
-          z <- 1 - x[which.max(x)]
-          return(z)
-          }
-      })
+      } else { 
+        z <- 1 - x[which.max(x)]
+        return(z)
+      }
+    })
     p <- data %>% ggplot(aes(x=ref, y=alt, color=errors)) + 
       geom_point(alpha=alpha) +
       labs(title= "Depths",x="ref", y = "alt", color="Genotypes") +

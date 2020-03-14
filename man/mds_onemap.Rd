@@ -87,7 +87,7 @@ Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage mapping of
 sex-specific differences. \emph{Genetical Research} 79: 85-96
 }
 \seealso{
-\url{http://cran.r-project.org/web/packages/MDSMap/vignettes/MDSMap.pdf}.
+\url{https://CRAN.R-project.org/package=MDSMap}.
 }
 \author{
 Cristiane Taniguti, \email{chtaniguti@usp.br}
