@@ -17,7 +17,8 @@ updog_genotype(
   depths = NULL,
   global_error = NULL,
   use_genotypes_errors = TRUE,
-  use_genotypes_probs = FALSE
+  use_genotypes_probs = FALSE,
+  rm_multiallelic = TRUE
 )
 }
 \arguments{
@@ -46,14 +47,16 @@ with the genotype errors or the genotype probabilities or NULL to not considered
 
 \item{use_genotypes_errors}{if \code{TRUE} the error probability of each genotype will be considered in emission function of HMM}
 
+\item{rm_multiallelic}{if \code{TRUE} multiallelic markers will be removed from the output onemap object}
+
 \item{use_genotype_probs}{if \code{TRUE} the probability of each possible genotype will be considered in emission function of HMM}
 }
 \value{
-onemap object with genotype probabilities updated
+onemap object with genotypes updated
 }
 \description{
-Uses alelle counts to re-estimate genotypes with updog approach and 
-stores the genotypes probabilities for further multipoint 
+Uses alelle counts to reestimate genotypes with updog approach and 
+stores the genotypes probabilities or for further multipoint 
 analysis
 }
 \references{

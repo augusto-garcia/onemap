@@ -1,6 +1,8 @@
 #' OneMap interface with polyRAD package
 #'
-#' Put here a description
+#' Uses alelle counts to reestimate genotypes with updog approach and 
+#' stores the genotypes probabilities or for further multipoint 
+#' analysis
 #' 
 #' @param vcf path to vcf file
 #' @param onemap.obj object of onemap class
@@ -13,8 +15,9 @@
 #' with the genotype errors or the genotype probabilities or NULL to not considered any global error
 #' @param use_genotypes_errors if \code{TRUE} the error probability of each genotype will be considered in emission function of HMM
 #' @param use_genotype_probs if \code{TRUE} the probability of each possible genotype will be considered in emission function of HMM
+#' @param rm_multiallelic if \code{TRUE} multiallelic markers will be removed from the output onemap object
 #' 
-#' @return onemap object with error updated 
+#' @return onemap object with genotypes updated
 #' 
 #' @author Cristiane Taniguti, \email{chtaniguti@@usp.br} 
 #' @seealso \code{\link[onemap]{extract_depth}} 

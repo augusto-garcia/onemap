@@ -10,7 +10,7 @@
 #' @param miss.perc double defining the percentage of missing data to be simulated
 #' 
 #' 
-#' @example 
+#' @examples 
 #' # Outcrossing population
 #' pedsim2raw(cross="outcross", genofile = "sim_out_genotypes.dat", parent1 = "P1", parent2 = "P2", out.file = "sim_out.example1.raw")
 #' # F2 intercross

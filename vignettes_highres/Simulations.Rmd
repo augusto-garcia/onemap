@@ -17,7 +17,7 @@ options(max.print="75")
 opts_knit$set(width=75)
 ```
 
-```{r, echo=FALSE, results='hide', message=F}
+```{r, echo=FALSE, results='hide', message=F, warning=FALSE}
 library(onemap)
 library(ggplot2)
 ```
@@ -252,7 +252,8 @@ onemap_geno.polyRAD <- polyRAD_genotype(vcf="simu_out.vcf",
                                         crosstype="outcross",
                                         global_error = NULL,
                                         use_genotypes_errors = TRUE,
-                                        use_genotypes_probs = FALSE)
+                                        use_genotypes_probs = FALSE,
+                                        rm_multiallelic = F)
 
 
 create_depths_profile(onemap.obj = onemap_geno.polyRAD, 
@@ -282,7 +283,8 @@ onemap_geno.supermassa <- supermassa_genotype(vcfR.object=vcfR_out.obj,
                                               depths = NULL,
                                               global_error = NULL,
                                               use_genotypes_errors = FALSE,
-                                              use_genotypes_probs = TRUE)
+                                              use_genotypes_probs = TRUE, 
+                                              rm_multiallelic = F)
 
 create_depths_profile(onemap.obj = onemap_geno.supermassa, 
                       vcfR.object = vcfR_out.obj, 
@@ -294,9 +296,9 @@ create_depths_profile(onemap.obj = onemap_geno.supermassa,
 ```
 
 
-## Example 
+# Example 
 
-Here we want to compare the best map using updog counts simulations and updog, polyrad and supermassa genotyping and genotypes probabilities. As a simple example, we will simulate only five families and one chromosome.
+Here we want to compare the best map using updog counts simulations and updog, polyrad and supermassa genotyping and genotypes probabilities. As a simple example, we will simulate only one family and one chromosome.
 
 ```{r, message=F,warning=F}
 for(depth in c(100, 50, 10)){
@@ -358,7 +360,8 @@ for(depth in c(100, 50, 10)){
                                       depths = NULL,
                                       global_error = NULL,
                                       use_genotypes_errors = FALSE,
-                                      use_genotypes_probs = TRUE)
+                                      use_genotypes_probs = TRUE, 
+                                      rm_multiallelic = F)
   
   twopts <- rf_2pts(onemap_geno.updog)
   seq_ord <- make_seq(twopts, order(as.numeric(onemap_geno.updog$POS)))
@@ -379,7 +382,8 @@ for(depth in c(100, 50, 10)){
                                           crosstype="outcross",
                                           global_error = NULL,
                                           use_genotypes_errors = FALSE,
-                                          use_genotypes_probs = TRUE)
+                                          use_genotypes_probs = TRUE, 
+                                          rm_multiallelic = F)
   
   twopts <- rf_2pts(onemap_geno.polyRAD)
   seq_ord <- make_seq(twopts, order(as.numeric(onemap_geno.polyRAD$POS)))
@@ -403,7 +407,8 @@ for(depth in c(100, 50, 10)){
                                                 depths = NULL,
                                                 global_error = NULL,
                                                 use_genotypes_errors = FALSE,
-                                                use_genotypes_probs = TRUE)
+                                                use_genotypes_probs = TRUE, 
+                                                rm_multiallelic = F)
   
   twopts <- rf_2pts(onemap_geno.supermassa)
   seq_ord <- make_seq(twopts, order(as.numeric(onemap_geno.supermassa$POS)))
@@ -415,7 +420,7 @@ for(depth in c(100, 50, 10)){
   p <- rf_graph_table(map_supermassa, main = paste0("supermassa depth", depth))
   ggsave(p, filename = paste0("supermassa", depth,".jpeg"))
   
-  onemap_0.05 <- create_probs(onemap_out.obj, global_error = 0.05)
+  onemap_0.05 <- create_probs(onemap_geno.updog, global_error = 0.05)
   
   twopts <- rf_2pts(onemap_0.05)
   seq_ord <- make_seq(twopts, order(as.numeric(onemap_0.05$POS)))
