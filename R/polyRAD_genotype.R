@@ -77,7 +77,7 @@ polyRAD_genotype <- function(vcf=NULL,
     pos <- gsub(":", "_", temp)
   } else {
     temp_list <- strsplit(as.character(genotypes$V1), split = "_")
-    pos <- sapply(temp_list, function(x) if(length(x) > 2) paste0(x[1:2], collapse = "_"))
+    pos <- sapply(temp_list, function(x) if(length(x) > 2) paste0(x[1:2], collapse = "_") else x[1])
   }
   
   # Remove multiallelic markers

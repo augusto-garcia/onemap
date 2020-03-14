@@ -176,7 +176,7 @@ create_depths_profile(onemap.obj = onemap_out.obj,
                       recovering = FALSE, 
                       mks = NULL, 
                       inds = NULL, 
-                      GTfrom = "prob", 
+                      GTfrom = "vcf", 
                       alpha = 0.1,
                       rds.file = "depths_out.rds")
 
