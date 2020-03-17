@@ -97,6 +97,8 @@ create_probs <- function(onemap.obj = NULL,
       prob <- matrix(NA, nrow=length(probs$value), ncol = 4)
       idx <- which(probs$value == 0)
       prob[idx,] <- 1
+      idx <- which(is.na(error))
+      prob[idx,] <- 1
       # A
       idx <- which(probs$value == 1  & probs$type == 1)
       prob[idx,] <- c(1-error[idx], rep(error[idx]/3,3))

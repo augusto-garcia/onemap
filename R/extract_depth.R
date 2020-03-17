@@ -107,8 +107,8 @@ extract_depth <- function(vcfR.object=NULL,
   # Replacing missing data with compatible format                                                                
   if(length(which(par_matrix == ".")) > 0 | length(which(is.na(par_matrix))) > 0 ){
     if(vcf.par=="GQ") {
-      par_matrix[which(par_matrix == ".")] <- "0"
-      par_matrix[which(is.na(par_matrix))] <- "0"
+      par_matrix[which(par_matrix == ".")] <- NA
+      par_matrix[which(is.na(par_matrix))] <- NA
     }else{
       par_matrix[which(par_matrix == ".")] <- "0,0"
       par_matrix[which(is.na(par_matrix))]
@@ -137,7 +137,6 @@ extract_depth <- function(vcfR.object=NULL,
     rownames(ref_matrix) <- rownames(alt_matrix) <- MKS
   } else if(vcf.par=="GQ"){
     error_matrix <- 10^(-apply(par_matrix,1,as.numeric)/10)
-    error_matrix[which(error_matrix == 1)] <- 10^(-mean_phred/10)
     rownames(error_matrix) <- IND
     colnames(error_matrix) <- MKS
     return(error_matrix)
