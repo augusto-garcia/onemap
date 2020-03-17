@@ -144,12 +144,16 @@ create_probs <- function(onemap.obj = NULL,
       prob[idx,] <- c(rep(1-error[idx],2), rep(error[idx]/2,2))
       idx <- which(probs$value == 2  & probs$type == 6)
       prob[idx,] <- c(rep(error[idx]/2,2), rep(1-error[idx],2))
+      idx <- which(probs$value == 3  & probs$type == 6)
+      prob[idx,] <- 1
       
       # D2
       idx <- which(probs$value == 1  & probs$type == 7)
       prob[idx,] <- c(1-error[idx], error[idx]/2, 1-error[idx], error[idx]/2)
       idx <- which(probs$value == 2  & probs$type == 7)
       prob[idx,] <- c(error[idx]/2, 1-error[idx], error[idx]/2, 1-error[idx])
+      idx <- which(probs$value == 3  & probs$type == 7)
+      prob[idx,] <- 1
       
     } else if(crosstype == "f2"){
       prob <- matrix(NA, nrow=length(probs$value), ncol = 4)
