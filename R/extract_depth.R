@@ -137,7 +137,9 @@ extract_depth <- function(vcfR.object=NULL,
     rownames(ref_matrix) <- rownames(alt_matrix) <- MKS
   } else if(vcf.par=="GQ"){
     error_matrix <- 10^(-apply(par_matrix,1,as.numeric)/10)
-    rownames(error_matrix) <- IND
+    idx <- which(IND %in% c(parent1, parent2, f1))
+    error_matrix <- error_matrix[-idx,]
+    rownames(error_matrix) <- IND[-idx]
     colnames(error_matrix) <- MKS
     return(error_matrix)
   }
