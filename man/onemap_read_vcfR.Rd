@@ -4,9 +4,12 @@
 \alias{onemap_read_vcfR}
 \title{Convert vcfR object to onemap object}
 \usage{
-onemap_read_vcfR(vcfR.object = NULL, cross = c("outcross",
-  "f2 intercross", "f2 backcross", "ri self", "ri sib"), parent1 = NULL,
-  parent2 = NULL)
+onemap_read_vcfR(
+  vcfR.object = NULL,
+  cross = c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"),
+  parent1 = NULL,
+  parent2 = NULL
+)
 }
 \arguments{
 \item{vcfR.object}{object of class 'vcfR' from vcfR package.}

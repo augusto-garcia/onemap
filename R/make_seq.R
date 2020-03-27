@@ -110,118 +110,110 @@
 make_seq <-
   function(input.obj, arg = NULL, phase = NULL, data.name = NULL, twopt = NULL) {
     # checking for correct object
-    if(all(is.na(match(class(input.obj),c("onemap", "rf_2pts", "group", "compare", "try", "order")))))
+    if(!(is(input.obj, c("onemap", "rf_2pts", "group", "compare", "try", "order"))))
       stop(deparse(substitute(input.obj))," is not an object of class 'onemap', 'rf_2pts', 'group', 'compare', 'try' or 'order'")
-
-    switch(EXPR=class(input.obj)[1],
-           'onemap' = {
-             if (length(arg) == 1 && is.character(arg)) {
-               seq.num <- which(input.obj$CHROM == arg)
-               if (length(seq.num) == 0) {
-                 stop("No markers found for reference sequence \"", arg, "\"")
-               }
-               ## Sort by position, if POS information is available
-               if (!is.null(input.obj$POS)) {
-                 seq.num <- seq.num[order(input.obj$POS[seq.num])]
-                 if (any(is.na(input.obj$POS[seq.num])))
-                   warning("Markers with missing POS information are placed at the end of the sequence.")
-               }
-             }
-             else if(is.vector(arg) && is.numeric(arg)) seq.num <- arg
-             else stop("for an object of class 'onemap', \"arg\" must be a vector of integers or a string indicating a reference sequence (a CHROM)")
-             if (is.null(phase)) seq.phases <- -1 # no predefined linkage phases
-             else if(length(phase) == (length(seq.num)-1)) seq.phases <- phase
-             else stop("the length of 'phase' must be equal to the length of the sequence minus 1")
-             seq.rf <- -1
-             seq.like <- NULL
-             if(is.null(data.name)) data.name <- deparse(substitute(input.obj))
-             twopt <- NULL
-           },
-           'rf_2pts' = {
-             if (length(arg) == 1 && is.character(arg) && arg != "all") {
-               seq.num <- which(input.obj$CHROM == arg)
-               if (length(seq.num) == 0) {
-                 stop("No markers found for reference sequence \"", arg, "\"")
-               }
-               ## Sort by position, if POS information is available
-               if (!is.null(input.obj$POS)) {
-                 seq.num <- seq.num[order(input.obj$POS[seq.num])]
-                 if (any(is.na(input.obj$POS[seq.num])))
-                   warning("Markers with missing POS information are placed at the end of the sequence.")
-               }
-             } else if (length(arg) == 1 && arg == "all") seq.num <- 1:input.obj$n.mar # generally used for grouping markers
-             else if(is.vector(arg) && is.numeric(arg)) seq.num <- arg
-             else stop("for an object of class 'rf_2pts', \"arg\" must be a vector of integers or the string 'all'")
-             ### TODO: CHECK IF MARKERS REALLY EXIST
-             if (is.null(phase)) seq.phases <- -1 # no predefined linkage phases
-             else if(length(phase) == (length(seq.num)-1)) seq.phases <- phase
-             else stop("the length of 'phase' must be equal to the length of the sequence minus 1")
-             seq.rf <- -1
-             seq.like <- NULL
-             if(is.null(twopt)) twopt <- deparse(substitute(input.obj))
-           },
-           'group' = {
-             if(length(arg) == 1 && is.numeric(arg) && arg <= input.obj$n.groups) seq.num <- input.obj$seq.num[which(input.obj$groups == arg)]
-             else stop("for this object of class 'group', \"arg\" must be an integer less than or equal to ",input.obj$n.groups)
-             seq.phases <- -1
-             seq.rf <- -1
-             seq.like <- NULL
-             twopt <- input.obj$twopt
-           },
-           'compare' = {
-             n.ord <- max(which(utils::head(input.obj$best.ord.LOD,-1) != -Inf))
-             unique.orders <- unique(input.obj$best.ord[1:n.ord,])
-             if(is.null(arg)) seq.num <- unique.orders[1,] # NULL = 1 is the best order
-             else if(length(arg) == 1 && is.numeric(arg) && arg <= nrow(unique.orders)) seq.num <- unique.orders[arg,]
-             else stop("for this object of class 'compare', \"arg\" must be an integer less than or equal to ",nrow(unique.orders))
-             if (is.null(phase)) phase <- 1 # NULL = 1 is the best combination of phases
-             chosen <- which(apply(input.obj$best.ord[1:n.ord,],1,function(x) all(x==seq.num)))[phase]
-             seq.phases <- input.obj$best.ord.phase[chosen,]
-             seq.rf <- input.obj$best.ord.rf[chosen,]
-             seq.like <- input.obj$best.ord.like[chosen]
-             twopt <- input.obj$twopt
-           },
-           'try' = {
-             if(length(arg) != 1 || !is.numeric(arg) || arg > length(input.obj$ord))
-               stop("for this object of class 'try', \"arg\" must be an integer less than or equal to ",length(input.obj$ord))
-             if (is.null(phase)) phase <- 1 # NULL = 1 is the best combination of phases
-             seq.num <- input.obj$try.ord[arg,]
-             seq.phases <- input.obj$ord[[arg]]$phase[phase,]
-             seq.rf <- input.obj$ord[[arg]]$rf[phase,]
-             seq.like <- input.obj$ord[[arg]]$like[phase]
-             twopt <- input.obj$twopt
-           },
-           'order' = {
-             arg <- match.arg(arg,c("safe","force"))
-             if (arg == "safe") {
-               ## order with safely mapped markers
-               seq.num <- input.obj$ord$seq.num
-               seq.phases <- input.obj$ord$seq.phases
-               seq.rf <- input.obj$ord$seq.rf
-               seq.like <- input.obj$ord$seq.like
-               probs <- input.obj$probs2
-             }
-             else {
-               ## order with all markers
-               seq.num <- input.obj$ord.all$seq.num
-               seq.phases <- input.obj$ord.all$seq.phases
-               seq.rf <- input.obj$ord.all$seq.rf
-               seq.like <- input.obj$ord.all$seq.like
-               probs <- input.obj$probs3
-             }
-             twopt <- input.obj$twopt
-           }
-    )
-
+    if(is(input.obj, "onemap")){
+      if (length(arg) == 1 && is.character(arg)) {
+        seq.num <- which(input.obj$CHROM == arg)
+        if (length(seq.num) == 0) {
+          stop("No markers found for reference sequence \"", arg, "\"")
+        }
+        ## Sort by position, if POS information is available
+        if (!is.null(input.obj$POS)) {
+          seq.num <- seq.num[order(input.obj$POS[seq.num])]
+          if (any(is.na(input.obj$POS[seq.num])))
+            warning("Markers with missing POS information are placed at the end of the sequence.")
+        }
+      }
+      else if(is.vector(arg) && is.numeric(arg)) seq.num <- arg
+      else stop("for an object of class 'onemap', \"arg\" must be a vector of integers or a string indicating a reference sequence (a CHROM)")
+      if (is.null(phase)) seq.phases <- -1 # no predefined linkage phases
+      else if(length(phase) == (length(seq.num)-1)) seq.phases <- phase
+      else stop("the length of 'phase' must be equal to the length of the sequence minus 1")
+      seq.rf <- -1
+      seq.like <- NULL
+      if(is.null(data.name)) data.name <- deparse(substitute(input.obj))
+      twopt <- NULL
+    } else if (is(input.obj, "rf_2pts")){
+      if (length(arg) == 1 && is.character(arg) && arg != "all") {
+        seq.num <- which(input.obj$CHROM == arg)
+        if (length(seq.num) == 0) {
+          stop("No markers found for reference sequence \"", arg, "\"")
+        }
+        ## Sort by position, if POS information is available
+        if (!is.null(input.obj$POS)) {
+          seq.num <- seq.num[order(input.obj$POS[seq.num])]
+          if (any(is.na(input.obj$POS[seq.num])))
+            warning("Markers with missing POS information are placed at the end of the sequence.")
+        }
+      } else if (length(arg) == 1 && arg == "all") seq.num <- 1:input.obj$n.mar # generally used for grouping markers
+      else if(is.vector(arg) && is.numeric(arg)) seq.num <- arg
+      else stop("for an object of class 'rf_2pts', \"arg\" must be a vector of integers or the string 'all'")
+      ### TODO: CHECK IF MARKERS REALLY EXIST
+      if (is.null(phase)) seq.phases <- -1 # no predefined linkage phases
+      else if(length(phase) == (length(seq.num)-1)) seq.phases <- phase
+      else stop("the length of 'phase' must be equal to the length of the sequence minus 1")
+      seq.rf <- -1
+      seq.like <- NULL
+      if(is.null(twopt)) twopt <- deparse(substitute(input.obj))
+    } else if (is(input.obj, "group")){
+      if(length(arg) == 1 && is.numeric(arg) && arg <= input.obj$n.groups) seq.num <- input.obj$seq.num[which(input.obj$groups == arg)]
+      else stop("for this object of class 'group', \"arg\" must be an integer less than or equal to ",input.obj$n.groups)
+      seq.phases <- -1
+      seq.rf <- -1
+      seq.like <- NULL
+      twopt <- input.obj$twopt
+    } else if (is(input.obj, "compare")){
+      n.ord <- max(which(utils::head(input.obj$best.ord.LOD,-1) != -Inf))
+      unique.orders <- unique(input.obj$best.ord[1:n.ord,])
+      if(is.null(arg)) seq.num <- unique.orders[1,] # NULL = 1 is the best order
+      else if(length(arg) == 1 && is.numeric(arg) && arg <= nrow(unique.orders)) seq.num <- unique.orders[arg,]
+      else stop("for this object of class 'compare', \"arg\" must be an integer less than or equal to ",nrow(unique.orders))
+      if (is.null(phase)) phase <- 1 # NULL = 1 is the best combination of phases
+      chosen <- which(apply(input.obj$best.ord[1:n.ord,],1,function(x) all(x==seq.num)))[phase]
+      seq.phases <- input.obj$best.ord.phase[chosen,]
+      seq.rf <- input.obj$best.ord.rf[chosen,]
+      seq.like <- input.obj$best.ord.like[chosen]
+      twopt <- input.obj$twopt
+    } else if (is(input.obj, "try")){
+      if(length(arg) != 1 || !is.numeric(arg) || arg > length(input.obj$ord))
+        stop("for this object of class 'try', \"arg\" must be an integer less than or equal to ",length(input.obj$ord))
+      if (is.null(phase)) phase <- 1 # NULL = 1 is the best combination of phases
+      seq.num <- input.obj$try.ord[arg,]
+      seq.phases <- input.obj$ord[[arg]]$phase[phase,]
+      seq.rf <- input.obj$ord[[arg]]$rf[phase,]
+      seq.like <- input.obj$ord[[arg]]$like[phase]
+      twopt <- input.obj$twopt
+    } else if (is(input.obj, "order")){
+      arg <- match.arg(arg,c("safe","force"))
+      if (arg == "safe") {
+        ## order with safely mapped markers
+        seq.num <- input.obj$ord$seq.num
+        seq.phases <- input.obj$ord$seq.phases
+        seq.rf <- input.obj$ord$seq.rf
+        seq.like <- input.obj$ord$seq.like
+        probs <- input.obj$probs2
+      }
+      else {
+        ## order with all markers
+        seq.num <- input.obj$ord.all$seq.num
+        seq.phases <- input.obj$ord.all$seq.phases
+        seq.rf <- input.obj$ord.all$seq.rf
+        seq.like <- input.obj$ord.all$seq.like
+        probs <- input.obj$probs3
+      }
+      twopt <- input.obj$twopt
+    }
+    
     ## check if any marker appears more than once in the sequence
     if(length(seq.num) != length(unique(seq.num))) stop("there are duplicated markers in the sequence")
-
+    
     if (!is(input.obj, "onemap")) {
-        data.name <- input.obj$data.name
+      data.name <- input.obj$data.name
     }
     
     if(class(input.obj)[1] == "order"){
-    structure(list(seq.num=seq.num, seq.phases=seq.phases, seq.rf=seq.rf, seq.like=seq.like,
+      structure(list(seq.num=seq.num, seq.phases=seq.phases, seq.rf=seq.rf, seq.like=seq.like,
                    data.name=data.name, probs = probs, twopt=twopt), class = "sequence")
     } else {
       structure(list(seq.num=seq.num, seq.phases=seq.phases, seq.rf=seq.rf, seq.like=seq.like,
@@ -258,7 +250,7 @@ print.sequence <- function(x,...) {
              link.phases[i+1,] <- link.phases[i,]*c(-1,-1),
       )
     }
-
+    
     ## display results
     longest.name <- max(nchar(marnames))
     marnames <- formatC(marnames,flag="-")
@@ -266,7 +258,7 @@ print.sequence <- function(x,...) {
     marnumbers <- formatC(x$seq.num, format="d", width=longest.number)
     distances <- formatC(c(0,cumsum(get(get(".map.fun", envir=.onemapEnv))(x$seq.rf))),format="f",digits=2,width=7)
     ## whith diplotypes for class 'outcross'
-    if(any(class(get(x$data.name, pos=1)) == "outcross")){
+    if(is(get(x$data.name, pos=1),"outcross")){
       ## create diplotypes from segregation types and linkage phases
       link.phases <- apply(link.phases,1,function(x) paste(as.character(x),collapse="."))
       parents <- matrix("",length(x$seq.num),4)
@@ -281,7 +273,7 @@ print.sequence <- function(x,...) {
       cat(length(marnames),"markers            log-likelihood:",ifelse(is.null(x$seq.like),"NULL",x$seq.like),"\n\n")
     }
     ## whithout diplotypes for other classes
-    else if(class(get(x$data.name, pos=1))[2] == "backcross" || class(get(x$data.name, pos=1))[2] == "f2" || class(get(x$data.name, pos=1))[2] == "riself" || class(get(x$data.name, pos=1))[2] == "risib"){
+    else if(is(get(x$data.name, pos=1), c("backcross", "f2", "riself", "risib"))){
       cat("\nPrinting map:\n\n")
       cat("Markers",rep("",max(longest.number+longest.name-7,0)+10),"Position",rep("",10),"\n\n")
       for (i in 1:length(x$seq.num)) {

@@ -84,7 +84,7 @@
 group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FALSE, LOD=NULL, max.rf=NULL){
 
   ## checking for correct object
-  if(!any(class(input.2pts)=="rf_2pts")) stop(deparse(substitute(input.2pts)),
+  if(!is(input.2pts,"rf_2pts")) stop(deparse(substitute(input.2pts)),
                                               " is not an object of class 'rf_2pts'")
 
   if(all(seqs=="CHROM")){
@@ -99,10 +99,10 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FA
   } else{
     ## checking for correct object for seqs argument
     seqs.int <- seqs
-    if(!any(class(seqs.int)=="list")) stop(deparse(substitute(seqs)),
+    if(!is(seqs.int,"list")) stop(deparse(substitute(seqs)),
                                            " is not an object of class 'list'")
     trueseqs <- vector()
-    for(i in 1:length(seqs.int)) trueseqs[i] <- class(seqs.int[[i]]) == "sequence"
+    for(i in 1:length(seqs.int)) trueseqs[i] <- is(seqs.int[[i]],"sequence")
     if(!all(trueseqs)) stop(" the objects inside the list ",
                             deparse(substitute(seqs)), " are not of class 'sequence'")
     if(is.null(names(seqs.int))) {names_seqs <- paste0("seq",1:length(seqs.int))
@@ -122,7 +122,7 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FA
   if(all(unlink.mks == "all")){
   } else {
     ## checking for correct object for unlink.mks argument
-    if (!class(unlink.mks) == "sequence") {
+    if (!is(unlink.mks,"sequence")) {
       stop(" the objects", deparse(substitute(unlink.mks)), " are not of class 'sequence'")
     } else {
       mk_rest <- mk_rest[match(unlink.mks$seq.num, mk_rest)]
@@ -226,7 +226,7 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FA
 print.group_seq <- function(x, detailed=TRUE,...) {
 
   ## checking for correct object
-  if(!any(class(x)=="group_seq")) stop(deparse(substitute(x))," is not an object of class 'group_seq'")
+  if(!is(x,"group_seq")) stop(deparse(substitute(x))," is not an object of class 'group_seq'")
 
   cat("  This is an object of class 'group_seq'\n")
   cat(paste("  It was generated from the object \"", x[[1]][[1]],
