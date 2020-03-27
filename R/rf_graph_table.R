@@ -112,7 +112,7 @@ rf_graph_table <- function(input.seq,
                              n.colors=4){
 
     ## checking for correct objects
-    if(!any(class(input.seq)=="sequence"))
+    if(!is(input.seq,"sequence"))
         stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
     if(!(mrk.axis=="names" | mrk.axis=="numbers" | mrk.axis=="none"))
       stop("This mrk.axis argument is not defined, choose 'names', 'numbers' or 'none'")

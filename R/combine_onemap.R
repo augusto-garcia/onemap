@@ -76,7 +76,7 @@ combine_onemap <- function(...) {
         stop("You must provide a list of OneMap objects as input.")
     }
     for (i in 1:n.objs) {
-        if(class(onemap.objs[[i]])[1] != "onemap")
+        if(!is(onemap.objs[[i]], "onemap"))
             stop("All objects must be of class 'onemap'.")
     }
     if (n.objs == 1) {
@@ -86,7 +86,7 @@ combine_onemap <- function(...) {
     ## Check if all objects are of the same cross type
     crosstype <- class(onemap.objs[[1]])[2]
     for (i in 2:n.objs) {
-        if(class(onemap.objs[[i]])[2] != crosstype)
+        if(!is(onemap.objs[[i]], crosstype))
             stop("All objects must be of the same cross type.")
     }
 

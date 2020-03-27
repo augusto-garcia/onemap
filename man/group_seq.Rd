@@ -4,8 +4,14 @@
 \alias{group_seq}
 \title{Assign markers to preexisting linkage groups}
 \usage{
-group_seq(input.2pts, seqs = "CHROM", unlink.mks = "all",
-  repeated = FALSE, LOD = NULL, max.rf = NULL)
+group_seq(
+  input.2pts,
+  seqs = "CHROM",
+  unlink.mks = "all",
+  repeated = FALSE,
+  LOD = NULL,
+  max.rf = NULL
+)
 }
 \arguments{
 \item{input.2pts}{an object of class \code{rf_2pts}.}

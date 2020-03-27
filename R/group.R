@@ -69,7 +69,7 @@
 group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
 {
     ## checking for correct object
-    if(!any(class(input.seq)=="sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+    if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
     ## determining thresholds
     if (is.null(LOD))
         LOD <- get(input.seq$twopt, pos=1)$LOD
@@ -93,12 +93,13 @@ group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
         {
             if(verbose) cat("\t  group   ", i,"\n\t   ")
             g<-c(g,gt)
-            while(!is.na(g[j])){
+            while(!is.na(g[j+1])){
                 if(verbose)
                     {
                         cat(".")
                         if(j %% 60 == 0) cat("\n\t   ")
-                    }
+                }
+                
                 tp<-check_linkage(i=g[j+1], s=tp$unlk, cl=cl, geno=geno, st=st, max.rf=max.rf, LOD=LOD)
                 gt<-tp$lk
                 g<-c(g,gt)
@@ -135,7 +136,7 @@ group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
 print.group <-
     function(x, detailed=TRUE,...) {
         ## checking for correct object
-        if(!any(class(x)=="group")) stop(deparse(substitute(x))," is not an object of class 'group'")
+        if(!is(x,"group")) stop(deparse(substitute(x))," is not an object of class 'group'")
 
         cat("  This is an object of class 'group'\n")
         cat(paste("  It was generated from the object \"", x$input.name,
