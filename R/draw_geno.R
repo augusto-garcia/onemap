@@ -43,13 +43,20 @@
 ##' }
 ##'@export
 
-draw_geno <- function(..., ind, most.likely = FALSE, col = NULL, position = "stack", show.markers = TRUE, group.names = NULL, main = "Genotypes"){
+draw_geno <- function(..., 
+                      ind = 1, 
+                      most.likely = FALSE, 
+                      col = NULL, 
+                      position = "stack", 
+                      show.markers = TRUE, 
+                      group.names = NULL, 
+                      main = "Genotypes"){
   #input map
   input <- list(...)
   if(length(input) == 0) stop("argument '...' missing, with no default")
   input.map <- list()
-  for(i in seq(input)) input.map <- c(input.map, if(lapply(input,class)[i]!="list") input[i] else do.call(c,input[i]))
-  if(!all(sapply(input.map,class) == "sequence")) stop(paste("\n'",names(input.map)[sapply(input.map,class) != "sequence"],"' is not an object of class 'sequence'",sep=""))
+  for(i in seq(input)) input.map <- c(input.map, if(lapply(input, function(x) is(x, "list"))[[i]]) input[[i]] else do.call(c,input[i]))
+  if(!all(sapply(input.map, function(x) is(x, "sequence")))) stop(paste("Input objects must be of 'sequence' class. \n"))
   if(is.null(group.names)) group.names <- paste("Group",seq(input.map), sep = " - ")
   n.mar <- sapply(input.map, function(x) length(x$seq.num))
   n.ind <- sapply(input.map, function(x) ncol(x$probs))/n.mar
