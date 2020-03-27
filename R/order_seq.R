@@ -175,7 +175,7 @@ order_seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
     ifelse(length(input.seq$seq.num) == 2, seq.ord <- map(input.seq,tol=10E-5), seq.ord <- make_seq(compare(input.seq=input.seq,tol=10E-5),1))
     seq.ord<-map(seq.ord, tol=10E-5)
     structure(list(ord=seq.ord, mrk.unpos=NULL, LOD.unpos=NULL, THRES=THRES,
-                   ord.all=seq.ord, data.name=input.seq$data.name, twopt=input.seq$twopt), class = "order")
+                   ord.all=seq.ord, data.name=input.seq$data.name, probs = seq.ord$probs, twopt=input.seq$twopt), class = "order")
   }
   else
   {
@@ -337,7 +337,8 @@ order_seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
     input.seq2<-map(input.seq2, tol=10E-5)
     input.seq3<-map(input.seq3, tol=10E-5)
     structure(list(ord=input.seq2, mrk.unpos=mrk.unpos, LOD.unpos=LOD.unpos, THRES=THRES,
-                   ord.all=input.seq3, data.name=input.seq$data.name, twopt=input.seq$twopt), class = "order")
+                   ord.all=input.seq3, data.name=input.seq$data.name, probs2 = input.seq2$probs, 
+                   probs3 = input.seq3$probs, twopt=input.seq$twopt), class = "order")
   }
 }
 

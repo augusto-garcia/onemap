@@ -108,6 +108,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
                           seq.rf=final.map$rf,
                           seq.like=final.map$loglike,
                           data.name=input.seq$data.name,
+                          probs = final.map$probs,
                           twopt=input.seq$twopt),
                      class = "sequence"))
   }
@@ -126,6 +127,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
                           seq.rf=final.map$rf,
                           seq.like=final.map$loglike,
                           data.name=input.seq$data.name,
+                          probs = final.map$probs,
                           twopt=input.seq$twopt), class = "sequence"))
   }
   
@@ -209,7 +211,8 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
                                  verbose=FALSE,
                                  tol=tol)
     return(structure(list(seq.num=seq.num, seq.phases=seq.phases, seq.rf=final.map$rf,
-                          seq.like=final.map$loglike, data.name=input.seq$data.name, twopt=input.seq$twopt), class = "sequence"))
+                          seq.like=final.map$loglike, data.name=input.seq$data.name, 
+                          probs = final.map$probs, twopt=input.seq$twopt), class = "sequence"))
   }
 }
 

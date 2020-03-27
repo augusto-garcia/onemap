@@ -112,7 +112,6 @@ make_seq <-
     # checking for correct object
     if(!(is(input.obj, c("onemap", "rf_2pts", "group", "compare", "try", "order"))))
       stop(deparse(substitute(input.obj))," is not an object of class 'onemap', 'rf_2pts', 'group', 'compare', 'try' or 'order'")
-    
     if(is(input.obj, "onemap")){
       if (length(arg) == 1 && is.character(arg)) {
         seq.num <- which(input.obj$CHROM == arg)
@@ -193,6 +192,7 @@ make_seq <-
         seq.phases <- input.obj$ord$seq.phases
         seq.rf <- input.obj$ord$seq.rf
         seq.like <- input.obj$ord$seq.like
+        probs <- input.obj$probs2
       }
       else {
         ## order with all markers
@@ -200,10 +200,10 @@ make_seq <-
         seq.phases <- input.obj$ord.all$seq.phases
         seq.rf <- input.obj$ord.all$seq.rf
         seq.like <- input.obj$ord.all$seq.like
+        probs <- input.obj$probs3
       }
       twopt <- input.obj$twopt
     }
-    
     
     ## check if any marker appears more than once in the sequence
     if(length(seq.num) != length(unique(seq.num))) stop("there are duplicated markers in the sequence")
@@ -212,8 +212,13 @@ make_seq <-
       data.name <- input.obj$data.name
     }
     
-    structure(list(seq.num=seq.num, seq.phases=seq.phases, seq.rf=seq.rf, seq.like=seq.like,
-                   data.name=data.name, twopt=twopt), class = "sequence")
+    if(class(input.obj)[1] == "order"){
+      structure(list(seq.num=seq.num, seq.phases=seq.phases, seq.rf=seq.rf, seq.like=seq.like,
+                   data.name=data.name, probs = probs, twopt=twopt), class = "sequence")
+    } else {
+      structure(list(seq.num=seq.num, seq.phases=seq.phases, seq.rf=seq.rf, seq.like=seq.like,
+                     data.name=data.name, twopt=twopt), class = "sequence")
+    }
   }
 
 # print method for object class 'sequence'
