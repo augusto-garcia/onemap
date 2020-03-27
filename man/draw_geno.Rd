@@ -4,19 +4,26 @@
 \alias{draw_geno}
 \title{Draw Genotypes}
 \usage{
-draw_geno(input.map, ind, most.likely = F, position = "stack",
+draw_geno(..., ind, most.likely = FALSE, col = NULL,
+  position = "stack", show.markers = TRUE, group.names = NULL,
   main = "Genotypes")
 }
 \arguments{
-\item{input.map}{map(s). Object(s) of class \code{sequence}.}
+\item{...}{Map(s) or list(s) of maps. Object(s) of class sequence.}
 
-\item{ind}{Individual number}
+\item{ind}{The individual number to be ploted.}
 
-\item{most.likely}{TRUE or FALSE}
+\item{most.likely}{logical; if  \code{TRUE}, the most likely genotype is plotted; if FALSE (default) the genotype probability is plotted.}
 
-\item{position}{"split" or "stack"}
+\item{col}{Color of parentes' homologous.}
 
-\item{main}{an overall title for the plot. Default is \code{NULL}.}
+\item{position}{"split" or "stack"; if "split" (default) the parents' homologous are plotted separately. if "stack" the parents' homologous are plotted together.}
+
+\item{show.markers}{logical; if  \code{TRUE}, the markers (default) are plotted.}
+
+\item{group.names}{Names of the groups.}
+
+\item{main}{An overall title for the plot; default is \code{NULL}.}
 }
 \description{
 Provides a draw of the individuals genotypes.
