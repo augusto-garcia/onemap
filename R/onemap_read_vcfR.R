@@ -65,7 +65,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   if (is.null(parent1) || is.null(parent2)) {
     stop("You must specify samples as parents 1 and 2.")
   }
-  if(class(vcfR.object)!="vcfR"){
+  if(!is(vcfR.object,"vcfR")){
     stop("You must specify one vcfR object.")
   }
   
@@ -83,6 +83,18 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   
   for(i in 2:(n.ind+1))
     GT_matrix[,i-1] <- unlist(lapply(strsplit(vcf@gt[,i], split=":"), "[[", GT))
+  
+  
+  # This function doesn't consider phased genotypes
+  if(any(grepl("|", GT_matrix))){
+    GT_matrix[GT_matrix=="1|0"] <- GT_matrix[GT_matrix=="0|1"] <- "0/1"
+    GT_matrix[GT_matrix=="0|0"] <- "0/0"
+    GT_matrix[GT_matrix=="1|1"] <- "1/1"
+  }
+  
+  if(any(GT_matrix == "1/0")){
+    GT_matrix[GT_matrix=="1/0"] <- "0/1"
+  }
   
   # Checking marker segregation according with parents
   P1 <- which(dimnames(vcf@gt)[[2]]==parent1) - 1
@@ -348,7 +360,7 @@ write_onemap_raw <- function(onemap.obj=NULL,
   
   geno.mat <- onemap.obj$geno
   
-  if(class(onemap.obj)[2] == "outcross"){
+  if(is(onemap.obj, "outcross")){
     
     geno.mat[which(geno.mat == 0)] <- "-"
     
@@ -401,7 +413,7 @@ write_onemap_raw <- function(onemap.obj=NULL,
     geno.mat[,idx][which(geno.mat[,idx]== 1)] <- "a"
     geno.mat[,idx][which(geno.mat[,idx]== 2)] <- "o"
   }
-    if(class(onemap.obj)[2] == "f2" | class(onemap.obj)[2] == "backcross"){
+    if(is(onemap.obj, c("f2","backcross"))){
 
       geno.mat[which(geno.mat == 0)] <- "-"
       
@@ -418,7 +430,7 @@ write_onemap_raw <- function(onemap.obj=NULL,
       geno.mat[,idx][which(geno.mat[,idx]== 1)] <- "a"
       geno.mat[,idx][which(geno.mat[,idx]== 5)] <- "c"
     }
-    if(class(onemap.obj)[2] == "riself" || class(onemap.obj)[2] == "risib"){
+    if(is(onemap.obj, c("riself", "risib"))){
 
       geno.mat[which(geno.mat == 0)] <- "-"
       geno.mat[which(geno.mat == 1)] <- "a"
