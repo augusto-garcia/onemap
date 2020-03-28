@@ -54,8 +54,8 @@ draw_geno <- function(...,
   #input map
   input <- list(...)
   if(length(input) == 0) stop("argument '...' missing, with no default")
-  input.map <- list()
-  for(i in seq(input)) input.map <- c(input.map, if(lapply(input, function(x) is(x, "list"))[[i]]) input[[i]] else do.call(c,input[i]))
+  # Accept list of sequences or list of list of sequences
+  if(is(input[[1]], "sequence")) input.map <- input else input.map <- unlist(input, recursive = FALSE)
   if(!all(sapply(input.map, function(x) is(x, "sequence")))) stop(paste("Input objects must be of 'sequence' class. \n"))
   if(is.null(group.names)) group.names <- paste("Group",seq(input.map), sep = " - ")
   n.mar <- sapply(input.map, function(x) length(x$seq.num))
