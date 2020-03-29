@@ -1204,7 +1204,6 @@ Checking for better orders:
 ripple_seq(CHR3_final)
 ```
 
-
 # Drawing the genetic maps
 
 Once all linkage groups were obtained using both strategies, we can draw a map for each strategy using the function `draw_map`. Since version 2.1.1007, OneMap has a new version of `draw_map`, called `draw_map2`. The new function draws elegant linkage groups, and presents new arguments to personalize your draw.
@@ -1371,6 +1370,26 @@ Removing markers 3, 4, 5, 12 and 30 from `any_seq`:
 ```
 
 After that, the map needs to be re-estimated.
+
+# Export estimated parents linkage phases
+
+In older version users could only access the estimated linkage phase observing the print in the console:
+
+```{r}
+CHR3_final
+```
+
+Now, you can export this information in a file using:
+
+```{r}
+print(CHR3_final, out_file = "CHR3_final.txt")
+```
+
+
+# Draw progeny estimated genotypes and phases
+
+
+
 
 # Session Info
 
