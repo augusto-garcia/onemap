@@ -225,7 +225,7 @@ make_seq <-
 ##'@export
 ##'@method print sequence
 
-print.sequence <- function(x,...) {
+print.sequence <- function(x, out_file=NULL) {
   marnames <- colnames(get(x$data.name, pos=1)$geno)[x$seq.num]
   if(length(x$seq.rf) == 1 && x$seq.rf == -1) {
     # no information available for the order
@@ -263,7 +263,7 @@ print.sequence <- function(x,...) {
       link.phases <- apply(link.phases,1,function(x) paste(as.character(x),collapse="."))
       parents <- matrix("",length(x$seq.num),4)
       for (i in 1:length(x$seq.num))
-        parents[i,] <- return_geno(get(x$data.name, pos=1)$segr.type[x$seq.num[i]],link.phases[i])
+        parents[i,] <- onemap:::return_geno(get(x$data.name, pos=1)$segr.type[x$seq.num[i]],link.phases[i])
       cat("\nPrinting map:\n\n")
       cat("Markers",rep("",max(longest.number+longest.name-7,0)+10),"Position",rep("",10),"Parent 1","     ","Parent 2\n\n")
       for (i in 1:length(x$seq.num)) {
@@ -271,6 +271,14 @@ print.sequence <- function(x,...) {
       }
       cat("\n")
       cat(length(marnames),"markers            log-likelihood:",ifelse(is.null(x$seq.like),"NULL",x$seq.like),"\n\n")
+      out_dat <- data.frame(mk.number = marnumbers, mk.names = marnames, dist = as.numeric(distances), 
+                            P1_1 = parents[,1],
+                            P1_2 = parents[,2],
+                            P2_1 = parents[,3],
+                            P2_2 = parents[,4])
+      if(!is.null(out_file)){
+        write.table(out_dat, file = out_file, col.names = T, row.names = F)
+      }
     }
     ## whithout diplotypes for other classes
     else if(is(get(x$data.name, pos=1), c("backcross", "f2", "riself", "risib"))){
