@@ -103,200 +103,210 @@ globalVariables(c("LOD.CR", "LOD.RC", "LOD.RR"))
 ##'@export
 
 rf_graph_table <- function(input.seq,
-                             graph.LOD=FALSE,
-                             main=NULL,
-                             inter=FALSE,
-                             html.file = NULL,
-                             mrk.axis="numbers",
-                             lab.xy=NULL,
-                             n.colors=4){
-
-    ## checking for correct objects
-    if(!is(input.seq,"sequence"))
-        stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
-    if(!(mrk.axis=="names" | mrk.axis=="numbers" | mrk.axis=="none"))
-      stop("This mrk.axis argument is not defined, choose 'names', 'numbers' or 'none'")
-
-    ## extracting data
-    if(is(get(input.seq$data.name), "outcross") | is(get(input.seq$data.name), "f2"))
-    {
-        if(input.seq$seq.phases[1] == -1 || input.seq$seq.rf[1] == -1 || is.null(input.seq$seq.like))
-            stop("You must estimate parameters before running 'rf_graph_table' ")
-        ## making a list with necessary information
-        n.mrk <- length(input.seq$seq.num)
-        LOD <- lapply(get(input.seq$twopt)$analysis,
-                      function(x, w){
-                          m<-matrix(0, length(w), length(w))
-                          for(i in 1:(length(w)-1)){
-                              for(j in (i+1):length(w)){
-                                  z<-sort(c(w[i],w[j]))
-                                  m[j,i]<-m[i,j]<-x[z[1], z[2]]
-                              }
-                          }
-                          return(m)
-                      }, input.seq$seq.num
-                      )
-        mat<-t(get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
-    }else
-    {
-        if(input.seq$seq.rf[1] == -1 || is.null(input.seq$seq.like))
-            stop("You must estimate parameters before running 'rf_graph_table' ")
-        ## making a list with necessary information
-        n.mrk <- length(input.seq$seq.num)
-
-        LOD<-matrix(0, length(input.seq$seq.num), length(input.seq$seq.num))
-        for(i in 1:(length(input.seq$seq.num)-1)){
-            for(j in (i+1):length(input.seq$seq.num)){
-                z<-sort(c(input.seq$seq.num[i],input.seq$seq.num[j]))
-                LOD[j,i]<-LOD[i,j]<-get(input.seq$twopt)$analysis[z[1], z[2]]
-            }
-        }
-        mat<-t(get_mat_rf_in(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
-    }
-
-    ##Scaling the LODs to print them properly
-    ## range.LOD<-range(as.dist(t(mat)), na.rm=TRUE)
-    ## range.rf<-range(as.dist(mat), na.rm=TRUE)
-    mat[row(mat) > col(mat) & mat > 0.5] <- 0.5 ## if there are recombinations greater than 0.5 (for numerical convergence problems), assuming 0.5
-    mat[row(mat) < col(mat)][mat[row(mat) < col(mat)] < 10E-2]<-10E-2
-    diag(mat)<-NA
-
-    ##Write multipoint estimates
-    for (i in 1:(n.mrk-1)){
-        mat[i+1,i] <- input.seq$seq.rf[i]
-    }
+                           graph.LOD=FALSE,
+                           main=NULL,
+                           inter=FALSE,
+                           html.file = NULL,
+                           mrk.axis="numbers",
+                           lab.xy=NULL,
+                           n.colors=4){
+  
+  ## checking for correct objects
+  if(!is(input.seq,"sequence"))
+    stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+  if(!(mrk.axis=="names" | mrk.axis=="numbers" | mrk.axis=="none"))
+    stop("This mrk.axis argument is not defined, choose 'names', 'numbers' or 'none'")
+  
+  ## extracting data
+  if(is(get(input.seq$data.name), "outcross") | is(get(input.seq$data.name), "f2"))
+  {
+    if(input.seq$seq.phases[1] == -1 || input.seq$seq.rf[1] == -1 || is.null(input.seq$seq.like))
+      stop("You must estimate parameters before running 'rf_graph_table' ")
+    ## making a list with necessary information
+    n.mrk <- length(input.seq$seq.num)
+    LOD <- lapply(get(input.seq$twopt)$analysis,
+                  function(x, w){
+                    m<-matrix(0, length(w), length(w))
+                    for(i in 1:(length(w)-1)){
+                      for(j in (i+1):length(w)){
+                        z<-sort(c(w[i],w[j]))
+                        m[j,i]<-m[i,j]<-x[z[1], z[2]]
+                      }
+                    }
+                    return(m)
+                  }, input.seq$seq.num
+    )
+    mat<-t(get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
+  }else
+  {
+    if(input.seq$seq.rf[1] == -1 || is.null(input.seq$seq.like))
+      stop("You must estimate parameters before running 'rf_graph_table' ")
+    ## making a list with necessary information
+    n.mrk <- length(input.seq$seq.num)
     
-    colnames(mat) <- rownames(mat)<- colnames(get(input.seq$data.name, pos=1)$geno)[input.seq$seq.num]
-    
-    if (mrk.axis == "numbers")
-      colnames(mat) <- rownames(mat)<- input.seq$seq.num
-    
-    ##Write NAs in two-point recombination fractions between markers of type D1 and D2
-    types <- get(input.seq$data.name, pos=1)$segr.type.num[input.seq$seq.num]
-    which.D1D2<-outer((substr(types, 1,2)== 6),(substr(types, 1,2)==7))
-    which.D1D2<-which.D1D2+t(which.D1D2)
-    which.D1D2[which.D1D2==1]<-NA
-    which.D1D2[which.D1D2==0]<-1
-    diag.si<-rbind(1:(ncol(which.D1D2)-1),2:ncol(which.D1D2))
-    for(i in 1:(ncol(which.D1D2)-1)) which.D1D2[diag.si[1,i],diag.si[2,i]] <- which.D1D2[diag.si[2,i],diag.si[1,i]] <- 1
-    mat<-mat*which.D1D2
-    missing<-100*apply(get(input.seq$data.name, pos=1)$geno[,input.seq$seq.num],2, function(x) sum(x==0))/get(input.seq$data.name, pos=1)$n.ind
-
-    ## Building the data.frame to plot
-    mat.LOD <- mat.rf <- mat
-    mat.LOD[lower.tri(mat.LOD)] <- t(mat.LOD)[lower.tri(mat.LOD)]
-    mat.rf[upper.tri(mat.rf)] <- t(mat.rf)[upper.tri(mat.LOD)]
-
-    if(is(get(input.seq$data.name), "outcross") | is(get(input.seq$data.name), "f2")){
-        colnames(LOD$CC) <- rownames(LOD$CC) <- colnames(mat.rf)
-        colnames(LOD$CR) <- rownames(LOD$CR) <- colnames(mat.rf)
-        colnames(LOD$RC) <- rownames(LOD$RC) <- colnames(mat.rf)
-        colnames(LOD$RR) <- rownames(LOD$RR) <- colnames(mat.rf)
-
-        ## Merging all the matrices into one df
-        df.graph <- Reduce(function(x, y) merge(x, y, all=TRUE),
-                           list(reshape2::melt(round(mat.rf,2), value.name="rf"),
-                                reshape2::melt(round(mat.LOD,2), value.name="LOD"),
-                                reshape2::melt(round(LOD$CC,2), value.name="CC"),
-                                reshape2::melt(round(LOD$CR,2), value.name="CR"),
-                                reshape2::melt(round(LOD$RC,2), value.name="RC"),
-                                reshape2::melt(round(LOD$RR,2), value.name="RR")))
-
-        colnames(df.graph)[5:8] <- paste0("LOD.",c("CC","CR","RC","RR"))
-
-        
-        
-    }else{
-        df.graph <- merge(reshape2::melt(round(mat.rf,2), value.name="rf"),
-                          reshape2::melt(round(mat.LOD,2), value.name="LOD"))
-    }
-    
-    
-    colnames(df.graph)[c(1,2)] <- c("x", "y")
-    
-    if(mrk.axis=="numbers"){
-      df.graph$x <- factor(df.graph$x, levels = as.character(input.seq$seq.num))
-      df.graph$y <- factor(df.graph$y, levels = as.character(input.seq$seq.num))
-    }
-    
-    missing <- paste0(round(missing,2),"%")
-
-    mrk.type.x <- data.frame(x=colnames(mat.rf),x.type=types)
-    mrk.type.y <- data.frame(y=colnames(mat.rf),y.type=types)
-    missing.x <- data.frame(x=colnames(mat.rf),x.missing=missing)
-    missing.y <- data.frame(y=colnames(mat.rf),y.missing=missing)
-
-    df.graph <- Reduce(function(x, y) merge(x, y, all=TRUE),
-                       list(df.graph,
-                            mrk.type.x,
-                            mrk.type.y,
-                            missing.x,
-                            missing.y))
-
-    ## Within the df.graph dataframe we plot based on the arguments and data.type
-    ## Additional aesthetical (aes) arguments are to be passed to the mouse hover in the interactive plot.
-    ## ggplot() just depends on the 'x', 'y', and 'fill' aes arguments
-    
-    ## If outcross:
-    if(is(get(input.seq$data.name), "outcross") | is(get(input.seq$data.name), "f2")){
-        if(graph.LOD!=TRUE){
-            p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, x.missing = x.missing, y.missing = y.missing, fill = rf, LOD.CC=LOD.CC, LOD.CR=LOD.CR, LOD.RC=LOD.RC, LOD.RR=LOD.RR), data=df.graph) +
-                geom_tile() +
-                scale_fill_gradientn(colours = grDevices::rainbow(n.colors), na.value = "white") +
-                theme(axis.text.x=element_text(angle=90, hjust=1))
-        }else{
-            p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, x.missing = x.missing, y.missing = y.missing, rf=rf, fill = LOD, LOD.CC=LOD.CC, LOD.CR=LOD.CR, LOD.RC=LOD.RC, LOD.RR=LOD.RR), data=df.graph) +
-                geom_tile() +
-                scale_fill_gradientn(colours = rev(grDevices::rainbow(n.colors)), na.value = "white") +
-                theme(axis.text.x=element_text(angle=90, hjust=1))
-        }
-
-    ## If inbred:
-    }else{
-        if(graph.LOD!=TRUE){
-            p <- ggplot(aes(x, y, x.missing = x.missing, y.missing = y.missing, fill=rf, LOD=LOD), data=df.graph) +
-                geom_tile() +
-                scale_fill_gradientn(colours = grDevices::rainbow(n.colors), na.value = "white") +
-                theme(axis.text.x=element_text(angle=90, hjust=1))
-        }else{
-            p <- ggplot(aes(x, y, x.missing = x.missing, y.missing = y.missing, rf=rf, fill=LOD), data=df.graph) +
-                geom_tile() +
-                scale_fill_gradientn(colours = rev(grDevices::rainbow(n.colors)), na.value = "white") +
-                theme(axis.text.x=element_text(angle=90, hjust=1))
-                }
-    }
-
-    ## Disable lab names:
-    if(is.null(lab.xy)){
-        p <- p + labs(x = " ", y = " ")
-    } else {
-      if(length(lab.xy)!=2){
-        warning("You should give a character vector with two components to axis labels")
-        }else{
-          p <- p + labs(x = lab.xy[1], y = lab.xy[2])
-        }
-    }
-
-    ## Disable markers names:
-    if(mrk.axis=="none"){
-        p <- p + theme(axis.text.x = element_blank(), axis.text.y = element_blank())
-     }
-
-    ## Write main
-    if(!is.null(main)){
-        p <- p + ggtitle(main)
-    }
-
-    ## Interactive    
-    if(inter){
-      if(is.null(html.file)){
-        stop("For iteractive mode you must define a name for the outputted html file in 'html.file' argument.")
-      }else{
-        p <- plotly::ggplotly(p)
-        htmlwidgets::saveWidget(p, file = html.file)
-        utils::browseURL(html.file)
+    LOD<-matrix(0, length(input.seq$seq.num), length(input.seq$seq.num))
+    for(i in 1:(length(input.seq$seq.num)-1)){
+      for(j in (i+1):length(input.seq$seq.num)){
+        z<-sort(c(input.seq$seq.num[i],input.seq$seq.num[j]))
+        LOD[j,i]<-LOD[i,j]<-get(input.seq$twopt)$analysis[z[1], z[2]]
       }
-    }else{
-        p #it is a ggplot which can be expanded (+).
     }
+    mat<-t(get_mat_rf_in(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
+  }
+  
+  ##Scaling the LODs to print them properly
+  ## range.LOD<-range(as.dist(t(mat)), na.rm=TRUE)
+  ## range.rf<-range(as.dist(mat), na.rm=TRUE)
+  mat[row(mat) > col(mat) & mat > 0.5] <- 0.5 ## if there are recombinations greater than 0.5 (for numerical convergence problems), assuming 0.5
+  mat[row(mat) < col(mat)][mat[row(mat) < col(mat)] < 10E-2]<-10E-2
+  diag(mat)<-NA
+  
+  ##Write multipoint estimates
+  for (i in 1:(n.mrk-1)){
+    mat[i+1,i] <- input.seq$seq.rf[i]
+  }
+  
+  colnames(mat) <- rownames(mat)<- colnames(get(input.seq$data.name, pos=1)$geno)[input.seq$seq.num]
+  
+  if (mrk.axis == "numbers")
+    colnames(mat) <- rownames(mat)<- input.seq$seq.num
+  
+  # Be compatible with older versions
+  if(all(is.na(get(input.seq$data.name, pos=1)$segr.type.num))){
+    if(is(get(input.seq$data.name), "backcross")){
+      segr.type.num <- rep(8, length(get(input.seq$data.name)$segr.type))
+    } else {
+      segr.type.num <- rep(9, length(get(input.seq$data.name)$segr.type))
+    }
+  } else {
+    segr.type.num <- get(input.seq$data.name, pos=1)$segr.type.num
+  }
+  ##Write NAs in two-point recombination fractions between markers of type D1 and D2
+  types <- segr.type.num[input.seq$seq.num]
+  which.D1D2<-outer((substr(types, 1,2)== 6),(substr(types, 1,2)==7))
+  which.D1D2<-which.D1D2+t(which.D1D2)
+  which.D1D2[which.D1D2==1]<-NA
+  which.D1D2[which.D1D2==0]<-1
+  diag.si<-rbind(1:(ncol(which.D1D2)-1),2:ncol(which.D1D2))
+  for(i in 1:(ncol(which.D1D2)-1)) which.D1D2[diag.si[1,i],diag.si[2,i]] <- which.D1D2[diag.si[2,i],diag.si[1,i]] <- 1
+  mat<-mat*which.D1D2
+  missing<-100*apply(get(input.seq$data.name, pos=1)$geno[,input.seq$seq.num],2, function(x) sum(x==0))/get(input.seq$data.name, pos=1)$n.ind
+  
+  ## Building the data.frame to plot
+  mat.LOD <- mat.rf <- mat
+  mat.LOD[lower.tri(mat.LOD)] <- t(mat.LOD)[lower.tri(mat.LOD)]
+  mat.rf[upper.tri(mat.rf)] <- t(mat.rf)[upper.tri(mat.LOD)]
+  
+  if(is(get(input.seq$data.name), "outcross") | is(get(input.seq$data.name), "f2")){
+    colnames(LOD$CC) <- rownames(LOD$CC) <- colnames(mat.rf)
+    colnames(LOD$CR) <- rownames(LOD$CR) <- colnames(mat.rf)
+    colnames(LOD$RC) <- rownames(LOD$RC) <- colnames(mat.rf)
+    colnames(LOD$RR) <- rownames(LOD$RR) <- colnames(mat.rf)
+    
+    ## Merging all the matrices into one df
+    df.graph <- Reduce(function(x, y) merge(x, y, all=TRUE),
+                       list(reshape2::melt(round(mat.rf,2), value.name="rf"),
+                            reshape2::melt(round(mat.LOD,2), value.name="LOD"),
+                            reshape2::melt(round(LOD$CC,2), value.name="CC"),
+                            reshape2::melt(round(LOD$CR,2), value.name="CR"),
+                            reshape2::melt(round(LOD$RC,2), value.name="RC"),
+                            reshape2::melt(round(LOD$RR,2), value.name="RR")))
+    
+    colnames(df.graph)[5:8] <- paste0("LOD.",c("CC","CR","RC","RR"))
+    
+    
+    
+  }else{
+    df.graph <- merge(reshape2::melt(round(mat.rf,2), value.name="rf"),
+                      reshape2::melt(round(mat.LOD,2), value.name="LOD"))
+  }
+  
+  
+  colnames(df.graph)[c(1,2)] <- c("x", "y")
+  
+  if(mrk.axis=="numbers"){
+    df.graph$x <- factor(df.graph$x, levels = as.character(input.seq$seq.num))
+    df.graph$y <- factor(df.graph$y, levels = as.character(input.seq$seq.num))
+  }
+  
+  missing <- paste0(round(missing,2),"%")
+  
+  mrk.type.x <- data.frame(x=colnames(mat.rf),x.type=types)
+  mrk.type.y <- data.frame(y=colnames(mat.rf),y.type=types)
+  missing.x <- data.frame(x=colnames(mat.rf),x.missing=missing)
+  missing.y <- data.frame(y=colnames(mat.rf),y.missing=missing)
+  
+  df.graph <- Reduce(function(x, y) merge(x, y, all=TRUE),
+                     list(df.graph,
+                          mrk.type.x,
+                          mrk.type.y,
+                          missing.x,
+                          missing.y))
+  
+  ## Within the df.graph dataframe we plot based on the arguments and data.type
+  ## Additional aesthetical (aes) arguments are to be passed to the mouse hover in the interactive plot.
+  ## ggplot() just depends on the 'x', 'y', and 'fill' aes arguments
+  
+  ## If outcross:
+  if(is(get(input.seq$data.name), "outcross") | is(get(input.seq$data.name), "f2")){
+    if(graph.LOD!=TRUE){
+      p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, x.missing = x.missing, y.missing = y.missing, fill = rf, LOD.CC=LOD.CC, LOD.CR=LOD.CR, LOD.RC=LOD.RC, LOD.RR=LOD.RR), data=df.graph) +
+        geom_tile() +
+        scale_fill_gradientn(colours = grDevices::rainbow(n.colors), na.value = "white") +
+        theme(axis.text.x=element_text(angle=90, hjust=1))
+    }else{
+      p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, x.missing = x.missing, y.missing = y.missing, rf=rf, fill = LOD, LOD.CC=LOD.CC, LOD.CR=LOD.CR, LOD.RC=LOD.RC, LOD.RR=LOD.RR), data=df.graph) +
+        geom_tile() +
+        scale_fill_gradientn(colours = rev(grDevices::rainbow(n.colors)), na.value = "white") +
+        theme(axis.text.x=element_text(angle=90, hjust=1))
+    }
+    
+    ## If inbred:
+  }else{
+    if(graph.LOD!=TRUE){
+      p <- ggplot(aes(x, y, x.missing = x.missing, y.missing = y.missing, fill=rf, LOD=LOD), data=df.graph) +
+        geom_tile() +
+        scale_fill_gradientn(colours = grDevices::rainbow(n.colors), na.value = "white") +
+        theme(axis.text.x=element_text(angle=90, hjust=1))
+    }else{
+      p <- ggplot(aes(x, y, x.missing = x.missing, y.missing = y.missing, rf=rf, fill=LOD), data=df.graph) +
+        geom_tile() +
+        scale_fill_gradientn(colours = rev(grDevices::rainbow(n.colors)), na.value = "white") +
+        theme(axis.text.x=element_text(angle=90, hjust=1))
+    }
+  }
+  
+  ## Disable lab names:
+  if(is.null(lab.xy)){
+    p <- p + labs(x = " ", y = " ")
+  } else {
+    if(length(lab.xy)!=2){
+      warning("You should give a character vector with two components to axis labels")
+    }else{
+      p <- p + labs(x = lab.xy[1], y = lab.xy[2])
+    }
+  }
+  
+  ## Disable markers names:
+  if(mrk.axis=="none"){
+    p <- p + theme(axis.text.x = element_blank(), axis.text.y = element_blank())
+  }
+  
+  ## Write main
+  if(!is.null(main)){
+    p <- p + ggtitle(main)
+  }
+  
+  ## Interactive    
+  if(inter){
+    if(is.null(html.file)){
+      stop("For iteractive mode you must define a name for the outputted html file in 'html.file' argument.")
+    }else{
+      p <- plotly::ggplotly(p)
+      htmlwidgets::saveWidget(p, file = html.file)
+      utils::browseURL(html.file)
+    }
+  }else{
+    p #it is a ggplot which can be expanded (+).
+  }
 }

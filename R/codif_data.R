@@ -160,12 +160,12 @@ codif_data <- function(geno.in, segr.type.in,
       else if (cross == "backcross") {
         geno.out[which(geno.in[,i]=="a"),i] <- 1
         geno.out[which(geno.in[,i]=="ab"),i] <- 2
-        segr.type.out[i] <- NA
+        segr.type.out[i] <- 8
       }
       else if (cross == "riself" || cross == "risib") {
         geno.out[which(geno.in[,i]=="a"),i] <- 1
         geno.out[which(geno.in[,i]=="b"),i] <- 3
-        segr.type.out[i] <- NA
+        segr.type.out[i] <- 9
       }
 
       if(any(is.na(geno.out[,i])))
