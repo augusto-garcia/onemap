@@ -118,7 +118,7 @@ rf_graph_table <- function(input.seq,
       stop("This mrk.axis argument is not defined, choose 'names', 'numbers' or 'none'")
 
     ## extracting data
-    if(is(get(input.seq$data.name), "outcross"))
+    if(is(get(input.seq$data.name), "outcross") | is(get(input.seq$data.name), "f2"))
     {
         if(input.seq$seq.phases[1] == -1 || input.seq$seq.rf[1] == -1 || is.null(input.seq$seq.like))
             stop("You must estimate parameters before running 'rf_graph_table' ")
@@ -172,8 +172,8 @@ rf_graph_table <- function(input.seq,
       colnames(mat) <- rownames(mat)<- input.seq$seq.num
     
     ##Write NAs in two-point recombination fractions between markers of type D1 and D2
-    types <- get(input.seq$data.name, pos=1)$segr.type[input.seq$seq.num]
-    which.D1D2<-outer((substr(types, 1,2)=="D1"),(substr(types, 1,2)=="D2"))
+    types <- get(input.seq$data.name, pos=1)$segr.type.num[input.seq$seq.num]
+    which.D1D2<-outer((substr(types, 1,2)== 6),(substr(types, 1,2)==7))
     which.D1D2<-which.D1D2+t(which.D1D2)
     which.D1D2[which.D1D2==1]<-NA
     which.D1D2[which.D1D2==0]<-1
@@ -187,7 +187,7 @@ rf_graph_table <- function(input.seq,
     mat.LOD[lower.tri(mat.LOD)] <- t(mat.LOD)[lower.tri(mat.LOD)]
     mat.rf[upper.tri(mat.rf)] <- t(mat.rf)[upper.tri(mat.LOD)]
 
-    if(is(get(input.seq$data.name), "outcross")){
+    if(is(get(input.seq$data.name), "outcross") | is(get(input.seq$data.name), "f2")){
         colnames(LOD$CC) <- rownames(LOD$CC) <- colnames(mat.rf)
         colnames(LOD$CR) <- rownames(LOD$CR) <- colnames(mat.rf)
         colnames(LOD$RC) <- rownames(LOD$RC) <- colnames(mat.rf)
@@ -238,7 +238,7 @@ rf_graph_table <- function(input.seq,
     ## ggplot() just depends on the 'x', 'y', and 'fill' aes arguments
     
     ## If outcross:
-    if(is(get(input.seq$data.name), "outcross")){
+    if(is(get(input.seq$data.name), "outcross") | is(get(input.seq$data.name), "f2")){
         if(graph.LOD!=TRUE){
             p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, x.missing = x.missing, y.missing = y.missing, fill = rf, LOD.CC=LOD.CC, LOD.CR=LOD.CR, LOD.RC=LOD.RC, LOD.RR=LOD.RR), data=df.graph) +
                 geom_tile() +
