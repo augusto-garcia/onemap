@@ -1,0 +1,9 @@
+PLOIDY = 2
+                      MAPFUNCTION = HALDANE
+                      MISSING = NA
+                      CHROMFILE = sim.chrom
+                      POPTYPE = F2
+                      POPSIZE = 200
+                      MAPFILE = mapfile.map
+                      FOUNDERFILE = founderfile.gen
+                      OUTPUT = sim_out.F2

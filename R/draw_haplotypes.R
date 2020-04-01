@@ -70,20 +70,18 @@ draw_haplotypes <- function(...,
   probs <- lapply(probs, function(x) split.data.frame(x, x$ind)[ind])
   
   if(is(get(input.map[[1]]$data.name), "outcross") | is(get(input.map[[1]]$data.name), "f2")){
-    if(is(get(input.map[[1]]$data.name), "outcross")){
-      phase <- list('1' = c(1,2,3,4),
-                    '2' = c(2,1,4,3),
-                    '3' = c(3,4,1,2),
-                    "4" = c(4,3,2,1))
-      
-      seq.phase <- lapply(input.map, function(x) c(1,x$seq.phases))
-      
-      # Adjusting phases
-      for(g in seq_along(input.map)){
-        for(i in seq_along(ind)){
-          for(m in seq(n.mar[g])){
-            probs[[g]][[i]][m:n.mar[g],5:8] <- probs[[g]][[i]][m:n.mar[g],phase[[seq.phase[[g]][m]]]+4]
-          }
+    phase <- list('1' = c(1,2,3,4),
+                  '2' = c(2,1,4,3),
+                  '3' = c(3,4,1,2),
+                  "4" = c(4,3,2,1))
+    
+    seq.phase <- lapply(input.map, function(x) c(1,x$seq.phases))
+    
+    # Adjusting phases
+    for(g in seq_along(input.map)){
+      for(i in seq_along(ind)){
+        for(m in seq(n.mar[g])){
+          probs[[g]][[i]][m:n.mar[g],5:8] <- probs[[g]][[i]][m:n.mar[g],phase[[seq.phase[[g]][m]]]+4]
         }
       }
     }
@@ -98,31 +96,26 @@ draw_haplotypes <- function(...,
       do(rbind(.,.[nrow(.),])) %>% 
       do(mutate(.,
                 pos2 = c(0,pos[-1]-diff(pos)/2),
-                pos = c(pos[-nrow(.)], NA))) 
+                pos = c(pos[-nrow(.)], NA))) %>%
+      mutate(P1_1 = V1 + V2,
+             P1_2 = V3 + V4,
+             P2_1 = V1 + V3,
+             P2_2 = V2 + V4) %>% 
+      select(ind, grp, pos, pos2, P1_1, P1_2, P2_1, P2_2) %>% 
+      gather(allele, prob, P1_1, P1_2, P2_1, P2_2) 
     
     if(is(get(input.map[[1]]$data.name), "outcross")){
-      probs <- probs %>%      
-        mutate(P1_1 = V1 + V2,
-               P1_2 = V3 + V4,
-               P2_1 = V1 + V3,
-               P2_2 = V2 + V4) %>% 
-        select(ind, grp, pos, pos2, P1_1, P1_2, P2_1, P2_2) %>% 
-        gather(allele, prob, P1_1, P1_2, P2_1, P2_2) %>%
+      probs <- probs %>%
         mutate(homolog = factor(if_else(allele %in% c("P1_1","P1_2"), "P1", "P2"), levels = c("P2","P1")),
                allele = factor(allele, levels = c("P2_2", "P2_1", "P1_2", "P1_1")),
                allele2 = allele)
     } else {
-      probs <- probs %>% 
-        mutate(H1_P1 = V1 + V2,
-               H1_P2 = V3 + V4,
-               H2_P1 = V1 + V3,
-               H2_P2 = V2 + V4) %>% 
-        select(ind, grp, pos, pos2, H1_P1, H1_P2, H2_P1, H2_P2) %>% 
-        gather(allele, prob, H1_P1, H1_P2, H2_P1, H2_P2) %>%
-        mutate(homolog = factor(if_else(allele %in% c("H1_P1","H1_P2"), "H1", "H2"), levels = c("H2","H1")),
-               allele2 = factor(allele, levels = c("H2_P2", "H2_P1", "H1_P2", "H1_P1")),
-               allele = factor(if_else(allele %in% c("H1_P1","H2_P1"), "P1", "P2"), levels = c("P2","P1")))
+      probs <- probs %>%
+        mutate(homolog = factor(if_else(allele %in% c("P1_1","P1_2"), "P1", "P2"), levels = c("P2","P1")),
+               allele2 = allele,
+               allele = factor(if_else(allele %in% c("P1_1","P2_2"), "P1", "P2"), levels = c("P2","P1")))
     }
+    
   } else if (is(get(input.map[[1]]$data.name), "backcross")){
     
     probs <- do.call(rbind,lapply(probs, function(x) do.call(rbind, x)))
