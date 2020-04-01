@@ -97,22 +97,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
   ##Checking for appropriate number of markers
   if(length(seq.num) < 2) stop("The sequence must have at least 2 markers")
   ##For F2, BC and rils
-  if(is(get(input.seq$data.name, pos=1), "f2"))
-  {
-    final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,seq.num]),
-                              rf.vec=get_vec_rf_in(input.seq),
-                              verbose=verbose,
-                              tol=tol)
-    return(structure(list(seq.num=seq.num,
-                          seq.phases=seq.phases,
-                          seq.rf=final.map$rf,
-                          seq.like=final.map$loglike,
-                          data.name=input.seq$data.name,
-                          probs = final.map$probs,
-                          twopt=input.seq$twopt),
-                     class = "sequence"))
-  }
-  else if(is(get(input.seq$data.name, pos=1), c("backcross", "riself", "risib")))
+  if(is(get(input.seq$data.name, pos=1), c("backcross", "riself", "risib")))
   {
     final.map<-est_map_hmm_bc(geno=t(get(input.seq$data.name, pos=1)$geno[,seq.num]),
                               rf.vec=get_vec_rf_in(input.seq),
