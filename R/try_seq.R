@@ -121,14 +121,10 @@
 ##'@export
 try_seq<-function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
 {
-  if(is(get(input.seq$data.name), "outcross"))
+  if(is(get(input.seq$data.name), "outcross") | is(get(input.seq$data.name), "f2"))
     return(try_seq_outcross(input.seq=input.seq,
                             mrk=mrk, tol=tol,
                             pos=pos, verbose=verbose))
-  else if(is(get(input.seq$data.name), "f2"))
-    return(try_seq_inbred_f2(input.seq=input.seq,
-                             mrk=mrk, tol=tol,
-                             pos=pos, verbose=verbose))
   else
     return(try_seq_inbred_bc(input.seq=input.seq,
                              mrk=mrk, tol=tol,

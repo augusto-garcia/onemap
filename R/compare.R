@@ -103,10 +103,8 @@
 ##'@export
 
 compare<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
-    if(is(get(input.seq$data.name), "outcross"))
+    if(is(get(input.seq$data.name), "outcross") || is(get(input.seq$data.name), "f2"))
         return(compare_outcross(input.seq=input.seq,n.best=n.best,tol=tol,verbose=verbose))
-    else if(is(get(input.seq$data.name), "f2"))
-      return(compare_inbred_f2(input.seq=input.seq,n.best=n.best,tol=tol,verbose=verbose))
     else 
       return(compare_inbred_bc(input.seq=input.seq,n.best=n.best,tol=tol,verbose=verbose))
 }
@@ -434,7 +432,7 @@ compare_inbred_f2<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
 ##'@method print compare
 print.compare <- function(x,...) {
         FLAG<-0
-        if(!is(get(x$data.name, pos=1), "outcross")) FLAG<-1
+        if(!(is(get(x$data.name, pos=1), "outcross") | is(get(x$data.name, pos=1), "f2"))) FLAG<-1
 
         phases.char <- c("CC","CR","RC","RR")
         n.ord <- max(which(head(x$best.ord.LOD,-1) != -Inf))
