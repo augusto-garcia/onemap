@@ -117,7 +117,7 @@ print.rf_2pts <- function(x, mrk=NULL,...) {
       ## checking if markers exist and converting character to numeric
       if(length(mrk)!=2)
           stop(deparse(substitute(mrk))," must be a pair of markers")
-      if(is(x, "f2") || is(x, "backcross") || is(x, "risib") || is(x, "riself"))
+      if(is(x, "backcross") || is(x, "risib") || is(x, "riself"))
       {
           if (is.character(mrk[1]) && is.character(mrk[2])) {
               mrk1name<-mrk[1]
@@ -156,7 +156,7 @@ print.rf_2pts <- function(x, mrk=NULL,...) {
           names(output)<-c("rf","LOD")
           print(output)
       }
-    else if(is(x, "outcross"))
+    else if(is(x, "outcross") || is(x,"f2"))
     {
         if (is.character(mrk[1]) && is.character(mrk[2])) {
             mrk1name<-mrk[1]

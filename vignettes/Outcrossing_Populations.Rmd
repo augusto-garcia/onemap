@@ -1381,7 +1381,7 @@ After that, the map needs to be re-estimated.
 
 # Export estimated parents linkage phases
 
-In older version users could only access the estimated linkage phase observing the print in the console:
+In older version, users could only access the estimated linkage phase observing the print in the console:
 
 ```{r}
 CHR3_final
