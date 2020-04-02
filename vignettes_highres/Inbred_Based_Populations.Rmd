@@ -632,8 +632,8 @@ suggested by `suggest_lod` (rounded up):
 No difference was obtained in this example. (The parentheses above are
 just to avoid typing `LGs_f2` in a new row to have the object printed).
 
-We can see that the markers were assigned to three linkage groups with
-27, 16 and 23 markers, with no unlinked markers.
+We can see that the markers were assigned to two linkage groups with
+57, 22 and 12 markers remained unlinked.
 
 Notice the class of object `LGs_f2`:
 
@@ -718,7 +718,7 @@ the multipoint likelihood of all possible orders between markers
 more markers it will take a couple of hours until you see the results
 (depending of course on the computational resources available).
 
-Linkage group 2 has 18 markers, so using function `compare` is
+Linkage group 2 has 22 markers, so using function `compare` is
 infeasible. Thus we will apply a heuristic that shows reliable
 results. First, we will choose a moderate number of markers, say 6, to
 create a framework using the function `compare`, and then we will
@@ -767,7 +767,7 @@ Check the order obtained by this procedure:
 LG2_f2_ord
 ``` 
 
-Note that markers `11`, `32`, `37`, `66` and `91` could not be safely mapped to a single
+Note that markers `41`, `76`, `89`, `90` and `91` could not be safely mapped to a single
 position (`LOD Score > THRES` in absolute value). The output displays
 the `safe` order and the most likely positions for markers not mapped,
 where `***` indicates the most likely position, and `*` corresponds to
@@ -786,7 +786,7 @@ mapped to a single position), use:
 (LG2_f2_all <- make_seq(LG2_f2_ord, "force"))
 ```
 
-which places markers `11`, `32`, `37`, `66` and `91` into their most likely positions.
+which places markers `41`, `76`, `89`, `90` and `91` into their most likely positions.
 
 Although some old publications presented maps with only `safe` orders,
 we see no reason not to use option `force`, and recommend it for
@@ -848,8 +848,9 @@ LG2_f2_final
 ```
 
 This is based on multipoint estimation of recombination
-fractions, using hidden Markov models.
+fractions, using hidden Markov models. 
 
+#### Parei aqui! Sono!
 
 #### Linkage group 1
 
