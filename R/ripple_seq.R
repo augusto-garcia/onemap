@@ -103,7 +103,7 @@
 
 ripple_seq<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2)
 {
-    if(is(get(input.seq$data.name), "outcross"))
+    if(is(get(input.seq$data.name), "outcross") || is(get(input.seq$data.name), "f2"))
         return(ripple_seq_outcross(input.seq=input.seq,
                                    ws=ws,
                                    LOD=LOD,

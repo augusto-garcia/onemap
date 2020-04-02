@@ -160,15 +160,15 @@
 ##' }
 ##'@export
 order_seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
-                       subset.n.try=30, subset.THRES=3, twopt.alg= c("rec", "rcd", "ser", "ug"),
-                       THRES=3, touchdown=FALSE, tol=10E-2) {
+                      subset.n.try=30, subset.THRES=3, twopt.alg= c("rec", "rcd", "ser", "ug"),
+                      THRES=3, touchdown=FALSE, tol=10E-2) {
   ## checking for correct objects
   if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   if(n.init < 2) stop("'n.init' must be greater than or equal to 2")
   if(!is.logical(touchdown)) stop("'touchdown' must be logical")
   if(!touchdown && THRES <= 10E-10) stop("Threshold must be greater than 0 if 'touchdown' is FALSE")
   if(touchdown && THRES <= (1 + 10E-10)) stop("Threshold must be greater than 1 if 'touchdown' is TRUE")
-
+  
   if(length(input.seq$seq.num) <= n.init) {
     ## in this case, only the 'compare' function is used
     cat("   Length of sequence ",deparse(substitute(input.seq))," is less than n.init \n   Returning the best order using compare function:\n")
@@ -188,7 +188,7 @@ order_seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
     else if (cross.type == "outcross") FLAG <- "outcross"
     else stop("Invalid cross type\n")
     ## select the order in which markers will be added
-    if(FLAG == "bc" || FLAG == "f2"){
+    if(FLAG == "bc"){
       subset.search <- match.arg(subset.search)
       if(subset.search == "twopt"){
         cat("\nCross type: ", cross.type, "\nChoosing initial subset using 'two-point' approach\n")
@@ -214,21 +214,10 @@ order_seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
         seq.rest <- input.seq$seq.num[-pmatch(seq.init, input.seq$seq.num)] ##the rest of the markers
         seq.mis <- apply(as.matrix(get(input.seq$data.name, pos=1)$geno[,seq.rest]), 2, function(x) sum(x==0)) ##checking missing markers for the rest
         names(seq.mis)<-colnames(get(input.seq$data.name, pos=1)$geno)[seq.rest]
-
+        
         if(FLAG == "bc") {
           rest.ord <- pmatch(names(seq.mis), colnames(get(input.seq$data.name, pos=1)$geno))
           seq.work <- pmatch(c(seq.init,rest.ord), input.seq$seq.num)
-        }
-        else if(FLAG == "f2"){
-          seq.type <- get(input.seq$data.name, pos=1)$segr.type.num[seq.rest] ##checking maker type (4: co-dominant; 5: dominant)
-          names(seq.type) <- names(seq.mis)
-          tp.ord <- sort(seq.type) ##sorting by type, automatically co-dominant markers (4) come first
-          rest.ord <- c(sort(seq.mis[pmatch(names(tp.ord)[tp.ord==1],names(seq.mis))]),
-                        sort(seq.mis[pmatch(names(tp.ord)[tp.ord==4],names(seq.mis))]),
-                        sort(seq.mis[pmatch(names(tp.ord)[tp.ord==2],names(seq.mis))]),
-                        sort(seq.mis[pmatch(names(tp.ord)[tp.ord==3],names(seq.mis))]))##within each type of marker, sort by missing
-          rest <- pmatch(names(rest.ord), colnames(get(input.seq$data.name, pos=1)$geno)) ##matching names with the positions on the raw data
-          seq.work <- pmatch(c(seq.init,rest), input.seq$seq.num) ##sequence to work with
         }
         else stop("Invalid cross type\n")
       }
@@ -250,25 +239,14 @@ order_seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
             rest.ord <- pmatch(names(seq.mis), colnames(get(input.seq$data.name, pos=1)$geno))
             seq.work <- pmatch(c(seq.init,rest.ord), input.seq$seq.num)
           }
-          else if(FLAG == "f2"){
-            seq.type <- get(input.seq$data.name, pos=1)$segr.type.num[seq.rest] ##checking maker type (4: co-dominant; 5: dominant)
-            names(seq.type) <- names(seq.mis)
-            tp.ord <- sort(seq.type) ##sorting by type, automatically co-dominant markers (4) come first
-            rest.ord <- c(sort(seq.mis[pmatch(names(tp.ord)[tp.ord==1],names(seq.mis))]),
-                          sort(seq.mis[pmatch(names(tp.ord)[tp.ord==4],names(seq.mis))]),
-                          sort(seq.mis[pmatch(names(tp.ord)[tp.ord==2],names(seq.mis))]),
-                          sort(seq.mis[pmatch(names(tp.ord)[tp.ord==3],names(seq.mis))]))##within each type of marker, sort by missing
-            rest <- pmatch(names(rest.ord),colnames(get(input.seq$data.name, pos=1)$geno)) ##matching names with the positions on the raw data
-            seq.work <- pmatch(c(seq.init,rest), input.seq$seq.num) ##sequence to work with
-          }
           else stop("Invalid cross type\n")
         }
         else stop("Cannot find any subset using 'subset.n.try'=", subset.n.try, " and 'subset.THRES'= ", subset.THRES,"\n")
       }
       ## else stop("Invalid subset search\n")
     }
-    else if(FLAG == "outcross") {
-      cat("\nCross type: outcross\nUsing segregation types of the markers to choose initial subset\n")
+    else if(FLAG == "outcross" || FLAG == "f2") {
+      cat(paste("\nCross type:", FLAG, "\nUsing segregation types of the markers to choose initial subset\n"))
       segregation.types <- get(input.seq$data.name, pos=1)$segr.type.num[input.seq$seq.num]
       if(sum(segregation.types == 7) > sum(segregation.types == 6)) segregation.types[segregation.types == 6] <- 8 ## if there are more markers of type D2 than D1, try to map those first
       seq.work <- order(segregation.types)
@@ -277,7 +255,7 @@ order_seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
     else stop("Invalid cross type")
     ##apply the 'compare' step to the subset of initial markers
     seq.ord <- compare(input.seq=make_seq(get(input.seq$twopt), seq.init, twopt=input.seq$twopt), n.best=50)
-
+    
     ## 'try' to map remaining markers
     input.seq2 <- make_seq(seq.ord,1)
     cat ("\n\nRunning try algorithm\n")
@@ -286,13 +264,13 @@ order_seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
       if(all(seq.ord$LOD[-which(seq.ord$LOD==max(seq.ord$LOD))[1]] < -THRES))
         input.seq2 <- make_seq(seq.ord,which.max(seq.ord$LOD))
     }
-
+    
     ## markers that do not meet the threshold remain unpositioned
     mrk.unpos <- input.seq$seq.num[which(is.na(match(input.seq$seq.num, input.seq2$seq.num)))]
     LOD.unpos <- NULL
     cat("\nLOD threshold =",THRES,"\n\nPositioned markers:", input.seq2$seq.num, "\n\n")
     cat("Markers not placed on the map:", mrk.unpos, "\n")
-
+    
     if(touchdown && length(mrk.unpos) > 0) {
       ## here, a second round of the 'try' algorithm is performed, if requested
       cat("\n\n\nTrying to map remaining markers with LOD threshold ",THRES-1,"\n")
@@ -301,13 +279,13 @@ order_seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
         if(all(seq.ord$LOD[-which(seq.ord$LOD==max(seq.ord$LOD))[1]] < (-THRES+1)))
           input.seq2 <- make_seq(seq.ord,which.max(seq.ord$LOD))
       }
-
+      
       ## markers that do not meet this second threshold still remain unpositioned
       mrk.unpos <- input.seq$seq.num[which(is.na(match(input.seq$seq.num, input.seq2$seq.num)))]
       cat("\nLOD threshold =",THRES-1,"\n\nPositioned markers:", input.seq2$seq.num, "\n\n")
       cat("Markers not placed on the map:", mrk.unpos, "\n")
     }
-
+    
     if(length(mrk.unpos) > 0) {
       ## LOD-Scores are calculated for each position, for each unmapped marker, if any
       LOD.unpos <- matrix(NA,length(mrk.unpos),(length(input.seq2$seq.num)+1))
@@ -319,15 +297,15 @@ order_seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
       }
     }
     else mrk.unpos <- NULL
-
+    
     ## to end the algorithm, possibly remaining markers are 'forced' into the map
     input.seq3 <- input.seq2
     if(!is.null(mrk.unpos)) {
       cat("\n\nPlacing remaining marker(s) at most likely position\n")
-
+      
       ## these markers are added from the least to the most doubtful
       which.order <- order(apply(LOD.unpos,1,function(x) max(x[-which(x==0)[1]])))
-
+      
       for (i in mrk.unpos[which.order]) {
         seq.ord <- try_seq(input.seq3,i,tol)
         input.seq3 <- make_seq(seq.ord,which(seq.ord$LOD==0)[sample(sum(seq.ord$LOD==0))[1]])
@@ -352,18 +330,18 @@ print.order <- function(x,...) {
     ## print LOD-Score information for unpositioned markers
     cat("\n\nThe following markers could not be uniquely positioned.\n")
     cat("Printing most likely positions for each unpositioned marker:\n")
-
+    
     size1 <- max(3,max(nchar(x$mrk.unpos)))
     mrk.unpos.pr <- format(x$mrk.unpos,width=size1)
     size2 <- max(nchar(x$ord$seq.num))
     seq.pr <- format(x$ord$seq.num,width=size2)
-
-######limit <- (x$THRES-2)/2 ## previously used limit
-
+    
+    ######limit <- (x$THRES-2)/2 ## previously used limit
+    
     cat("\n")
     cat(paste(rep("-",size2+4+length(mrk.unpos.pr)*(size1+3)),collapse=""),"\n")
     cat("| ",rep("",size2),"|")
-###### MAYBE WE SHOULD PUT A LIMIT TO THE NUMBER OF UNPOSITIONED MARKERS
+    ###### MAYBE WE SHOULD PUT A LIMIT TO THE NUMBER OF UNPOSITIONED MARKERS
     for(j in 1:length(mrk.unpos.pr)) {
       cat(rep("",max(0,3-size1)+1),mrk.unpos.pr[j],"|")
     }
