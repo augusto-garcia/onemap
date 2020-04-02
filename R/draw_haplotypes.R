@@ -2,10 +2,6 @@
 ##'
 ##' Provides a draw of the individuals genotypes.
 ##'
-##'@import ggplot2
-##'@import dplyr
-##'@import tidyr
-##'
 ##'
 ##' @param ... Map(s) or list(s) of maps. Object(s) of class sequence.
 ##' @param ind The individual number to be ploted.
@@ -41,6 +37,11 @@
 ##'  draw_haplotypes(maps, ind= 1:2)
 ##'
 ##' }
+##' 
+##'@import ggplot2
+##'@import dplyr
+##'@import tidyr
+##'
 ##'@export
 
 draw_haplotypes <- function(..., 

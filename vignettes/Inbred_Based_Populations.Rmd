@@ -1392,6 +1392,16 @@ draw_map2(LG1_f2_final, CHR1_final, LG2_f2_final, CHR3_final, CHR2_final, LG3_f2
 
 With argument `tag` you can highlight some markers at the figure according to you specific purpose.
 
+# Draw progeny estimated haplotypes
+
+You can also have a view of progeny estimated haplotypes. The function `draw_haplotypes` shows which markers came from each parents homologues. You can choose the groups you would like to represent adding the final sequence as the firsts arguments of the function. The argument `ind` defines the individuals to be plotted (if no one is defined, individual 1 will be plotted). You can also choose if you want to view the most likely haplotypes or it colored gradually by their likelihood defining `most.likely` argument. `position` argument defines if haplotypes will be plotted by homologues (`stach`) or by homologues and by alleles (`split`). `split` option is a good way to better view the likelihoods of each alleles.
+
+```{r}
+draw_haplotypes(CHR1_final, CHR2_final, CHR3_final, ind = 1:2, most.likely = FALSE, 
+                position = "split",group.names =  c("CHR1", "CHR2"))
+```
+
+
 # Final remarks
 
 At this point it should be clear that any potential `OneMap` user must

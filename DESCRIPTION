@@ -32,7 +32,9 @@ Imports: ggplot2 (>= 2.2.1),
          stats, 
          utils,
          grDevices,
-         MDSMap
+         MDSMap,
+         dplyr,
+         tidyr
 Suggests: qtl (>= 1.36-6), 
           knitr (>= 1.10), 
           rmarkdown, 
