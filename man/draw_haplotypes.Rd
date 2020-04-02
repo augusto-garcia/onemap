@@ -44,7 +44,7 @@ Provides a draw of the individuals genotypes.
  map1 <- map(make_seq(order_seq(input.seq = make_seq(lg, 1), twopt.alg = "rcd"), "force"))
  map2 <- map(make_seq(order_seq(input.seq = make_seq(lg, 2), twopt.alg = "rcd"), "force"))
  map3 <- map(make_seq(order_seq(input.seq = make_seq(lg, 3), twopt.alg = "rcd"), "force"))
- draw_geno(map1, map2, map3, ind = 1)
+ draw_haplotypes(map1, map2, map3, ind = 1)
  
  data("onemap_example_f2")
  twopt <- rf_2pts(onemap_example_f2)
@@ -54,9 +54,10 @@ Provides a draw of the individuals genotypes.
  map(make_seq(order_seq(input.seq = make_seq(lg, 2),twopt.alg = "rcd"), "force")),
  map(make_seq(order_seq(input.seq = make_seq(lg, 3),twopt.alg = "rcd"), "force"))
  )
- draw_geno(maps, ind= 1:2)
+ draw_haplotypes(maps, ind= 1:2)
 
 }
+
 }
 \author{
 Getulio Caixeta Ferreira, \email{getulio.caifer@gmail.com}
