@@ -214,7 +214,7 @@ make_seq <-
     
     if(class(input.obj)[1] == "order"){
       structure(list(seq.num=seq.num, seq.phases=seq.phases, seq.rf=seq.rf, seq.like=seq.like,
-                   data.name=data.name, probs = probs, twopt=twopt), class = "sequence")
+                     data.name=data.name, probs = probs, twopt=twopt), class = "sequence")
     } else {
       structure(list(seq.num=seq.num, seq.phases=seq.phases, seq.rf=seq.rf, seq.like=seq.like,
                      data.name=data.name, twopt=twopt), class = "sequence")
@@ -226,70 +226,141 @@ make_seq <-
 ##'@method print sequence
 
 print.sequence <- function(x, out_file=NULL) {
-  marnames <- colnames(get(x$data.name, pos=1)$geno)[x$seq.num]
-  if(length(x$seq.rf) == 1 && x$seq.rf == -1) {
-    # no information available for the order
-    cat("\nNumber of markers:",length(marnames))
-    if (length(marnames) <= 50) {
-      cat("\nMarkers in the sequence:\n")
-      cat(marnames,fill=TRUE)
-    }
-    else
-      cat("\nToo many markers  - not printing their names\n")
-    cat("\nParameters not estimated.\n\n")
-  }
-  else {
-    # convert numerical linkage phases to strings
-    link.phases <- matrix(NA,length(x$seq.num),2)
-    link.phases[1,] <- rep(1,2)
-    for (i in 1:length(x$seq.phases)) {
-      switch(EXPR=x$seq.phases[i],
-             link.phases[i+1,] <- link.phases[i,]*c(1,1),
-             link.phases[i+1,] <- link.phases[i,]*c(1,-1),
-             link.phases[i+1,] <- link.phases[i,]*c(-1,1),
-             link.phases[i+1,] <- link.phases[i,]*c(-1,-1),
-      )
-    }
-    
-    ## display results
-    longest.name <- max(nchar(marnames))
-    marnames <- formatC(marnames,flag="-")
-    longest.number <- max(nchar(x$seq.num))
-    marnumbers <- formatC(x$seq.num, format="d", width=longest.number)
-    distances <- formatC(c(0,cumsum(get(get(".map.fun", envir=.onemapEnv))(x$seq.rf))),format="f",digits=2,width=7)
-    ## whith diplotypes for class 'outcross'
-    if(is(get(x$data.name, pos=1),"outcross")){
-      ## create diplotypes from segregation types and linkage phases
-      link.phases <- apply(link.phases,1,function(x) paste(as.character(x),collapse="."))
-      parents <- matrix("",length(x$seq.num),4)
-      for (i in 1:length(x$seq.num))
-        parents[i,] <- onemap:::return_geno(get(x$data.name, pos=1)$segr.type[x$seq.num[i]],link.phases[i])
-      cat("\nPrinting map:\n\n")
-      cat("Markers",rep("",max(longest.number+longest.name-7,0)+10),"Position",rep("",10),"Parent 1","     ","Parent 2\n\n")
-      for (i in 1:length(x$seq.num)) {
-        cat(marnumbers[i],marnames[i],rep("",max(7-longest.name-longest.number,0)+10),distances[i],rep("",10),parents[i,1],"|  |",parents[i,2],"     ",parents[i,3],"|  |",parents[i,4],"\n")
+    marnames <- colnames(get(x$data.name, pos=1)$geno)[x$seq.num]
+    if(length(x$seq.rf) == 1 && x$seq.rf == -1) {
+      # no information available for the order
+      cat("\nNumber of markers:",length(marnames))
+      if (length(marnames) <= 50) {
+        cat("\nMarkers in the sequence:\n")
+        cat(marnames,fill=TRUE)
       }
-      cat("\n")
-      cat(length(marnames),"markers            log-likelihood:",ifelse(is.null(x$seq.like),"NULL",x$seq.like),"\n\n")
-      out_dat <- data.frame(mk.number = marnumbers, mk.names = marnames, dist = as.numeric(distances), 
-                            P1_1 = parents[,1],
-                            P1_2 = parents[,2],
-                            P2_1 = parents[,3],
-                            P2_2 = parents[,4])
-      if(!is.null(out_file)){
-        write.table(out_dat, file = out_file, col.names = T, row.names = F)
-      }
+      else
+        cat("\nToo many markers  - not printing their names\n")
+      cat("\nParameters not estimated.\n\n")
     }
-    ## whithout diplotypes for other classes
-    else if(is(get(x$data.name, pos=1), c("backcross", "f2", "riself", "risib"))){
-      cat("\nPrinting map:\n\n")
-      cat("Markers",rep("",max(longest.number+longest.name-7,0)+10),"Position",rep("",10),"\n\n")
-      for (i in 1:length(x$seq.num)) {
-        cat(marnumbers[i],marnames[i],rep("",max(7-longest.name-longest.number,0)+10),distances[i],rep("",10),"\n")
+    else {
+      # convert numerical linkage phases to strings
+      link.phases <- matrix(NA,length(x$seq.num),2)
+      link.phases[1,] <- rep(1,2)
+      for (i in 1:length(x$seq.phases)) {
+        switch(EXPR=x$seq.phases[i],
+               link.phases[i+1,] <- link.phases[i,]*c(1,1),
+               link.phases[i+1,] <- link.phases[i,]*c(1,-1),
+               link.phases[i+1,] <- link.phases[i,]*c(-1,1),
+               link.phases[i+1,] <- link.phases[i,]*c(-1,-1),
+        )
       }
-      cat("\n",length(marnames),"markers            log-likelihood:",ifelse(is.null(x$seq.like),"NULL",x$seq.like),"\n\n")
+      
+      ## display results
+      longest.name <- max(nchar(marnames))
+      marnames <- formatC(marnames,flag="-")
+      longest.number <- max(nchar(x$seq.num))
+      marnumbers <- formatC(x$seq.num, format="d", width=longest.number)
+      distances <- formatC(c(0,cumsum(get(get(".map.fun", envir=.onemapEnv))(x$seq.rf))),format="f",digits=2,width=7)
+      ## whith diplotypes for class 'outcross'
+      if(is(get(x$data.name, pos=1),"outcross")){
+        ## create diplotypes from segregation types and linkage phases
+        link.phases <- apply(link.phases,1,function(x) paste(as.character(x),collapse="."))
+        parents <- matrix("",length(x$seq.num),4)
+        for (i in 1:length(x$seq.num))
+          parents[i,] <- return_geno(get(x$data.name, pos=1)$segr.type[x$seq.num[i]],link.phases[i])
+        cat("\nPrinting map:\n\n")
+        cat("Markers",rep("",max(longest.number+longest.name-7,0)+10),"Position",rep("",10),"Parent 1","     ","Parent 2\n\n")
+        for (i in 1:length(x$seq.num)) {
+          cat(marnumbers[i],marnames[i],rep("",max(7-longest.name-longest.number,0)+10),distances[i],rep("",10),parents[i,1],"|  |",parents[i,2],"     ",parents[i,3],"|  |",parents[i,4],"\n")
+        }
+        cat("\n")
+        cat(length(marnames),"markers            log-likelihood:",ifelse(is.null(x$seq.like),"NULL",x$seq.like),"\n\n")
+        out_dat_temp <- data.frame(mk.number = marnumbers, mk.names = marnames, dist = as.numeric(distances), 
+                              P1_1 = parents[,1],
+                              P1_2 = parents[,2],
+                              P2_1 = parents[,3],
+                              P2_2 = parents[,4])
+      }
+      ## whithout diplotypes for other classes
+      else if(is(get(x$data.name, pos=1), c("backcross", "f2", "riself", "risib"))){
+        cat("\nPrinting map:\n\n")
+        cat("Markers",rep("",max(longest.number+longest.name-7,0)+10),"Position",rep("",10),"\n\n")
+        for (i in 1:length(x$seq.num)) {
+          cat(marnumbers[i],marnames[i],rep("",max(7-longest.name-longest.number,0)+10),distances[i],rep("",10),"\n")
+        }
+        cat("\n",length(marnames),"markers            log-likelihood:",ifelse(is.null(x$seq.like),"NULL",x$seq.like),"\n\n")
+      }
+      else warning("invalid cross type")
     }
-    else warning("invalid cross type")
-  }
 }
 ##end of file
+
+#'Export parents estimated haplotypes to a text file
+#'
+#'@param x sequence or list of sequences
+#'@param out_file character defining the output file name
+#'@param group_names vector of characters defining the group names
+#'@export
+
+parents_haplotypes <- function(x, out_file="test.txt", group_names=NULL){
+  temp_x <- x
+  if(all(sapply(x, function(x) is(x, "sequence")))){
+    n <- length(sapply(x, function(x) is(x, "sequence")))
+  } else n <- 1
+  
+  if(is.null(group_names)) {
+    group_names <- 1:n 
+  } else {
+    if(!(length(group_names) ==n))
+      stop("group_names vector must have the length than the number of sequences in input list. \n")
+  }
+  out_dat <- data.frame()
+  for(z in 1:n){
+    if(all(sapply(x, function(x) is(x, "sequence")))) x <- temp_x[[z]]
+    marnames <- colnames(get(x$data.name, pos=1)$geno)[x$seq.num]
+    if(length(x$seq.rf) == 1 && x$seq.rf == -1) {
+      # no information available for the order
+      cat("\nParameters not estimated.\n\n")
+    }
+    else {
+      # convert numerical linkage phases to strings
+      link.phases <- matrix(NA,length(x$seq.num),2)
+      link.phases[1,] <- rep(1,2)
+      for (i in 1:length(x$seq.phases)) {
+        switch(EXPR=x$seq.phases[i],
+               link.phases[i+1,] <- link.phases[i,]*c(1,1),
+               link.phases[i+1,] <- link.phases[i,]*c(1,-1),
+               link.phases[i+1,] <- link.phases[i,]*c(-1,1),
+               link.phases[i+1,] <- link.phases[i,]*c(-1,-1),
+        )
+      }
+      
+      ## display results
+      longest.name <- max(nchar(marnames))
+      marnames <- formatC(marnames,flag="-")
+      longest.number <- max(nchar(x$seq.num))
+      marnumbers <- formatC(x$seq.num, format="d", width=longest.number)
+      distances <- formatC(c(0,cumsum(get(get(".map.fun", envir=.onemapEnv))(x$seq.rf))),format="f",digits=2,width=7)
+      ## whith diplotypes for class 'outcross'
+      if(is(get(x$data.name, pos=1),"outcross")){
+        ## create diplotypes from segregation types and linkage phases
+        link.phases <- apply(link.phases,1,function(x) paste(as.character(x),collapse="."))
+        parents <- matrix("",length(x$seq.num),4)
+        for (i in 1:length(x$seq.num))
+          parents[i,] <- return_geno(get(x$data.name, pos=1)$segr.type[x$seq.num[i]],link.phases[i])
+         out_dat_temp <- data.frame(group= group_names[z], mk.number = marnumbers, mk.names = marnames, dist = as.numeric(distances), 
+                                   P1_1 = parents[,1],
+                                   P1_2 = parents[,2],
+                                   P2_1 = parents[,3],
+                                   P2_2 = parents[,4])
+        if(!is.null(out_file)){
+          out_dat <- rbind(out_dat, out_dat_temp)
+        }
+      }
+      ## whithout diplotypes for other classes
+      else if(is(get(x$data.name, pos=1), c("backcross", "f2", "riself", "risib"))){
+        cat("There is only a possible phase for this cross type\n")
+      }
+      else warning("invalid cross type")
+    }
+  }
+  write.table(out_dat, file = out_file, col.names = T, row.names = F)
+}
+
+
