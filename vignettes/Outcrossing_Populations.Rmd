@@ -1390,7 +1390,13 @@ CHR3_final
 Now, you can export this information in a file using:
 
 ```{r}
-print(CHR3_final, out_file = "CHR3_final.txt")
+parents_haplotypes(CHR3_final, out_file = "CHR3_final.txt")
+```
+
+You can also obtain a file with a list of sequences:
+
+```{r}
+parents_haplotypes(list(CHR2_final,CHR3_final), out_file = "CHR3_final.txt", group_names=c("CHR2","CHR3"))
 ```
 
 
