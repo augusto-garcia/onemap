@@ -198,14 +198,39 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 3
       
       idx <- which(mk.type=="D1.9" | mk.type=="D1.10")
-      cat <- paste0(P1_1[idx], "/", P2_1[idx])
-      cat.rev <- paste0(P2_1[idx], "/", P1_1[idx])
-      GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 1
-      cat <- paste0(P1_2[idx], "/", P2_1[idx])
-      cat.rev <- paste0(P2_1[idx], "/", P1_2[idx])
-      GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 2
+      idx.sub <- which(P1_1[idx] == P2_1[idx])
+      cat <- paste0(P1_1[idx][idx.sub], "/", P2_1[idx][idx.sub])
+      cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_1[idx][idx.sub])
+      GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 1
+      cat <- paste0(P1_2[idx][idx.sub], "/", P2_1[idx][idx.sub])
+      cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_2[idx][idx.sub])
+      GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 2
+      
+      idx.sub <- which(P1_2[idx] == P2_1[idx])
+      cat <- paste0(P1_2[idx][idx.sub], "/", P2_1[idx][idx.sub])
+      cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_2[idx][idx.sub])
+      GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 1
+      cat <- paste0(P1_1[idx][idx.sub], "/", P2_1[idx][idx.sub])
+      cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_1[idx][idx.sub])
+      GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 2
       
       idx <- which(mk.type=="D2.14" | mk.type=="D2.15" )
+      idx.sub <- which(P1_1[idx] == P2_1[idx])
+      cat <- paste0(P1_1[idx][idx.sub], "/", P2_1[idx][idx.sub])
+      cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_1[idx][idx.sub])
+      GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 1
+      cat <- paste0(P1_1[idx][idx.sub], "/", P2_2[idx][idx.sub])
+      cat.rev <- paste0(P2_2[idx][idx.sub], "/", P1_2[idx][idx.sub])
+      GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 2
+      
+      idx.sub <- which(P1_1[idx] == P2_2[idx])
+      cat <- paste0(P1_2[idx][idx.sub], "/", P2_2[idx][idx.sub])
+      cat.rev <- paste0(P2_2[idx][idx.sub], "/", P1_2[idx][idx.sub])
+      GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 1
+      cat <- paste0(P1_1[idx][idx.sub], "/", P2_1[idx][idx.sub])
+      cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_1[idx][idx.sub])
+      GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 2
+      
       cat <- paste0(P1_1[idx], "/", P2_1[idx])
       cat.rev <- paste0(P2_1[idx], "/", P1_1[idx])
       GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 1
