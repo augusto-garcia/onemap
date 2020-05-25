@@ -22,19 +22,19 @@ library(onemap)
 library(ggplot2)
 ```
 
-OneMap 3.0 also makes a interface with PedigreeSim software to perform simulations. There are three different ways to simulate maps in OneMap:
+OneMap 3.0 also makes interface with PedigreeSim software to perform simulations. There are three different ways to simulate maps in OneMap:
 
 * Converting PedigreeSim output to OneMap raw data: function `pedsim2raw`
 
-This function just convert the PedigreeSim files to OneMap raw data. The only source of errors are inputated missing data controled by `miss.perc` argument.
+This function just convert the PedigreeSim files to OneMap raw data. The only source of errors are  missing data controled by `miss.perc` argument.
 
 * Converting PedigreeSim output to VCF file simulating allele depth with different distributions: function `pedsim2vcf`
 
 Simulating the VCF you can include other sources of errors. The map is simulated in PedigreeSim, and according with each genotype, the choosed statistical distribuition will simulated the reference and alternative alleles counts. The genotypes can be reestimated according with the alleles counts simulated using the genotype callers Updog (function `updog_error`), polyRAD (function `polyRAD_error`) and Supermassa (function `supermassa_error` of [`supermassa4onemap` package](https://github.com/Cristianetaniguti/supermassa4onemap).
 
-* Use a chromossome of the reference genome to simulate SNPs, the bi-parental cross and Illumina reads for each individual: workflow `SimulateReads.wdl`
+* Use a chromossome of a reference genome to simulate a bi-parental cross and RADseq Illumina reads for each individual: workflow `SimulateReads.wdl`
 
-The workflow `SimulatedReads` is available in [onemap_workflows](https://github.com/Cristianetaniguti/onemap_workflows) repository in github. It performs the simulation of Illumina reads for outcrossing population, the SNP calling in Freebayes and GATK software, the genotype calling in updog, supermassa and polyRAD, and build genetics maps using every combination in OneMap and gusmap. The workflow is wroten in WDL cromwell worflow system and the parameters of every software implented can be easily changed. All the results can be evaluated in a [shiny app](https://github.com/Cristianetaniguti/onemap_workflows_shiny). See the [workflow tutorial](https://github.com/Cristianetaniguti/onemap_workflows) to perfom this analysis.
+The workflow `SimulatedReads` is available in [onemap_workflows](https://github.com/Cristianetaniguti/onemap_workflows) repository in github. It performs the simulation of RADseq Illumina reads for outcrossing population, the SNP calling is made in [Freebayes](https://github.com/ekg/freebayes) and [GATK](https://gatk.broadinstitute.org/hc/en-us) software, the genotype calling in [updog](https://github.com/dcgerard/updog), [supermassa](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0030906) and [polyRAD](https://github.com/lvclark/polyRAD), and build genetics maps using every combination in OneMap and [GUSMap](https://github.com/tpbilton/GUSMap). The workflow is wroten in [Workflow Description Language (WDL)](https://openwdl.org/) and [cromwell workflow management system](https://cromwell.readthedocs.io/en/stable/). The parameters of every software implented can be easily changed. All the results can be evaluated in a [shiny app](https://github.com/Cristianetaniguti/onemap_workflows_shiny). See the [workflow tutorial](https://github.com/Cristianetaniguti/onemap_workflows) to perfom this analysis.
 
 
 # Run PedigreeSim
