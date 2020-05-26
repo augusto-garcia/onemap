@@ -58,7 +58,8 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
                              cross = c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"),
                              parent1 =NULL,
                              parent2 =NULL,
-                             f1=NULL){
+                             f1=NULL,
+                             only_biallelic = TRUE){
   
   if (is.null(vcfR.object)) {
     stop("You must specify one vcfR object.")
@@ -85,6 +86,11 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   for(i in 2:(n.ind+1))
     GT_matrix[,i-1] <- unlist(lapply(strsplit(vcf@gt[,i], split=":"), "[[", GT))
   
+  # keep only biallelic
+  if(only_biallelic | cross != "outcross"){
+    rm_multi <- which(apply(GT_matrix, 1, function(x) any(grepl("2", x))))
+    GT_matrix <- GT_matrix[-rm_multi,]
+  }
   
   # This function doesn't consider phased genotypes
   if(any(grepl("[|]", GT_matrix))){
@@ -197,7 +203,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       cat.rev <- paste0(P2_2[idx], "/", P1_2[idx])
       GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 3
       
-      idx <- which(mk.type=="D1.9" | mk.type=="D1.10")
+      idx <- which(mk.type=="D1.10")
       idx.sub <- which(P1_1[idx] == P2_1[idx])
       cat <- paste0(P1_1[idx][idx.sub], "/", P2_1[idx][idx.sub])
       cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_1[idx][idx.sub])
@@ -214,7 +220,15 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_1[idx][idx.sub])
       GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 2
       
-      idx <- which(mk.type=="D2.14" | mk.type=="D2.15" )
+      idx <- which(mk.type=="D1.9")
+      cat <- paste0(P1_1[idx], "/", P2_1[idx])
+      cat.rev <- paste0(P2_1[idx], "/", P1_1[idx])
+      GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 1
+      cat <- paste0(P1_2[idx], "/", P2_1[idx])
+      cat.rev <- paste0(P2_1[idx], "/", P1_2[idx])
+      GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 2
+      
+      idx <- which(mk.type=="D2.15" )
       idx.sub <- which(P1_1[idx] == P2_1[idx])
       cat <- paste0(P1_1[idx][idx.sub], "/", P2_1[idx][idx.sub])
       cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_1[idx][idx.sub])
@@ -231,6 +245,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_1[idx][idx.sub])
       GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 2
       
+      idx <- which(mk.type=="D2.14")
       cat <- paste0(P1_1[idx], "/", P2_1[idx])
       cat.rev <- paste0(P2_1[idx], "/", P1_1[idx])
       GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 1
