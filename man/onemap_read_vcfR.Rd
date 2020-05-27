@@ -9,7 +9,8 @@ onemap_read_vcfR(
   cross = c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"),
   parent1 = NULL,
   parent2 = NULL,
-  f1 = NULL
+  f1 = NULL,
+  only_biallelic = TRUE
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ onemap_read_vcfR(
 \item{parent1}{\code{string} specifying sample ID of the first parent.}
 
 \item{parent2}{\code{string} specifying sample ID of the second parent.}
+
+\item{only_biallelic}{if TRUE (default) only biallelic markers are considered, if FALSE multiallelic markers are included.}
 }
 \description{
 Converts data from a vcfR package to onemap initial object, while trying to identify 
