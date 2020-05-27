@@ -13,40 +13,6 @@
 ##                                                                     ##
 #######################################################################
 
-## This function builds matrix with genotypes probabilites for emission function in hmm approach
-
-##' Build genotype probabilities matrix for hmm
-##'
-##' The genotypes probabilities can be calculated considering a global error (default method)
-##' or considering a genotype error probability for each genotype. Furthermore, user can provide 
-##' directly the genotype probability matrix.
-##' 
-##' The genotype probability matrix has number of individuals x number of markers rows and
-##' four columns (or two if considering backcross or RILs populations), one for each possible genotype
-##' of the population. This format follows the one proposed by MAPpoly.
-##' 
-##' The genotype probabilities come from SNP calling methods. If you do not have them, you can use a global
-##' error or a error value for each genotype. The OneMap until 2.1 version have only the global error option.
-##' 
-##' @param onemap.obj an object of class \code{onemap}.
-##' @param global_error a integer specifing the global error value
-##' @param genotypes_errors a matrix with dimensions (number of marker) x (number of markers) with genotypes errors values
-##' @param genotypes_probs a matrix with dimensions (number of individuals)*(number of markers) x possible genotypes 
-##' (i.e., a ab ba b) with four columns for f2 and outcrossing populations, and two for backcross and RILs).
-##' 
-##' @return An object of class \code{onemap} with the built matrix at prob component of the list
-##' @author Cristiane Taniguti \email{chtaniguti@@usp.br} 
-##' @seealso \code{\link[onemap]{make_seq}}
-##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
-##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
-##' 1.09-43
-##'
-##' @examples
-##'
-##'   data(onemap_example_out)
-##'   new.data <- create_probs(onemap_example_out, prob = 10^-5)
-##'   
-##'   
 ##'@importFrom reshape2 melt
 ##'@export
 create_probs <- function(onemap.obj = NULL, 
