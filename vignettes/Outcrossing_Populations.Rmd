@@ -24,7 +24,7 @@ knitr::opts_chunk$set(collapse = TRUE,
 
 ```
 
-```{r, echo=FALSE, results='hide', message=FALSE}
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
 library(onemap)
 ```
 
@@ -1211,7 +1211,6 @@ Checking for better orders:
 ripple_seq(CHR3_final)
 ```
 
-
 # Drawing the genetic maps
 
 Once all linkage groups were obtained using both strategies, we can draw a map for each strategy using the function `draw_map`. Since version 2.1.1007, OneMap has a new version of `draw_map`, called `draw_map2`. The new function draws elegant linkage groups, and presents new arguments to personalize your draw.
@@ -1379,7 +1378,7 @@ Removing markers 3, 4, 5, 12 and 30 from `any_seq`:
 
 After that, the map needs to be re-estimated.
 
-# Export estimated parents linkage phases
+# Export estimated parents haplotypes
 
 In older version, users could only access the estimated linkage phase observing the print in the console:
 
@@ -1387,28 +1386,40 @@ In older version, users could only access the estimated linkage phase observing 
 CHR3_final
 ```
 
-Now, you can export this information in a file using:
+Now, you can export this information into a data.frame using:
 
 ```{r}
-parents_haplotypes(CHR3_final, out_file = "CHR3_final.txt")
+(parents_haplot <- parents_haplotypes(CHR3_final))
 ```
 
-You can also obtain a file with a list of sequences:
+```{r, eval=FALSE}
+write.table(parents_haplot, "parents_haplot.txt")
+```
+
+The data.frame contains: group ID (group), marker number (mk.number) and names (mk.names), position in centimorgan (dist) and parents haplotypes (P1_1, P1_2, P2_1, P2_2).
+
+You can also obtain a data.frame with a list of sequences and personalize the group names:
 
 ```{r}
-parents_haplotypes(list(CHR2_final,CHR3_final), out_file = "CHR3_final.txt", group_names=c("CHR2","CHR3"))
+parents_haplotypes(CHR2_final,CHR3_final, group_names=c("CHR2","CHR3"))
 ```
 
 
-# Draw progeny estimated haplotypes
+# Export estimated progeny haplotypes
 
-You can also have a view of progeny estimated haplotypes. The function `draw_haplotypes` shows which markers came from each parents homologues. You can choose the groups you would like to represent adding the final sequence as the firsts arguments of the function. The argument `ind` defines the individuals to be plotted (if no one is defined, individual 1 will be plotted). You can also choose if you want to view the most likely haplotypes or it colored gradually by their likelihood defining `most.likely` argument. `position` argument defines if haplotypes will be plotted by homologues (`stach`) or by homologues and by alleles (`split`). `split` option is a good way to better view the likelihoods of each alleles.
+Function `progeny_haplotypes` also generates a data.frame with progeny phased haplotypes estimated by OneMap HMM. For progeny, the HMM results in probabilities for each possible genotypes, than the generated data.frame contains the genotype of maximum probability if `most_likely = TRUE` or the probability of each genotype if `FALSE`. You can choose which indidual to be evaluated in `ind`. The data.frame is composed by the information: individual (ind) and group (grp) ID, position in centimorgan (pos), position adjusted for build graphics (pos2), f1 homologs (f1) and progeny homologs (prog) IDs and genotypes probabilities (prob).
 
 ```{r}
-draw_haplotypes(CHR1_final, CHR2_final, CHR3_final, ind = 1:2, most.likely = FALSE, 
-                position = "split",group.names =  c("CHR1", "CHR2"))
+(progeny_haplot <- progeny_haplotypes(CHR2_final, most_likely = TRUE, ind = c(1,2), group_names = "CHR2_final"))
 ```
 
+You can also have a view of progeny estimated haplotypes using `plot`. It shows which markers came from each parents homologues. `position` argument defines if haplotypes will be plotted by homologs (`stach`) or alleles (`split`). `split` option is a good way to better view the likelihoods of each alleles.
+
+```{r}
+plot(progeny_haplot, position = "stack")
+
+plot(progeny_haplot, position = "split")
+```
 
 # Session Info
 
