@@ -91,6 +91,3 @@ that will guide you through other chapters.
 
 4. [How to build a linkage map for outcrossing populations](http://augusto-garcia.github.io/onemap/vignettes_highres/Outcrossing_Populations.html)
 
-5. [How to simulate maps](http://critianetaniguti.github.io/onemap/vignettes_highres/Simulations.html)
-
-6. [How to build a high density  maps with markers from high-throughput sequencing](http://critianetaniguti.github.io/onemap/vignettes_highres/High_density_maps.html)
