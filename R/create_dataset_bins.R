@@ -68,6 +68,7 @@ create_data_bins <- function(input.obj, bins)
   dat.temp$pheno<-input.obj$pheno
   dat.temp$CHROM <- input.obj$CHROM[wrk]
   dat.temp$POS <- input.obj$POS[wrk]
+  dat.temp$error <- input.obj$error[wrk + rep(c(0:(input.obj$n.ind-1))*input.obj$n.mar, each=length(wrk)),]
  return(dat.temp)
 }
 

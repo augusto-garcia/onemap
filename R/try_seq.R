@@ -141,23 +141,24 @@ try_seq_inbred_f2 <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
   if(input.seq$seq.rf[1] == -1 ||
      is.null(input.seq$seq.like))
     stop("You must run 'compare' or 'map' before the 'try_seq' function")
-  if(mrk > get(input.seq$data.name, pos=1)$n.mar)
+  if(mrk > input.seq$data.name$n.mar)
     stop(deparse(substitute(mrk))," exceeds the number of markers in object ", input.seq$data.name)
   ## allocate variables
   ord.rf <- matrix(NA, length(input.seq$seq.num)+1, length(input.seq$seq.num))
   ord.like <- rep(NA, length(input.seq$seq.num)+1)
-  mark.max<-max(nchar(colnames(get(input.seq$data.name, pos=1)$geno)))
-  num.max<-nchar(ncol(get(input.seq$data.name, pos=1)$geno))
+  mark.max<-max(nchar(colnames(input.seq$data.name$geno)))
+  num.max<-nchar(ncol(input.seq$data.name$geno))
   ## create first order
   try.ord <- c(mrk,input.seq$seq.num)
   if(verbose) cat("TRY", 1,": ", c(mrk,input.seq$seq.num),"\n")
-  else cat(format(mrk,width=num.max) , "-->", format(colnames(get(input.seq$data.name, pos=1)$geno)[mrk], width=mark.max), ": .")
+  else cat(format(mrk,width=num.max) , "-->", format(colnames(input.seq$data.name$geno)[mrk], width=mark.max), ": .")
   utils::flush.console()
-  seq.temp<-make_seq(get(input.seq$twopt), arg=try.ord)
+  seq.temp<-make_seq(input.seq$twopt, arg=try.ord)
   seq.temp$twopt<-input.seq$twopt
   rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
   ## estimate parameters for all possible linkage phases for this order
-  final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,try.ord]),
+  final.map<-est_map_hmm_f2(geno=t(input.seq$data.name$geno[,try.ord]),
+  error=input.seq$data.name$error[try.ord + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(try.ord)),],
                             rf.vec=rf.temp,
                             verbose=FALSE,
                             tol=tol)
@@ -176,11 +177,12 @@ try_seq_inbred_f2 <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
       cat("TRY", i+1, ": ", try.ord[i+1,], "\n")
     else cat(".")
     utils::flush.console()
-    seq.temp<-make_seq(get(input.seq$twopt), arg=try.ord[i+1,])
+    seq.temp<-make_seq(input.seq$twopt, arg=try.ord[i+1,])
     seq.temp$twopt<-input.seq$twopt
     rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
     ## estimate parameters for all possible linkage phases for this order
-    final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,try.ord[i+1,]]),
+    final.map<-est_map_hmm_f2(geno=t(input.seq$data.name$geno[,try.ord[i+1,]]),
+    error=input.seq$data.name$error[try.ord[i+1,] + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(try.ord[i+1,])),],
                               rf.vec=rf.temp,
                               verbose=FALSE,
                               tol=tol)
@@ -194,7 +196,8 @@ try_seq_inbred_f2 <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
   else cat(".\n")
   utils::flush.console()
   ## estimate parameters for all possible linkage phases for this order
-  final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,try.ord[length(input.seq$seq.num)+1,]]),
+  final.map<-est_map_hmm_f2(geno=t(input.seq$data.name$geno[,try.ord[length(input.seq$seq.num)+1,]]),
+  error=input.seq$data.name$error[try.ord[length(input.seq$seq.num)+1,] + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(try.ord[length(input.seq$seq.num)+1,])),],
                             rf.vec=rf.temp,
                             verbose=FALSE,
                             tol=tol)
@@ -322,7 +325,7 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
        input.seq$seq.rf[1] == -1 ||
        is.null(input.seq$seq.like))
         stop("You must run 'compare' or 'map' before the 'try_seq' function")
-    if(mrk > get(input.seq$data.name, pos=1)$n.mar)
+    if(mrk > input.seq$data.name$n.mar)
         stop(deparse(substitute(mrk))," exceeds the number of markers in object ", input.seq$data.name)
 
                                         # allocate variables
@@ -337,20 +340,20 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
 
 ### positioning before the given sequence
                                         # get two-point information
-    list.init <- phases(make_seq(get(input.seq$twopt),c(mrk,input.seq$seq.num[1]),twopt=input.seq$twopt))
+    list.init <- phases(make_seq(input.seq$twopt,c(mrk,input.seq$seq.num[1]),twopt=input.seq$twopt))
     rf.init[[1]] <- list.init$rf.init[[1]]
     for(j in 1:(length(input.seq$seq.num)-1)) rf.init[[j+1]] <- input.seq$seq.rf[j]
     phase.init[[1]] <- list.init$phase.init[[1]]
     for(j in 1:(length(input.seq$seq.num)-1)) phase.init[[j+1]] <- input.seq$seq.phases[j]
     Ph.Init <- comb_ger(phase.init)
     Rf.Init <- comb_ger(rf.init)
-    mark.max<-max(nchar(colnames(get(input.seq$data.name, pos=1)$geno)))
-    num.max<-nchar(ncol(get(input.seq$data.name, pos=1)$geno))
+    mark.max<-max(nchar(colnames(input.seq$data.name$geno)))
+    num.max<-nchar(ncol(input.seq$data.name$geno))
 
                                         # create first order
     try.ord <- c(mrk,input.seq$seq.num)
     if(verbose) cat("TRY", 1,": ", c(mrk,input.seq$seq.num),"\n")
-    else cat(format(mrk,width=num.max) , "-->", format(colnames(get(input.seq$data.name, pos=1)$geno)[mrk], width=mark.max), ": .")
+    else cat(format(mrk,width=num.max) , "-->", format(colnames(input.seq$data.name$geno)[mrk], width=mark.max), ": .")
     utils::flush.console()
 
     if(nrow(Ph.Init)>1){
@@ -365,8 +368,9 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
     }
                                         # estimate parameters for all possible linkage phases for this order
     for(j in 1:nrow(Ph.Init)) {
-        final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,c(mrk,input.seq$seq.num)]),
-                                     type=get(input.seq$data.name, pos=1)$segr.type.num[c(mrk,input.seq$seq.num)],
+        final.map <- est_map_hmm_out(geno=t(input.seq$data.name$geno[,c(mrk,input.seq$seq.num)]),
+	error=input.seq$data.name$error[c(mrk,input.seq$seq.num) + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(c(mrk,input.seq$seq.num))),],
+                                     type=input.seq$data.name$segr.type.num[c(mrk,input.seq$seq.num)],
                                      phase=Ph.Init[j,],
                                      rf.vec=Rf.Init[j,],
                                      verbose=FALSE,
@@ -385,7 +389,7 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
 ### positioning between markers of the given sequence
     for(i in 1:(length(input.seq$seq.num)-1)) {
                                         # get two-point information
-        list.init <- phases(make_seq(get(input.seq$twopt),c(input.seq$seq.num[i],mrk,input.seq$seq.num[i+1]),twopt=input.seq$twopt))
+        list.init <- phases(make_seq(input.seq$twopt,c(input.seq$seq.num[i],mrk,input.seq$seq.num[i+1]),twopt=input.seq$twopt))
         if(i!=1) {
             for(k in 1:(i-1)) {
                 rf.init[[k]] <- input.seq$seq.rf[k]
@@ -423,8 +427,9 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
         }
         ## estimate parameters for all possible linkage phases for the current order
         for(j in 1:nrow(Ph.Init)) {
-            final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)])]),
-                                         type=get(input.seq$data.name, pos=1)$segr.type.num[c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)])],
+            final.map <- est_map_hmm_out(geno=t(input.seq$data.name$geno[,c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)])]),
+	    error=input.seq$data.name$error[c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)]) + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)]))),],
+                                         type=input.seq$data.name$segr.type.num[c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)])],
                                          phase=Ph.Init[j,],
                                          rf.vec=Rf.Init[j,],
                                          verbose=FALSE,
@@ -443,7 +448,7 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
 
 ### positioning after the given sequence
                                         # get two-point information
-    list.init <- phases(make_seq(get(input.seq$twopt),c(input.seq$seq.num[length(input.seq$seq.num)],mrk),twopt=input.seq$twopt))
+    list.init <- phases(make_seq(input.seq$twopt,c(input.seq$seq.num[length(input.seq$seq.num)],mrk),twopt=input.seq$twopt))
     rf.init[[(length(input.seq$seq.num))]] <- list.init$rf.init[[1]]
     for(j in 1:(length(input.seq$seq.num)-1)) rf.init[[j]] <- input.seq$seq.rf[j]
     phase.init[[(length(input.seq$seq.num))]] <- list.init$phase.init[[1]]
@@ -468,8 +473,9 @@ try_seq_outcross<- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
     }
                                         # estimate parameters for all possible linkage phases for this order
     for(j in 1:nrow(Ph.Init)) {
-        final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,c(input.seq$seq.num,mrk)]),
-                                     type=get(input.seq$data.name, pos=1)$segr.type.num[c(input.seq$seq.num,mrk)],
+        final.map <- est_map_hmm_out(geno=t(input.seq$data.name$geno[,c(input.seq$seq.num,mrk)]),
+	error=input.seq$data.name$error[c(input.seq$seq.num,mrk) + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(c(input.seq$seq.num,mrk))),],
+                                     type=input.seq$data.name$segr.type.num[c(input.seq$seq.num,mrk)],
                                      phase=Ph.Init[j,],
                                      rf.vec=Rf.Init[j,],
                                      verbose=FALSE,
@@ -631,7 +637,7 @@ draw.try<-function(base.input, try.input, pos=NULL){
         new.map<-make_seq(try.input,which.max(try.input$LOD))
         new.dist<-cumsum(c(0, kosambi(new.map$seq.rf)))
         new.dist.len<-length(new.dist)
-        plot(x=new.dist, rep(1,new.dist.len), pch="|", xlab="New Genetic Map", ylab="", axes=FALSE, type="n", main=paste("Adding marker ",try.input$try.ord[1,1]," (", colnames(get(try.input$data.name,pos=1)$geno)[try.input$try.ord[1,1]],")", sep=""))
+        plot(x=new.dist, rep(1,new.dist.len), pch="|", xlab="New Genetic Map", ylab="", axes=FALSE, type="n", main=paste("Adding marker ",try.input$try.ord[1,1]," (", colnames(try.input$data.name$geno)[try.input$try.ord[1,1]],")", sep=""))
         axis(1, at=round(new.dist,1), lwd.ticks = .75, cex.axis=.75, las=2)
         text(new.dist, y=rep(1,length(new.dist)), labels=new.map$seq.num, cex=.7, srt=90)
         points(new.dist[which.max(try.input$LOD)],1.5, col=2, cex=1.5, pch=25, bg = 2)
@@ -645,7 +651,7 @@ draw.try<-function(base.input, try.input, pos=NULL){
       new.map<-make_seq(try.input,pos)
       new.dist<-cumsum(c(0, kosambi(new.map$seq.rf)))
       new.dist.len<-length(new.dist)
-      plot(x=new.dist, rep(1,new.dist.len), xlab="New Genetic Map", ylab="", axes=FALSE, type="n", main=paste("Adding marker ",try.input$try.ord[1,1]," (", colnames(get(try.input$data.name,pos=1)$geno)[try.input$try.ord[1,1]],")", sep=""))
+      plot(x=new.dist, rep(1,new.dist.len), xlab="New Genetic Map", ylab="", axes=FALSE, type="n", main=paste("Adding marker ",try.input$try.ord[1,1]," (", colnames(try.input$data.name$geno)[try.input$try.ord[1,1]],")", sep=""))
       axis(1, at=round(new.dist,1), lwd.ticks = .75, cex.axis=.75, las=2)
       text(new.dist, y=rep(1,length(new.dist)), labels=new.map$seq.num, cex=.7, srt=90)
       points(new.dist[pos], 1.5, col=2, cex=1.5, pch=25, bg = 2)

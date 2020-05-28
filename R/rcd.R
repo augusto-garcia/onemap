@@ -95,7 +95,7 @@
 ##'   LG1.rcd
 ##' }
 ##'@export
-rcd <-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5)
+rcd <-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5, hmm=FALSE)
 {
     ## checking for correct object
     if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is
@@ -104,7 +104,7 @@ rcd <-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5)
 
     ## create reconmbination fraction matrix
 
-    if(is(get(input.seq$twopt),"outcross") || is(get(input.seq$twopt),"f2"))
+    if(is(input.seq$twopt,"outcross") || is(input.seq$twopt,"f2"))
         r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
     else
         r<-get_mat_rf_in(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
@@ -158,8 +158,16 @@ rcd <-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5)
     }
     ## end of chain
     cat("\norder obtained using RCD algorithm:\n\n", input.seq$seq.num[avoid_reverse(order)], "\n\ncalculating multipoint map using tol = ", tol, ".\n\n")
-    map(make_seq(get(input.seq$twopt),input.seq$seq.num[avoid_reverse(order)],twopt=input.seq$twopt), tol=tol)
-}
+    if(hmm==FALSE){
+    return(input.seq$seq.num[avoid_reverse(order)])
+    } else if (hmm==TRUE){
+      rcd.hmm <- map(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(order)],twopt=input.seq$twopt), tol=tol)
+      return(rcd.hmm)
+    } else {
+      stop("The definition of hmm argument not correct, use TRUE/FALSE.")
+    }
+ }
+
 ## end of file
 
 

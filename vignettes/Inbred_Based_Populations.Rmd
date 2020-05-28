@@ -1257,8 +1257,7 @@ In our examples until now we had few markers compared with those obtained by hig
 and `try_seq` can be a hardy and slow work. To help this task, we create the function `mds_onemap`
 wich makes a interface between `OneMap` and `MDSMap` package. The ordering approach presented in
 `MDSMap` provides a faster and efficient way of ordering markers using multi-dimensional scaling. 
-The method also provides diagnostics graphics and parameters to find outliers to help users to filter the dataset. You can find more informations in `MDSMap` [vignette](https://CRAN.R-project.org/package=MDSMap). Here we will show a simples example of how it can be used for a outcrossing dataset.
-
+The method also provides diagnostics graphics and parameters to find outliers to help users to filter the dataset. You can find more informations in `MDSMap` [vignette](https://CRAN.R-project.org/package=MDSMap). 
 
 # Map estimation for an arbitrary order
 
@@ -1296,6 +1295,23 @@ Removing markers `M59` and `21` from `LG3seq_f2_map`:
 ```{r, drop_marker}
 (LG3seq_f2_map <- drop_marker(LG3seq_f2_map, c(59, 21)))
 ```
+
+# Simulating maps with PedigreeSim
+
+To test out new features we usually simulates datasets. Here we make available the functions we use to do this in PedigreeSim software. First, `run_pedsim` will generate the files needed by PedigreeSim and run it. It is important to highlight that PedigreeSim have more options than the ones provided by this function. For more informations please see PedigreeSim software documentation.
+
+```{r}
+run_pedsim(chromosome = c("Chr1", "Chr10"), n.marker = c(30,50), 
+           tot.size.cm = c(100,150), centromere = c(50, 75),
+           n.ind = 200, mk.types = c("A.H.B"), n.types = c(80), 
+           pop = "F2", path.pedsim = "~/Programs/PedigreeSim/",
+           name.mapfile = "mapfile.map", name.founderfile="founderfile.gen", 
+           name.chromfile="sim.chrom", name.parfile="sim.par",
+           name.out="sim_out.f2")
+```
+
+After, we can convert the PedigreeSim output files to onemap raw format.
+
 
 # Drawing the genetic map
 

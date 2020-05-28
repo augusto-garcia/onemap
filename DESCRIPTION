@@ -1,7 +1,7 @@
 Package: onemap
 Title: Construction of Genetic Maps in Experimental Crosses: Full-Sib,
         RILs, F2 and Backcrosses
-Version: 2.2.0
+Version: 2.3.0
 Description: Analysis of molecular marker data from model (backcrosses,
     F2 and recombinant inbred lines) and non-model systems (i. e.
     outcrossing species). For the later, it allows statistical
@@ -24,17 +24,19 @@ Author: Gabriel Margarido [aut], Marcelo Mollinari [aut], Karl
 LinkingTo: Rcpp (>= 0.10.5)
 Depends: R (>= 3.6.0)
 Imports: ggplot2 (>= 2.2.1), 
-         plotly (>= 4.7.1),
-         reshape2 (>= 1.4.1), 
-         Rcpp (>= 0.10.5),
-         graphics, 
-         methods, 
-         stats, 
-         utils,
-         grDevices,
-         MDSMap,
-         dplyr,
-         tidyr
+        plotly (>= 4.7.1),
+        reshape2 (>= 1.4.1), 
+        Rcpp (>= 0.10.5),
+        graphics, 
+        methods, 
+        stats, 
+        utils,
+        grDevices,
+        MDSMap,
+        doParallel,
+        updog,
+        dplyr,
+        tidyr
 Suggests: qtl (>= 1.36-6), 
           knitr (>= 1.10), 
           rmarkdown, 

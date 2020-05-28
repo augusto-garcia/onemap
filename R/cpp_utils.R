@@ -98,12 +98,13 @@ est_rf_bc<-function(geno, mrk=0,  nind, type=0, verbose=TRUE)
 # This function calls C++ routine for multipoint analysis (f2)
 ##' @useDynLib onemap
 ##' @import Rcpp
-est_map_hmm_f2<-function(geno, rf.vec=NULL, verbose=TRUE, tol=1e-6)
+est_map_hmm_f2<-function(geno, error, rf.vec=NULL, verbose=TRUE, tol=1e-6)
 {
     if(length(rf.vec) != (nrow(geno)-1))
         rf.vec = rep(0.1, (nrow(geno)-1))
     r<-.Call("est_hmm_f2",
              geno,
+	     error,
              as.numeric(rf.vec),
              as.numeric(verbose),
              as.numeric(tol),
@@ -115,12 +116,13 @@ est_map_hmm_f2<-function(geno, rf.vec=NULL, verbose=TRUE, tol=1e-6)
 # This function calls C++ routine for multipoint analysis (bc)
 ##' @useDynLib onemap
 ##' @import Rcpp
-est_map_hmm_bc<-function(geno, rf.vec=NULL, verbose=TRUE, tol=1e-6)
+est_map_hmm_bc<-function(geno, error, rf.vec=NULL, verbose=TRUE, tol=1e-6)
 {
     if(length(rf.vec) != (nrow(geno)-1))
         rf.vec = rep(0.1, (nrow(geno)-1))
     r<-.Call("est_hmm_bc",
              geno,
+	     error,
              as.numeric(rf.vec),
              as.numeric(verbose),
              as.numeric(tol),
@@ -164,12 +166,13 @@ est_map_hmm_bc<-function(geno, rf.vec=NULL, verbose=TRUE, tol=1e-6)
 ##' @useDynLib onemap
 ##' @import Rcpp
 ##' 
-est_map_hmm_out<-function(geno, type,  phase, rf.vec=NULL, verbose=TRUE, tol=1e-6)
+est_map_hmm_out<-function(geno, error, type,  phase, rf.vec=NULL, verbose=TRUE, tol=1e-6)
 {
   if(is.null(rf.vec))
     rf.vec<-rep(0.1, (nrow(geno)-1))
   r<-.Call("est_hmm_out",
            geno,
+	         error,
            as.numeric(type),
            as.numeric(phase),
            as.numeric(rf.vec),

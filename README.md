@@ -90,3 +90,4 @@ that will guide you through other chapters.
 3. [How to build a linkage map for inbred-bases populations (F2, RIL and BC)](http://augusto-garcia.github.io/onemap/vignettes_highres/Inbred_Based_Populations.html)
 
 4. [How to build a linkage map for outcrossing populations](http://augusto-garcia.github.io/onemap/vignettes_highres/Outcrossing_Populations.html)
+

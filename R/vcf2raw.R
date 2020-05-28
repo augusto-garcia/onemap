@@ -89,7 +89,7 @@
 vcf2raw <- function(input = NULL, output = NULL,
                     cross = c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"),
                     parent1 = NULL, parent2 = NULL, min_class = 1.0) {
-  .Defunct(msg = "Defunct since version 2.1.1006")
+  .Defunct(msg = "Defunct since version 2.1.1006. See onemap_read_vcfR function.")
   if (is.null(input)) {
     stop("You must specify the input file path.")
   }

@@ -88,7 +88,6 @@ ug<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5)
     n.mrk <- length(input.seq$seq.num)
 
     ## create reconmbination fraction matrix
-
     if(is(get(input.seq$twopt),"outcross") || is(get(input.seq$twopt),"f2"))
         r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
     else
@@ -98,7 +97,7 @@ ug<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5)
 
     ## For two markers
     if(n.mrk==2)
-        return(map(make_seq(get(input.seq$twopt),input.seq$seq.num[1:2],twopt=input.seq$twopt), tol=10E-5))
+        return(map(make_seq(input.seq$twopt,input.seq$seq.num[1:2],twopt=input.seq$twopt), tol=10E-5))
 
     ## UG algorithm
     ## The equation numbers below refer to the ones in the article (Tan and Fu, 2006)
@@ -189,7 +188,7 @@ ug<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5)
 
     ## If there are three markers, do not go to the second step
     if(n.mrk==3)
-        return(map(make_seq(get(input.seq$twopt),input.seq$seq.num[avoid_reverse(partial)],twopt=input.seq$twopt), tol=10E-5))
+        return(map(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(partial)],twopt=input.seq$twopt), tol=10E-5))
 
     for (k in 2:(n.mrk-2)){
         ##step 2
@@ -215,7 +214,7 @@ ug<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5)
     complete<-partial
     ## end of UG algorithm
     cat("\norder obtained using UG algorithm:\n\n", input.seq$seq.num[avoid_reverse(complete)], "\n\ncalculating multipoint map using tol ", tol, ".\n\n")
-    map(make_seq(get(input.seq$twopt),input.seq$seq.num[avoid_reverse(complete)],twopt=input.seq$twopt), tol=tol)
+    map(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(complete)],twopt=input.seq$twopt), tol=tol)
 
 }
 ## end of file

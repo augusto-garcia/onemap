@@ -20,7 +20,7 @@
 #' @param ispc Logical determining the method to be used to estimate the map. By default 
 #' this is TRUE and the method of principal curves will be used. If FALSE then the 
 #' constrained MDS method will be used.
-#' @param mds.seq When some pair of markers do not follow the linkage criteria, 
+#' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
 #' if \code{TRUE} one of the markers is removed and mds is performed again.
 #' @return An object of class \code{sequence}, which is a list containing the
 #' following components: \item{seq.num}{a \code{vector} containing the
@@ -62,15 +62,14 @@
 #'
 #'@export
 mds_onemap <- function(input.seq, out.file= "out.file", mds.graph.file="NULL.pdf", p = NULL, n=NULL, ispc=TRUE,
-                       displaytext=FALSE, weightfn='lod2', mapfn='haldane', hmm = TRUE, mds.seq=TRUE){
+                       displaytext=FALSE, weightfn='lod2', mapfn='haldane', hmm = TRUE, rm_unlinked=TRUE){
   
   ## checking for correct object
   if(!is(input.seq, "sequence"))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   
-  
-  n_ind <- get(input.seq$data.name)$n.ind
-  if(is(get(input.seq$data.name),"outcross")){
+  n_ind <- input.seq$data.name$n.ind
+  if(is(input.seq$data.name,"outcross")){
     mat<-get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1)
   } else {
     mat<-get_mat_rf_in(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1)
@@ -100,17 +99,17 @@ mds_onemap <- function(input.seq, out.file= "out.file", mds.graph.file="NULL.pdf
                                   displaytext = displaytext)
   dev.off()
   if(hmm==TRUE){
-    ord_mds <- match(as.character(mds_map$locimap[,2]), colnames(get(input.seq$data.name)$geno)) 
-    seq_mds <- make_seq(get(input.seq$twopt), ord_mds)
+    ord_mds <- match(as.character(mds_map$locimap[,2]), colnames(input.seq$data.name$geno)) 
+    seq_mds <- make_seq(input.seq$twopt, ord_mds)
     seq_mds$twopt <- input.seq$twopt
-    mds_map <- map(seq_mds, mds.seq = mds.seq)
+    mds_map <- map(seq_mds, rm_unlinked = rm_unlinked)
   }
   
   if(!is.list(mds_map)) {
-    new.seq <- make_seq(get(input.seq$twopt), mds_map)
+    new.seq <- make_seq(input.seq$twopt, mds_map)
     new.seq$twopt <- input.seq$twopt
     mds_map <- mds_onemap(new.seq, out.file= out.file, mds.graph.file=mds.graph.file, p = NULL, n=NULL, ispc=TRUE,
-                          displaytext=displaytext, weightfn=weightfn, mapfn=mapfn, hmm = hmm, mds.seq=mds.seq)
+                          displaytext=displaytext, weightfn=weightfn, mapfn=mapfn, hmm = hmm, rm_unlinked=rm_unlinked)
   }
   return(mds_map)
 }

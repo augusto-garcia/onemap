@@ -24,7 +24,11 @@ library(onemap)
 ## ---- eval=FALSE--------------------------------------------------------------
 #  onemap_example_out <- read_onemap(inputfile = "onemap_example_out.raw")
 
+<<<<<<< HEAD
+## ---- eval=FALSE, echo=FALSE---------------------------------------------
+=======
 ## ---- eval=FALSE, echo=FALSE--------------------------------------------------
+>>>>>>> 1d86c0b81792bada3c7665b6477f653e46c1aafc
 #  onemap_example_out <- read_onemap(inputfile = system.file("extdata/onemap_example_out.raw", package = "onemap"))
 
 ## -----------------------------------------------------------------------------
@@ -368,7 +372,11 @@ CHR1
 CHR2 <- make_seq(twopts, "2")
 CHR3 <- make_seq(twopts, "3")
 
+<<<<<<< HEAD
+## ------------------------------------------------------------------------
+=======
 ## -----------------------------------------------------------------------------
+>>>>>>> 1d86c0b81792bada3c7665b6477f653e46c1aafc
 CHR_mks <- group_seq(input.2pts = twopts, seqs = "CHROM", unlink.mks = mark_no_dist,
                       repeated = FALSE)
 
@@ -454,7 +462,49 @@ rf_graph_table(CHR3_final, inter = FALSE)
 ## -----------------------------------------------------------------------------
 ripple_seq(CHR3_final)
 
+<<<<<<< HEAD
+## ---- eval=FALSE, echo=FALSE---------------------------------------------
+#  data("example.RData")
+
+## ---- eval=FALSE, echo=FALSE---------------------------------------------
+#  segr <- test_segregation(example)
+#  plot(segr) # all markers follow the expected Mendelian segregation pattern
+#  
+#  twopts <- rf_2pts(example)
+#  seq <- make_seq(twopts, "all")
+#  
+#  lgs <- group(seq)
+#  lg1 <- make_seq(lgs,1)
+#  
+
+## ---- eval=FALSE, echo=FALSE---------------------------------------------
+#  #  MDS method
+#  start <- Sys.time()
+#  map.mds3 <- mds_onemap(lg1, out.file = "mds.input.file.txt", displaytext = F, mds.graph.file = "graph.mds.pdf", hmm = T)
+#  end <- Sys.time()
+#  end - start # It will take about 25 minutes
+#  rf_graph_table(map.mds)
+#  
+#  # order_seq method
+#  start <- Sys.time()
+#  map.order <- order_seq(lg1)
+#  end <- Sys.time()
+#  end - start # It will take about 25 mins
+#  map.seq <- make_seq(map.order, "force")
+#  rf_graph_table(map.seq)
+#  
+#  # real order
+#  real.ord <- make_seq(twopts, lg1$seq.num)
+#  start <- Sys.time()
+#  real.map <- map(real.ord)
+#  end <- Sys.time()
+#  end - start # It will take about 25 mins
+#  rf_graph_table(real.map)
+
+## ---- echo=TRUE, fig=TRUE------------------------------------------------
+=======
 ## ---- echo=TRUE, fig=TRUE-----------------------------------------------------
+>>>>>>> 1d86c0b81792bada3c7665b6477f653e46c1aafc
 map1 <- list(LG1_final, LG2_final, LG3_final)
 draw_map(map1, names = TRUE, grid = TRUE, cex.mrk = 0.7)
 

@@ -78,7 +78,6 @@ Rcpp::NumericVector est_rf_C_C(std::vector<int> k_sub,
     }
     else n0++;
   }
-  if((n_ind - n0) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
   //EM algorithm
   while(abs(rold-rnew) > TOL)
   {
@@ -131,7 +130,6 @@ Rcpp::NumericVector est_rf_C_D_43(std::vector<int> k_sub,
     }
     else n0++;
   }
-  if((n_ind - n0) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
   //EM algorithm
   while(abs(rold-rnew) > TOL)
   {
@@ -186,7 +184,6 @@ Rcpp::NumericVector est_rf_C_D_51(std::vector<int> k_sub,
     
     else n0++;
   }
-  if((n_ind - n0) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
   //EM algorithm
   while(abs(rold-rnew) > TOL)
   {
@@ -233,7 +230,6 @@ Rcpp::NumericVector est_rf_D_D_43(std::vector<int> k_sub,
     }
     else n0++;
   }
-  if((n_ind - n0) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
   //EM algorithm
   while(abs(rold-rnew) > TOL)
   {
@@ -293,7 +289,6 @@ Rcpp::NumericVector est_rf_D_D_51(std::vector<int> k_sub,
     }
     else n0++;
   }
-  if((n_ind - n0) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
   //EM algorithm
   while(abs(rold-rnew) > TOL)
   {
@@ -350,7 +345,6 @@ Rcpp::NumericVector est_rf_D_D_43_51(std::vector<int> k_sub,
     }
     else n0++;
   }
-  if((n_ind - n0) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
   //EM algorithm
   while(abs(rold-rnew) > TOL)
   {
@@ -441,7 +435,6 @@ Rcpp::NumericVector est_rf_A_A(std::vector<int> k_sub,
     }
     else n0++;
   }
-  if((n_ind - n0) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
   //EM algorithm
   while(abs(rold-rnew) > TOL)
   {
