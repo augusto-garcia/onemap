@@ -87,11 +87,19 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   for(i in 2:(n.ind+1))
     GT_matrix[,i-1] <- unlist(lapply(strsplit(vcf@gt[,i], split=":"), "[[", GT))
   
+  CHROM <- vcf@fix[,1]
+  POS <- as.numeric(vcf@fix[,2])
   # keep only biallelic
   if(only_biallelic | cross != "outcross"){
     rm_multi <- which(apply(GT_matrix, 1, function(x) any(grepl("2", x))))
-    GT_matrix <- GT_matrix[-rm_multi,]
+    if(length(rm_multi) > 0){
+      GT_matrix <- GT_matrix[-rm_multi,]
+      CHROM <- CHROM[-rm_multi]
+      POS <- POS[-rm_multi]
+      MKS <- MKS[-rm_multi]
+    }
   }
+  n.mk <- nrow(GT_matrix)
   
   # This function doesn't consider phased genotypes
   if(any(grepl("[|]", GT_matrix))){
@@ -167,12 +175,11 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       P2_2 <- P2_2[-rm_mk]
       MKS <- MKS[-rm_mk]
       n.mk <- n.mk - length(rm_mk)
-      CHROM <- vcf@fix[,1][-rm_mk]
-      POS <- as.numeric(vcf@fix[,2][-rm_mk])
+      CHROM <-CHROM[-rm_mk]
+      POS <- POS[-rm_mk]
       mk.type <- mk.type[-rm_mk]
       mk.type.num <- mk.type.num[-rm_mk]
-    } else {CHROM <- vcf@fix[,1]
-    POS <- as.numeric(vcf@fix[,2])}
+    } 
     
     if(dim(GT_matrix)[1]==0){
       cat("All markers in VCF were filtered, onemap object can not be built")
@@ -282,12 +289,11 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       GT_matrix <- GT_matrix[-rm_mk,]
       MKS <- MKS[-rm_mk]
       n.mk <- n.mk - length(rm_mk)
-      CHROM <- vcf@fix[,1][-rm_mk]
-      POS <- as.numeric(vcf@fix[,2][-rm_mk])
+      CHROM <- CHROM[-rm_mk]
+      POS <- POS[-rm_mk]
       mk.type <- mk.type[-rm_mk]
       mk.type.num <- mk.type.num[-rm_mk]
-    } else {CHROM <- vcf@fix[,1]
-    POS <- as.numeric(vcf@fix[,2])}
+    } 
     
     if(dim(GT_matrix)[1]==0){
       cat("All markers in VCF were filtered, onemap object can not be built")
@@ -331,12 +337,11 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       GT_matrix <- GT_matrix[-rm_mk,]
       MKS <- MKS[-rm_mk]
       n.mk <- n.mk - length(rm_mk)
-      CHROM <- vcf@fix[,1][-rm_mk]
-      POS <- as.numeric(vcf@fix[,2][-rm_mk])
+      CHROM <- CHROM[-rm_mk]
+      POS <- POS[-rm_mk]
       mk.type <- mk.type[-rm_mk]
       mk.type.num <- mk.type.num[-rm_mk]
-    } else {CHROM <- vcf@fix[,1]
-    POS <- as.numeric(vcf@fix[,2])}
+    } 
     
     if(dim(GT_matrix)[1]==0){
       cat("All markers in VCF were filtered, onemap object can not be built")
@@ -382,12 +387,11 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       GT_matrix <- GT_matrix[-rm_mk,]
       MKS <- MKS[-rm_mk]
       n.mk <- n.mk - length(rm_mk)
-      CHROM <- vcf@fix[,1][-rm_mk]
-      POS <- as.numeric(vcf@fix[,2][-rm_mk])
+      CHROM <- CHROM[-rm_mk]
+      POS <- POS[-rm_mk]
       mk.type <- mk.type[-rm_mk]
       mk.type.num <- mk.type.num[-rm_mk]
-    } else {CHROM <- vcf@fix[,1]
-    POS <- as.numeric(vcf@fix[,2])}
+    }
     
     if(dim(GT_matrix)[1]==0){
       cat("All markers in VCF were filtered, onemap object can not be built")
@@ -475,8 +479,19 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
 ##' }
 ##'@export                  
 write_onemap_raw <- function(onemap.obj=NULL, 
-                             file.name = "out.raw", 
-                             cross = c("outcross", "f2 backcross", "f2 intercross", "ri self", "ri sib")){
+                             file.name = "out.raw"){
+
+  if(is(onemap.obj, "outcross")){
+    cross <- "outcross"
+  } else if(is(onemap.obj, "f2")){
+    cross <- "f2 intercross"
+  } else if(is(onemap.obj, "backcross")){
+    cross <- "f2 backcross"
+  } else if(is(onemap.obj, "riself")){
+    cross <- "ri self"
+  } else if(is(onemap.obj, "risib")){
+    cross <- "ri sib"
+  }
   
   fileConn<-file(file.name, "w")
   head1 <- paste("data type", cross)

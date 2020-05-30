@@ -88,7 +88,7 @@ ug<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5)
     n.mrk <- length(input.seq$seq.num)
 
     ## create reconmbination fraction matrix
-    if(is(get(input.seq$twopt),"outcross") || is(get(input.seq$twopt),"f2"))
+    if(is(input.seq$twopt,"outcross") || is(input.seq$twopt,"f2"))
         r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
     else
         r<-get_mat_rf_in(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)

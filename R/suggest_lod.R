@@ -29,7 +29,7 @@
 ##' This can be seen as just an initial approximation to help users to select a LOD Score for two
 ##' point tests.
 ##'
-##' @param x an object of class \code{onemap}
+##' @param x an object of class \code{sequence} or \code{onemap}
 ##'
 ##' @return the suggested LOD to be used for testing linkage
 ##'
@@ -39,8 +39,11 @@
 ##'
 ##' @export
 suggest_lod <- function(x) {
-    if (is(x,"onemap")) {
-        num.tests <- choose(x$n.mar, 2) #Number of pairwise tests
+    if (is(x,c("sequence", "onemap"))) { # Keep onemap class just to be compatible with older versions
+        if(is(x, "onemap"))
+            num.tests <- choose(x$n.mar, 2) #Number of pairwise tests
+        if(is(x, "sequence"))
+            num.tests <- choose(length(x$seq.num), 2)
         LOD <- 0.2172 * qchisq(1-0.05/num.tests, 1) #Corresponding LOD
         return(LOD)
     }

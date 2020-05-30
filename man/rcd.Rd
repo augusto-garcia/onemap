@@ -4,7 +4,7 @@
 \alias{rcd}
 \title{Rapid Chain Delineation}
 \usage{
-rcd(input.seq, LOD = 0, max.rf = 0.5, tol = 1e-04, hmm = FALSE)
+rcd(input.seq, LOD = 0, max.rf = 0.5, tol = 1e-04, hmm = TRUE)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}

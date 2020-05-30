@@ -27,7 +27,9 @@
 #' @param GTfrom the graphic should contain the genotypes from onemap.obj or from the vcf? Specify using "onemap", "vcf" or "prob".
 #' @param alpha define the transparency of the dots in the graphic
 #' @param rds.file rds file name to store the data frame with values used to build the graphic
-#'
+#' @param x_lim set scale limit for x axis
+#' @param y_lim set scale limit for y axis
+#' 
 #' @return an rds file and a ggplot graphic.
 #' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
 #' @seealso \code{\link[onemap]{onemap_read_vcfR}}
@@ -41,12 +43,14 @@ create_depths_profile <- function(onemap.obj = NULL,
                                   parent2 = NULL,
                                   f1 = NULL,
                                   vcf.par = "AD",
-                                  recovering=TRUE,
+                                  recovering=FALSE,
                                   mks = NULL,
                                   inds = NULL,
                                   GTfrom= "onemap",
                                   alpha=1,
-                                  rds.file = "data.rds"){
+                                  rds.file = "data.rds",
+                                  y_lim = NULL,
+                                  x_lim = NULL){
   
   # Exclude multiallelic markers
   if(is(onemap.obj, "outcross")){
@@ -66,6 +70,8 @@ create_depths_profile <- function(onemap.obj = NULL,
   } else{
     stop("By now, this function is only available for outcrossing and f2 intercross populations\n")
   }
+  
+  if(is.null(parent1) | is.null(parent2)) stop("Parents ID must be defined.")
   
   # do the checks
   depths <- extract_depth(vcfR.object = vcfR.object, onemap.object = onemap.obj, vcf.par, parent1, parent2, recovering = recovering)
@@ -113,7 +119,7 @@ create_depths_profile <- function(onemap.obj = NULL,
   MKS <- vcfR.object@fix[,3]
   if (any(MKS == "." | is.na(MKS))) MKS <- paste0(vcfR.object@fix[,1],"_", vcfR.object@fix[,2])
   
-  p.gt <- data.frame(mks = MKS, gts[,idx.parents])
+  p.gt <- data.frame(mks = MKS, gts[,idx.parents], stringsAsFactors = F)
   colnames(p.gt) <- c("mks", id.parents)
   p.gt <- gather(p.gt, "ind", "gt.vcf", -"mks")
   parents <- merge(parents, p.gt)
@@ -134,7 +140,7 @@ create_depths_profile <- function(onemap.obj = NULL,
   progeny <- merge(progeny, gt)
   
   # progeny vcf genotypes
-  pro.gt <- data.frame(mks = MKS, gts[,-idx.parents])
+  pro.gt <- data.frame(mks = MKS, gts[,-idx.parents], stringsAsFactors = F)
   colnames(pro.gt) <- c("mks", colnames(vcfR.object@gt)[-1][-idx.parents])
   pro.gt <- gather(pro.gt, "ind", "gt.vcf", -"mks")
   progeny <- merge(progeny, pro.gt)
@@ -163,6 +169,11 @@ create_depths_profile <- function(onemap.obj = NULL,
     data <- data[which(data$ind %in% inds),]
   }
   
+  if(is.null(y_lim))
+    y_lim <- max(data$ref) 
+  if(is.null(x_lim))
+    x_lim <- max(data$alt)
+  
   if(GTfrom == "onemap"){
     colors <- c("#58355e", "#4D9DE0", "#ADE25D")
     names(colors) <-  c("missing", "homozygous", "heterozygote")
@@ -172,15 +183,15 @@ create_depths_profile <- function(onemap.obj = NULL,
       labs(title= "Depths",x="ref", y = "alt", color="Genotypes") +
       scale_colour_manual(name="Genotypes", values = colors) +
       guides(colour = guide_legend(override.aes = list(alpha = 1))) + 
-      xlim(0,5*summary(data$ref[-which(data$ref == 0)])[5]) +
-      ylim(0,5*summary(data$alt[-which(data$alt == 0)])[5])
+      xlim(0, x_lim) +
+      ylim(0, y_lim)
   } else if(GTfrom == "vcf"){
     p <- data %>% ggplot(aes(x=ref, y=alt, color=gt.vcf)) + 
       geom_point(alpha=alpha) +
       labs(title= "Depths",x="ref", y = "alt", color="Genotypes") +
       guides(colour = guide_legend(override.aes = list(alpha = 1)))+ 
-      xlim(0,5*summary(data$ref[-which(data$ref == 0)])[5]) +
-      ylim(0,5*summary(data$alt[-which(data$alt == 0)])[5])
+      xlim(0, x_lim) +
+      ylim(0, y_lim)
   } else if(GTfrom == "prob"){
     errors <- apply(data[,7:10], 1, function(x) {
       if(all(is.na(x)) | all(x == 1)) {
@@ -195,8 +206,8 @@ create_depths_profile <- function(onemap.obj = NULL,
       labs(title= "Depths",x="ref", y = "alt", color="Genotypes") +
       scale_colour_gradient(low = "#70ED57", high = "#F62A2C")+
       guides(colour = guide_legend(override.aes = list(alpha = 1)))+ 
-      xlim(0,5*summary(data$ref[-which(data$ref == 0)])[5]) +
-      ylim(0,5*summary(data$alt[-which(data$alt == 0)])[5])
+      xlim(0, x_lim) +
+      ylim(0, y_lim)
   }
   
   saveRDS(data, file = rds.file)

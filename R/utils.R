@@ -2,7 +2,7 @@
 #                                                                     #
 # Package: onemap                                                     #
 #                                                                     #
-# File: acum.R                                                        #
+# File: utils.R                                                       #
 # Contains: acum                                                      #
 #                                                                     #
 # Written by Gabriel Rodrigues Alves Margarido                        #
@@ -16,9 +16,26 @@
 
 acum <- function(w) {
   if (w<0) stop("'w' should be equal to or higher than zero")
-
+  
   # the famous gaussian sum from 1 to w
   w*(w+1)/2
 }
 
-# end of file
+
+#' Extract marker number by name
+#' 
+#' @param sequence object of class or sequence
+#' @param mk_type vector of character with marker type to be selected
+#' 
+#' @return new sequence object with selected marker type
+#' @export
+#' 
+seq_by_type <- function(sequence, mk_type){
+  if(!is(sequence, c("sequence"))) stop("Input object must be of class sequence")
+  if(length(mk_type) > 1) pat <- paste0(mk_type, collapse = "|") else pat <- mk_type
+  type <- sequence$seq.num[grep(pat, sequence$data.name$segr.type[sequence$seq.num])]
+  new.seq <- make_seq(sequence$twopt, type)
+  return(new.seq)
+}
+
+

@@ -11,12 +11,14 @@ create_depths_profile(
   parent2 = NULL,
   f1 = NULL,
   vcf.par = "AD",
-  recovering = TRUE,
+  recovering = FALSE,
   mks = NULL,
   inds = NULL,
   GTfrom = "onemap",
   alpha = 1,
-  rds.file = "data.rds"
+  rds.file = "data.rds",
+  y_lim = NULL,
+  x_lim = NULL
 )
 }
 \arguments{
@@ -39,6 +41,10 @@ create_depths_profile(
 \item{alpha}{define the transparency of the dots in the graphic}
 
 \item{rds.file}{rds file name to store the data frame with values used to build the graphic}
+
+\item{y_lim}{set scale limit for y axis}
+
+\item{x_lim}{set scale limit for x axis}
 
 \item{vcf.file}{an object of class \code{vcfR}.}
 }
