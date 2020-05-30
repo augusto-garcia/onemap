@@ -121,7 +121,7 @@
 ##'@export
 try_seq<-function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
 {
-  if(is(get(input.seq$data.name), "outcross") | is(get(input.seq$data.name), "f2"))
+  if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2"))
     return(try_seq_outcross(input.seq=input.seq,
                             mrk=mrk, tol=tol,
                             pos=pos, verbose=verbose))
@@ -227,30 +227,30 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
   if(input.seq$seq.rf[1] == -1 ||
      is.null(input.seq$seq.like))
     stop("You must run 'compare' or 'map' before the 'try_seq' function")
-  if(mrk > get(input.seq$data.name, pos=1)$n.mar)
+  if(mrk > input.seq$data.name$n.mar)
     stop(deparse(substitute(mrk))," exceeds the number of markers in object ", input.seq$data.name)
   ## allocate variables
   ord.rf <- matrix(NA, length(input.seq$seq.num)+1, length(input.seq$seq.num))
   ord.like <- rep(NA, length(input.seq$seq.num)+1)
-  mark.max<-max(nchar(colnames(get(input.seq$data.name, pos=1)$geno)))
-  num.max<-nchar(ncol(get(input.seq$data.name, pos=1)$geno))
+  mark.max<-max(nchar(colnames(input.seq$data.name$geno)))
+  num.max<-nchar(ncol(input.seq$data.name$geno))
   ## create first order
   try.ord <- c(mrk,input.seq$seq.num)
   if(verbose) cat("TRY", 1,": ", c(mrk,input.seq$seq.num),"\n")
-  else cat(format(mrk,width=num.max) , "-->", format(colnames(get(input.seq$data.name, pos=1)$geno)[mrk], width=mark.max), ": .")
+  else cat(format(mrk,width=num.max) , "-->", format(colnames(input.seq$data.name$geno)[mrk], width=mark.max), ": .")
   utils::flush.console()
-  seq.temp<-make_seq(get(input.seq$twopt), arg=try.ord)
+  seq.temp<-make_seq(input.seq$twopt, arg=try.ord)
   seq.temp$twopt<-input.seq$twopt
   rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
   ## estimate parameters for all possible linkage phases for this order
-  final.map<-est_map_hmm_bc(geno=t(get(input.seq$data.name, pos=1)$geno[,try.ord]),
+  final.map<-est_map_hmm_bc(geno=t(input.seq$data.name$geno[,try.ord]),
                             rf.vec=rf.temp,
                             verbose=FALSE,
                             tol=tol)
-  if(is(get(input.seq$data.name, pos=1), "riself") ||
-     is(get(input.seq$data.name, pos=1), "risib"))
+  if(is(input.seq$data.name, "riself") ||
+     is(input.seq$data.name, "risib"))
     final.map$rf<-adjust_rf_ril(final.map$rf,
-                                type=class(get(input.seq$data.name, pos=1))[2],
+                                type=class(input.seq$data.name)[2],
                                 expand = FALSE)
   ord.rf[1,] <- final.map$rf
   ord.like[1] <- final.map$loglike
@@ -267,18 +267,18 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
       cat("TRY", i+1, ": ", try.ord[i+1,], "\n")
     else cat(".")
     utils::flush.console()
-    seq.temp<-make_seq(get(input.seq$twopt), arg=try.ord[i+1,])
+    seq.temp<-make_seq(input.seq$twopt, arg=try.ord[i+1,])
     seq.temp$twopt<-input.seq$twopt
     rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
     ## estimate parameters for all possible linkage phases for this order
-    final.map<-est_map_hmm_bc(geno=t(get(input.seq$data.name, pos=1)$geno[,try.ord[i+1,]]),
+    final.map<-est_map_hmm_bc(geno=t(input.seq$data.name$geno[,try.ord[i+1,]]),
                               rf.vec=rf.temp,
                               verbose=FALSE,
                               tol=tol)
-    if(is(get(input.seq$data.name, pos=1), "riself") ||
-       is(get(input.seq$data.name, pos=1), "risib"))
+    if(is(input.seq$data.name, "riself") ||
+       is(input.seq$data.name, "risib"))
       final.map$rf<-adjust_rf_ril(final.map$rf,
-                                           type=class(get(input.seq$data.name, pos=1))[2],
+                                           type=class(input.seq$data.name)[2],
                                            expand = FALSE)
     ord.rf[i+1,] <- final.map$rf
     ord.like[i+1] <- final.map$loglike
@@ -290,14 +290,14 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
   else cat(".\n")
   utils::flush.console()
   ## estimate parameters for all possible linkage phases for this order
-  final.map<-est_map_hmm_bc(geno=t(get(input.seq$data.name, pos=1)$geno[,try.ord[length(input.seq$seq.num)+1,]]),
+  final.map<-est_map_hmm_bc(geno=t(input.seq$data.name$geno[,try.ord[length(input.seq$seq.num)+1,]]),
                             rf.vec=rf.temp,
                             verbose=FALSE,
                             tol=tol)
-  if(is(get(input.seq$data.name, pos=1), "riself") ||
-     is(get(input.seq$data.name, pos=1), "risib"))
+  if(is(input.seq$data.name, "riself") ||
+     is(input.seq$data.name, "risib"))
     final.map$rf<-adjust_rf_ril(final.map$rf,
-                                         type=class(get(input.seq$data.name, pos=1))[2],
+                                         type=class(input.seq$data.name)[2],
                                          expand = FALSE)
   ord.rf[length(input.seq$seq.num)+1,] <- final.map$rf
   ord.like[length(input.seq$seq.num)+1] <- final.map$loglike

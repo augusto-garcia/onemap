@@ -862,13 +862,18 @@ let us create a framework of ordered markers using `compare` for the
 most informative ones:
 
 ```{r, results='hide'}
-LG2_init <- make_seq(twopts, c(4, 20, 24, 49,50,51))
+LG2_init <- make_seq(twopts, c(4, 20, 24, 49,50,51, 52))
 ``` 
 
 Here there is a automatic way of obtain a new sequence only with markers selected by type: :new:
 
 ```{r}
-seq_by_type(sequence = LG2, mk_type = c("A", "B"))
+LG2_init <- seq_by_type(sequence = LG2, mk_type = c("A", "B"))
+marker_type(LG2_init)
+# If I want to reduce even more the number of markers
+# I can use drop_marker function
+LG2_init <- drop_marker(LG2_init, 52)
+marker_type(LG2_init)
 ```
 
 Now, the first argument to `make_seq` is an object of class `rf_2pts`,
@@ -913,10 +918,10 @@ The second argument indicates the position where to place the marker.
 Note that the first allele arrangement is the most likely one.
 
 It should be pointed out that the framework created by the function
-`compare` (with `M20`, `M4`, `SNP24`, `SNP23`, `M24` and `SNP22`) could be in
-reverse order (`SNP22`, `M24`, `SNP23`, `SNP24`, `M4` and `M20`) and still represent the
+`compare` (with `M20`, `M4`, `SNP24`, `SNP23`, `M24` and `SNP22`, or numbers `4`, `20`, `24`, `49`, `50`, `51`) could be in
+reverse order (`SNP22`, `M24`, `SNP23`, `SNP24`, `M4` and `M20`, or numbers `51`, `50`, `49`, `24`, `20`, `4`) and still represent the
 same map.Thus, positioning of markers with the `try_seq` command can be
-different in your computer. For example, here marker `SNP25` was better
+different in your computer. For example, here marker `SNP25` (number `52`) was better
 placed at position 7; however if you obtain a reversed order, marker
 `SNP25` would be better placed in position 1. In both cases the best
 position for this marker is after `SNP22`.
