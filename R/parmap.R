@@ -130,13 +130,5 @@ parmap <- function(input.seq=NULL,
   }
 }
 
-##' @export
-map_avoid_unlinked <- function(input.seq, tol){
-  map_df <- map(input.seq, rm_unlinked = T)
-  while(class(map_df) == "integer"){
-    seq_true <- make_seq(input.seq$twopt, map_df)
-    map_df <- map(input.seq = seq_true, rm_unlinked = T)
-  }
-  return(map_df)
-}
+
 

@@ -38,4 +38,18 @@ seq_by_type <- function(sequence, mk_type){
   return(new.seq)
 }
 
+#' Repeat HMM if map find unlinked maker
+#'
+#' @param input_seq object of class sequence
+#' 
+#' @export
+map_avoid_unlinked <- function(input_seq){
+  map_df <- map(input_seq, rm_unlinked = T)
+  while(class(map_df) == "integer"){
+    seq_true <- make_seq(input_seq$twopt, map_df)
+    map_df <- map(input_seq = seq_true, rm_unlinked = T)
+  }
+  return(map_df)
+}
+
 

@@ -151,7 +151,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
                     seq.num[1], "and", seq.num[2], 
                     "did not reached the OneMap default criteria. They are probably segregating independently. Marker", 
                     seq.num[2], "will be removed.\n"))
-        return(seq.num[-(2)])
+        return(seq.num[-2])
         browser()
       }
       else {
