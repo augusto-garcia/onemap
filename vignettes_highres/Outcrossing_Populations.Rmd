@@ -908,6 +908,8 @@ LG2_extend <- try_seq(LG2_frame, 52)
 LG2_extend
 ``` 
 
+**NOTE**: <span style="color:orange">(new!)</span> If your sequence has many markers (more than 60), we suggest to speed up `try_seq` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#Speed-up-analysis-with-parallelization) for more information.
+
 Based on the LOD Scores, marker SNP25 is probably better located after `SNP22` (number 49). Detailed results can be seen with
 
 ```{r}
@@ -992,9 +994,11 @@ step; `THRES = 3` indicates that the `try_seq` step will only add
 markers to the sequence which can be mapped with LOD Score greater
 than 3.
 
-*NOTE*: Although very useful, this function can be misleading,
+**NOTE**: Although very useful, this function can be misleading,
 specially if there are not many fully informative markers, so use it
 carefully. Results can vary between multiple runs on the same markers, of course.
+
+**NOTE**: <span style="color:orange">(new!)</span> If your sequence has many markers (more than 60), we suggest to speed up `order_seq` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#Speed-up-analysis-with-parallelization) for more information.
 
 Check the final order:
 
@@ -1075,11 +1079,13 @@ doubtful markers (for this groups markers `23` and `29`) and try to positioned t
 LG2_test_seq <- drop_marker(LG2_all, c(23,29))
 ```
 
-The function will provide a sequence with the same order of the estimated map (`LG2_all`). After, we should estimate the map again using this predefined order. For this we use the `map` function:
+The function will provide a sequence with the same order of the estimated map (`LG2_all`). After, we should estimate the map again using this predefined order (see section [`Map estimation for an arbitrary order`](#Map-estimation-for-an-arbitrary-order) for further information). For this we use the `map` function:
 
 ```{r}
 (LG2_test_map <- map(LG2_test_seq))
 ```
+
+**NOTE**: <span style="color:orange">(new!)</span> If your sequence has many markers (more than 60), we suggest to speed up `map` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#Speed-up-analysis-with-parallelization) for more information.
 
 Now, we have the map without markers `23` and `51`. 
 
@@ -1152,6 +1158,8 @@ Alternatively, you can also use `mds_onemap` function to obtain a first draft fo
 LG1_mds <- mds_onemap(LG1, rm_unlinked = TRUE)
 ```
 
+**NOTE**: <span style="color:orange">(new!)</span> If your sequence has many markers (more than 60), we suggest to speed up `mds_onemap` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#Speed-up-analysis-with-parallelization) for more information.
+
 If you only specify the input sequence, mds_onemap will use the default parameters. It will generate MDSMap input file in `out.file` file and the `NULL.pdf` file with the diagnostic graphics in your work directory. Also, the default method used is the principal curves, know more about using `?mds_onemap` and reading the MDSMap [vignette]( https://CRAN.R-project.org/package=MDSMap). By default, we use the OneMap HMM approach to estimate the distances after the MDSMap ordered the markers, but you can have the default output from MDSMap setting `hmm = FALSE`.
 
 <span style="color:orange">new!</span>
@@ -1210,6 +1218,8 @@ LG1_ug  <- ug(LG1)
 There are some differences between the results. Seriation did not
 provide good results in this case. See Mollinari et al. (2009) for an
 evaluation of these methods.
+
+**NOTE**: <span style="color:orange">(new!)</span> If your sequence has many markers (more than 60), we suggest to speed up `seriation`, `rcd`, `record` and `ug` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#Speed-up-analysis-with-parallelization) for more information.
 
 # Using the recombinations and the reference genome informations
 
@@ -1289,6 +1299,8 @@ CHR1_frame <- make_seq(CHR1_ord, "force")
 rf_graph_table(CHR1_frame) # graphic not showed
 ```
 
+**NOTE**: <span style="color:orange">(new!)</span> If your sequence has many markers (more than 60), we suggest to speed up `mds_onemap` and `order_seq` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#Speed-up-analysis-with-parallelization) for more information.
+
 The group is similar to that builded before with only recombinations informations. We will better explore differences in a latter step. Only marker `11` do not follow exactly the expected color pattern, then we will try to repositioned it.
 
 ```{r}
@@ -1297,6 +1309,8 @@ CHR1_test_map <- map(CHR1_test_seq)
 CHR1_add11_seq <- try_seq(CHR1_test_map, 11)
 CHR1_add11 <- make_seq(CHR1_add11_seq, 25) # marker 11 was placed at the same position as before
 ```
+
+**NOTE**: <span style="color:orange">(new!)</span> If your sequence has many markers (more than 60), we suggest to speed up `try_seq` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#Speed-up-analysis-with-parallelization) for more information.
 
 Based in those results, we decide to not include marker 11 in our map.
 
@@ -1505,7 +1519,6 @@ draw_map2(LG2_final, CHR3_final, tag= c("SNP17", "SNP18", "M29"), main = "Chromo
 
 There are a invertion between markers `SNP17` and `SNP18` and the marker `M29` was removed in te second strategy.
 
-
 # Map estimation for an arbitrary order
 
 If, for any reason, one wants to estimate parameters for a given
@@ -1517,6 +1530,8 @@ for markers `M30`, `M12`, `M3`, `M14` and `M2`, in this order, use
 any_seq <- make_seq(twopts, c(30, 12, 3, 14, 2))
 (any_seq_map <- map(any_seq))
 ``` 
+
+**NOTE**: <span style="color:orange">(new!)</span> If your sequence has many markers (more than 60), we suggest to speed up `map` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#Speed-up-analysis-with-parallelization) for more information.
 
 This is a subset of the first linkage group. When used this way, the `map`
 function searches for the best combination of phases between markers
@@ -1563,7 +1578,66 @@ Removing markers 3, 4, 5, 12 and 30 from `any_seq`:
 
 After that, the map needs to be re-estimated.
 
-# Export estimated parents haplotypes
+<span style="color:orange">(new!)</span>
+# Speed up analysis with parallelization
+
+As already mentioned, OneMap uses HMM multipoint approach to estimate genetic distances, an very robust method, but it can take time to run if you have many markers. In 2017 Schiffthaler et. al release an OneMap fork with modifications in CRAN and in github with the possibility of paralellize the HMM chain dividing markers in batches and use different cores for each phase. Their approach speed up or HMM and keeps the genetic distances estimation quality. It allows to divide the job in maximum four cores according with the four possible phases for outcrossing mapping populations. We add this parallelized approach to all our functions that use HMM. They are: `try_seq`, `order_seq`, `map`, `mds_onemap`, `seriation`, `rcd`, `record` and `ug`. For better efficiency it is important that batches are composed by 50 markers or more, therefore, this approach is only recommended for linkage groups with many markers.
+
+We also developt `parmap` function exclusively for `map` parallelization. This one makes the paralellization through markers not phases, than you can use as much cores you have available (since the batches keep at least 50 markers). `parmap` is less trustworthy than `map` and BatchMap approach, but faster. If you don't mind to discard some errously estimated markers, it can be useful for you. 
+
+See comparision between these three approaches in vignette `Parallelization approaches - a comparision`. There, you can see that without parallelization, `map` function takes about 9h to estimate distances for 500 markers, BatchMap approach and `parmap` reduce this time to about 30 min, if four cores are used. `parmap` can be even faster if more cores are available.
+
+Here we will show an example how to use the BatchMap approach in all functions that requires HMM. For this, we will simulate a group with 294 markers (we don't want this vignette takes too much time to run, but usually maps with markers from high-throughput technologies results larger groups).
+
+```{r, eval=FALSE}
+run_pedsim(chromosome = "Chr1", n.marker = 294, tot.size.cm = 100, centromere = 50,
+           n.ind = 200, mk.types = c("A1", "A2", "B3.7", "D1.9", "D1.10", "D2.14", "D2.15"),
+           n.types = rep(42,7), pop = "F1", path.pedsim = "./",
+           name.mapfile = "mapfile.map", name.founderfile="founderfile.gen",
+           name.chromfile="sim.chrom", name.parfile="sim.par",
+           name.out="simParall_out")
+
+pedsim2raw(cross="outcross", genofile = "simParall_out_genotypes.dat", 
+           parent1 = "P1", parent2 = "P2", out.file = "simParall_out.raw", 
+           miss.perc = 25)
+
+simParallel <- read_onemap("simParall_out.raw")
+```
+
+```{r, echo=FALSE}
+data(simParallel)
+simParallel
+```
+
+```{r}
+twopts <- rf_2pts(simParallel)
+
+seq_all <- make_seq(twopts, "all")
+```
+
+To prepare the data with defined bach size we use function `pick_batch_sizes`. This function will find the best batch size for the sequence to be evaluated. Argument `size` defines the  batch size next to which an optimum size will be searched. `overlap` defines the number of markers that overlap between present batch and next. This is used because pre-defined phases af these overlap markers in present batch are used to start the HMM in the next batch. The `around` argument defines how much the function can vary around the defined number in `size` to search for the optimum batch size.
+
+```{r}
+batch_size <- pick_batch_sizes(input.seq = seq_all, 
+                               size = 80, 
+                               overlap = 30, 
+                               around = 10)
+
+batch_size
+```
+
+```{r}
+batch.map <- map_overlapping_batches(input.seq = seq1,
+                                     size = batch_size,
+                                     phase_cores = 4,
+                                     overlap = 30, 
+                                     rm_unlinked = T)
+```
+
+
+
+
+# Export estimated parents haplotypes <span style="color:orange">(new!)</span>
 
 In older version, users could only access the estimated linkage phase observing the print in the console:
 
@@ -1590,7 +1664,7 @@ parents_haplotypes(CHR2_final,CHR3_final, group_names=c("CHR2","CHR3"))
 ```
 
 
-# Export estimated progeny haplotypes
+# Export estimated progeny haplotypes <span style="color:orange">(new!)</span>
 
 Function `progeny_haplotypes` also generates a data.frame with progeny phased haplotypes estimated by OneMap HMM. For progeny, the HMM results in probabilities for each possible genotypes, than the generated data.frame contains the genotype of maximum probability if `most_likely = TRUE` or the probability of each genotype if `FALSE`. You can choose which indidual to be evaluated in `ind`. The data.frame is composed by the information: individual (ind) and group (grp) ID, position in centimorgan (pos), position adjusted for build graphics (pos2), f1 homologs (f1) and progeny homologs (prog) IDs and genotypes probabilities (prob).
 
@@ -1625,6 +1699,11 @@ Doerge, R.W. Constructing genetic maps by rapid chain delineation.
 Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia, A. A. F.
 Evaluation of algorithms used to order markers on genetics maps.
 **_Heredity_** 103, 494-502, 2009.
+
+Schiffthaler, B., Bernhardsson, C., Ingvarsson, P. K., & Street, N. R. 
+BatchMap: A parallel implementation of the OneMap R package for fast 
+computation of F1 linkage maps in outcrossing species. **_PLoS ONE_**, 
+12(12), 1–12, 2017.
 
 Tan, Y., Fu, Y. A novel method for estimating linkage maps.
 **_Genetics_** 173, 2383-2390, 2006.

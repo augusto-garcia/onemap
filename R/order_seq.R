@@ -159,9 +159,16 @@
 ##'   this dataset
 ##' }
 ##'@export
-order_seq <- function(input.seq, n.init=5, subset.search=c("twopt", "sample"),
-                      subset.n.try=30, subset.THRES=3, twopt.alg= c("rec", "rcd", "ser", "ug"),
-                      THRES=3, touchdown=FALSE, tol=10E-2) {
+order_seq <- function(input.seq, 
+                      n.init=5, 
+                      subset.search=c("twopt", "sample"),
+                      subset.n.try=30, 
+                      subset.THRES=3, 
+                      twopt.alg= c("rec", "rcd", "ser", "ug"),
+                      THRES=3, 
+                      touchdown=FALSE, 
+                      tol=10E-2) {
+  
   ## checking for correct objects
   if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   if(n.init < 2) stop("'n.init' must be greater than or equal to 2")

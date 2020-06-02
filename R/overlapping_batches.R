@@ -146,21 +146,28 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
   rmed.mks <- as.list(rep(0, length(batches)))
   #The first batch is run in full again to get all necessary data (phases etc.)
   if(is.null(seeds))
-   {
+  {
     LG <- map(input.seq = make_seq(input.seq$twopt, batches[[1]]), phase_cores = phase_cores, rm_unlinked = rm_unlinked, tol=tol)
     while(class(LG) == "integer"){
       LG <- map(input.seq = make_seq(input.seq$twopt, LG), phase_cores = phase_cores, rm_unlinked = rm_unlinked, tol=tol)
     }
     rmed.mks[[1]] <- batches[[1]][which(!batches[[1]] %in% LG$seq.num)]
   } else {
-     LG <- seeded_map(input.seq = make_seq(input.seq$twopt, batches[[1]],
-                      twopt = input.seq$twopt), phase_cores = phase_cores,
-                      verbosity = verbosity, seeds = seeds, tol=tol)
-   }
+    LG <- seeded_map(input.seq = make_seq(input.seq$twopt, batches[[1]],
+                                          twopt = input.seq$twopt), 
+                     phase_cores = phase_cores,
+                     verbosity = verbosity, seeds = seeds, tol=tol)
+    while(class(LG) == "integer"){
+      LG <- seeded_map(input.seq = make_seq(input.seq$twopt, LG,
+                                            twopt = input.seq$twopt), 
+                       phase_cores = phase_cores,
+                       verbosity = verbosity, seeds = seeds, tol=tol)
+    }
+  }
   
   round <- 1
   increment <- 0
-
+  
   LGs[[1]] <- LG
   #Start processing all following batches
   for(i in 2:length(batches))
@@ -208,11 +215,11 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
     start <- length(final.phase) - overlap + 1
     final.phase[start:length(final.phase)] <- head(LGs[[i]]$seq.phases, overlap)
     final.phase <- c(final.phase,
-                   LGs[[i]]$seq.phases[(overlap + 1):length(LGs[[i]]$seq.phases)])
+                     LGs[[i]]$seq.phases[(overlap + 1):length(LGs[[i]]$seq.phases)])
     final.rf[start:length(final.rf)] <- head(LGs[[i]]$seq.rf, overlap)
     final.rf <- c(final.rf,
-                     LGs[[i]]$seq.rf[(overlap + 1):length(LGs[[i]]$seq.rf)])
-
+                  LGs[[i]]$seq.rf[(overlap + 1):length(LGs[[i]]$seq.rf)])
+    
   }
   if(verbosity)
   {
@@ -243,9 +250,9 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
     new.seq <- make_seq(mp$twopt, mp$seq.num[-rm.seq])
     cat("Markers", mp$seq.num[rm.seq], "were remove because they cause gaps higher than ", max.gap, " cM with both neighboors markers.")
     mp <- map_overlapping_batches(input.seq = new.seq,
-                                size = size, overlap = overlap,
-                                phase_cores = phase_cores, verbosity = verbosity , 
-                                seeds = seeds, tol=tol, rm_unlinked = rm_unlinked, max.gap=max.gap)
+                                  size = size, overlap = overlap,
+                                  phase_cores = phase_cores, verbosity = verbosity , 
+                                  seeds = seeds, tol=tol, rm_unlinked = rm_unlinked, max.gap=max.gap)
   }
   
   return(mp)
