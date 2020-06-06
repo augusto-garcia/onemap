@@ -167,7 +167,10 @@ order_seq <- function(input.seq,
                       twopt.alg= c("rec", "rcd", "ser", "ug"),
                       THRES=3, 
                       touchdown=FALSE, 
-                      tol=10E-2) {
+                      tol=10E-2,
+                      size = NULL, 
+                      overlap = NULL, 
+                      phase_cores = 1) {
   
   ## checking for correct objects
   if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")

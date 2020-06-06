@@ -32,8 +32,13 @@ information.}
 \item{seeds}{A vector of phase information used as seeds for the first
 batch}
 
+\item{tol}{tolerance for the C routine, i.e., the value used to evaluate
+convergence.}
+
 \item{rm_unlinked}{When some pair of markers do not follow the linkage criteria, 
 if \code{TRUE} one of the markers is removed and map is performed again.}
+
+\item{max.gap}{the marker will be removed if it have gaps higher than this defined threshold in both sides}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the

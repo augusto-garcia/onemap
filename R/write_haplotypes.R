@@ -29,7 +29,6 @@
 #' @export
 parents_haplotypes <- function(..., group_names=NULL){
   input <- list(...)
-  input_temp <- input
   if(length(input) == 0) stop("argument '...' missing, with no default")
   # Accept list of sequences or list of list of sequences
   if(is(input[[1]], "sequence")) input.map <- input else input.map <- unlist(input, recursive = FALSE)
@@ -40,9 +39,10 @@ parents_haplotypes <- function(..., group_names=NULL){
     n <- length(sapply(input, function(x) is(x, "sequence")))
   } else n <- 1
   
+  input_temp <- input
   out_dat <- data.frame()
   for(z in 1:n){
-    if(all(sapply(input, function(x) is(x, "sequence")))) input <- input_temp[[z]]
+    if(all(sapply(input_temp, function(x) is(x, "sequence")))) input <- input_temp[[z]]
     marnames <- colnames(input$data.name$geno)[input$seq.num]
     if(length(input$seq.rf) == 1 && input$seq.rf == -1) {
       # no information available for the order
@@ -63,14 +63,14 @@ parents_haplotypes <- function(..., group_names=NULL){
       
       ## display results
       marnumbers <- input$seq.num
-      distances <- c(0,cumsum(get(get(".map.fun", envir=.onemapEnv))(input$seq.rf)))
+      distances <- c(0,cumsum(kosambi(input$seq.rf)))
       ## whith diplotypes for class 'outcross'
       if(is(input$data.name, c("outcross", "f2"))){
         ## create diplotypes from segregation types and linkage phases
         link.phases <- apply(link.phases,1,function(x) paste(as.character(x),collapse="."))
         parents <- matrix("",length(input$seq.num),4)
         for (i in 1:length(input$seq.num))
-          parents[i,] <- return_geno(input$data.name$segr.type[input$seq.num[i]],link.phases[i])
+          parents[i,] <- onemap:::return_geno(input$data.name$segr.type[input$seq.num[i]],link.phases[i])
         out_dat_temp <- data.frame(group= group_names[z], mk.number = marnumbers, mk.names = marnames, dist = as.numeric(distances), 
                                    P1_1 = parents[,1],
                                    P1_2 = parents[,2],

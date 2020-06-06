@@ -4,12 +4,12 @@
 \alias{seq_by_type}
 \title{Extract marker number by name}
 \usage{
-seq_by_type(x, marker.type)
+seq_by_type(sequence, mk_type)
 }
 \arguments{
-\item{x}{object of class or sequence}
+\item{sequence}{object of class or sequence}
 
-\item{marker.type}{vector of character with marker type to be selected}
+\item{mk_type}{vector of character with marker type to be selected}
 }
 \value{
 new sequence object with selected marker type

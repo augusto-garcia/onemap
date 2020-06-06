@@ -129,11 +129,15 @@ seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
                        })
     if(all(is.null(unlist(phases)))) {
       if(rm_unlinked){
-        warning(cat("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], "did not reached the OneMap default criteria. They are probably segregating independently. Marker", seq.num[mrk+1], "will be removed.\n"))
+        warning(cat("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], 
+                    "did not reached the OneMap default criteria. They are probably segregating independently. Marker", seq.num[mrk+1], "will be removed.
+                    Use function map_avoid_unlinked to remove these markers automatically.\n"))
         return(seq.num[-(mrk+1)])
         browser()
       } else{
-        stop(paste("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], "did not reached the OneMap default criteria. They are probably segregating independently.\n"))
+        stop(paste("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], 
+                   "did not reached the OneMap default criteria. They are probably segregating independently.
+                   Use function map_avoid_unlinked to remove these markers automatically.\n"))
       }
     }
     
@@ -145,11 +149,15 @@ seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
     if(all(is.na(results[[2]])))
     {
       if(rm_unlinked){
-        warning(cat("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], "did not reached the OneMap default criteria. They are probably segregating independently. Marker", seq.num[mrk+1], "will be removed.\n"))
+        warning(cat("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], 
+                    "did not reached the OneMap default criteria. They are probably segregating independently. Marker", seq.num[mrk+1], "will be removed.
+                    Use function map_avoid_unlinked to remove these markers automatically.\n"))
         return(seq.num[-(mrk+1)])
         browser()
       } else{
-        stop(paste("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], "did not reached the OneMap default criteria. They are probably segregating independently.\n"))
+        stop(paste("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], 
+                   "did not reached the OneMap default criteria. They are probably segregating independently.
+                   Use function map_avoid_unlinked to remove these markers automatically.\n"))
       }
     }
     # best combination of phases is chosen

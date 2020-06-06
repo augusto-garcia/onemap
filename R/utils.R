@@ -40,14 +40,45 @@ seq_by_type <- function(sequence, mk_type){
 
 #' Repeat HMM if map find unlinked maker
 #'
-#' @param input_seq object of class sequence
+#' @param input.seq object of class sequence
+#' @param size The center size around which an optimum is to be searched
+#' @param overlap The desired overlap between batches
+#' @param phase_cores The number of parallel processes to use when estimating
+#' the phase of a marker. (Should be no more than 4)
+#' @param tol tolerance for the C routine, i.e., the value used to evaluate
+#' convergence.
 #' 
 #' @export
-map_avoid_unlinked <- function(input_seq){
-  map_df <- map(input_seq, rm_unlinked = T)
+map_avoid_unlinked <- function(input.seq, 
+                               size = NULL, 
+                               overlap = NULL,
+                               round = 5,
+                               phase_cores = 1, 
+                               tol = 1e-05){
+  #TODO: error checks...
+  if(phase_cores == 1){
+    map_df <- map(input.seq, rm_unlinked = T)
+  } else {
+    if(is.null(size) | is.null(overlap)){
+      stop("If you want to parallelize the HMM in multiple cores (phase_cores != 1) 
+             you should also define `size` and `overlap` arguments. See ?map_avoid_unlinked and ?pick_batch_sizes")
+    } else {
+    map_df <- map_overlapping_batches(input.seq = input.seq,
+                                      size = size, overlap = overlap,
+                                      phase_cores = phase_cores, 
+                                      tol=tol, rm_unlinked = T)
+    }
+  }
   while(class(map_df) == "integer"){
-    seq_true <- make_seq(input_seq$twopt, map_df)
-    map_df <- map(input_seq = seq_true, rm_unlinked = T)
+    seq_true <- make_seq(input.seq$twopt, map_df)
+    if(is.null(size) & is.null(overlap) & phase_cores == 1){
+      map_df <- map(input.seq = seq_true, rm_unlinked = T, tol=tol)
+    }else{
+      map_df <- map_overlapping_batches(input.seq = seq_true,
+                                        size = size, overlap = overlap, 
+                                        phase_cores = phase_cores, 
+                                        tol=tol, rm_unlinked = T)
+    }
   }
   return(map_df)
 }

@@ -14,7 +14,10 @@ order_seq(
   twopt.alg = c("rec", "rcd", "ser", "ug"),
   THRES = 3,
   touchdown = FALSE,
-  tol = 0.1
+  tol = 0.1,
+  size = NULL,
+  overlap = NULL,
+  phase_cores = 1
 )
 }
 \arguments{

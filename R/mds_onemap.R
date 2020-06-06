@@ -12,7 +12,6 @@
 #' @param n Vector of integers or strings containing markers to be omitted from
 #' the analysis.
 #' @param displaytext Shows markers names in analysis graphic view
-#' @param hmm Multipoint genetic distance estimation
 #' @param weightfn Character string specifying the values to use for the weight
 #' matrix in the MDS 'lod2' or 'lod'.
 #' @param mapfn Character string specifying the map function to use on the
@@ -22,6 +21,13 @@
 #' constrained MDS method will be used.
 #' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
 #' if \code{TRUE} one of the markers is removed and mds is performed again.
+#' @param size The center size around which an optimum is to be searched
+#' @param overlap The desired overlap between batches
+#' @param phase_cores The number of parallel processes to use when estimating
+#' the phase of a marker. (Should be no more than 4)
+#' @param tol tolerance for the C routine, i.e., the value used to evaluate
+#' convergence.
+#' 
 #' @return An object of class \code{sequence}, which is a list containing the
 #' following components: \item{seq.num}{a \code{vector} containing the
 #' (ordered) indices of markers in the sequence, according to the input file.}
@@ -61,8 +67,20 @@
 #'@importFrom utils write.table
 #'
 #'@export
-mds_onemap <- function(input.seq, out.file= "out.file", mds.graph.file="NULL.pdf", p = NULL, n=NULL, ispc=TRUE,
-                       displaytext=FALSE, weightfn='lod2', mapfn='haldane', hmm = TRUE, rm_unlinked=TRUE){
+mds_onemap <- function(input.seq, 
+                       out.file= "out.file", 
+                       mds.graph.file="NULL.pdf", 
+                       p = NULL, 
+                       n=NULL, 
+                       ispc=TRUE,
+                       displaytext=FALSE, 
+                       weightfn='lod2', 
+                       mapfn='haldane',
+                       rm_unlinked=TRUE, 
+                       size = NULL, 
+                       overlap = NULL,
+                       phase_cores = 1, 
+                       tol = 1e-05){
   
   ## checking for correct object
   if(!is(input.seq, "sequence"))
@@ -98,18 +116,36 @@ mds_onemap <- function(input.seq, out.file= "out.file", mds.graph.file="NULL.pdf
   mds_map <- MDSMap::estimate.map(out.file, p = p, n=n, ispc = ispc, 
                                   displaytext = displaytext)
   dev.off()
-  if(hmm==TRUE){
-    ord_mds <- match(as.character(mds_map$locimap[,2]), colnames(input.seq$data.name$geno)) 
-    seq_mds <- make_seq(input.seq$twopt, ord_mds)
-    seq_mds$twopt <- input.seq$twopt
+  ord_mds <- match(as.character(mds_map$locimap[,2]), colnames(input.seq$data.name$geno)) 
+  seq_mds <- make_seq(input.seq$twopt, ord_mds)
+  if(phase_cores == 1){
     mds_map <- map(seq_mds, rm_unlinked = rm_unlinked)
+  } else{
+    if(is.null(size) | is.null(overlap)){
+      stop("If you want to parallelize the HMM in multiple cores (phase_cores != 1) 
+             you should also define `size` and `overlap` arguments.")
+    } else {
+      mds_map <- map_overlapping_batches(input.seq = seq_mds,
+                                         size = size, overlap = overlap, 
+                                         phase_cores = phase_cores, 
+                                         tol=tol, rm_unlinked = rm_unlinked)
+    }
   }
+  
   
   if(!is.list(mds_map)) {
     new.seq <- make_seq(input.seq$twopt, mds_map)
-    new.seq$twopt <- input.seq$twopt
-    mds_map <- mds_onemap(new.seq, out.file= out.file, mds.graph.file=mds.graph.file, p = NULL, n=NULL, ispc=TRUE,
-                          displaytext=displaytext, weightfn=weightfn, mapfn=mapfn, hmm = hmm, rm_unlinked=rm_unlinked)
+    mds_map <- mds_onemap(new.seq, out.file= out.file, 
+                          mds.graph.file=mds.graph.file, 
+                          p = NULL, n=NULL, ispc=TRUE,
+                          displaytext=displaytext, 
+                          weightfn=weightfn, 
+                          mapfn=mapfn, 
+                          rm_unlinked=rm_unlinked,
+                          size = size, 
+                          overlap = overlap,
+                          phase_cores = phase_cores, 
+                          tol = tol)
   }
   return(mds_map)
 }

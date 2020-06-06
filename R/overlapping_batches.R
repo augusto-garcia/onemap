@@ -48,7 +48,6 @@ generate_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
   return(res)
 }
 
-
 ##' Picking optimal batch size values
 ##'
 ##' Suggest an optimal batch size value for use in
@@ -111,6 +110,10 @@ pick_batch_sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
 ##' batch
 ##' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
 ##' if \code{TRUE} one of the markers is removed and map is performed again.
+##' @param tol tolerance for the C routine, i.e., the value used to evaluate
+##' convergence.
+##' @param max.gap the marker will be removed if it have gaps higher than this defined threshold in both sides
+##' 
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}
@@ -143,25 +146,28 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
     message("Processing batch 1...")
   }
   LGs <- list()
-  rmed.mks <- as.list(rep(0, length(batches)))
   #The first batch is run in full again to get all necessary data (phases etc.)
   if(is.null(seeds))
   {
     LG <- map(input.seq = make_seq(input.seq$twopt, batches[[1]]), phase_cores = phase_cores, rm_unlinked = rm_unlinked, tol=tol)
-    while(class(LG) == "integer"){
-      LG <- map(input.seq = make_seq(input.seq$twopt, LG), phase_cores = phase_cores, rm_unlinked = rm_unlinked, tol=tol)
+    if(class(LG) == "integer"){
+      rmed.mks <- batches[[1]][which(!batches[[1]] %in% LG$seq.num)]
+      warning(cat("Markers", rmed.mks,"did not reached the OneMap default criteria. They are probably segregating independently 
+                  and new vector of marker numbers was generated without them. Use function map_avoid_unlinked to remove these markers automatically.\n"))
+      return(seq.num[-2])
+      browser()
     }
-    rmed.mks[[1]] <- batches[[1]][which(!batches[[1]] %in% LG$seq.num)]
   } else {
     LG <- seeded_map(input.seq = make_seq(input.seq$twopt, batches[[1]],
                                           twopt = input.seq$twopt), 
                      phase_cores = phase_cores,
                      verbosity = verbosity, seeds = seeds, tol=tol)
-    while(class(LG) == "integer"){
-      LG <- seeded_map(input.seq = make_seq(input.seq$twopt, LG,
-                                            twopt = input.seq$twopt), 
-                       phase_cores = phase_cores,
-                       verbosity = verbosity, seeds = seeds, tol=tol)
+    if(class(LG) == "integer"){
+      rmed.mks <- batches[[1]][which(!batches[[1]] %in% LG$seq.num)]
+      warning(cat("Markers", rmed.mks,"did not reached the OneMap default criteria. They are probably segregating independently 
+                  and new vector of marker numbers was generated without them. Use function map_avoid_unlinked to remove these markers automatically.\n"))
+      return(seq.num[-2])
+      browser()
     }
   }
   
@@ -187,15 +193,13 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
                      verbosity = verbosity,
                      seeds = seeds, rm_unlinked = rm_unlinked,
                      tol=tol)
-    while(class(LG) == "integer"){ # Instead of reordering the marker that didn't reached the linkage criterias
-      # we remove the marker and repet the analysis
-      LG <- seeded_map(make_seq(input.seq$twopt,
-                                LG,
-                                twopt = input.seq$twopt),
-                       verbosity = verbosity,
-                       seeds = seeds, rm_unlinked = rm_unlinked, tol=tol)
+    if(class(LG) == "integer"){
+      rmed.mks <- batches[[1]][which(!batches[[1]] %in% LG$seq.num)]
+      warning(cat("Markers", rmed.mks,"did not reached the OneMap default criteria. They are probably segregating independently 
+                  and new vector of marker numbers was generated without them. Use function map_avoid_unlinked to remove these markers automatically.\n"))
+      return(seq.num[-2])
+      browser()
     }
-    rmed.mks[[i]] <- batches[[i]][which(!batches[[i]] %in% LG$seq.num)]
     LGs[[i]] <- LG
   }
   #Initialize final order, phases and rfs with the first batch
@@ -229,10 +233,6 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
   #final.rf is currently only used for debugging purposes
   s <- make_seq(input.seq$twopt, final.seq, final.phase, input.seq$twopt)
   mp <- map(input.seq = s, rm_unlinked = rm_unlinked, tol=tol)
-  
-  if(length(unlist(rmed.mks))> 0 & unlist(rmed.mks)[1] != 0)
-    message("Markers ", paste(unlist(rmed.mks), collapse = ", "), " were removed of the analysis because 
-          they did not reach the linkage criterias")
   
   if(max.gap){ # the marker will be removed if it have gaps higher than the threshold in both sides
     idx <- which(kosambi(mp$seq.rf) > max.gap)

@@ -5,11 +5,12 @@
 # File: suggest_lod.R                                                 #
 # Contains: suggest_lod                                               #
 #                                                                     #
-# Written by Antonio Augusto Franco Garcia                            #
+# Written by Antonio Augusto Franco Garcia and updated by Cristiane   #
+# Taniguti                                                            #
 # copyright (c) 2015 Antonio Augusto Franco Garcia                    #
 #                                                                     #
 # First version: 2015/04/21                                           #
-# Last update: 2016/01/14                                             #
+# Last update: 2020/06/04                                             #
 # License: GNU General Public License version 3 or later              #
 #                                                                     #
 #######################################################################

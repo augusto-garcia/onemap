@@ -119,12 +119,21 @@
 ##'   (new.map<-make_seq(extend.map,14)) # best position
 ##' }
 ##'@export
-try_seq<-function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
+try_seq<-function(input.seq,mrk,
+                  tol=10E-2,
+                  pos= NULL,
+                  verbose=FALSE,
+                  size = NULL, 
+                  overlap = NULL, 
+                  phase_cores = 1)
 {
   if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2"))
     return(try_seq_outcross(input.seq=input.seq,
                             mrk=mrk, tol=tol,
-                            pos=pos, verbose=verbose))
+                            pos=pos, verbose=verbose,
+                            size = NULL, 
+                            overlap = NULL, 
+                            phase_cores = 1))
   else
     return(try_seq_inbred_bc(input.seq=input.seq,
                              mrk=mrk, tol=tol,
@@ -316,7 +325,13 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
 
 ## Try to map a marker into every possible position between markers
 ## in a given map (for outcrosses)
-try_seq_outcross<- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
+try_seq_outcross<- function(input.seq,mrk,
+                            tol=10E-2,
+                            pos= NULL,
+                            verbose=FALSE,
+                            size = NULL, 
+                            overlap = NULL, 
+                            phase_cores = 1)
 {
     ## checking for correct objects
     if(!is(input.seq,"sequence"))
