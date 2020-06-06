@@ -249,8 +249,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
     ## gather two-point information
     rf.init <- get_vec_rf_out(input.seq, acum=FALSE)
     if(any(is.na(rf.init))) {
-      warning("Linkage criterias could not be reached")
-      return(NULL)
+      stop("Linkage criterias could not be reached")
     }
     ## estimate parameters
     final.map <- est_map_hmm_out(geno=t(input.seq$data.name$geno[,seq.num]),

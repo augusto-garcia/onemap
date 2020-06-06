@@ -850,8 +850,6 @@ LG2_f2_final
 This is based on multipoint estimation of recombination
 fractions, using hidden Markov models. 
 
-#### Parei aqui! Sono!
-
 #### Linkage group 1
 
 Let us analyze linkage group 1. Extract markers from object `LGs`:
