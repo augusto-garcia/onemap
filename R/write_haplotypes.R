@@ -42,7 +42,7 @@ parents_haplotypes <- function(..., group_names=NULL){
   
   out_dat <- data.frame()
   for(z in 1:n){
-    if(all(sapply(input, function(x) is(x, "sequence")))) input <- input_temp[[z]]
+    if(all(sapply(input_temp, function(x) is(x, "sequence")))) input <- input_temp[[z]]
     marnames <- colnames(get(input$data.name, pos=1)$geno)[input$seq.num]
     if(length(input$seq.rf) == 1 && input$seq.rf == -1) {
       # no information available for the order
