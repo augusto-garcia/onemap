@@ -1593,12 +1593,15 @@ See comparison between these three approaches in vignette `Parallelization appro
 
 Here we will show an example how to use the BatchMap approach in some functions that requires HMM. For this, we will simulate a group with 294 markers (we don't want this vignette takes too much time to run, but usually maps with markers from high-throughput technologies result larger groups). Before start, you can see the time spent for each approach in this example:
 
-```{r, echo=FALSE}
-data(parallel_results_out)
-time_spent <-time_spent/(60*60)
-colnames(time_spent) <- c("Without parallelization (h)", "With parallelization (h)" )
-knitr::kable(time_spent)
-```
+
+|           | Without parallelization (h)| With parallelization (h)|
+|:----------|---------------------------:|------------------------:|
+|rcd        |                    2.687657|                0.6150103|
+|record     |                    2.742556|                0.7189469|
+|ug         |                    1.544829|                0.4939636|
+|mds_onemap |                    1.363906|                0.5241453|
+|map        |                    2.243384|                0.7256800|
+
 
 Now, let's simulate the mapping population and markers.
 
@@ -1619,14 +1622,12 @@ pedsim2raw(cross="outcross", genofile = "simParall_out_genotypes.dat",
 # Import to R environment as onemap object
 
 simParallel <- read_onemap("simParall_out.raw")
+plot(simParallel, all=FALSE)
 ```
 
-```{r, echo=FALSE}
-library(ggpubr)
-simParallel
-```
+<img src="out_img/plot.simParallel.jpg" width="400" height="400">
 
-```{r}
+```{r, eval=FALSE}
 # Calculates two-points recombination fractions
 twopts <- rf_2pts(simParallel)
 
@@ -1636,14 +1637,16 @@ seq_all <- make_seq(twopts, "all")
 find_bins(simParallel)
 
 # There are no distorted markers
-plot(test_segregation(simParallel))
+p <- plot(test_segregation(simParallel))
 ```
+
+<img src="out_img/plot.segre.jpg" width="400" height="400">
 
 To prepare the data with defined bach size we use function `pick_batch_sizes`. It selects a batch size that splits the data into even groups. Argument `size` defines the  batch size next to which an optimum size will be searched. `overlap` defines the number of markers that overlap between present batch and next. This is used because pre-defined phases at these overlap markers in present batch are used to start the HMM in the next batch. The `around` argument defines how much the function can vary around the defined number in `size` to search for the optimum batch size.
 
 Some aspects should be considered to define these arguments, because if the batch size were set too high, there would be less gain in execution time. If the overlap size would be too small, phases would be incorrectly estimated and large gaps would appear in the map, inflating its size. In practise, these values will depend on many factors such as population size, marker quality and species. BatchMap authors recommended to try several configurations on a subset of data and select the best performing one.
 
-```{r}
+```{r, eval=FALSE}
 batch_size <- pick_batch_sizes(input.seq = seq_all, 
                                size = 80, 
                                overlap = 30, 
@@ -1687,16 +1690,20 @@ rcd_map_par <- rcd(input.seq = seq_all,
 
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, eval=FALSE}
 a <- rf_graph_table(rcd_map, mrk.axis = "none")
 b <- rf_graph_table(rcd_map_par, mrk.axis = "none")
 
-ggarrange(a,b , common.legend = TRUE,
+p <- ggarrange(a,b , common.legend = TRUE,
           labels = c("rcd", "rcd + parallel"), 
           vjust = 0.2,
           hjust= -0.8,
           ncol=2, nrow=1)
+
+ggsave(p, filename = "rds.jpg")
 ```
+
+<img src="out_img/rds.jpg" width="500" height="400">
 
 ```{r, echo=FALSE, eval=FALSE}
 # Without parallelization 
@@ -1722,16 +1729,20 @@ record_map_par <- record(input.seq = seq_all,
                          overlap = 30)
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, eval=FALSE}
 a <- rf_graph_table(record_map, mrk.axis = "none")
 b <- rf_graph_table(record_map_par, mrk.axis = "none")
 
-ggarrange(a,b , common.legend = TRUE,
+p <- ggarrange(a,b , common.legend = TRUE,
           labels = c("record", "record + parallel"), 
           vjust = 0.2,
           hjust= -0.8,
           ncol=2, nrow=1)
+
+ggsave(p, filename = "record.jpg")
 ```
+
+<img src="out_img/record.jpg" width="500" height="400">
 
 ```{r, echo=FALSE, eval=FALSE}
 # Without parallelization 
@@ -1758,16 +1769,20 @@ ug_map_par <- ug(input.seq = seq_all,
                  overlap = 30)
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, eval=FALSE}
 a <- rf_graph_table(ug_map, mrk.axis = "none")
 b <- rf_graph_table(ug_map_par, mrk.axis = "none")
 
-ggarrange(a,b , common.legend = TRUE,
+p <- ggarrange(a,b , common.legend = TRUE,
           labels = c("ug", "ug + parallel"), 
           vjust = 0.2,
           hjust= -0.8,
           ncol=2, nrow=1)
+
+ggsave(p, filename = "up.jpg")
 ```
+
+<img src="out_img/up.jpg" width="500" height="400">
 
 ## Speed up mds_onemap
 
@@ -1796,16 +1811,20 @@ map_mds_par <- mds_onemap(input.seq = seq_all,
                           overlap = 30)
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, eval=FALSE}
 a <- rf_graph_table(map_mds, mrk.axis = "none")
 b <- rf_graph_table(map_mds_par, mrk.axis = "none")
 
-ggarrange(a,b , common.legend = TRUE,
+p <- ggarrange(a,b , common.legend = TRUE,
           labels = c("mds", "mds + parallel"), 
           vjust = 0.2,
           hjust= -0.8,
           ncol=2, nrow=1)
+
+ggsave(p, filename = "mds.jpg")
 ```
+
+<img src="out_img/mds.jpg" width="500" height="400">
 
 ## Speed up map estimation for an arbitrary order (map function)
 
@@ -1846,17 +1865,20 @@ batch_map_par <- map_avoid_unlinked(input.seq = seq_all,
                                     overlap = 30)
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, eval=FALSE}
 a <- rf_graph_table(batch_map, mrk.axis = "none")
 b <- rf_graph_table(batch_map_par, mrk.axis = "none")
 
-ggarrange(a,b , common.legend = TRUE,
+p <- ggarrange(a,b , common.legend = TRUE,
           labels = c("map", "map + parallel"), 
           vjust = 0.2,
           hjust= -0.8,
           ncol=2, nrow=1)
+
+ggsave(p, filename = "map.jpg")
 ```
 
+<img src="out_img/map.jpg" width="500" height="400">
 
 As you can see in above maps, heuristic ordering algorithm do not return an optimal order result, mostly if you don't have many individuals in your population. Because of the erroneous order, generated map size are not close to the simulated size (100 cM) and their heapmaps don't present the expected color pattern. Two of them get close to the color pattern, they are the ug and the MDS method. They present good  global ordering but not local. If you have a reference genome, you can use its position information to rearrange local ordering.
 

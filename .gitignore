@@ -12,3 +12,4 @@ onemap.Rproj
 *.Rproj
 doc
 Meta
+data/parallel_results_out.RData
