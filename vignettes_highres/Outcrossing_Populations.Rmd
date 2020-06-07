@@ -143,7 +143,7 @@ run_pedsim(chromosome = "Chr1", n.marker = 54, tot.size.cm = 100, centromere = 5
                                      "C.8", "D1.9", "D1.10", "D1.11", "D1.12", "D1.13", 
                                      "D2.14", "D2.15", "D2.16", "D2.17", "D2.18"),
            n.types = rep(3,18), pop = "F1", path.pedsim = "path/to/PedigreeSim/",
-           name.mapfile = "mapfile.map", name.founderfile="founderfile.gen",
+           name.mapfile = "mapfile.txt", name.founderfile="founderfile.gen",
            name.chromfile="sim.chrom", name.parfile="sim.par",
            name.out="sim_out")
 ```
@@ -175,7 +175,7 @@ The same output file from PedigreeSim, the `genotypes.dat` can be used to simula
 run_pedsim(chromosome = "Chr1", n.marker = 42, tot.size.cm = 100, centromere = 50,
            n.ind = 200, mk.types = c("A1", "A2", "B3.7", "D1.9", "D1.10", "D2.14", "D2.15"),
            n.types = rep(6,7), pop = "F1", path.pedsim = "path/to/PedigreeSim/",
-           name.mapfile = "mapfile.map", name.founderfile="founderfile.gen",
+           name.mapfile = "mapfile.txt", name.founderfile="founderfile.gen",
            name.chromfile="sim.chrom", name.parfile="sim.par",
            name.out="sim_cod_out")
 ```
@@ -184,7 +184,7 @@ run_pedsim(chromosome = "Chr1", n.marker = 42, tot.size.cm = 100, centromere = 5
 ```{r, eval=FALSE, message=F,warning=F}
 # For outcrossing population
 pedsim2vcf(inputfile = "sim_cod_out_genotypes.dat", 
-           map.file = "mapfile.map", 
+           map.file = "mapfile.txt", 
            chrom.file = "sim.chrom", 
            out.file = "simu_cod_out.vcf",
            miss.perc = 0, 
@@ -205,7 +205,7 @@ pedsim2vcf(inputfile = "sim_cod_out_genotypes.dat",
 ```{r, message=F,warning=F, echo=FALSE}
 # For outcrossing population
 pedsim2vcf(inputfile = system.file("extdata/sim_cod_out_genotypes.dat", package = "onemap"),
-           map.file = system.file("extdata/mapfile.map", package = "onemap"), 
+           map.file = system.file("extdata/mapfile.txt", package = "onemap"), 
            chrom.file = system.file("extdata/sim.chrom", package = "onemap"), 
            out.file = "simu_cod_out.vcf",
            miss.perc = 0, 
@@ -1607,7 +1607,7 @@ Now, let's simulate the mapping population and markers.
 run_pedsim(chromosome = "Chr1", n.marker = 294, tot.size.cm = 100, centromere = 50,
            n.ind = 200, mk.types = c("A1", "A2", "B3.7", "D1.9", "D1.10", "D2.14", "D2.15"),
            n.types = rep(42,7), pop = "F1", path.pedsim = "./",
-           name.mapfile = "mapfile.map", name.founderfile="founderfile.gen",
+           name.mapfile = "mapfile.txt", name.founderfile="founderfile.gen",
            name.chromfile="sim.chrom", name.parfile="sim.par",
            name.out="simParall_out")
 
