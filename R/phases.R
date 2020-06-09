@@ -35,7 +35,7 @@ phases <- function(input.seq, LOD=0, max.rf=0.50)
             ## recover values from two-point analyses
             big <- pmax.int(input.seq$seq.num[i],input.seq$seq.num[j])
             small <- pmin.int(input.seq$seq.num[i],input.seq$seq.num[j])
-            temp <- t(sapply(get(input.seq$twopt)$analysis, function(x,i,j) cbind(x[j,i], x[i,j]), small, big))
+            temp <- t(sapply(input.seq$twopt$analysis, function(x,i,j) cbind(x[j,i], x[i,j]), small, big))
             
             ## check which assignments meet the criteria
             relevant <- which(temp[,2]>(max(temp[,2])-0.005)) ## maximum LOD scores

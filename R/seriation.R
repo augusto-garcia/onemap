@@ -47,6 +47,11 @@
 ##' value above.
 ##' @param tol tolerance for the C routine, i.e., the value used to evaluate
 ##' convergence.
+##' @param size The center size around which an optimum is to be searched
+##' @param overlap The desired overlap between batches
+##' @param phase_cores The number of parallel processes to use when estimating
+##' the phase of a marker. (Should be no more than 4)
+##' 
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}
@@ -90,124 +95,158 @@
 ##'   LG1.ser
 ##' }
 ##'@export
-seriation<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5)
+seriation<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5, 
+                    rm_unlinked = TRUE,
+                    size = NULL, 
+                    overlap = NULL, 
+                    phase_cores = 1)
 {
-    ## checking for correct object
-    if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is
+  ## checking for correct object
+  if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is
     not an object of class 'sequence'")
-    n.mrk <- length(input.seq$seq.num)
-
-    ## create reconmbination fraction matrix
-
-    if(is(get(input.seq$twopt),"outcross") || is(get(input.seq$twopt),"f2"))
-        r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
-    else
-        r<-get_mat_rf_in(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
-    r[is.na(r)]<-0.5
-    diag(r)<-0
-
-    ## SERIATION algorithm
-    n.mrk<-ncol(r)
-    orders <- array(0,dim=c(n.mrk,n.mrk))
-    CI <- numeric(n.mrk)
-    for (i in 1:n.mrk) {
-        orders[i,] <- ser_ord(r,i)
-        CI[i] <- Cindex(orders[i,],r)
+  n.mrk <- length(input.seq$seq.num)
+  
+  ## create reconmbination fraction matrix
+  
+  if(is(input.seq$twopt,"outcross") || is(input.seq$twopt,"f2"))
+    r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
+  else
+    r<-get_mat_rf_in(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
+  r[is.na(r)]<-0.5
+  diag(r)<-0
+  
+  ## SERIATION algorithm
+  n.mrk<-ncol(r)
+  orders <- array(0,dim=c(n.mrk,n.mrk))
+  CI <- numeric(n.mrk)
+  for (i in 1:n.mrk) {
+    orders[i,] <- ser_ord(r,i)
+    CI[i] <- Cindex(orders[i,],r)
+  }
+  best <- which(CI==CI[which.min(CI)])
+  if (length(best) == 0) stop ("Cannot find any order")
+  else {
+    if (length(best) != 1) best <- best[sample(length(best),1)]
+    complete<-orders[best,]
+  }
+  
+  ## end of SERIATION algorithm
+  cat("\norder obtained using SERIATION algorithm:\n\n", input.seq$seq.num[complete], "\n\ncalculating multipoint map using tol = ", tol, ".\n\n")
+  
+  if(phase_cores == 1){
+    ser_map <- map(make_seq(input.seq$twopt,input.seq$seq.num[complete],
+                            twopt=input.seq$twopt), 
+                   tol=tol,
+                   rm_unlinked = rm_unlinked)
+  } else{
+    if(is.null(size) | is.null(overlap)){
+      stop("If you want to parallelize the HMM in multiple cores (phase_cores != 1) 
+             you must also define `size` and `overlap` arguments.")
+    } else {
+      ser_map <- map_overlapping_batches(make_seq(input.seq$twopt,input.seq$seq.num[complete],
+                                                  twopt=input.seq$twopt), 
+                                         tol=tol,
+                                         size = size, overlap = overlap, 
+                                         phase_cores = phase_cores,
+                                         rm_unlinked = rm_unlinked)
     }
-    best <- which(CI==CI[which.min(CI)])
-    if (length(best) == 0) stop ("Cannot find any order")
-    else {
-        if (length(best) != 1) best <- best[sample(length(best),1)]
-        complete<-orders[best,]
-    }
-
-    ## end of SERIATION algorithm
-    cat("\norder obtained using SERIATION algorithm:\n\n", input.seq$seq.num[complete], "\n\ncalculating multipoint map using tol = ", tol, ".\n\n")
-    map(make_seq(get(input.seq$twopt),input.seq$seq.num[complete],twopt=input.seq$twopt), tol=tol)
+  }
+  
+  if(!is.list(ser_map)) {
+    new.seq <- make_seq(input.seq$twopt, ser_map)
+    ser_map <- seriation(input.seq = new.seq, 
+                         LOD=LOD, 
+                         max.rf=max.rf, tol=tol, 
+                         rm_unlinked= rm_unlinked,
+                         size = size, 
+                         overlap = overlap, 
+                         phase_cores = phase_cores)
+  }
+  return(ser_map)
 }
 
 ##Provides an order given the recombination
 ##fraction matrix and the starting marker.
 ser_ord <- function(r,i) {
-    n.mrk <- ncol(r)
-    x <- 1:n.mrk
-    unres1 <- 0
-    unres2 <- 0
-    esq <- numeric(0)
-    dir <- numeric(0)
-    order <- i
-    x[i] <- NaN
-    j <- which(r[i,][x]==r[i,which.min(r[i,][x])])
-    if (length(j) > 1) j <- j[sample(length(j),1)]
-    order <- c(order,j)
-    x[j] <- NaN
-    while (length(order) != n.mrk || unres1 || unres2[1]) {
-        if (unres1) {
-            if ((length(order) + length(esq) + length(dir) + 1)==n.mrk) {
-                duv <- sample(2,1)
-                if (duv==1) order <- c(esq,unres1,order,dir) else order <- c(esq,order,unres1,dir)
-                unres1 <- 0; dir <- numeric(0); esq <- numeric(0)
-            }
+  n.mrk <- ncol(r)
+  x <- 1:n.mrk
+  unres1 <- 0
+  unres2 <- 0
+  esq <- numeric(0)
+  dir <- numeric(0)
+  order <- i
+  x[i] <- NaN
+  j <- which(r[i,][x]==r[i,which.min(r[i,][x])])
+  if (length(j) > 1) j <- j[sample(length(j),1)]
+  order <- c(order,j)
+  x[j] <- NaN
+  while (length(order) != n.mrk || unres1 || unres2[1]) {
+    if (unres1) {
+      if ((length(order) + length(esq) + length(dir) + 1)==n.mrk) {
+        duv <- sample(2,1)
+        if (duv==1) order <- c(esq,unres1,order,dir) else order <- c(esq,order,unres1,dir)
+        unres1 <- 0; dir <- numeric(0); esq <- numeric(0)
+      }
       else {
-          pri <- if (length(esq)==0) order[1] else esq[1]
-          ult <- if (length(dir)==0) order[length(order)] else dir[length(dir)]
-          e <- which(r[i,][x]==r[i,which.min(r[i,][x])])
-          if (length(e) > 1) e <- e[sample(length(e),1)]
-          rand <- 0
-          if (r[pri,e] == r[ult,e]) rand <- sample(2,1)
-          if (r[pri,e] < r[ult,e] || rand==1) {
-              if (r[e,unres1] < r[ult,unres1]) { order <- c(e,esq,unres1,order,dir); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres1 <- 0 }
+        pri <- if (length(esq)==0) order[1] else esq[1]
+        ult <- if (length(dir)==0) order[length(order)] else dir[length(dir)]
+        e <- which(r[i,][x]==r[i,which.min(r[i,][x])])
+        if (length(e) > 1) e <- e[sample(length(e),1)]
+        rand <- 0
+        if (r[pri,e] == r[ult,e]) rand <- sample(2,1)
+        if (r[pri,e] < r[ult,e] || rand==1) {
+          if (r[e,unres1] < r[ult,unres1]) { order <- c(e,esq,unres1,order,dir); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres1 <- 0 }
           else if (r[e,unres1] > r[ult,unres1]) { order <- c(e,esq,order,unres1,dir); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres1 <- 0 }
           else { esq <- c(e,esq); x[e] <- NaN }
-          }
+        }
         else if (r[pri,e] > r[ult,e] || rand==2) {
-            if (r[e,unres1] < r[pri,unres1]) { order <- c(esq,order,unres1,dir,e); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres1 <- 0 }
+          if (r[e,unres1] < r[pri,unres1]) { order <- c(esq,order,unres1,dir,e); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres1 <- 0 }
           else if (r[e,unres1] > r[pri,unres1]) { order <- c(esq,unres1,order,dir,e); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres1 <- 0 }
           else { dir <- c(dir,e); x[e] <- NaN }
         }
       }
-        }
+    }
     else if (unres2[1]) {
-        if ((length(order) + length(esq) + length(dir) + 2)==n.mrk) {
-            if (unres2[1]==1) {
-                duv <- sample(2,1)
-                if (duv==1) order <- c(esq,unres2[2],unres2[3],order,dir) else order <- c(esq,unres2[3],unres2[2],order,dir)
-                unres2 <- 0; dir <- numeric(0); esq <- numeric(0)
-            }
+      if ((length(order) + length(esq) + length(dir) + 2)==n.mrk) {
+        if (unres2[1]==1) {
+          duv <- sample(2,1)
+          if (duv==1) order <- c(esq,unres2[2],unres2[3],order,dir) else order <- c(esq,unres2[3],unres2[2],order,dir)
+          unres2 <- 0; dir <- numeric(0); esq <- numeric(0)
+        }
         else if (unres2[1]==2) {
-            duv <- sample(2,1)
-            if (duv==1) order <- c(esq,order,unres2[2],unres2[3],dir) else order <- c(esq,order,unres2[3],unres2[2],dir)
-            unres2 <- 0; dir <- numeric(0); esq <- numeric(0)
+          duv <- sample(2,1)
+          if (duv==1) order <- c(esq,order,unres2[2],unres2[3],dir) else order <- c(esq,order,unres2[3],unres2[2],dir)
+          unres2 <- 0; dir <- numeric(0); esq <- numeric(0)
         }
-        }
+      }
       else {
-          pri <- if (length(esq)==0) order[1] else esq[1]
-          ult <- if (length(dir)==0) order[length(order)] else dir[length(dir)]
-          e <- which(r[i,][x]==r[i,which.min(r[i,][x])])
-          if (length(e) > 1) e <- e[sample(length(e),1)]
-          rand <- 0
-          if (r[pri,e] == r[ult,e]) rand <- sample(2,1)
-          m1 <- unres2[2]; m2 <- unres2[3]
-          if (r[pri,e] < r[ult,e] || rand==1) {
-              if (unres2[1]==1) {
-                  if (r[e,m1] < r[e,m2]) { order <- c(e,esq,m1,m2,order,dir); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres2 <- 0 }
+        pri <- if (length(esq)==0) order[1] else esq[1]
+        ult <- if (length(dir)==0) order[length(order)] else dir[length(dir)]
+        e <- which(r[i,][x]==r[i,which.min(r[i,][x])])
+        if (length(e) > 1) e <- e[sample(length(e),1)]
+        rand <- 0
+        if (r[pri,e] == r[ult,e]) rand <- sample(2,1)
+        m1 <- unres2[2]; m2 <- unres2[3]
+        if (r[pri,e] < r[ult,e] || rand==1) {
+          if (unres2[1]==1) {
+            if (r[e,m1] < r[e,m2]) { order <- c(e,esq,m1,m2,order,dir); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres2 <- 0 }
             else if (r[e,m1] > r[e,m2]) { order <- c(e,esq,m2,m1,order,dir); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres2 <- 0 }
             else { esq <- c(e,esq); x[e] <- NaN }
-              }
+          }
           else if (unres2[1]==2) {
-              if (r[e,m1] < r[e,m2]) { order <- c(e,esq,order,m1,m2,dir); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres2 <- 0 }
+            if (r[e,m1] < r[e,m2]) { order <- c(e,esq,order,m1,m2,dir); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres2 <- 0 }
             else if (r[e,m1] > r[e,m2]) { order <- c(e,esq,order,m2,m1,dir); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres2 <- 0 }
             else { esq <- c(e,esq); x[e] <- NaN }
           }
-          }
+        }
         else if (r[pri,e] > r[ult,e] || rand==2) {
-            if (unres2[1]==1) {
-                if (r[e,m1] < r[e,m2]) { order <- c(esq,m2,m1,order,dir,e); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres2 <- 0 }
+          if (unres2[1]==1) {
+            if (r[e,m1] < r[e,m2]) { order <- c(esq,m2,m1,order,dir,e); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres2 <- 0 }
             else if (r[e,m1] > r[e,m2]) { order <- c(esq,m1,m2,order,dir,e); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres2 <- 0 }
             else { dir <- c(dir,e); x[e] <- NaN }
-            }
+          }
           else if (unres2[1]==2) {
-              if (r[e,m1] < r[e,m2]) { order <- c(esq,order,m2,m1,dir,e); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres2 <- 0 }
+            if (r[e,m1] < r[e,m2]) { order <- c(esq,order,m2,m1,dir,e); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres2 <- 0 }
             else if (r[e,m1] > r[e,m2]) { order <- c(esq,order,m1,m2,dir,e); x[e] <- NaN; esq <- numeric(0); dir <- numeric(0); unres2 <- 0 }
             else { dir <- c(dir,e); x[e] <- NaN }
           }
@@ -215,107 +254,107 @@ ser_ord <- function(r,i) {
       }
     }
     else {
-        if (length(which(r[i,][x]==r[i,which.min(r[i,][x])]))==1) {
-            j <- which.min(r[i,][x])
-            if (r[order[1],j] < r[order[length(order)],j]) { order <- c(j,order); x[j] <- NaN }
+      if (length(which(r[i,][x]==r[i,which.min(r[i,][x])]))==1) {
+        j <- which.min(r[i,][x])
+        if (r[order[1],j] < r[order[length(order)],j]) { order <- c(j,order); x[j] <- NaN }
         else if (r[order[1],j] > r[order[length(order)],j]) { order <- c(order,j); x[j] <- NaN }
         else {
-            light <- 1
-            k <- 2
-            l <- length(order)-1
-            while (k < l && light) {
-                if (r[order[k],j] < r[order[l],j]) { order <- c(j,order); x[j] <- NaN; light <- 0 }
+          light <- 1
+          k <- 2
+          l <- length(order)-1
+          while (k < l && light) {
+            if (r[order[k],j] < r[order[l],j]) { order <- c(j,order); x[j] <- NaN; light <- 0 }
             else if (r[order[k],j] > r[order[l],j]) { order <- c(order,j); x[j] <- NaN; light <- 0 }
             else { k <- k+1; l <- l-1 }
-            }
-            if (light) { unres1 <- j; x[j] <- NaN }
+          }
+          if (light) { unres1 <- j; x[j] <- NaN }
         }
-        }
+      }
       else if (length(which(r[i,][x]==r[i,which.min(r[i,][x])]))==2) {
-          j <- which(r[i,][x]==r[i,which.min(r[i,][x])])[1]
-          k <- which(r[i,][x]==r[i,which.min(r[i,][x])])[2]
-          if (r[order[1],j] < r[order[length(order)],j] && r[order[1],k] > r[order[length(order)],k]) { order <- c(j,order,k); x[j] <- NaN; x[k] <- NaN }
+        j <- which(r[i,][x]==r[i,which.min(r[i,][x])])[1]
+        k <- which(r[i,][x]==r[i,which.min(r[i,][x])])[2]
+        if (r[order[1],j] < r[order[length(order)],j] && r[order[1],k] > r[order[length(order)],k]) { order <- c(j,order,k); x[j] <- NaN; x[k] <- NaN }
         else if (r[order[1],j] > r[order[length(order)],j] && r[order[1],k] < r[order[length(order)],k]) { order <- c(k,order,j); x[j] <- NaN; x[k] <- NaN }
         else if (r[order[1],j] < r[order[length(order)],j] && r[order[1],k] < r[order[length(order)],k]) {
-            if (r[order[1],j] < r[order[1],k]) { order <- c(k,j,order); x[j] <- NaN; x[k] <- NaN }
+          if (r[order[1],j] < r[order[1],k]) { order <- c(k,j,order); x[j] <- NaN; x[k] <- NaN }
           else if (r[order[1],j] > r[order[1],k]) { order <- c(j,k,order); x[j] <- NaN; x[k] <- NaN }
           else {
-              l <- 2
-              light <- 1
-              while (l <= length(order) && light) {
-                  if (r[order[l],j] < r[order[l],k]) { order <- c(k,j,order); x[j] <- NaN; x[k] <- NaN; light <- 0 }
+            l <- 2
+            light <- 1
+            while (l <= length(order) && light) {
+              if (r[order[l],j] < r[order[l],k]) { order <- c(k,j,order); x[j] <- NaN; x[k] <- NaN; light <- 0 }
               else if (r[order[l],j] > r[order[l],k]) { order <- c(j,k,order); x[j] <- NaN; x[k] <- NaN; light <- 0 }
               else l <- l+1
-              }
-              if (light) { unres2 <- c(1,j,k); x[j] <- NaN; x[k] <- NaN }
+            }
+            if (light) { unres2 <- c(1,j,k); x[j] <- NaN; x[k] <- NaN }
           }
         }
         else if (r[order[1],j] > r[order[length(order)],j] && r[order[1],k] > r[order[length(order)],k]) {
-            if (r[order[length(order)],j] < r[order[length(order)],k]) { order <- c(order,j,k); x[j] <- NaN; x[k] <- NaN }
+          if (r[order[length(order)],j] < r[order[length(order)],k]) { order <- c(order,j,k); x[j] <- NaN; x[k] <- NaN }
           else if (r[order[length(order)],j] > r[order[length(order)],k]) { order <- c(order,k,j); x[j] <- NaN; x[k] <- NaN }
           else {
-              l <- length(order)-1
-              light <- 1
-              while (l >= 1 && light) {
-                  if (r[order[l],j] < r[order[l],k]) { order <- c(order,j,k); x[j] <- NaN; x[k] <- NaN; light <- 0 }
+            l <- length(order)-1
+            light <- 1
+            while (l >= 1 && light) {
+              if (r[order[l],j] < r[order[l],k]) { order <- c(order,j,k); x[j] <- NaN; x[k] <- NaN; light <- 0 }
               else if (r[order[l],j] > r[order[l],k]) { order <- c(order,k,j); x[j] <- NaN; x[k] <- NaN; light <- 0 }
               else l <- l-1
-              }
-              if (light) { unres2 <- c(2,j,k); x[j] <- NaN; x[k] <- NaN }
+            }
+            if (light) { unres2 <- c(2,j,k); x[j] <- NaN; x[k] <- NaN }
           }
         }
         else stop("There are too many ties in the ordering process - please, consider using another ordering algorithm.")
       }
       else {
-          temp <- sample(length(which(r[i,][x]==r[i,which.min(r[i,][x])])),2)
-          m1 <- temp[1]; m2 <- temp[2]
-          j <- which(r[i,][x]==r[i,which.min(r[i,][x])])[m1]
-          k <- which(r[i,][x]==r[i,which.min(r[i,][x])])[m2]
-          if (r[order[1],j] < r[order[length(order)],j] && r[order[1],k] > r[order[length(order)],k]) { order <- c(j,order,k); x[j] <- NaN; x[k] <- NaN }
+        temp <- sample(length(which(r[i,][x]==r[i,which.min(r[i,][x])])),2)
+        m1 <- temp[1]; m2 <- temp[2]
+        j <- which(r[i,][x]==r[i,which.min(r[i,][x])])[m1]
+        k <- which(r[i,][x]==r[i,which.min(r[i,][x])])[m2]
+        if (r[order[1],j] < r[order[length(order)],j] && r[order[1],k] > r[order[length(order)],k]) { order <- c(j,order,k); x[j] <- NaN; x[k] <- NaN }
         else if (r[order[1],j] > r[order[length(order)],j] && r[order[1],k] < r[order[length(order)],k]) { order <- c(k,order,j); x[j] <- NaN; x[k] <- NaN }
         else if (r[order[1],j] < r[order[length(order)],j] && r[order[1],k] < r[order[length(order)],k]) {
-            if (r[order[1],j] < r[order[1],k]) { order <- c(k,j,order); x[j] <- NaN; x[k] <- NaN }
+          if (r[order[1],j] < r[order[1],k]) { order <- c(k,j,order); x[j] <- NaN; x[k] <- NaN }
           else if (r[order[1],j] > r[order[1],k]) { order <- c(j,k,order); x[j] <- NaN; x[k] <- NaN }
           else {
-              l <- 2
-              light <- 1
-              while (l <= length(order) && light) {
-                  if (r[order[l],j] < r[order[l],k]) { order <- c(k,j,order); x[j] <- NaN; x[k] <- NaN; light <- 0 }
+            l <- 2
+            light <- 1
+            while (l <= length(order) && light) {
+              if (r[order[l],j] < r[order[l],k]) { order <- c(k,j,order); x[j] <- NaN; x[k] <- NaN; light <- 0 }
               else if (r[order[l],j] > r[order[l],k]) { order <- c(j,k,order); x[j] <- NaN; x[k] <- NaN; light <- 0 }
               else l <- l+1
-              }
-              if (light) { unres2 <- c(1,j,k); x[j] <- NaN; x[k] <- NaN }
+            }
+            if (light) { unres2 <- c(1,j,k); x[j] <- NaN; x[k] <- NaN }
           }
         }
         else if (r[order[1],j] > r[order[length(order)],j] && r[order[1],k] > r[order[length(order)],k]) {
-            if (r[order[length(order)],j] < r[order[length(order)],k]) { order <- c(order,j,k); x[j] <- NaN; x[k] <- NaN }
+          if (r[order[length(order)],j] < r[order[length(order)],k]) { order <- c(order,j,k); x[j] <- NaN; x[k] <- NaN }
           else if (r[order[length(order)],j] > r[order[length(order)],k]) { order <- c(order,k,j); x[j] <- NaN; x[k] <- NaN }
           else {
-              l <- length(order)-1
-              light <- 1
-              while (l >= 1 && light) {
-                  if (r[order[l],j] < r[order[l],k]) { order <- c(order,j,k); x[j] <- NaN; x[k] <- NaN; light <- 0 }
+            l <- length(order)-1
+            light <- 1
+            while (l >= 1 && light) {
+              if (r[order[l],j] < r[order[l],k]) { order <- c(order,j,k); x[j] <- NaN; x[k] <- NaN; light <- 0 }
               else if (r[order[l],j] > r[order[l],k]) { order <- c(order,k,j); x[j] <- NaN; x[k] <- NaN; light <- 0 }
               else l <- l-1
-              }
-              if (light) { unres2 <- c(2,j,k); x[j] <- NaN; x[k] <- NaN }
+            }
+            if (light) { unres2 <- c(2,j,k); x[j] <- NaN; x[k] <- NaN }
           }
         }
         else stop("There are too many ties in the ordination process - please, consider using another ordering algorithm.")
       }
     }
-    }
-    return(avoid_reverse(order))
+  }
+  return(avoid_reverse(order))
 }
 
 ##Continuity Index
 Cindex <- function (order,r) {
-    n.mrk <- dim(r)[1]
-    CI <- 0
-    for (i in 1:(n.mrk-1))
-        for (j in (i+1):n.mrk)
-            CI <- CI + r[order[i],order[j]]/((j-i)^2)
-    return (CI)
+  n.mrk <- dim(r)[1]
+  CI <- 0
+  for (i in 1:(n.mrk-1))
+    for (j in (i+1):n.mrk)
+      CI <- CI + r[order[i],order[j]]/((j-i)^2)
+  return (CI)
 }
 
 ## end of file

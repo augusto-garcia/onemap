@@ -9,5 +9,7 @@ onemap.Rproj
 *.cro
 *.map
 *.bak
+*.Rproj
 doc
 Meta
+data/parallel_results_out.RData

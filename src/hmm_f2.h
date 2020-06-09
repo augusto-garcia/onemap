@@ -9,6 +9,7 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 using namespace std;
+double emit_inb(int obs_gen, int true_gen, double error);
 double stepf_f2(int gen1, int gen2, double rf);
 double nrecf_f2(int gen1, int gen2);
-RcppExport SEXP est_hmm_f2(SEXP geno_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R);
+RcppExport SEXP est_hmm_f2(SEXP geno_R, SEXP error_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R);

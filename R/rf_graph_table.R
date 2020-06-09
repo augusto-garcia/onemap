@@ -58,6 +58,7 @@ globalVariables(c("LOD.CR", "LOD.RC", "LOD.RR"))
 ##' marker numbers and "none" to display axis free of labels.
 ##' @param lab.xy character vector with length 2, first component is the label of x axis and second of the y axis.
 ##' @param n.colors integer. Number of colors in the pallete.
+##' @param display logical. If inter \code{TRUE} and display \code{TRUE} iteractive graphic is plotted in browser automatically when run the function
 ##' 
 ##' @author Rodrigo Amadeu, \email{rramadeu@@gmail.com}
 ##' @keywords utilities
@@ -109,22 +110,23 @@ rf_graph_table <- function(input.seq,
                            html.file = NULL,
                            mrk.axis="numbers",
                            lab.xy=NULL,
-                           n.colors=4){
+                           n.colors=4,
+                           display=T){
   
   ## checking for correct objects
-  if(!is(input.seq,"sequence"))
+  if(!any(is(input.seq,"sequence")))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   if(!(mrk.axis=="names" | mrk.axis=="numbers" | mrk.axis=="none"))
     stop("This mrk.axis argument is not defined, choose 'names', 'numbers' or 'none'")
   
   ## extracting data
-  if(is(get(input.seq$data.name), "outcross") | is(get(input.seq$data.name), "f2"))
+  if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2"))
   {
     if(input.seq$seq.phases[1] == -1 || input.seq$seq.rf[1] == -1 || is.null(input.seq$seq.like))
       stop("You must estimate parameters before running 'rf_graph_table' ")
     ## making a list with necessary information
     n.mrk <- length(input.seq$seq.num)
-    LOD <- lapply(get(input.seq$twopt)$analysis,
+    LOD <- lapply(input.seq$twopt$analysis,
                   function(x, w){
                     m<-matrix(0, length(w), length(w))
                     for(i in 1:(length(w)-1)){
@@ -137,18 +139,16 @@ rf_graph_table <- function(input.seq,
                   }, input.seq$seq.num
     )
     mat<-t(get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
-  }else
-  {
+  } else {
     if(input.seq$seq.rf[1] == -1 || is.null(input.seq$seq.like))
       stop("You must estimate parameters before running 'rf_graph_table' ")
     ## making a list with necessary information
-    n.mrk <- length(input.seq$seq.num)
-    
+    n.mrk <- length(input.seq$seq.num) 
     LOD<-matrix(0, length(input.seq$seq.num), length(input.seq$seq.num))
     for(i in 1:(length(input.seq$seq.num)-1)){
       for(j in (i+1):length(input.seq$seq.num)){
         z<-sort(c(input.seq$seq.num[i],input.seq$seq.num[j]))
-        LOD[j,i]<-LOD[i,j]<-get(input.seq$twopt)$analysis[z[1], z[2]]
+        LOD[j,i]<-LOD[i,j]<-input.seq$twopt$analysis[z[1], z[2]]
       }
     }
     mat<-t(get_mat_rf_in(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
@@ -166,38 +166,39 @@ rf_graph_table <- function(input.seq,
     mat[i+1,i] <- input.seq$seq.rf[i]
   }
   
-  colnames(mat) <- rownames(mat)<- colnames(get(input.seq$data.name, pos=1)$geno)[input.seq$seq.num]
+  colnames(mat) <- rownames(mat)<- colnames(input.seq$data.name$geno)[input.seq$seq.num]
   
   if (mrk.axis == "numbers")
     colnames(mat) <- rownames(mat)<- input.seq$seq.num
-  
+
   # Be compatible with older versions
-  if(all(is.na(get(input.seq$data.name, pos=1)$segr.type.num))){
-    if(is(get(input.seq$data.name), "backcross")){
-      segr.type.num <- rep(8, length(get(input.seq$data.name)$segr.type))
+  if(all(is.na(input.seq$data.name$segr.type.num))){
+    if(is(input.seq$data.name, "backcross")){
+      segr.type.num <- rep(8, length(input.seq$data.name$segr.type))
     } else {
-      segr.type.num <- rep(9, length(get(input.seq$data.name)$segr.type))
+      segr.type.num <- rep(9, length(input.seq$data.name$segr.type))
     }
   } else {
-    segr.type.num <- get(input.seq$data.name, pos=1)$segr.type.num
+    segr.type.num <- input.seq$data.name$segr.type.num
   }
+    
   ##Write NAs in two-point recombination fractions between markers of type D1 and D2
-  types <- segr.type.num[input.seq$seq.num]
-  which.D1D2<-outer((substr(types, 1,2)== 6),(substr(types, 1,2)==7))
+  types <- input.seq$data.name$segr.type[input.seq$seq.num]
+  which.D1D2<-outer((substr(types, 1,2)=="D1"),(substr(types, 1,2)=="D2"))
   which.D1D2<-which.D1D2+t(which.D1D2)
   which.D1D2[which.D1D2==1]<-NA
   which.D1D2[which.D1D2==0]<-1
   diag.si<-rbind(1:(ncol(which.D1D2)-1),2:ncol(which.D1D2))
   for(i in 1:(ncol(which.D1D2)-1)) which.D1D2[diag.si[1,i],diag.si[2,i]] <- which.D1D2[diag.si[2,i],diag.si[1,i]] <- 1
   mat<-mat*which.D1D2
-  missing<-100*apply(get(input.seq$data.name, pos=1)$geno[,input.seq$seq.num],2, function(x) sum(x==0))/get(input.seq$data.name, pos=1)$n.ind
+  missing<-100*apply(input.seq$data.name$geno[,input.seq$seq.num],2, function(x) sum(x==0))/input.seq$data.name$n.ind
   
   ## Building the data.frame to plot
   mat.LOD <- mat.rf <- mat
   mat.LOD[lower.tri(mat.LOD)] <- t(mat.LOD)[lower.tri(mat.LOD)]
   mat.rf[upper.tri(mat.rf)] <- t(mat.rf)[upper.tri(mat.LOD)]
   
-  if(is(get(input.seq$data.name), "outcross") | is(get(input.seq$data.name), "f2")){
+  if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2")){
     colnames(LOD$CC) <- rownames(LOD$CC) <- colnames(mat.rf)
     colnames(LOD$CR) <- rownames(LOD$CR) <- colnames(mat.rf)
     colnames(LOD$RC) <- rownames(LOD$RC) <- colnames(mat.rf)
@@ -248,7 +249,7 @@ rf_graph_table <- function(input.seq,
   ## ggplot() just depends on the 'x', 'y', and 'fill' aes arguments
   
   ## If outcross:
-  if(is(get(input.seq$data.name), "outcross") | is(get(input.seq$data.name), "f2")){
+  if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2")){
     if(graph.LOD!=TRUE){
       p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, x.missing = x.missing, y.missing = y.missing, fill = rf, LOD.CC=LOD.CC, LOD.CR=LOD.CR, LOD.RC=LOD.RC, LOD.RR=LOD.RR), data=df.graph) +
         geom_tile() +
@@ -303,8 +304,13 @@ rf_graph_table <- function(input.seq,
       stop("For iteractive mode you must define a name for the outputted html file in 'html.file' argument.")
     }else{
       p <- plotly::ggplotly(p)
-      htmlwidgets::saveWidget(p, file = html.file)
-      utils::browseURL(html.file)
+
+      if(display){
+        htmlwidgets::saveWidget(p, file = html.file)
+        utils::browseURL(html.file)
+      } else {
+        p
+      }
     }
   }else{
     p #it is a ggplot which can be expanded (+).

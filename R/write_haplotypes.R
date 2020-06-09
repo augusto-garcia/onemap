@@ -29,7 +29,6 @@
 #' @export
 parents_haplotypes <- function(..., group_names=NULL){
   input <- list(...)
-  input_temp <- input
   if(length(input) == 0) stop("argument '...' missing, with no default")
   # Accept list of sequences or list of list of sequences
   if(is(input[[1]], "sequence")) input.map <- input else input.map <- unlist(input, recursive = FALSE)
@@ -40,10 +39,11 @@ parents_haplotypes <- function(..., group_names=NULL){
     n <- length(sapply(input, function(x) is(x, "sequence")))
   } else n <- 1
   
+  input_temp <- input
   out_dat <- data.frame()
   for(z in 1:n){
     if(all(sapply(input_temp, function(x) is(x, "sequence")))) input <- input_temp[[z]]
-    marnames <- colnames(get(input$data.name, pos=1)$geno)[input$seq.num]
+    marnames <- colnames(input$data.name$geno)[input$seq.num]
     if(length(input$seq.rf) == 1 && input$seq.rf == -1) {
       # no information available for the order
       cat("\nParameters not estimated.\n\n")
@@ -63,14 +63,14 @@ parents_haplotypes <- function(..., group_names=NULL){
       
       ## display results
       marnumbers <- input$seq.num
-      distances <- c(0,cumsum(get(get(".map.fun", envir=.onemapEnv))(input$seq.rf)))
+      distances <- c(0,cumsum(kosambi(input$seq.rf)))
       ## whith diplotypes for class 'outcross'
-      if(is(get(input$data.name, pos=1), c("outcross", "f2"))){
+      if(is(input$data.name, c("outcross", "f2"))){
         ## create diplotypes from segregation types and linkage phases
         link.phases <- apply(link.phases,1,function(x) paste(as.character(x),collapse="."))
         parents <- matrix("",length(input$seq.num),4)
         for (i in 1:length(input$seq.num))
-          parents[i,] <- return_geno(get(input$data.name, pos=1)$segr.type[input$seq.num[i]],link.phases[i])
+          parents[i,] <- onemap:::return_geno(input$data.name$segr.type[input$seq.num[i]],link.phases[i])
         out_dat_temp <- data.frame(group= group_names[z], mk.number = marnumbers, mk.names = marnames, dist = as.numeric(distances), 
                                    P1_1 = parents[,1],
                                    P1_2 = parents[,2],
@@ -79,7 +79,7 @@ parents_haplotypes <- function(..., group_names=NULL){
         out_dat <- rbind(out_dat, out_dat_temp)
       }
       ## whithout diplotypes for other classes
-      else if(is(get(input$data.name, pos=1), c("backcross", "riself", "risib"))){
+      else if(is(input$data.name, c("backcross", "riself", "risib"))){
         cat("There is only a possible phase for this cross type\n")
       }
       else warning("invalid cross type")
@@ -129,7 +129,7 @@ progeny_haplotypes <- function(...,
                                                          as.data.frame(t(input.map[[x]]$probs))))
   probs <- lapply(probs, function(x) split.data.frame(x, x$ind)[ind])
   
-  if(is(get(input.map[[1]]$data.name), "outcross") | is(get(input.map[[1]]$data.name), "f2")){
+  if(is(input.map[[1]]$data.name, "outcross") | is(input.map[[1]]$data.name, "f2")){
     phase <- list('1' = c(1,2,3,4),
                   '2' = c(2,1,4,3),
                   '3' = c(3,4,1,2),
@@ -165,7 +165,7 @@ progeny_haplotypes <- function(...,
       select(ind, grp, pos, pos2, P1_1, P1_2, P2_1, P2_2) %>% 
       gather(f1, prob, P1_1, P1_2, P2_1, P2_2) 
     
-    if(is(get(input.map[[1]]$data.name), "outcross")){
+    if(is(input.map[[1]]$data.name, "outcross")){
       cross <- "outcross"
       probs <- probs %>%
         mutate(prog = factor(if_else(f1 %in% c("P1_1","P1_2"), "H1", "H2"), levels = c("H2","H1")),
@@ -192,7 +192,7 @@ progeny_haplotypes <- function(...,
                 pos2 = c(0,pos[-1]-diff(pos)/2),
                 pos = c(pos[-nrow(.)], NA))) 
     
-    if (is(get(input.map[[1]]$data.name), c("backcross"))){
+    if (is(input.map[[1]]$data.name, c("backcross"))){
       cross <- "backcross"
       probs <- probs %>% 
         mutate(H1_1 = V1 + V2, # homozigote parent
@@ -200,7 +200,7 @@ progeny_haplotypes <- function(...,
                H2_1 = V2, # P2 is heterozygote
                H2_2 = V1) 
       
-    } else if (is(get(input.map[[1]]$data.name), c("riself", "risib"))){
+    } else if (is(input.map[[1]]$data.name, c("riself", "risib"))){
       cross <- "rils"
       probs <- probs %>%
         mutate(H1_1 = V1,

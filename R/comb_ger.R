@@ -46,7 +46,7 @@ function(w, seq.num, seq.phases) {
     link.phases <- apply(link.phases,1,function(x) paste(as.character(x),collapse="."))
     parents <- matrix("",length(seq.num),4)
     for (i in 1:length(seq.num))
-      parents[i,] <- return_geno(get(w$data.name, pos=1)$segr.type[seq.num[i]],link.phases[i])
+      parents[i,] <- return_geno(w$data.name$segr.type[seq.num[i]],link.phases[i])
       return(parents)
 }
 

@@ -92,3 +92,4 @@
 * Adapt try_seq to rils and backcross
 * onemap_read_vcfR also accept phased VCF
 * Submitted to CRAN
+

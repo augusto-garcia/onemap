@@ -6,10 +6,10 @@
 ## Contains: map                                                       ##
 ##                                                                     ##
 ## Written by Gabriel Rodrigues Alves Margarido and Marcelo Mollinari  ##
+## with minor changes by Cristiane Taniguti                            ##
 ## copyright (c) 2009, Gabriel R A Margarido                           ##
 ##                                                                     ##
 ## First version: 02/27/2009                                           ##
-## Last update: 01/14/2016                                             ##
 ## License: GNU General Public License version 2 (June, 1991) or later ##
 ##                                                                     ##
 #######################################################################
@@ -35,9 +35,9 @@
 ##' @param tol tolerance for the C routine, i.e., the value used to evaluate
 ##' convergence.
 ##' @param verbose If \code{TRUE}, print tracing information.
-##' @param mds.seq When some pair of markers do not follow the linkage criteria, 
+##' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
 ##' if \code{TRUE} one of the markers is removed and returns a vector with remaining 
-##' marker numbers (useful for mds_onemap function).
+##' marker numbers (useful for mds_onemap and map_avoid_unlinked functions).
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}
@@ -51,7 +51,8 @@
 ##' data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
 ##' 2-point analyses.}
 ##' @author Adapted from Karl Broman (package 'qtl') by Gabriel R A Margarido,
-##' \email{gramarga@@usp.br} and Marcelo Mollinari, \email{mmollina@@gmail.com}
+##' \email{gramarga@@usp.br} and Marcelo Mollinari, \email{mmollina@@gmail.com},
+##' with minor changes by Cristiane Taniguti and Bastian Schiffthaler 
 ##' @seealso \code{\link[onemap]{make_seq}}
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
@@ -82,9 +83,12 @@
 ##'   map(markers)
 ##'
 ##'   markers <- make_seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
-##'   map(markers)}
+##'   map(markers)
+##'   }
+##'@import parallel
+##'
 ##'@export
-map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
+map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cores = 1)
 {
   ## checking for correct object
   if(!(is(input.seq, "sequence")))
@@ -97,15 +101,17 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
   ##Checking for appropriate number of markers
   if(length(seq.num) < 2) stop("The sequence must have at least 2 markers")
   ##For F2, BC and rils
-  if(is(get(input.seq$data.name, pos=1), c("backcross", "riself", "risib")))
+  if(is(input.seq$data.name, c("backcross", "riself", "risib")))
   {
-    final.map<-est_map_hmm_bc(geno=t(get(input.seq$data.name, pos=1)$geno[,seq.num]),
+    final.map<-est_map_hmm_bc(geno=t(input.seq$data.name$geno[,seq.num]),
+                              error=input.seq$data.name$error[seq.num + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(seq.num)),],
                               rf.vec=get_vec_rf_in(input.seq),
                               verbose=verbose,
                               tol=tol)
-    if(is(get(input.seq$data.name, pos=1), c("riself", "risib")))
+    
+    if(is(input.seq$data.name, c("riself", "risib")))
       final.map$rf<-adjust_rf_ril(final.map$rf,
-                                  type=class(get(input.seq$data.name, pos=1))[2],
+                                  type=class(input.seq$data.name)[2],
                                   expand = FALSE)
     return(structure(list(seq.num=seq.num,
                           seq.phases=seq.phases,
@@ -126,28 +132,55 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
     ## linkage map is started with the first two markers in the sequence
     ## gather two-point information for this pair
     phase.init <- vector("list",1)
-    list.init <- phases(make_seq(get(input.seq$twopt,pos = 1),seq.num[1:2],twopt=input.seq$twopt))
+    list.init <- phases(make_seq(input.seq$twopt,seq.num[1:2],twopt=input.seq$twopt))
     phase.init[[1]] <- list.init$phase.init[[1]]
     Ph.Init <- comb_ger(phase.init)
-    for(j in 1:nrow(Ph.Init)) {
-      ## call to 'map' function with predefined linkage phase
-      temp <- map(make_seq(get(input.seq$twopt),seq.num[1:2],phase=Ph.Init[j],twopt=input.seq$twopt))
-      results[[1]][j] <- temp$seq.phases
-      results[[2]][j] <- temp$seq.like
-    }
-    if (all(is.na(results[[2]]))) {
-      if (mds.seq) {
+    phases <- mclapply(1:nrow(Ph.Init),
+                       mc.cores = min(nrow(Ph.Init),phase_cores),
+                       mc.allow.recursive = TRUE,
+                       function(j) {
+                         ## call to 'map' function with predefined linkage phase
+                         map(make_seq(input.seq$twopt,
+                                      seq.num[1:2],
+                                      phase=Ph.Init[j],
+                                      twopt=input.seq$twopt), tol=tol)
+                       })
+    if(all(is.null(unlist(phases)))){
+      if (rm_unlinked) {
         warning(cat("The linkage between markers", 
-                    seq.num[mrk], "and", seq.num[mrk + 1], 
+                    seq.num[1], "and", seq.num[2], 
                     "did not reached the OneMap default criteria. They are probably segregating independently. Marker", 
-                    seq.num[mrk + 1], "will be removed.\n"))
-        return(seq.num[-(mrk + 1)])
+                    seq.num[2], "will be removed. Use function map_avoid_unlinked to remove these markers automatically.\n"))
+        return(seq.num[-2])
         browser()
       }
       else {
         stop(paste("The linkage between markers", 
-                   seq.num[mrk], "and", seq.num[mrk + 1], 
-                   "did not reached the OneMap default criteria. They are probably segregating independently.\n"))
+                   seq.num[1], "and", seq.num[2], 
+                   "did not reached the OneMap default criteria. They are probably segregating independently.
+                   Use function map_avoid_unlinked to remove these markers automatically.\n"))
+      }
+    }
+    for(j in 1:nrow(Ph.Init)) {
+      ## call to 'map' function with predefined linkage phase
+      #temp <- map(make_seq(input.seq$twopt,seq.num[1:2],phase=Ph.Init[j],twopt=input.seq$twopt))
+      results[[1]][j] <- phases[[j]]$seq.phases
+      results[[2]][j] <- phases[[j]]$seq.like
+    }
+    if (all(is.na(results[[2]]))) {
+      if (rm_unlinked) {
+        warning(cat("The linkage between markers", 
+                    seq.num[1], "and", seq.num[2], 
+                    "did not reached the OneMap default criteria. They are probably segregating independently. Marker", 
+                    seq.num[2], "will be removed. Use function map_avoid_unlinked to remove these markers automatically.\n"))
+        return(seq.num[-(2)])
+        browser()
+      }
+      else {
+        stop(paste("The linkage between markers", 
+                   seq.num[1], "and", seq.num[2], 
+                   "did not reached the OneMap default criteria. They are probably segregating independently. 
+                   Use function map_avoid_unlinked to remove these markers automatically.\n"))
       }
     }
     seq.phase[1] <- results[[1]][which.max(results[[2]])] # best linkage phase is chosen
@@ -158,39 +191,72 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, mds.seq=FALSE)
         results <- list(rep(NA,4),rep(-Inf,4))
         ## gather two-point information
         phase.init <- vector("list",mrk)
-        list.init <- phases(make_seq(get(input.seq$twopt),c(seq.num[mrk],seq.num[mrk+1]),twopt=input.seq$twopt))
+        list.init <- phases(make_seq(input.seq$twopt,c(seq.num[mrk],seq.num[mrk+1]),twopt=input.seq$twopt))
         phase.init[[mrk]] <- list.init$phase.init[[1]]
         for(j in 1:(mrk-1)) phase.init[[j]] <- seq.phase[j]
         Ph.Init <- comb_ger(phase.init)
-        for(j in 1:nrow(Ph.Init)) {
-          ## call to 'map' function with predefined linkage phases
-          temp <- map(make_seq(get(input.seq$twopt),seq.num[1:(mrk+1)],phase=Ph.Init[j,],twopt=input.seq$twopt))
-          results[[1]][j] <- temp$seq.phases[mrk]
-          results[[2]][j] <- temp$seq.like
-        }
-        if(all(is.na(results[[2]]))) {
-          if(mds.seq){
-            warning(cat("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], "did not reached the OneMap default criteria. They are probably segregating independently. Marker", seq.num[mrk+1], "will be removed.\n"))
+        phases <- mclapply(1:nrow(Ph.Init),
+                           mc.cores = min(nrow(Ph.Init), phase_cores),
+                           mc.allow.recursive = TRUE,
+                           function(j) {
+                             ## call to 'map' function with predefined linkage phases
+                             map(make_seq(input.seq$twopt,
+                                          seq.num[1:(mrk+1)],
+                                          phase=Ph.Init[j,],
+                                          twopt=input.seq$twopt))
+                           })
+        if(all(is.null(unlist(phases)))){
+          if(rm_unlinked){
+            warning(cat("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], 
+                        "did not reached the OneMap default criteria. They are probably segregating independently. Marker", seq.num[mrk+1], "will be removed. 
+                        Use function map_avoid_unlinked to remove these markers automatically.\n"))
             return(seq.num[-(mrk+1)])
             browser()
           } else{
-            stop(paste("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], "did not reached the OneMap default criteria. They are probably segregating independently.\n"))
+            stop(paste("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], 
+                       "did not reached the OneMap default criteria. They are probably segregating independently. 
+                       Use function map_avoid_unlinked to remove these markers automatically.\n"))
+          }
+        }
+        for(j in 1:nrow(Ph.Init)) {
+          ## call to 'map' function with predefined linkage phases
+          #temp <- map(make_seq(input.seq$twopt,seq.num[1:(mrk+1)],phase=Ph.Init[j,],twopt=input.seq$twopt))
+          results[[1]][j] <- phases[[j]]$seq.phases[mrk]
+          results[[2]][j] <- phases[[j]]$seq.like
+        }
+        if(all(is.na(results[[2]]))) {
+          if(rm_unlinked){
+            warning(cat("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], 
+                        "did not reached the OneMap default criteria. They are probably segregating independently. Marker", seq.num[mrk+1], "will be removed. 
+                        Use function map_avoid_unlinked to remove these markers automatically.\n"))
+            return(seq.num[-(mrk+1)])
+            browser()
+          } else{
+            stop(paste("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], 
+                       "did not reached the OneMap default criteria. They are probably segregating independently.
+                       Use function map_avoid_unlinked to remove these markers automatically.\n"))
           }
         }
         seq.phase[mrk] <- results[[1]][which.max(results[[2]])] # best combination of phases is chosen
       }
     }
     ## one last call to map function, with the final map
-    map(make_seq(get(input.seq$twopt),seq.num,phase=seq.phase,twopt=input.seq$twopt))
+    map(make_seq(input.seq$twopt,seq.num,phase=seq.phase,twopt=input.seq$twopt))
   }
   else {
     ## if the linkage phases are provided but the recombination fractions have
     ## not yet been estimated or need to be reestimated, this is done here
     ## gather two-point information
     rf.init <- get_vec_rf_out(input.seq, acum=FALSE)
+    if(any(is.na(rf.init))) {
+      stop("Linkage criterias could not be reached")
+    }
     ## estimate parameters
-    final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,seq.num]),
-                                 type=get(input.seq$data.name, pos=1)$segr.type.num[seq.num],
+    final.map <- est_map_hmm_out(geno=t(input.seq$data.name$geno[,seq.num]),
+                                 error = input.seq$data.name$error[seq.num + 
+                                                                     rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, 
+                                                                         each=length(seq.num)),],
+                                 type=input.seq$data.name$segr.type.num[seq.num],
                                  phase=seq.phases,
                                  rf.vec=rf.init,
                                  verbose=FALSE,

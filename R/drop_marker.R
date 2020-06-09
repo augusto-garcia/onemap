@@ -76,5 +76,5 @@ drop_marker<-function(input.seq, mrks)
       warning(msg, domain=NA)
       mrks<-mrks[-count]
     }
-    return(make_seq(get(input.seq$twopt),seq.num,twopt=input.seq$twopt))
+    return(make_seq(input.seq$twopt,seq.num,twopt=input.seq$twopt))
   }
