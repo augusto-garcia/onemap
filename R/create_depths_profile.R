@@ -20,6 +20,7 @@
 #' @param vcf.file an object of class \code{vcfR}.
 #' @param parent1 a character specifying the first parent ID
 #' @param parent2 a character specifying the second parent ID
+#' @param f1 if your cross type is f2, you must define the F1 individual
 #' @param vcf.par the vcf parameter that store the allele depth information. 
 #' @param recovering logical. If TRUE, all markers in vcf are considere, if FALSE only those in onemap.obj
 #' @param mks a vector of characters specifying the markers names to be considered or NULL to consider all markers
@@ -52,6 +53,10 @@ create_depths_profile <- function(onemap.obj = NULL,
                                   y_lim = NULL,
                                   x_lim = NULL){
   
+  # Checks
+  if(is(onemap.obj, c("f2 intercross", "f2 backcross")) & is.null(f1)) 
+    stop("You must define f1 argument for this cross type \n")
+  
   # Exclude multiallelic markers
   if(is(onemap.obj, "outcross")){
     idx.mks <- colnames(onemap.obj$geno)[which(!(onemap.obj$segr.type %in% c("B3.7", "D1.10", "D2.15")))]
@@ -60,7 +65,7 @@ create_depths_profile <- function(onemap.obj = NULL,
       onemaps <- split_onemap(onemap.obj, mks= idx.mks)
       onemap.obj <- onemaps[[1]]
     }
-  } else if(any(names(class(onemap.obj)) == "f2 intercross")){
+  } else if(is(onemap.obj,"f2")){
     idx.mks <- colnames(onemap.obj$geno)[which(!(onemap.obj$segr.type %in% c("A.H.B")))]
     if(length(idx.mks) > 0){
       warning("Only codominant markers are supported. The dominant markers present in onemap object will not be plotted.\n") 
@@ -74,7 +79,7 @@ create_depths_profile <- function(onemap.obj = NULL,
   if(is.null(parent1) | is.null(parent2)) stop("Parents ID must be defined.")
   
   # do the checks
-  depths <- extract_depth(vcfR.object = vcfR.object, onemap.object = onemap.obj, vcf.par, parent1, parent2, recovering = recovering)
+  depths <- extract_depth(vcfR.object = vcfR.object, onemap.object = onemap.obj, vcf.par, parent1, parent2, f1= f1,recovering = recovering)
   
   # parents onemap genotypes
   ## Only for biallelic codominant markers
@@ -94,7 +99,7 @@ create_depths_profile <- function(onemap.obj = NULL,
     p2[which(onemap.obj$segr.type == "B3.7")] <- 2
     id.parents <- c(parent1, parent2)
     p.gt <- data.frame(mks=colnames(onemap.obj$geno), p1, p2)
-  } else if(any(names(class(onemap.obj)) == "f2 intercross")){
+  } else if(is(onemap.obj,"f2")){
     # parents depth
     alt <- depths$palt %>% data.frame(mks=depths$mks)
     alt <- cbind(alt, f1)
@@ -106,7 +111,9 @@ create_depths_profile <- function(onemap.obj = NULL,
     p1 <- 2
     id.parents <- f1
     p.gt <- data.frame(mks=colnames(onemap.obj$geno), p1)
-  } 
+  } else{
+    stop("By now, this function don't support this cross type\n")
+  }
   
   colnames(p.gt) <- c("mks", id.parents)
   p.gt <- gather(p.gt, "ind", "gt.onemap", -"mks")

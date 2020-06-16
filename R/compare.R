@@ -322,10 +322,10 @@ compare_inbred_bc<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
                                 rf.vec=rf.temp,
                                 verbose=FALSE,
                                 tol=tol)
-      if(is(get(input.seq$data.name, pos=1), "riself") ||
-         is(get(input.seq$data.name, pos=1), "risib"))
+      if(is(input.seq$data.name, "riself") ||
+         is(input.seq$data.name, "risib"))
         final.map$rf<-adjust_rf_ril(final.map$rf,
-                                    type=class(get(input.seq$data.name, pos=1))[2],
+                                    type=class(input.seq$data.name)[2],
                                     expand = FALSE)
       best.ord[(n.best+1),] <- all.ord[i,]
       best.ord.rf[(n.best+1),] <- final.map$rf
@@ -395,10 +395,10 @@ compare_inbred_f2<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
       ## print output for each order
       if (verbose) cat("Order", i, ":", all.ord[i,], "\n")
       utils::flush.console()
-      seq.temp<-make_seq(get(input.seq$twopt), arg=all.ord[i,])
+      seq.temp<-make_seq(input.seq$twopt, arg=all.ord[i,])
       seq.temp$twopt<-input.seq$twopt
       rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
-      final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
+      final.map<-est_map_hmm_f2(geno=t(input.seq$data.name$geno[,all.ord[i,]]),
                                 rf.vec=rf.temp,
                                 verbose=FALSE,
                                 tol=tol)

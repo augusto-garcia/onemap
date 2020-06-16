@@ -126,7 +126,9 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FA
       stop(" the objects", deparse(substitute(unlink.mks)), " are not of class 'sequence'")
     } else {
       mk_rest <- mk_rest[match(unlink.mks$seq.num, mk_rest)]
-      mk_rest <- mk_rest[!is.na(mk_rest)]}}
+      mk_rest <- mk_rest[!is.na(mk_rest)]
+      }
+    }
   
   ## Grouping
   groups <- new_seqs <- select_group <- seqs_groups <- list()
@@ -148,8 +150,8 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FA
   # Find repeated markers
   mks_new_seqs <- lapply(new_seqs, '[[',1)
   all_grouped_mk <- unlist(mks_new_seqs)
-  repeated_mks <- all_grouped_mk[duplicated(all_grouped_mk)]
-  pos_repeated <- sapply(mks_new_seqs,function(input.2pts) which(input.2pts %in% repeated_mks))
+  repeated_mks <- unique(all_grouped_mk[duplicated(all_grouped_mk)])
+  pos_repeated <- lapply(mks_new_seqs,function(x) which(x %in% repeated_mks))
   
   # Unlinked markers
   all <- c(mk_seqs,mk_rest)
@@ -163,15 +165,15 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FA
     cat("There are one or more markers that grouped in more than one sequence")
     
     # List with repeated markers
-    repeated_mks_list <- list()
+    repeated_mks_list <- pos_repeated
     for(i in 1:length(seqs.int)) {
-      repeated_mks_list[[i]] <- mks_new_seqs[[i]][pos_repeated[[i]]]
-      if(identical(repeated_mks_list[[i]], numeric(0)))
-        repeated_mks_list[[i]] <- NA}
+      for(j in 1:length(pos_repeated[[i]]))
+        repeated_mks_list[[i]][j] <- mks_new_seqs[[i]][pos_repeated[[i]][j]]
+    }
     names(repeated_mks_list) <- names_seqs
     
     # Including or not the repeated in the sequences
-    if(repeated==FALSE){
+    if(repeated){
       structure(list(data.name= input.2pts$data.name, 
                      twopt=input.2pts,
                      mk.names = mk_names, 
@@ -202,7 +204,7 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FA
                      mk.names = mk_names, 
                      input.seqs= sapply(seqs.int, '[[',1), 
                      input.unlink.mks= mk_rest,
-                     out.seqs = mks_new_seqs, 
+                     out.seqs = sapply(new_seqs_unique, '[[',1), 
                      n.unlinked = length(unlinked[!is.na(unlinked)]),
                      n.repeated = length(unique(unlist(repeated_mks_list))), 
                      n.mar=length(all), 
@@ -229,7 +231,6 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FA
                    unlinked= unlinked), class = "group_seq")
   }
 }
-
 
 ##' Show the results of grouping markers to preexisting sequence
 ##'

@@ -184,6 +184,7 @@ make_seq <-
       seq.rf <- input.obj$ord[[arg]]$rf[phase,]
       seq.like <- input.obj$ord[[arg]]$like[phase]
       twopt <- input.obj$twopt
+      probs <- input.obj$probs[[arg]][[phase]]
     } else if (is(input.obj, "order")){
       arg <- match.arg(arg,c("safe","force"))
       if (arg == "safe") {
@@ -212,7 +213,7 @@ make_seq <-
       data.name <- input.obj$data.name
     }
     
-    if(class(input.obj)[1] == "order"){
+    if(is(input.obj, c("order", "try"))){
       structure(list(seq.num=seq.num, seq.phases=seq.phases, seq.rf=seq.rf, seq.like=seq.like,
                      data.name=data.name, probs = probs, twopt=twopt), class = "sequence")
     } else {
@@ -258,7 +259,7 @@ print.sequence <- function(x,...) {
     marnumbers <- formatC(x$seq.num, format="d", width=longest.number)
     distances <- formatC(c(0,cumsum(get(get(".map.fun", envir=.onemapEnv))(x$seq.rf))),format="f",digits=2,width=7)
     ## whith diplotypes for class 'outcross'
-    if(is(x$data.name,"outcross")){
+    if(is(x$data.name,c("outcross", "f2"))){
       ## create diplotypes from segregation types and linkage phases
       link.phases <- apply(link.phases,1,function(x) paste(as.character(x),collapse="."))
       parents <- matrix("",length(x$seq.num),4)
@@ -273,7 +274,7 @@ print.sequence <- function(x,...) {
       cat(length(marnames),"markers            log-likelihood:",ifelse(is.null(x$seq.like),"NULL",x$seq.like),"\n\n")
     }
     ## whithout diplotypes for other classes
-    else if(is(x$data.name, c("backcross", "f2", "riself", "risib"))){
+    else if(is(x$data.name, c("backcross", "riself", "risib"))){
       cat("\nPrinting map:\n\n")
       cat("Markers",rep("",max(longest.number+longest.name-7,0)+10),"Position",rep("",10),"\n\n")
       for (i in 1:length(x$seq.num)) {

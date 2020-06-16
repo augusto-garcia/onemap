@@ -55,7 +55,16 @@ est_rf_out<-function(geno, mrk=0, seg_type=NULL, nind, verbose=TRUE)
       colnames(r[[2]])<-colnames(geno)
       return(r)
   }
+  
+  # Bug fix with D1D2 - It can be estimated than receive 0 for LOD and 0.25 for rf
+  for(i in 1:length(seg_type))
+    for(j in 1:(length(seg_type)-1))
+      if((seg_type[i] == 7 & seg_type[j] == 6) | (seg_type[i] == 6 & seg_type[j] == 7)){
+        r[[1]][i,j] <- r[[2]][i,j] <- r[[3]][i,j] <- r[[4]][i,j] <- 0.25
+        r[[1]][j,i] <- r[[2]][j,i] <- r[[3]][j,i] <- r[[4]][j,i] <- 0
+      }
 }
+
 
 # This function calls C++ routine for two-point analysis (F2)
 ##' @useDynLib onemap

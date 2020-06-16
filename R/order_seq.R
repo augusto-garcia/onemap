@@ -167,7 +167,8 @@ order_seq <- function(input.seq,
                       twopt.alg= c("rec", "rcd", "ser", "ug"),
                       THRES=3, 
                       touchdown=FALSE, 
-                      tol=10E-2) {
+                      tol=10E-2, 
+                      rm_unlinked = FALSE) {
   
   ## checking for correct objects
   if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
@@ -179,8 +180,8 @@ order_seq <- function(input.seq,
   if(length(input.seq$seq.num) <= n.init) {
     ## in this case, only the 'compare' function is used
     cat("   Length of sequence ",deparse(substitute(input.seq))," is less than n.init \n   Returning the best order using compare function:\n")
-    ifelse(length(input.seq$seq.num) == 2, seq.ord <- map(input.seq,tol=10E-5), seq.ord <- make_seq(compare(input.seq=input.seq,tol=10E-5),1))
-    seq.ord<-map(seq.ord, tol=10E-5)
+    ifelse(length(input.seq$seq.num) == 2, seq.ord <- map(input.seq,tol=10E-5, rm_unlinked = rm_unlinked), seq.ord <- make_seq(compare(input.seq=input.seq,tol=10E-5),1))
+    seq.ord<-map(seq.ord, tol=10E-5, rm_unlinked = rm_unlinked)
     structure(list(ord=seq.ord, mrk.unpos=NULL, LOD.unpos=NULL, THRES=THRES,
                    ord.all=seq.ord, data.name=input.seq$data.name, probs = seq.ord$probs, twopt=input.seq$twopt), class = "order")
   }
@@ -319,8 +320,8 @@ order_seq <- function(input.seq,
       }
     }
     cat("\nEstimating final genetic map using tol = 10E-5.\n\n")
-    input.seq2<-map(input.seq2, tol=10E-5)
-    input.seq3<-map(input.seq3, tol=10E-5)
+    input.seq2<-map(input.seq2, tol=10E-5, rm_unlinked=rm_unlinked)
+    input.seq3<-map(input.seq3, tol=10E-5, rm_unlinked=rm_unlinked)
     structure(list(ord=input.seq2, mrk.unpos=mrk.unpos, LOD.unpos=LOD.unpos, THRES=THRES,
                    ord.all=input.seq3, data.name=input.seq$data.name, probs2 = input.seq2$probs, 
                    probs3 = input.seq3$probs, twopt=input.seq$twopt), class = "order")

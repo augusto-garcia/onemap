@@ -87,8 +87,16 @@ mds_onemap <- function(input.seq,
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   
   n_ind <- input.seq$data.name$n.ind
-  if(is(input.seq$data.name,"outcross")){
-    mat<-get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1)
+  if(is(input.seq$data.name,c("outcross", "f2"))){
+    mat<- onemap:::get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1)
+    # Include NA in D1D2 markers
+    seg_type <- input.seq$data.name$segr.type.num[input.seq$seq.num]
+    for(i in 1:length(seg_type))
+      for(j in 1:(length(seg_type)-1))
+        if((seg_type[i] == 7 & seg_type[j] == 6) | (seg_type[i] == 6 & seg_type[j] == 7)){
+          mat[i,j] <- mat[j,i] <- NA
+        }
+    
   } else {
     mat<-get_mat_rf_in(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1)
   }

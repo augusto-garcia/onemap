@@ -197,7 +197,7 @@ progeny_haplotypes <- function(...,
       probs <- probs %>% 
         mutate(H1_1 = V1 + V2, # homozigote parent
                H1_2 = 0,
-               H2_1 = V2, # P2 is heterozygote
+               H2_1 = V2, 
                H2_2 = V1) 
       
     } else if (is(input.map[[1]]$data.name, c("riself", "risib"))){

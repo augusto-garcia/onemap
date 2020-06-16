@@ -312,7 +312,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       GT_matrix[idx,][which(GT_matrix[idx,] == "1/1")] <- 1
       
       mk.type <- mk.type.num <- rep("A.H.B", n.mk)
-      mk.type.num[mk.type=="A.H.B"] <- 1
+      mk.type.num[mk.type=="A.H.B"] <- 4
     }
   } else if(cross=="f2 backcross"){
     mk.type[which(GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "1/1")] <- "A.H.1"

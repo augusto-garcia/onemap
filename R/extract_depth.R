@@ -9,6 +9,7 @@
 #' @param vcf.par vcf format field that contain alelle counts informations, usually AD and DPR
 #' @param parent1 parent 1 identification in vcfR object
 #' @param parent2 parent 2 identification in vcfR objetc
+#' @param f1 if your cross type is f2, you must define the F1 individual
 #' @param recovering TRUE/FALSE, if TRUE avaliate all markers from vcf file, if FALSE avaliate only markers in onemap object
 #' @return list containing the following components: \item{palt}{a \code{matrix} with parent 1 and 2 
 #' alternative alelle counts.} \item{pref}{a \code{matrix} with parent 1 and 2 
@@ -34,13 +35,13 @@ extract_depth <- function(vcfR.object=NULL,
   if(is.null(vcfR.object))
     stop("You must specify one vcfR object.")
   
-  if(class(vcfR.object)!="vcfR")
+  if(!is(vcfR.object,"vcfR"))
     stop("You must specify one vcfR object.")
   
   if(is.null(onemap.object))
     stop("You must specify one onemap object.")
   
-  if(class(onemap.object)[1]!="onemap")
+  if(!is(onemap.object,"onemap"))
     stop("You must specify one onemap object.")
   
   # if(deparse(substitute(vcfR.object)) != onemap.object$input)                                                  
@@ -62,7 +63,7 @@ extract_depth <- function(vcfR.object=NULL,
   if(all(is.na(MKS)))
     MKS <- paste0(vcfR.object@fix[,1],"_", pos.vcf)
   
-  if(class(onemap.object)[2] == "f2"){
+  if(is(onemap.object,"f2")){
     parents <- which(IND == f1)
   } else{
     parents <- c(which(IND == parent1),which(IND == parent2))
@@ -159,7 +160,7 @@ extract_depth <- function(vcfR.object=NULL,
     pref <- ref_matrix[,idx]
     psize <- size_matrix[,idx]
     
-    if(class(onemap.object)[2] == "f2"){
+    if(is(onemap.object,"f2")){
       if(recovering==TRUE){
         oalt <- alt_matrix[,-c(idx, which(IND==parent1), which(IND==parent2))]
         oref <- ref_matrix[,-c(idx, which(IND==parent1), which(IND==parent2))]

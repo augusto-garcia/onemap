@@ -63,6 +63,9 @@ pedsim2vcf <- function(inputfile=NULL,
                        use.as.alleles=FALSE){
   
   # Do the checks here
+  if(is.null(inputfile) | is.null(map.file) | is.null(chrom.file))
+    stop("You must define the PedigreeSim output files genotypes, map.file and chrom.file\n")
+  
   data <- read.table(paste(inputfile), stringsAsFactors = FALSE, header = TRUE)
   
   # Infos

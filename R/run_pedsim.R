@@ -13,7 +13,8 @@
 #' (the types will be distribuited randomly by the chromosomes)
 #' @param n.types a vector of integers defining the number of markers of each type
 #' @param pop a character defining the population type. Supported: "F1", "F2", "BC"
-#' @param path.pedsim path to the .jar PedigreeSim file
+#' @param path.pedsim path to the .jar PedigreeSim file. If you still don't have it, 
+#' download in https://www.wur.nl/en/show/Software-PedigreeSim.htm
 #' @param name.mapfile a character with the mapfile name
 #' @param name.founderfile a character with the founderfile name
 #' @param name.chromfile a character with the chromfile name

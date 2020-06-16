@@ -59,7 +59,7 @@ create_probs <- function(onemap.obj = NULL,
       error <- error$value
     }
     
-    if(crosstype == "outcross"){
+    if(crosstype == "outcross" | crosstype == "f2"){
       prob <- matrix(NA, nrow=length(probs$value), ncol = 4)
       idx <- which(probs$value == 0)
       prob[idx,] <- 1
@@ -121,20 +121,20 @@ create_probs <- function(onemap.obj = NULL,
       idx <- which(probs$value == 3  & probs$type == 7)
       prob[idx,] <- 1
       
-    } else if(crosstype == "f2"){
-      prob <- matrix(NA, nrow=length(probs$value), ncol = 4)
-      idx <- which(probs$value == 0)
-      prob[idx,] <- 1
-      idx <- which(probs$value == 1)
-      prob[idx,] <- c(1- error[idx], rep(error[idx]/3,3))
-      idx <- which(probs$value == 2)
-      prob[idx,] <- c(error[idx]/2, rep(1-error[idx],2), error[idx]/2)
-      idx <- which(probs$value == 3)
-      prob[idx,] <- c(rep(error[idx]/3,3), 1-error[idx])
-      idx <- which(probs$value == 4)
-      prob[idx,] <- c(rep(1-error[idx]/3,3), error[idx])
-      idx <- which(probs$value == 5)
-      prob[idx,] <- c(error[idx], rep(1-error[idx]/3,3))
+      # } else if(crosstype == "f2"){
+      #   prob <- matrix(NA, nrow=length(probs$value), ncol = 4)
+      #   idx <- which(probs$value == 0)
+      #   prob[idx,] <- 1
+      #   idx <- which(probs$value == 1)
+      #   prob[idx,] <- c(1- error[idx], rep(error[idx]/3,3))
+      #   idx <- which(probs$value == 2)
+      #   prob[idx,] <- c(error[idx]/2, rep(1-error[idx],2), error[idx]/2)
+      #   idx <- which(probs$value == 3)
+      #   prob[idx,] <- c(rep(error[idx]/3,3), 1-error[idx])
+      #   idx <- which(probs$value == 4)
+      #   prob[idx,] <- c(rep(1-error[idx]/3,3), error[idx])
+      #   idx <- which(probs$value == 5)
+      #   prob[idx,] <- c(error[idx], rep(1-error[idx]/3,3))
     } else if(crosstype == "backcross" | crosstype == "riself" | crosstype == "risib"){
       prob <- matrix(NA, nrow=length(probs$value), ncol = 2)
       idx <- which(probs$value == 0)
@@ -152,7 +152,7 @@ create_probs <- function(onemap.obj = NULL,
   if(!is.null(genotypes_probs)){
     
     # Only for biallelic markers codominant markers
-    if(crosstype == "outcross"){
+    if(crosstype == "outcross" | crosstype == "f2"){
       # Sometimes the 1 and 3 are inverted
       # D2.15 when P2 are heterozygote receives 1 instead of 3
       # D1.10 when P1 are heterozygote receives 1 instead of 3
@@ -236,14 +236,15 @@ create_probs <- function(onemap.obj = NULL,
       } else {
         prob.temp[hom3.idx,1] <- genotypes_probs[hom3.idx, 3]
       }
-      if(crosstype == "f2"){
-        prob <- matrix(NA, nrow=length(probs$value), ncol = 4)
-        prob <- cbind(prob.temp[,1], prob.temp[,2], prob.temp[,2], prob.temp[,3])
-        
-        idx <- which(probs$value == 0)
-        prob[idx,] <- 1
-        
-      } else if(crosstype == "backcross" | crosstype == "riself" | crosstype == "risib") {
+      # if(crosstype == "f2"){
+      #   prob <- matrix(NA, nrow=length(probs$value), ncol = 4)
+      #   prob <- cbind(prob.temp[,1], prob.temp[,2], prob.temp[,2], prob.temp[,3])
+      #   
+      #   idx <- which(probs$value == 0)
+      #   prob[idx,] <- 1
+      #   
+      # } else {
+      if(crosstype == "backcross" | crosstype == "riself" | crosstype == "risib") {
         prob <- matrix(NA, nrow=length(probs$value), ncol = 2)
         
         idx <- which(probs$value == 1)

@@ -148,13 +148,13 @@ run_pedsim(chromosome = "Chr1", n.marker = 54, tot.size.cm = 100, centromere = 5
            name.out="sim_out")
 ```
 
-The function allows to create f2 intercross and backcross populations from bi-parental cross of inbred lines and segregating F1 population from bi-parental cross of heterozygous parents. You can define it in `pop` argument. You must change the `path.pedsim` to the path where the PedigreeSim.jar is stores in your system. You can also define the number of chromosomes (argument `chromosome`), the number of markers in each chromosome (`n.marker`), the total size of the groups in cM (`tot.size.cm`), the position of centromere (`centromere`), number of individuals in the population (`n.ind`), the marker types (`mk.types`, see the table in session [`Creating the data file`](#Creating-the-data-file)) and the number of markers of each type (`n.types`). 
+The function allows to create f2 intercross and backcross populations from bi-parental cross of inbred lines and segregating F1 population from bi-parental cross of heterozygous parents. You can define it in `pop` argument. You must change the `path.pedsim` to the path where the PedigreeSim.jar is stores in your system. You can also define the number of chromosomes (argument `chromosome`), the number of markers in each chromosome (`n.marker`), the total size of the groups in cM (`tot.size.cm`), the position of centromere (`centromere`), number of individuals in the population (`n.ind`), the marker types (`mk.types`, see the table in session [`Creating the data file`](#creating-the-data-file)) and the number of markers of each type (`n.types`). 
 
 We suggest you to open the output files `founderfile`, `chromfile`, `mapfile` and `parfile` to check if they agree with your intentions before proceed to other analysis.
 
 ## Convert PedigreeSim output to OneMap raw data <span style="color:orange"> (new!)</span>
 
-Once you run PedigreeSim, you should have the output file `genotypes.dat`. To convert this to OneMap raw file, you just need to specify the cross type (`cross`), which ones are the parents (`parent1` and `parent2`) and if you want to include missing genotypes (`miss.perc`). Only cross types `outcross` and `f2 intercross` are supported by now.
+Once you run PedigreeSim (directly or using our `run_pedsim` function), you should have the output file `genotypes.dat`. To convert this to OneMap raw file, you just need to specify the cross type (`cross`), which ones are the parents (`parent1` and `parent2`) and if you want to include missing genotypes (`miss.perc`). Only cross types `outcross` and `f2 intercross` are supported by now.
 
 ```{r, eval=FALSE, message=F,warning=F}
 # For outcrossing population
@@ -225,7 +225,7 @@ pedsim2vcf(inputfile = system.file("extdata/sim_cod_out_genotypes.dat", package 
 
 The function prints on screen the percentage of genotypes changed between simulated by PedigreeSim and re-estimated using a binomial distribution and simulated allele counts. Notice that this percentage increase if you reduce the mean depth or increase bias or dispersion parameter.
 
-In the session [`Importing data from VCF file`](##Importing-data-from-VCF-file) below you will see how to import VCF files as onemap objects and also how to convert it in OneMap raw data.
+In the session [`Importing data from VCF file`](##importing-data-from-vcf-file) below you will see how to import VCF files as onemap objects and also how to convert it in OneMap raw data.
 
 # Importing data
 
@@ -349,7 +349,7 @@ save(vcfR.object, file = "vcfR.object.RData")
 # rm(vcfR.object)
 ```
 
-From version 2.0.6 to 2.1.1005, OneMap had the `vcf2raw` function to convert `vcf` to `.raw`. Now, this function is defunct, but it can be replaced by a combination of `onemap_read_vcfR` and `write_onemap_raw` functions. See [Exporting .raw file from onemap object](#Exporting-.raw-file-from-onemap-object) session to futher information about `write_onemap_raw`.
+From version 2.0.6 to 2.1.1005, OneMap had the `vcf2raw` function to convert `vcf` to `.raw`. Now, this function is defunct, but it can be replaced by a combination of `onemap_read_vcfR` and `write_onemap_raw` functions. See [Exporting .raw file from onemap object](#exporting-.raw-file-from-onemap-object) session to futher information about `write_onemap_raw`.
 
 # Graphical view of genotypes and allele depths <span style="color:orange">(new!)</span>
 
@@ -992,8 +992,6 @@ than 3.
 specially if there are not many fully informative markers, so use it
 carefully. Results can vary between multiple runs on the same markers, of course.
 
-**NOTE**: <span style="color:orange">(new!)</span> If your sequence has many markers (more than 60), we suggest to speed up `order_seq` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#Speed-up-analysis-with-parallelization) for more information.
-
 Check the final order:
 
 ```{r}
@@ -1073,13 +1071,13 @@ doubtful markers (for this groups markers `23` and `29`) and try to positioned t
 LG2_test_seq <- drop_marker(LG2_all, c(23,29))
 ```
 
-The function will provide a sequence with the same order of the estimated map (`LG2_all`). After, we should estimate the map again using this predefined order (see section [`Map estimation for an arbitrary order`](#Map-estimation-for-an-arbitrary-order) for further information). For this we use the `map` function:
+The function will provide a sequence with the same order of the estimated map (`LG2_all`). After, we should estimate the map again using this predefined order (see section [`Map estimation for an arbitrary order`](#map-estimation-for-an-arbitrary-order) for further information). For this we use the `map` function:
 
 ```{r}
 (LG2_test_map <- map(LG2_test_seq))
 ```
 
-**NOTE**: <span style="color:orange">(new!)</span> If your sequence has many markers (more than 60), we suggest to speed up `map` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#Speed-up-analysis-with-parallelization) for more information.
+**NOTE**: <span style="color:orange">(new!)</span> If your sequence has many markers (more than 60), we suggest to speed up `map` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#speed-up-analysis-with-parallelization) for more information.
 
 Now, we have the map without markers `23` and `51`. 
 
@@ -1152,9 +1150,9 @@ Alternatively, you can also use `mds_onemap` function to obtain a first draft fo
 LG1_mds <- mds_onemap(LG1, rm_unlinked = TRUE)
 ```
 
-**NOTE**: <span style="color:orange">(new!)</span> If your sequence has many markers (more than 60), we suggest to speed up `mds_onemap` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#Speed-up-analysis-with-parallelization) for more information.
+**NOTE**: <span style="color:orange">(new!)</span> If your sequence has many markers (more than 60), we suggest to speed up `mds_onemap` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#speed-up-analysis-with-parallelization) for more information.
 
-If you only specify the input sequence, mds_onemap will use the default parameters. It will generate MDSMap input file in `out.file` file and the `NULL.pdf` file with the diagnostic graphics in your work directory. Also, the default method used is the principal curves, know more about using `?mds_onemap` and reading the MDSMap [vignette]( https://CRAN.R-project.org/package=MDSMap). 
+If you only specify the input sequence, mds_onemap will use the default parameters. It will generate MDSMap input file in `out.file` file and the `NULL.pdf` file with the diagnostic graphics in your work directory. Also, the default method used is the principal curves, know more about using `?mds_onemap` and reading the MDSMap [vignette](https://CRAN.R-project.org/package=MDSMap). 
 
 <span style="color:orange">(new!)</span>
 
@@ -1213,7 +1211,7 @@ There are some differences between the results. Seriation did not
 provide good results in this case. See Mollinari et al. (2009) for an
 evaluation of these methods.
 
-**NOTE**: <span style="color:orange">(new!)</span> If your sequence has many markers (more than 60), we suggest to speed up `seriation`, `rcd`, `record` and `ug` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#Speed-up-analysis-with-parallelization) for more information.
+**NOTE**: <span style="color:orange">(new!)</span> If your sequence has many markers (more than 60), we suggest to speed up `seriation`, `rcd`, `record` and `ug` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#speed-up-analysis-with-parallelization) for more information.
 
 # Using the recombinations and the reference genome informations
 
@@ -1293,7 +1291,7 @@ CHR1_frame <- make_seq(CHR1_ord, "force")
 rf_graph_table(CHR1_frame) # graphic not showed
 ```
 
-**NOTE**: <span style="color:orange">(new!)</span> If your sequence has many markers (more than 60), we suggest to speed up `mds_onemap` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#Speed-up-analysis-with-parallelization) for more information.
+**NOTE**: <span style="color:orange">(new!)</span> If your sequence has many markers (more than 60), we suggest to speed up `mds_onemap` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#speed-up-analysis-with-parallelization) for more information.
 
 The group is similar to that builded before with only recombinations informations. We will better explore differences in a latter step. Only marker `11` do not follow exactly the expected color pattern, then we will try to repositioned it.
 
@@ -1523,7 +1521,19 @@ any_seq <- make_seq(twopts, c(30, 12, 3, 14, 2))
 (any_seq_map <- map(any_seq))
 ``` 
 
-**NOTE**: <span style="color:orange">(new!)</span> If your sequence has many markers (more than 60), we suggest to speed up `map` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#Speed-up-analysis-with-parallelization) for more information.
+**NOTE**: <span style="color:orange">(new!)</span> If your sequence has many markers (more than 60), we suggest to speed up `map` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#speed-up-analysis-with-parallelization) for more information.
+
+**Warning**: If you find an error message like:
+
+```
+Error in as_mapper(.f, ...) : argument ".f" is missing, with no default
+```
+
+It's because the `map` function has a very common name and you can have in your environment other function with the same name. In the case of the pointed error, R is using `map` function from `purrr` package instead of `onemap`, to solve this, simple specify that you want onemap function:
+
+```{r, eval=FALSE}
+(any_seq_map <- onemap::map(any_seq))
+```
 
 This is a subset of the first linkage group. When used this way, the `map`
 function searches for the best combination of phases between markers
@@ -1934,7 +1944,7 @@ Function `progeny_haplotypes` also generates a data.frame with progeny phased ha
 (progeny_haplot <- progeny_haplotypes(CHR2_final, most_likely = TRUE, ind = c(1,2), group_names = "CHR2_final"))
 ```
 
-You can also have a view of progeny estimated haplotypes using `plot`. It shows which markers came from each parents homologues. `position` argument defines if haplotypes will be plotted by homologs (`stach`) or alleles (`split`). `split` option is a good way to better view the likelihoods of each alleles.
+You can also have a view of progeny estimated haplotypes using `plot`. It shows which markers came from each parents homologues. `position` argument defines if haplotypes will be plotted by homologs (`stack`) or alleles (`split`). `split` option is a good way to better view the likelihoods of each alleles.
 
 ```{r}
 plot(progeny_haplot, position = "stack")

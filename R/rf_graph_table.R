@@ -161,11 +161,6 @@ rf_graph_table <- function(input.seq,
   mat[row(mat) < col(mat)][mat[row(mat) < col(mat)] < 10E-2]<-10E-2
   diag(mat)<-NA
   
-  ##Write multipoint estimates
-  for (i in 1:(n.mrk-1)){
-    mat[i+1,i] <- input.seq$seq.rf[i]
-  }
-  
   colnames(mat) <- rownames(mat)<- colnames(input.seq$data.name$geno)[input.seq$seq.num]
   
   if (mrk.axis == "numbers")
@@ -183,14 +178,18 @@ rf_graph_table <- function(input.seq,
   }
     
   ##Write NAs in two-point recombination fractions between markers of type D1 and D2
-  types <- input.seq$data.name$segr.type[input.seq$seq.num]
-  which.D1D2<-outer((substr(types, 1,2)=="D1"),(substr(types, 1,2)=="D2"))
-  which.D1D2<-which.D1D2+t(which.D1D2)
-  which.D1D2[which.D1D2==1]<-NA
-  which.D1D2[which.D1D2==0]<-1
-  diag.si<-rbind(1:(ncol(which.D1D2)-1),2:ncol(which.D1D2))
-  for(i in 1:(ncol(which.D1D2)-1)) which.D1D2[diag.si[1,i],diag.si[2,i]] <- which.D1D2[diag.si[2,i],diag.si[1,i]] <- 1
-  mat<-mat*which.D1D2
+  types <- input.seq$data.name$segr.type.num[input.seq$seq.num]
+  for(i in 1:length(types))
+    for(j in 1:(length(types)-1))
+      if((types[i] == 7 & types[j] == 6) | (types[i] == 6 & types[j] == 7)){
+        mat[i,j] <- mat[j,i] <- NA
+      }
+
+  ##Write multipoint estimates
+  for (i in 1:(n.mrk-1)){
+    mat[i+1,i] <- input.seq$seq.rf[i]
+  }
+  
   missing<-100*apply(input.seq$data.name$geno[,input.seq$seq.num],2, function(x) sum(x==0))/input.seq$data.name$n.ind
   
   ## Building the data.frame to plot
