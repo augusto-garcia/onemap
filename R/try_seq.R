@@ -253,6 +253,7 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
   rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
   ## estimate parameters for all possible linkage phases for this order
   final.map<-est_map_hmm_bc(geno=t(input.seq$data.name$geno[,try.ord]),
+                            error=input.seq$data.name$error[try.ord + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(try.ord)),],
                             rf.vec=rf.temp,
                             verbose=FALSE,
                             tol=tol)
@@ -281,6 +282,7 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
     rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
     ## estimate parameters for all possible linkage phases for this order
     final.map<-est_map_hmm_bc(geno=t(input.seq$data.name$geno[,try.ord[i+1,]]),
+                              error=input.seq$data.name$error[try.ord[i+1,] + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(try.ord[i+1,])),],
                               rf.vec=rf.temp,
                               verbose=FALSE,
                               tol=tol)
@@ -300,6 +302,7 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
   utils::flush.console()
   ## estimate parameters for all possible linkage phases for this order
   final.map<-est_map_hmm_bc(geno=t(input.seq$data.name$geno[,try.ord[length(input.seq$seq.num)+1,]]),
+                            error=input.seq$data.name$error[try.ord[length(input.seq$seq.num)+1,] + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(try.ord[length(input.seq$seq.num)+1,])),],
                             rf.vec=rf.temp,
                             verbose=FALSE,
                             tol=tol)
