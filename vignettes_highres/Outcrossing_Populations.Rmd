@@ -174,9 +174,9 @@ The same output file from PedigreeSim, the `genotypes.dat` can be used to simula
 # Dominant markers are not supported, then, we simulate other dataset with only codominant markers
 run_pedsim(chromosome = "Chr1", n.marker = 42, tot.size.cm = 100, centromere = 50,
            n.ind = 200, mk.types = c("A1", "A2", "B3.7", "D1.9", "D1.10", "D2.14", "D2.15"),
-           n.types = rep(6,7), pop = "F1", path.pedsim = "path/to/PedigreeSim/",
-           name.mapfile = "mapfile.txt", name.founderfile="founderfile.gen",
-           name.chromfile="sim.chrom", name.parfile="sim.par",
+           n.types = rep(6,7), pop = "F1", path.pedsim = "/home/rstudio/onemap/",
+           name.mapfile = "mapfile_out.txt", name.founderfile="founderfile.gen",
+           name.chromfile="sim_out.chrom", name.parfile="sim.par",
            name.out="sim_cod_out")
 ```
 
@@ -205,8 +205,8 @@ pedsim2vcf(inputfile = "sim_cod_out_genotypes.dat",
 ```{r, message=F,warning=F, echo=FALSE}
 # For outcrossing population
 pedsim2vcf(inputfile = system.file("extdata/sim_cod_out_genotypes.dat", package = "onemap"),
-           map.file = system.file("extdata/mapfile.txt", package = "onemap"), 
-           chrom.file = system.file("extdata/sim.chrom", package = "onemap"), 
+           map.file = system.file("extdata/mapfile_out.txt", package = "onemap"), 
+           chrom.file = system.file("extdata/sim_out.chrom", package = "onemap"), 
            out.file = "simu_cod_out.vcf",
            miss.perc = 0, 
            counts = TRUE, 
@@ -342,6 +342,14 @@ data(vcf_example_out)
 
 Depending of your dataset, this function can take some time to run.
 
+Note that the conversion filter out markers which are not informative for the informed cross type. For example, in outcrossing species, markers that have both parents homozygous (aa x bb) do not inform recombinations and are removed of the data set. Only markers types contained the table at [Creating the data table](#creating-the-data-table) are kept in the onemap object. Function `onemap_read_vcfR` print at the screen the reason why markers were filtered.
+
+You can also have more missing data in the returned object compared with the VCF. This is because the `onemap_read_vcfR` replace by missing data the genotypes that are not expected for that marker type. For example, for a marker type D1.10 (`ab` x `aa`), we only expect `aa` and `ab` genotypes, if there are `bb` genotypes they will be replaced by missing data. You can see the percentage of missing data at the resulted onemap object with:
+
+```{r}
+vcf_example_out
+```
+
 After the conversion, we can save the `vcfR.object` as a `.RData` and remove it from the workspace, once it can occupy a lot of memory and turn the other process too slow. 
 
 ```{r, eval=FALSE}
@@ -349,7 +357,23 @@ save(vcfR.object, file = "vcfR.object.RData")
 # rm(vcfR.object)
 ```
 
-From version 2.0.6 to 2.1.1005, OneMap had the `vcf2raw` function to convert `vcf` to `.raw`. Now, this function is defunct, but it can be replaced by a combination of `onemap_read_vcfR` and `write_onemap_raw` functions. See [Exporting .raw file from onemap object](#exporting-.raw-file-from-onemap-object) session to futher information about `write_onemap_raw`.
+From version 2.0.6 to 2.1.1005, OneMap had the `vcf2raw` function to convert `vcf` to `.raw`. Now, this function is defunct, but it can be replaced by a combination of `onemap_read_vcfR` and `write_onemap_raw` functions. See [Exporting .raw file from onemap object](#exporting-.raw-file-from-onemap-object) session to further information about `write_onemap_raw`.
+
+# Filter OneMap object by missing data
+
+If your onemap object have too much missing genotypes you can face problems during the analysis. Check the percentage of missing genotypes in our data set printing the onemap object:
+
+```{r}
+vcf_example_out
+```
+
+Our example has 1% of missing genotypes (99% are genotyped). If you want to filter markers according with its percentage of missing data, you can use the function `filter_missing`:
+
+```{r}
+vcf_filtered <- filter_missing(vcf_example_out, threshold = 0.25)
+```
+
+Any of our markers were filtered, because, in this example, we do not have many missing data.
 
 # Graphical view of genotypes and allele depths <span style="color:orange">(new!)</span>
 
@@ -446,7 +470,7 @@ The arguments for `create_data_bins` function are the `onemap` object and the ob
 The functions `onemap_read_vcfR` generates new onemap objects without use a input `.raw` file. Also, the functions `combine_onemap` and `create_data_bins` manipulates the information of the original `.raw` file and creates a new dataset. In both cases, you do not have a input file `.raw` that contains the same informations of the analysed data. If you want to create a new input file with the dataset you are working after using this functions, you can use the function `write_onemap_raw`.  
 
 ```{r, eval=FALSE}
-write_onemap_raw(comb_example, file.name = "new_dataset.raw")
+write_onemap_raw(bins_example, file.name = "new_dataset.raw")
 ```
 
 The file `new_dataset.raw` will be generated in your working directory. In our example, it contains only non-redundant markers from `onemap_example_out` and `vcf_example_out` datasets.
@@ -982,7 +1006,7 @@ LG2_ord <- order_seq(LG2, n.init = 5, THRES = 3)
 ``` 
 
 Basically, this function automates what the `try_seq` function does,
-using some pre-defined rules. In the function, `n.init = 5` means that
+using some predefined rules. In the function, `n.init = 5` means that
 five markers (the most informative ones) will be used in the `compare`
 step; `THRES = 3` indicates that the `try_seq` step will only add
 markers to the sequence which can be mapped with LOD Score greater
@@ -1096,7 +1120,7 @@ LG2_test_23_29 <- make_seq(LG2_test_seq, 12)
 rf_graph_table(LG2_test_23_29, mrk.axis = "numbers")
 ```
 
-Marker 23 keeped its previous position, but marker 29 was re-positioned, configuring now a gap between markers 47 and 50. We removed marker 29 of our map, because it color pattern are too different of expected. Then, our final map is:
+Marker 23 kept its previous position, but marker 29 was re-positioned, configuring now a gap between markers 47 and 50. We removed marker 29 of our map, because it color pattern are too different of expected. Then, our final map is:
 
 ```{r}
 LG2_final <- LG2_test_23
@@ -1167,7 +1191,7 @@ You can automatically remove these markers setting argument `rm_unlinked = TRUE`
 rf_graph_table(LG1_mds)
 ```
 
-Based on the drafts from `order_seq` or/and `mds_onemap`, we can remove some doubtful markers accordinly with the graphic, try to positioned them again and decide if and where we will maintain them.
+Based on the drafts from `order_seq` or/and `mds_onemap`, we can remove some doubtful markers accordingly with the graphic, try to positioned them again and decide if and where we will maintain them.
 
 ```{r}
 LG1_test_seq <- drop_marker(LG1_frame, c(10,11,28,42))
@@ -1246,7 +1270,7 @@ In this case, the command had the same effect of the previous, because we indica
 
 The `unlink.mks` argument receive a object of class `sequence`, this define which markers will be tested to group with the sequences in `seqs`. In our example, we will indicate only the markers with no segregation distortion, using the sequence `mark_no_dist`. It is also possible to use the string `"all"` to test all the remaining markers at the `rf_2pts` object. 
 
-In some cases, the same marker can group to more than one sequence, those markers will be considered `repeated`. We can choose if we want to remove or not (`FALSE/TRUE`) them of the output sequences, with the argument `repeated`. Anyway, their numbers will be informed at the list `repeateds` in the output object. 
+In some cases, the same marker can group to more than one sequence, those markers will be considered `repeated`. We can choose if we want to remove or not (`FALSE/TRUE`) them of the output sequences, with the argument `repeated`. Anyway, their numbers will be informed at the list `repeated` in the output object. 
 In the example case, there are no repeated markers. However, if they exists, it could indicate that their groups actually constitute the same group. Also, genotyping errors can generate repeated markers. Anyway, they deserves better investigations. 
 
 We can access detailed information about the results just printing:
@@ -1288,7 +1312,7 @@ CHR1_frame <- make_seq(CHR1_ord, "force")
 ```
 
 ```{r, eval=FALSE}
-rf_graph_table(CHR1_frame) # graphic not showed
+rf_graph_table(CHR1_frame) # graphic not shown
 ```
 
 **NOTE**: <span style="color:orange">(new!)</span> If your sequence has many markers (more than 60), we suggest to speed up `mds_onemap` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#speed-up-analysis-with-parallelization) for more information.
@@ -1332,7 +1356,7 @@ CHR2_frame <- make_seq(CHR2_ord, "force")
 ```
 
 ```{r, eval=FALSE}
-rf_graph_table(CHR2_frame) # graphic not showed
+rf_graph_table(CHR2_frame) # graphic not shown
 ```
 
 As did before, we will not change markers positions of this group.
@@ -1544,7 +1568,7 @@ and prints the results.
 **Warning**: It is not our case in this example, but, sometimes, it can happen that some markers in your sequence doesn't reach the OneMap linkage criteria when linkage are estimated by HMM multipoint approach using `map`, it will produce an error like this:
 
 ```
-ERROR: The linkage between markers 1 and 2 did not reached the OneMap default criteria. They are probably segregating independently
+ERROR: The linkage between markers 1 and 2 did not reach the OneMap default criteria. They are probably segregating independently
 ```
 
 You can evaluate the marker manually, or you can remove them automatically using `map` argument `rm_unlinked = TRUE`. Doing this, the `map` function will return a vector with marker numbers excluding the problematic marker, then, you can repeat the process without the marker, using `make_seq` to create a new sequence and repeat the `map`. You can also do it automatically using the `map_avoid_unlinked` function:  
@@ -1584,7 +1608,7 @@ After that, the map needs to be re-estimated.
 # Speed up analysis with parallelization <span style="color:orange">(new!)</span>
 
 
-**Warning**: By now, only available for Unix-like operational systems
+**Warning**: By now, only available for Unix-like operating systems
 
 As already mentioned, OneMap uses HMM multipoint approach to estimate genetic distances, an very robust method, but it can take time to run if you have many markers. In 2017 Schiffthaler et. al release an OneMap fork with modifications in CRAN and in github with the possibility of parallelize the HMM chain dividing markers in batches and use different cores for each phase. Their approach speed up our HMM and keeps the genetic distances estimation quality. It allows to divide the job in maximum four cores according with the four possible phases for outcrossing mapping populations. We add this parallelized approach to the functions: `map`, `mds_onemap`, `seriation`, `rcd`, `record` and `ug`. For better efficiency it is important that batches are composed by 50 markers or more, therefore, this approach is only recommended for linkage groups with many markers.
 
@@ -1608,7 +1632,7 @@ knitr::kable(time_spent)
 |rcd        |                    2.687657|                0.6150103|
 |record     |                    2.742556|                0.7189469|
 |ug         |                    1.544829|                0.4939636|
-|mds_onemap |                    1.363906|                0.5241453|
+|mds_onemap |                    0.897266|                0.3890439|
 |map        |                    2.243384|                0.7256800|
 
 Now, let's simulate the mapping population and markers.
@@ -1708,10 +1732,10 @@ p <- ggarrange(a,b , common.legend = TRUE,
           hjust= -0.8,
           ncol=2, nrow=1)
 
-ggsave(p, filename = "rds.jpg")
+ggsave(p, filename = "rcd.jpg")
 ```
 
-![](out_img/rds.jpg)
+![](out_img/rcd.jpg)
 
 ```{r, echo=FALSE, eval=FALSE}
 # Without parallelization 
@@ -1787,10 +1811,10 @@ p <- ggarrange(a,b , common.legend = TRUE,
           hjust= -0.8,
           ncol=2, nrow=1)
 
-ggsave(p, filename = "up.jpg")
+ggsave(p, filename = "ug.jpg")
 ```
 
-![](out_img/up.jpg)
+![](out_img/ug.jpg)
 
 ## Speed up mds_onemap
 
@@ -1938,7 +1962,7 @@ parents_haplotypes(CHR2_final,CHR3_final, group_names=c("CHR2","CHR3"))
 
 # Export estimated progeny haplotypes <span style="color:orange">(new!)</span>
 
-Function `progeny_haplotypes` also generates a data.frame with progeny phased haplotypes estimated by OneMap HMM. For progeny, the HMM results in probabilities for each possible genotypes, than the generated data.frame contains the genotype of maximum probability if `most_likely = TRUE` or the probability of each genotype if `FALSE`. You can choose which individual to be evaluated in `ind`. The data.frame is composed by the information: individual (ind) and group (grp) ID, position in centimorgan (pos), position adjusted for build graphics (pos2), f1 homologs (f1) and progeny homologs (prog) IDs and genotypes probabilities (prob).
+Function `progeny_haplotypes` generates a data.frame with progeny phased haplotypes estimated by OneMap HMM. For progeny, the HMM results in probabilities for each possible genotypes, than the generated data.frame contains all possible genotypes. If `most_likely = TRUE`  the most likely genotype receveis 1 and the rest 0 (if there are two most likely both receive 0.5), if `most_likely = FALSE` genotypes probabilities will be according with the HMM results. You can choose which individual to be evaluated in `ind`. The data.frame is composed by the information: individual (ind) and group (grp) ID, position in centimorgan (pos), progeny homologs (homologs) and from each parent the allele came (parents).
 
 ```{r}
 (progeny_haplot <- progeny_haplotypes(CHR2_final, most_likely = TRUE, ind = c(1,2), group_names = "CHR2_final"))
@@ -1997,5 +2021,6 @@ species. **_Theoretical Population Biology_** 61, 349-363, 2002a.
 
 Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. Linkage mapping of
 sex-specific differences. **_Genetical Research_** 79, 85-96, 2002b.
+
 
 

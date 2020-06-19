@@ -45,6 +45,22 @@ est_rf_out<-function(geno, mrk=0, seg_type=NULL, nind, verbose=TRUE)
   {
       names(r)<-c("CC", "CR", "RC", "RR")
       for(i in 1:4) dimnames(r[[i]])<-list(colnames(geno), colnames(geno))
+      
+      # Bug fix with D1D2 - It can be estimated than receive 0 for LOD and 0.25 for rf
+      for(i in 1:length(seg_type))
+        for(j in 1:(length(seg_type)-1))
+          if((seg_type[i] == 7 & seg_type[j] == 6) | (seg_type[i] == 6 & seg_type[j] == 7)){
+            r[[1]][i,j] <- r[[2]][i,j] <- r[[3]][i,j] <- r[[4]][i,j] <- 0.25
+            r[[1]][j,i] <- r[[2]][j,i] <- r[[3]][j,i] <- r[[4]][j,i] <- 0
+          }
+      
+      # Bug fix: If rf is very close to 0.5, LOD can be very close to zero, but with negative value
+      # This is causing numerical problems in further analysis
+      r[[1]][which(r[[1]] < 0 & (0-r[[1]]) < 10^(-5))] <- 10^(-5)
+      r[[2]][which(r[[2]] < 0 & (0-r[[1]]) < 10^(-5))] <- 10^(-5)
+      r[[3]][which(r[[3]] < 0 & (0-r[[1]]) < 10^(-5))] <- 10^(-5)
+      r[[4]][which(r[[4]] < 0 & (0-r[[1]]) < 10^(-5))] <- 10^(-5)
+      
       return(r)
   }
   else
@@ -55,14 +71,6 @@ est_rf_out<-function(geno, mrk=0, seg_type=NULL, nind, verbose=TRUE)
       colnames(r[[2]])<-colnames(geno)
       return(r)
   }
-  
-  # Bug fix with D1D2 - It can be estimated than receive 0 for LOD and 0.25 for rf
-  for(i in 1:length(seg_type))
-    for(j in 1:(length(seg_type)-1))
-      if((seg_type[i] == 7 & seg_type[j] == 6) | (seg_type[i] == 6 & seg_type[j] == 7)){
-        r[[1]][i,j] <- r[[2]][i,j] <- r[[3]][i,j] <- r[[4]][i,j] <- 0.25
-        r[[1]][j,i] <- r[[2]][j,i] <- r[[3]][j,i] <- r[[4]][j,i] <- 0
-      }
 }
 
 

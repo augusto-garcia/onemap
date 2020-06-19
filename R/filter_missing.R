@@ -28,7 +28,7 @@
 ##'   
 ##'@export
 filter_missing <- function(onemap.obj=NULL, threshold= 0.25){
-  if(class(onemap.obj)[1]!="onemap"){
+  if(!is(onemap.obj,"onemap")){
     stop("onemap.obj should be of class onemap\n")
   }
   perc.mis <- apply(onemap.obj$geno, 2, function(x) sum(x == 0)/length(x))

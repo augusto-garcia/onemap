@@ -93,7 +93,8 @@ parents_haplotypes <- function(..., group_names=NULL){
 #'
 #' @param ... Map(s) or list(s) of maps. Object(s) of class sequence.
 #' @param ind vector with individual index to be evaluated
-#' @param most_likely logical; if  \code{TRUE}, the most likely genotype is plotted; 
+#' @param most_likely logical; if  \code{TRUE}, the most likely genotype receive 1 and all the rest 0. 
+#' If there are more than one most likely both receive 0.5.
 #' if FALSE (default) the genotype probability is plotted.
 #' @param group_names Names of the groups.
 #' 
@@ -186,8 +187,8 @@ progeny_haplotypes <- function(...,
       probs <- probs %>%
         mutate(H1_P1 = V1,
                H1_P2 = V2,
-               H2_P1 = V2 ,
-               H2_P2 = V1)
+               H2_P1 = V1,
+               H2_P2 = V2)
     }
   }
   
@@ -226,14 +227,16 @@ plot.onemap_progeny_haplotypes <- function(probs,
                                            show_markers = TRUE, 
                                            main = "Genotypes"){
   
-  colors <- ifelse(is(probs,"outcross"), "for.split", "parent")  
+  colors <- ifelse(is(probs,"outcross"), "for.split", "parents")  
   
   probs <- cbind(probs, for.split= paste0(probs$homologs, "_", probs$parents))
   
-  probs <- probs %>% group_by(ind, grp) %>%
+  probs <- probs %>% group_by(ind, grp, for.split) %>%
     do(rbind(.,.[nrow(.),])) %>%
     do(mutate(.,
-              pos2 = c(0,pos[-1]-diff(pos)/2),
+              pos2 = c(0,pos[-1]-diff(pos)/2), # Because we don't know exactly where 
+              # the recombination occurs, we ilustrate it in the mean point between 
+              # markers
               pos = c(pos[-nrow(.)], NA)))
   
   

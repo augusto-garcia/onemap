@@ -88,7 +88,7 @@ mds_onemap <- function(input.seq,
   
   n_ind <- input.seq$data.name$n.ind
   if(is(input.seq$data.name,c("outcross", "f2"))){
-    mat<- onemap:::get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1)
+    mat<- get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1)
     # Include NA in D1D2 markers
     seg_type <- input.seq$data.name$segr.type.num[input.seq$seq.num]
     for(i in 1:length(seg_type))
