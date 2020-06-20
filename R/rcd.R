@@ -53,7 +53,8 @@
 ##' @param overlap The desired overlap between batches
 ##' @param phase_cores The number of parallel processes to use when estimating
 ##' the phase of a marker. (Should be no more than 4)
-##' 
+#' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
+#' if \code{TRUE} one of the markers is removed and rcd is performed again.
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}
