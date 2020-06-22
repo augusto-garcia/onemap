@@ -54,7 +54,8 @@ map_avoid_unlinked <- function(input.seq,
                                overlap = NULL,
                                round = 5,
                                phase_cores = 1, 
-                               tol = 1e-05){
+                               tol = 1e-05,
+                               max.gap=F){
   #TODO: error checks...
   if(phase_cores == 1){
     map_df <- map(input.seq, rm_unlinked = T)
@@ -66,10 +67,10 @@ map_avoid_unlinked <- function(input.seq,
     map_df <- map_overlapping_batches(input.seq = input.seq,
                                       size = size, overlap = overlap,
                                       phase_cores = phase_cores, 
-                                      tol=tol, rm_unlinked = T)
+                                      tol=tol, rm_unlinked = T, max.gap = max.gap)
     }
   }
-  while(class(map_df) == "integer"){
+  while(is(map_df, "integer")){
     seq_true <- make_seq(input.seq$twopt, map_df)
     if(is.null(size) & is.null(overlap) & phase_cores == 1){
       map_df <- map(input.seq = seq_true, rm_unlinked = T, tol=tol)

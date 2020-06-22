@@ -56,10 +56,10 @@ est_rf_out<-function(geno, mrk=0, seg_type=NULL, nind, verbose=TRUE)
       
       # Bug fix: If rf is very close to 0.5, LOD can be very close to zero, but with negative value
       # This is causing numerical problems in further analysis
-      r[[1]][which(r[[1]] < 0 & (0-r[[1]]) < 10^(-5))] <- 10^(-5)
-      r[[2]][which(r[[2]] < 0 & (0-r[[1]]) < 10^(-5))] <- 10^(-5)
-      r[[3]][which(r[[3]] < 0 & (0-r[[1]]) < 10^(-5))] <- 10^(-5)
-      r[[4]][which(r[[4]] < 0 & (0-r[[1]]) < 10^(-5))] <- 10^(-5)
+      r[[1]][which(r[[1]] < 0)] <- 10^(-5)
+      r[[2]][which(r[[2]] < 0)] <- 10^(-5)
+      r[[3]][which(r[[3]] < 0)] <- 10^(-5)
+      r[[4]][which(r[[4]] < 0)] <- 10^(-5)
       
       return(r)
   }

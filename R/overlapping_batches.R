@@ -74,15 +74,19 @@ generate_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
 pick_batch_sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
 {
   test.sizes <- c(size, (size - 1):(size - around), (size + 1):(size + around))
+  rm.num <- which(test.sizes <= (overlap+1))
+  if(length(rm.num) > 0) test.sizes <- test.sizes[-rm.num]
   all.batches <- lapply(test.sizes, function(s){
-    generate_overlapping_batches(input.seq, s, overlap, silent = TRUE)
+    onemap:::generate_overlapping_batches(input.seq, s, overlap, silent = TRUE)
   })
   x <- unlist(lapply(all.batches, function(f){
     ran <- range(unlist(lapply(f,length)))
     ran[2] - ran[1]
   }))
   x <- which(x == min(x))
-  test.sizes[x[length(x)]] #prefer larger maps
+  size <- test.sizes[x[length(x)]] #prefer larger maps
+  if(length(size) > 0) return(size) else stop("You should at least have two overlapping batches.",
+                                              " Reconsider the size parameter.")
 }
 
 ##' Mapping overlapping batches
@@ -137,7 +141,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
 {
   #TODO: error checks...
   #Create initial set of batches
-  batches <- generate_overlapping_batches(input.seq, size, overlap)
+  batches <- onemap:::generate_overlapping_batches(input.seq, size, overlap)
   if(verbosity)
   {
     message("Have ", length(batches), " batches.")
@@ -149,12 +153,16 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
   #The first batch is run in full again to get all necessary data (phases etc.)
   if(is.null(seeds))
   {
-    LG <- map(input.seq = make_seq(input.seq$twopt, batches[[1]]), phase_cores = phase_cores, rm_unlinked = rm_unlinked, tol=tol)
-    if(class(LG) == "integer"){
-      rmed.mks <- batches[[1]][which(!batches[[1]] %in% LG$seq.num)]
+    LG <- map(input.seq = make_seq(input.seq$twopt, batches[[1]]), 
+              phase_cores = phase_cores, 
+              rm_unlinked = rm_unlinked, 
+              tol=tol)
+    if(is(LG,"integer")){
+      rmed.mks <- batches[[1]][which(!batches[[1]] %in% LG)]
       warning(cat("Markers", rmed.mks,"did not reached the OneMap default criteria. They are probably segregating independently 
                   and new vector of marker numbers was generated without them. Use function map_avoid_unlinked to remove these markers automatically.\n"))
-      return(seq.num[-2])
+      new.seq <- input.seq$seq.num[-which(input.seq$seq.num == rmed.mks)]
+      return(new.seq)
       browser()
     }
   } else {
@@ -162,11 +170,12 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
                                           twopt = input.seq$twopt), 
                      phase_cores = phase_cores,
                      verbosity = verbosity, seeds = seeds, tol=tol)
-    if(class(LG) == "integer"){
-      rmed.mks <- batches[[1]][which(!batches[[1]] %in% LG$seq.num)]
+    if(is(LG,"integer")){
+      rmed.mks <- batches[[1]][which(!batches[[1]] %in% LG)]
       warning(cat("Markers", rmed.mks,"did not reached the OneMap default criteria. They are probably segregating independently 
                   and new vector of marker numbers was generated without them. Use function map_avoid_unlinked to remove these markers automatically.\n"))
-      return(seq.num[-2])
+      new.seq <- input.seq$seq.num[-which(input.seq$seq.num == rmed.mks)]
+      return(new.seq)
       browser()
     }
   }
@@ -193,11 +202,12 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
                      verbosity = verbosity,
                      seeds = seeds, rm_unlinked = rm_unlinked,
                      tol=tol)
-    if(class(LG) == "integer"){
-      rmed.mks <- batches[[1]][which(!batches[[1]] %in% LG$seq.num)]
+    if(is(LG,"integer")){
+      rmed.mks <- batches[[1]][which(!batches[[1]] %in% LG)]
       warning(cat("Markers", rmed.mks,"did not reached the OneMap default criteria. They are probably segregating independently 
                   and new vector of marker numbers was generated without them. Use function map_avoid_unlinked to remove these markers automatically.\n"))
-      return(seq.num[-2])
+      new.seq <- input.seq$seq.num[-which(input.seq$seq.num == rmed.mks)]
+      return(new.seq)
       browser()
     }
     LGs[[i]] <- LG
@@ -235,25 +245,32 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
   mp <- map(input.seq = s, rm_unlinked = rm_unlinked, tol=tol)
   
   if(max.gap){ # the marker will be removed if it have gaps higher than the threshold in both sides
-    idx <- which(kosambi(mp$seq.rf) > max.gap)
+    idx <- which(get(get(".map.fun", envir=.onemapEnv))(mp$seq.rf) > max.gap)
     rm.seq <- vector()
-    for(i in 1:(length(idx) -1)){
+    cat(kosambi(mp$seq.rf), "\n")
+    cat(idx, "\n")
+    for(i in 1:length(idx)){
       if(idx[i] == 1){
         rm.seq <- c(rm.seq, 1)
-        if(idx[i+1] == 2)
-          rm.seq <- c(rm.seq,2)
-      } else {
-        if(idx[i + 1] == idx[i] + 1)
-          rm.seq <- c(rm.seq, idx[i+1])
+      } else if(idx[i] == length(mp$seq.rf) -1){
+        rm.seq <- c(rm.seq, idx[i] + 1)
+        if(idx[i-1] == idx[i] -1)
+          rm.seq <- c(rm.seq, idx[i])
+      } else if(i-1 != 0){
+        if(idx[i-1] == idx[i] -1) {
+          rm.seq <- c(rm.seq, idx[i])
+        }
       }
     }
-    new.seq <- make_seq(mp$twopt, mp$seq.num[-rm.seq])
-    cat("Markers", mp$seq.num[rm.seq], "were remove because they cause gaps higher than ", max.gap, " cM with both neighboors markers.")
-    mp <- map_overlapping_batches(input.seq = new.seq,
-                                  size = size, overlap = overlap,
-                                  phase_cores = phase_cores, verbosity = verbosity , 
-                                  seeds = seeds, tol=tol, rm_unlinked = rm_unlinked, max.gap=max.gap)
+    
+    if(length(rm.seq)> 0){
+      new.seq <- make_seq(mp$twopt, mp$seq.num[-rm.seq])
+      cat("Markers", mp$seq.num[rm.seq], "were remove because they cause gaps higher than ", max.gap, " cM with both neighboors markers.\n")
+      mp <- map_overlapping_batches(input.seq = new.seq,
+                                    size = size, overlap = overlap,
+                                    phase_cores = phase_cores, verbosity = verbosity , 
+                                    seeds = seeds, tol=tol, rm_unlinked = rm_unlinked, max.gap=max.gap)
+    }
   }
-  
   return(mp)
 }

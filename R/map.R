@@ -142,12 +142,11 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
                          ## call to 'map' function with predefined linkage phase
                          map(make_seq(input.seq$twopt,
                                       seq.num[1:2],
-                                      phase=Ph.Init[j],
-                                      twopt=input.seq$twopt), 
+                                      phase=Ph.Init[j]), 
                              tol=tol, 
                              rm_unlinked = rm_unlinked)
                        })
-    if(all(is.null(unlist(phases)))){
+    if(!all(sapply(phases, function(x) is(x, "sequence")))){
       if (rm_unlinked) {
         warning(cat("The linkage between markers", 
                     seq.num[1], "and", seq.num[2], 
@@ -204,12 +203,11 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
                              ## call to 'map' function with predefined linkage phases
                              map(make_seq(input.seq$twopt,
                                           seq.num[1:(mrk+1)],
-                                          phase=Ph.Init[j,],
-                                          twopt=input.seq$twopt), 
+                                          phase=Ph.Init[j,]), 
                                  tol=tol, 
                                  rm_unlinked = rm_unlinked)
                            })
-        if(all(is.null(unlist(phases)))){
+        if(!all(sapply(phases, function(x) is(x, "sequence")))){
           if(rm_unlinked){
             warning(cat("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], 
                         "did not reached the OneMap default criteria. They are probably segregating independently. Marker", seq.num[mrk+1], "will be removed. 
@@ -245,7 +243,9 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
       }
     }
     ## one last call to map function, with the final map
-    map(make_seq(input.seq$twopt,seq.num,phase=seq.phase,twopt=input.seq$twopt), 
+    map(make_seq(input.seq$twopt,
+                 seq.num,
+                 phase=seq.phase), 
         tol=tol, 
         rm_unlinked = rm_unlinked)
   }
