@@ -167,15 +167,15 @@ rf_graph_table <- function(input.seq,
     colnames(mat) <- rownames(mat)<- input.seq$seq.num
 
   # Be compatible with older versions
-  if(all(is.na(input.seq$data.name$segr.type.num))){
-    if(is(input.seq$data.name, "backcross")){
-      segr.type.num <- rep(8, length(input.seq$data.name$segr.type))
-    } else {
-      segr.type.num <- rep(9, length(input.seq$data.name$segr.type))
-    }
-  } else {
-    segr.type.num <- input.seq$data.name$segr.type.num
-  }
+  # if(all(is.na(input.seq$data.name$segr.type.num))){
+  #   if(is(input.seq$data.name, "backcross")){
+  #     segr.type.num <- rep(8, length(input.seq$data.name$segr.type))
+  #   } else {
+  #     segr.type.num <- rep(9, length(input.seq$data.name$segr.type))
+  #   }
+  # } else {
+  #   segr.type.num <- input.seq$data.name$segr.type.num
+  # }
     
   ##Write NAs in two-point recombination fractions between markers of type D1 and D2
   types <- input.seq$data.name$segr.type.num[input.seq$seq.num]
@@ -185,6 +185,9 @@ rf_graph_table <- function(input.seq,
         mat[i,j] <- mat[j,i] <- NA
       }
 
+  ## Marker types
+  types <- input.seq$data.name$segr.type[input.seq$seq.num]
+  
   ##Write multipoint estimates
   for (i in 1:(n.mrk-1)){
     mat[i+1,i] <- input.seq$seq.rf[i]

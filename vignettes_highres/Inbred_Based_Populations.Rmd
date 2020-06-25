@@ -140,7 +140,7 @@ computer).
 
 Now, let us load `OneMap`:
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 library(onemap)
 ``` 
 
@@ -295,7 +295,7 @@ pedsim2vcf(inputfile = system.file("extdata/sim_cod_F2_genotypes.dat", package =
 
 The function prints on screen the percentage of genotypes changed between simulated by PedigreeSim and re-estimated using a binomial distribution and simulated allele counts. Notice that this percentage increase if you reduce the mean depth or increase bias or dispersion parameter.
 
-In the session [`Importing data from VCF file`](##importing-data-from-VCF-file) below you will see how to import VCF files as `OneMap` objects and also how to convert it in `OneMap` raw data.
+In the session [`Importing data from VCF file`](#importing-data-from-VCF-file) below you will see how to import VCF files as `OneMap` objects and also how to convert it in `OneMap` raw data.
 
 # Importing data
 
@@ -315,7 +315,7 @@ modify it accordingly. The second one is the data file name.
 In this example, an object named `mapmaker_example_f2.raw` was created. Notice
 that if you leave the argument `dir` blank, the file will be read from
 your current _working directory_. To set a working directory, see
-[Introduction to R (Importing and Exporting Data)](https://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/vignettes_html/Introduction_R.html).
+[Introduction to R (Importing and Exporting Data)](http://augustogarcia.me/onemap/vignettes_highres/Introduction_R.html).
 
 ```{r, eval=FALSE}
 mapmaker_example_f2 <- read_mapmaker(file= system.file("extdata/mapmaker_example_f2.raw", 
@@ -1451,13 +1451,15 @@ colnames(time_spent) <- c("Without parallelization (h)", "With parallelization (
 knitr::kable(time_spent)
 ```
 
+
 |           | Without parallelization (h)| With parallelization (h)|
 |:----------|---------------------------:|------------------------:|
-|rcd        |                   1.0719422|                0.3713278|
-|record_map |                   2.0545611|                0.7478642|
-|ug_map     |                   0.9661147|                0.3991808|
-|mds_onemap |                   1.3557292|                0.5197869|
-|map        |                   2.4155069|                0.8556403|
+|rcd        |                   0.6801889|                0.1260436|
+|record_map |                   1.8935892|                0.3330297|
+|ug_map     |                   1.1002725|                0.2256356|
+|mds_onemap |                   2.1478900|                0.4443492|
+|map        |                   2.1042114|                0.6156722|
+
 
 Now, let's simulate the mapping population and markers.
 
@@ -1481,7 +1483,8 @@ simParallel <- read_onemap("simParall_f2.raw")
 plot(simParallel)
 ```
 
-![](f2_img/plot.simParallel.jpg)
+<img src="f2_img/plot.simParallel.jpg" width="500" height="400">
+
 
 ```{r, eval=FALSE}
 # Calculates two-points recombination fractions
@@ -1496,7 +1499,7 @@ find_bins(simParallel)
 p <- plot(test_segregation(simParallel))
 ```
 
-![](out_img/plot.segre.jpg)
+<img src="f2_img/plot.segre.jpg" width="500" height="400">
 
 To prepare the data with defined bach size we use function `pick_batch_sizes`. It selects a batch size that splits the data into even groups. Argument `size` defines the  batch size next to which an optimum size will be searched. `overlap` defines the number of markers that overlap between present batch and next. This is used because pre-defined phases at these overlap markers in present batch are used to start the HMM in the next batch. The `around` argument defines how much the function can vary around the defined number in `size` to search for the optimum batch size.
 
@@ -1552,13 +1555,14 @@ b <- rf_graph_table(rcd_map_par, mrk.axis = "none")
 p <- ggarrange(a,b , common.legend = TRUE,
           labels = c("rcd", "rcd + parallel"), 
           vjust = 0.2,
-          hjust= -0.8,
+          hjust= -1.4,
+          font.label = list(size = 10),
           ncol=2, nrow=1)
 
 ggsave(p, filename = "rcd.jpg")
 ```
 
-![](out_img/rcd.jpg)
+<img src="f2_img/rcd.jpg" width="500" height="400">
 
 ```{r, echo=FALSE, eval=FALSE}
 # Without parallelization 
@@ -1592,12 +1596,13 @@ p <- ggarrange(a,b , common.legend = TRUE,
           labels = c("record", "record + parallel"), 
           vjust = 0.2,
           hjust= -0.8,
+          font.label = list(size = 10),
           ncol=2, nrow=1)
 
 ggsave(p, filename = "record.jpg")
 ```
 
-![](out_img/record.jpg)
+<img src="f2_img/record.jpg" width="500" height="400">
 
 ```{r, echo=FALSE, eval=FALSE}
 # Without parallelization 
@@ -1631,13 +1636,14 @@ b <- rf_graph_table(ug_map_par, mrk.axis = "none")
 p <- ggarrange(a,b , common.legend = TRUE,
           labels = c("ug", "ug + parallel"), 
           vjust = 0.2,
-          hjust= -0.8,
+          hjust= -1.6,
+          font.label = list(size = 10),
           ncol=2, nrow=1)
 
 ggsave(p, filename = "ug.jpg")
 ```
 
-![](out_img/ug.jpg)
+<img src="f2_img/ug.jpg" width="500" height="400">
 
 ## Speed up mds_onemap
 
@@ -1673,13 +1679,14 @@ b <- rf_graph_table(map_mds_par, mrk.axis = "none")
 p <- ggarrange(a,b , common.legend = TRUE,
           labels = c("mds", "mds + parallel"), 
           vjust = 0.2,
-          hjust= -0.8,
+          hjust= -1,
+          font.label = list(size = 10),
           ncol=2, nrow=1)
 
 ggsave(p, filename = "mds.jpg")
 ```
 
-![](out_img/mds.jpg)
+<img src="f2_img/mds.jpg" width="500" height="400">
 
 ## Speed up map estimation for an arbitrary order (map function)
 
@@ -1727,13 +1734,14 @@ b <- rf_graph_table(batch_map_par, mrk.axis = "none")
 p <- ggarrange(a,b , common.legend = TRUE,
           labels = c("map", "map + parallel"), 
           vjust = 0.2,
-          hjust= -0.8,
+          hjust= -1,
+          font.label = list(size = 10),
           ncol=2, nrow=1)
 
 ggsave(p, filename = "map.jpg")
 ```
 
-![](out_img/map.jpg)
+<img src="f2_img/map.jpg" width="500" height="400">
 
 As you can see in above maps, heuristic ordering algorithm do not return an optimal order result, mainly if you don't have many individuals in your population. Because of the erroneous order, generated map size are not close to the simulated size (100 cM) and their heapmaps don't present the expected color pattern. Two of them get close to the color pattern, they are the ug and the MDS method. They present good  global ordering but not local. If you have a reference genome, you can use its position information to rearrange local ordering.
 
