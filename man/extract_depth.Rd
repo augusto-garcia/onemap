@@ -26,6 +26,8 @@ extract_depth(
 
 \item{parent2}{parent 2 identification in vcfR objetc}
 
+\item{f1}{if your cross type is f2, you must define the F1 individual}
+
 \item{recovering}{TRUE/FALSE, if TRUE avaliate all markers from vcf file, if FALSE avaliate only markers in onemap object}
 }
 \value{

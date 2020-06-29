@@ -4,17 +4,18 @@
 \alias{progeny_haplotypes}
 \title{Generate data.frame with genotypes estimated by HMM and its probabilities}
 \usage{
-progeny_haplotypes(..., ind = 1, most_likely = FALSE, group_names = NULL)
+progeny_haplotypes(..., ind = 1, group_names = NULL, most_likely = FALSE)
 }
 \arguments{
 \item{...}{Map(s) or list(s) of maps. Object(s) of class sequence.}
 
 \item{ind}{vector with individual index to be evaluated}
 
-\item{most_likely}{logical; if  \code{TRUE}, the most likely genotype is plotted; 
-if FALSE (default) the genotype probability is plotted.}
-
 \item{group_names}{Names of the groups.}
+
+\item{most_likely}{logical; if  \code{TRUE}, the most likely genotype receive 1 and all the rest 0. 
+If there are more than one most likely both receive 0.5.
+if FALSE (default) the genotype probability is plotted.}
 }
 \value{
 a data.frame information: individual (ind) and group (grp) ID, position in centimorgan (pos), 

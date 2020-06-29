@@ -40,7 +40,8 @@ run_pedsim(
 
 \item{pop}{a character defining the population type. Supported: "F1", "F2", "BC"}
 
-\item{path.pedsim}{path to the .jar PedigreeSim file}
+\item{path.pedsim}{path to the .jar PedigreeSim file. If you still don't have it, 
+download in https://www.wur.nl/en/show/Software-PedigreeSim.htm}
 
 \item{name.mapfile}{a character with the mapfile name}
 

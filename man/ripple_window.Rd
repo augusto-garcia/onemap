@@ -48,10 +48,6 @@ the input sequence. See description.}
 
 \item{no_reverse}{For method "one": If \code{FALSE}, the method will also
 create all possible reverse sequences if the marker swaps.}
-
-\item{optimize}{Either "likelihood" or "count". Passed to \code{ripple_ord}
-in order to optimize the map's likelihood or the RECORD COUNT criterion.
-Unless you are absolutely sure why, you should use "likelihood".}
 }
 \value{
 An object of class \code{sequence} that is the best order for the

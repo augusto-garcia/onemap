@@ -28,6 +28,8 @@ create_depths_profile(
 
 \item{parent2}{a character specifying the second parent ID}
 
+\item{f1}{if your cross type is f2, you must define the F1 individual}
+
 \item{vcf.par}{the vcf parameter that store the allele depth information.}
 
 \item{recovering}{logical. If TRUE, all markers in vcf are considere, if FALSE only those in onemap.obj}

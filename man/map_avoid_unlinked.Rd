@@ -10,7 +10,8 @@ map_avoid_unlinked(
   overlap = NULL,
   round = 5,
   phase_cores = 1,
-  tol = 1e-05
+  tol = 1e-05,
+  max.gap = F
 )
 }
 \arguments{

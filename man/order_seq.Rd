@@ -15,9 +15,7 @@ order_seq(
   THRES = 3,
   touchdown = FALSE,
   tol = 0.1,
-  size = NULL,
-  overlap = NULL,
-  phase_cores = 1
+  rm_unlinked = FALSE
 )
 }
 \arguments{
