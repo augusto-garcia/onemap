@@ -537,7 +537,7 @@ draw_map2(LG1_f2_final, col.group = "#58A4B0", col.mark = "#335C81", output = "m
 #  find_bins(simParallel)
 #  
 #  # There are no distorted markers
-#  p <- plot(test_segregation(simParallel))
+#  print(test_segregation(simParallel)) # Not shown
 
 ## ---- eval=FALSE--------------------------------------------------------------
 #  batch_size <- pick_batch_sizes(input.seq = seq_all,
