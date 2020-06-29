@@ -7,7 +7,7 @@
 suggest_lod(x)
 }
 \arguments{
-\item{x}{an object of class \code{onemap}}
+\item{x}{an object of class \code{sequence} or \code{onemap}}
 }
 \value{
 the suggested LOD to be used for testing linkage

@@ -66,7 +66,7 @@ rf_2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE) {
     if(is(input.obj,"outcross"))
         r<-est_rf_out(geno = input.obj$geno, seg_type = input.obj$segr.type.num, nind = input.obj$n.ind, verbose = verbose)
     else if(is(input.obj, "f2"))
-        r<-est_rf_f2(geno = input.obj$geno, seg_type = input.obj$segr.type.num, nind = input.obj$n.ind, verbose = verbose)
+        r<-est_rf_out(geno = input.obj$geno, seg_type = input.obj$segr.type.num, nind = input.obj$n.ind, verbose = verbose)
     else if(is(input.obj,"backcross"))
         r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=0, verbose = verbose)
     else if(is(input.obj,"riself"))
@@ -74,7 +74,7 @@ rf_2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE) {
     else if(is(input.obj, "risib"))
         r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=2, verbose = verbose)
         
-    structure(list(data.name=as.character(sys.call())[2], n.mar=input.obj$n.mar, LOD=LOD, max.rf=max.rf,
+    structure(list(data.name= input.obj, n.mar=input.obj$n.mar, LOD=LOD, max.rf=max.rf,
                    input=input.obj$input, CHROM = input.obj$CHROM, POS= input.obj$POS, analysis=r),
               class = c("rf_2pts", class(input.obj)[2]))
 }
@@ -117,7 +117,7 @@ print.rf_2pts <- function(x, mrk=NULL,...) {
       ## checking if markers exist and converting character to numeric
       if(length(mrk)!=2)
           stop(deparse(substitute(mrk))," must be a pair of markers")
-      if(is(x, "f2") || is(x, "backcross") || is(x, "risib") || is(x, "riself"))
+      if(is(x, "backcross") || is(x, "risib") || is(x, "riself"))
       {
           if (is.character(mrk[1]) && is.character(mrk[2])) {
               mrk1name<-mrk[1]
@@ -156,7 +156,7 @@ print.rf_2pts <- function(x, mrk=NULL,...) {
           names(output)<-c("rf","LOD")
           print(output)
       }
-    else if(is(x, "outcross"))
+    else if(is(x, "outcross") || is(x,"f2"))
     {
         if (is.character(mrk[1]) && is.character(mrk[2])) {
             mrk1name<-mrk[1]

@@ -25,7 +25,7 @@ get_mat_rf_in<- function(input.seq, LOD=FALSE, max.rf=0.5, min.LOD=0) {
     if(length(input.seq$seq.num) < 2)
         stop("The sequence must have at least 2 markers")
     n.mrk<-length(input.seq$seq.num)
-    mrk.names <- colnames(get(input.seq$data.name, pos=1)$geno)[input.seq$seq.num]
+    mrk.names <- colnames(input.seq$data.name$geno)[input.seq$seq.num]
     ## create reconmbination fraction matrix 
     r <- matrix(NA,n.mrk,n.mrk)
     dimnames(r)<-list(mrk.names, mrk.names)
@@ -34,10 +34,10 @@ get_mat_rf_in<- function(input.seq, LOD=FALSE, max.rf=0.5, min.LOD=0) {
         for(i in 1:(n.mrk-1)) {
             for(j in (i+1):n.mrk) {
                 k<-sort(c(input.seq$seq.num[i], input.seq$seq.num[j]))
-                r.temp<-get(input.seq$twopt)$analysis[k[2], k[1]]
+                r.temp<-input.seq$twopt$analysis[k[2], k[1]]
                 if(r.temp <= max.rf)
                     r[i,j]<-r.temp
-                LOD.temp<-get(input.seq$twopt)$analysis[k[1], k[2]]
+                LOD.temp<-input.seq$twopt$analysis[k[1], k[2]]
                 if(LOD.temp >= min.LOD)
                     r[j,i]<-LOD.temp
             }
@@ -48,9 +48,9 @@ get_mat_rf_in<- function(input.seq, LOD=FALSE, max.rf=0.5, min.LOD=0) {
             for(i in 1:(n.mrk-1)) {
                 for(j in (i+1):n.mrk) {
                     k<-sort(c(input.seq$seq.num[i], input.seq$seq.num[j]))
-                    r.temp<-get(input.seq$twopt)$analysis[k[2], k[1]]
+                    r.temp<-input.seq$twopt$analysis[k[2], k[1]]
                     if(r.temp <= max.rf)
-                        r[j,i]<-r[i,j]<-get(input.seq$twopt)$analysis[k[2], k[1]]
+                        r[j,i]<-r[i,j]<-input.seq$twopt$analysis[k[2], k[1]]
                 }
             }
         }
@@ -64,13 +64,13 @@ get_mat_rf_in<- function(input.seq, LOD=FALSE, max.rf=0.5, min.LOD=0) {
 get_vec_rf_in<- function(input.seq, LOD=FALSE, acum=TRUE) {
     if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequnece'")
     if(length(input.seq$seq.num) < 2) stop("The sequence must have at least 2 markers")
-    mrk.names <- colnames(get(input.seq$data.name, pos=1)$geno)[input.seq$seq.num]
+    mrk.names <- colnames(input.seq$data.name$geno)[input.seq$seq.num]
     r<-numeric(length(input.seq$seq.num)-1)
     pair.names<-character(length(r))
     for(i in 1:(length(input.seq$seq.num)-1))
     {
         j<-sort(c(input.seq$seq.num[i], input.seq$seq.num[i+1]), decreasing=!LOD)
-        r[i]<-get(input.seq$twopt)$analysis[j[1], j[2]]
+        r[i]<-input.seq$twopt$analysis[j[1], j[2]]
         pair.names[i]<-paste(mrk.names[i], mrk.names[i+1], sep="-") 
     }
     if(acum)
@@ -89,7 +89,7 @@ get_vec_rf_in<- function(input.seq, LOD=FALSE, acum=TRUE) {
      if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequnece'")
      if(length(input.seq$seq.num) < 2) stop("The sequence must have at least 2 markers")
      n.mrk<-length(input.seq$seq.num)
-     mrk.names <- colnames(get(input.seq$data.name, pos=1)$geno)[input.seq$seq.num]
+     mrk.names <- colnames(input.seq$data.name$geno)[input.seq$seq.num]
      ## create reconmbination fraction matrix 
      r <- matrix(NA,n.mrk,n.mrk)
      dimnames(r)<-list(mrk.names, mrk.names)
@@ -98,8 +98,8 @@ get_vec_rf_in<- function(input.seq, LOD=FALSE, acum=TRUE) {
          for(i in 1:(n.mrk-1)) {
              for(j in (i+1):n.mrk) {
                  k<-sort(c(input.seq$seq.num[i], input.seq$seq.num[j]))
-                 rfs<-sapply(get(input.seq$twopt)$analysis, function(x,i,j) x[i,j], k[2], k[1]) 
-                 LODs<-sapply(get(input.seq$twopt)$analysis, function(x,i,j) x[i,j], k[1], k[2]) 
+                 rfs<-sapply(input.seq$twopt$analysis, function(x,i,j) x[i,j], k[2], k[1]) 
+                 LODs<-sapply(input.seq$twopt$analysis, function(x,i,j) x[i,j], k[1], k[2]) 
                  ## check if any assignment meets the criteria
                  phases <- which((LODs >= min.LOD) & rfs <= max.rf)
                  if(length(phases) == 0)
@@ -122,13 +122,13 @@ get_vec_rf_in<- function(input.seq, LOD=FALSE, acum=TRUE) {
          for(i in 1:(n.mrk-1)) {
              for(j in (i+1):n.mrk) {
                  k<-sort(c(input.seq$seq.num[i], input.seq$seq.num[j]))
-                 rfs<-sapply(get(input.seq$twopt)$analysis, function(x,i,j) x[i,j], k[2], k[1]) 
-                 LODs<-sapply(get(input.seq$twopt)$analysis, function(x,i,j) x[i,j], k[1], k[2]) 
+                 rfs<-sapply(input.seq$twopt$analysis, function(x,i,j) x[i,j], k[2], k[1]) 
+                 LODs<-sapply(input.seq$twopt$analysis, function(x,i,j) x[i,j], k[1], k[2]) 
                  ## check if any assignment meets the criteria
                  phases <- which((LODs >= min.LOD) & rfs <= max.rf)
                  if(length(phases) == 0)
                  {
-                   r[j,i] <- r[i,j] <- NA
+                   r[j,i] <-  r[i,j] <- NA
                  }
                  else
                  {
@@ -149,7 +149,7 @@ get_vec_rf_out<- function(input.seq, LOD=FALSE, max.rf=0.5, min.LOD=0, acum=TRUE
     if(!is(input.seq,"sequence"))
         stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
     if(length(input.seq$seq.num) < 2) stop("The sequence must have at least 2 markers")
-    mat<-get_mat_rf_out(input.seq=input.seq, LOD=LOD, max.rf=max.rf, min.LOD=min.LOD)
+    mat<- get_mat_rf_out(input.seq=input.seq, LOD=LOD, max.rf=max.rf, min.LOD=min.LOD)
     mrk.names<-colnames(mat)
     r<-numeric(length(input.seq$seq.num)-1)
     pair.names<-character(ncol(mat)-1)

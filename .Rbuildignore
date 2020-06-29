@@ -7,5 +7,8 @@ copying
 ^NEWS\.md$
 ^vignettes_highres$
 ^\.Rproj\.user$
+
+^README.md
+^vignettes_highres
 Dockerfile
-^README\.md$
+

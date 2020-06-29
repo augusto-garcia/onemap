@@ -72,12 +72,12 @@ group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
     if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
     ## determining thresholds
     if (is.null(LOD))
-        LOD <- get(input.seq$twopt, pos=1)$LOD
+        LOD <- input.seq$twopt$LOD
     if (is.null(max.rf))
-        max.rf <- get(input.seq$twopt, pos=1)$max.rf
-    cl<-class(get(input.seq$data.name))[2]
-    geno<-get(input.seq$data.name)$geno[,input.seq$seq.num]
-    st<-get(input.seq$data.name)$segr.type.num[input.seq$seq.num]
+        max.rf <- input.seq$twopt$max.rf
+    cl<-class(input.seq$data.name)[2]
+    geno<-input.seq$data.name$geno[,input.seq$seq.num]
+    st<-input.seq$data.name$segr.type.num[input.seq$seq.num]
     groups<-rep(0, length(input.seq$seq.num))
     tp<-list(unlk=1:length(input.seq$seq.num))
     i<-1
@@ -172,16 +172,11 @@ print.group <-
 check_linkage<-function(i, s, cl, geno, st=NULL, max.rf, LOD)
 {
     s<-s[is.na(match(s,i))]
-    if(cl=="outcross")
+    if(cl=="outcross" | cl=="f2")
     {
         r<-est_rf_out(geno = geno[,c(i,s)], mrk = 1, seg_type = st[c(i,s)], nind = nrow(geno))
         sig<-apply(r[[1]], 2, function(x,y) min(x) <= y, y=max.rf) &
             apply(r[[2]], 2, function(x,y) max(x) >= y, y=LOD)
-    }
-    else if(cl=="f2")
-    {
-        r<-est_rf_f2(geno = geno[,c(i,s)], mrk = 1, seg_type = st[c(i,s)], nind = nrow(geno))
-        sig<-r[1,] <= max.rf & r[2,] >=LOD
     }
     else if(cl=="backcross")
     {

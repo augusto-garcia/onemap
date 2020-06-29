@@ -14,7 +14,8 @@ order_seq(
   twopt.alg = c("rec", "rcd", "ser", "ug"),
   THRES = 3,
   touchdown = FALSE,
-  tol = 0.1
+  tol = 0.1,
+  rm_unlinked = FALSE
 )
 }
 \arguments{

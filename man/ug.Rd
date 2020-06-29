@@ -4,7 +4,16 @@
 \alias{ug}
 \title{Unidirectional Growth}
 \usage{
-ug(input.seq, LOD = 0, max.rf = 0.5, tol = 1e-04)
+ug(
+  input.seq,
+  LOD = 0,
+  max.rf = 0.5,
+  tol = 1e-04,
+  rm_unlinked = TRUE,
+  size = NULL,
+  overlap = NULL,
+  phase_cores = 1
+)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}
@@ -17,6 +26,9 @@ value above.}
 
 \item{tol}{tolerance for the C routine, i.e., the value used to evaluate
 convergence.}
+
+\item{rm_unlinked}{When some pair of markers do not follow the linkage criteria, 
+if \code{TRUE} one of the markers is removed and ug is performed again.}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the

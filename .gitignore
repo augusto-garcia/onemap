@@ -9,5 +9,6 @@ onemap.Rproj
 *.cro
 *.map
 *.bak
+*.Rproj
 doc
 Meta

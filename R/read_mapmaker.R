@@ -75,14 +75,15 @@ globalVariables(c("mkt.wrg"))
 ##'     names(mapmaker_example_f2)
 ##'   }
 ##'@export
-read_mapmaker<-function (dir, file)
+read_mapmaker<-function (file=NULL, dir=NULL)
 {
     ## create file name
-    if (missing(file))
-        stop("Missing file.")
-    if (!missing(dir) && dir != "") {
-        file <- file.path(dir, file)
-    }
+    if (is.null(file))
+         stop("Missing file.")
+    if (!is.null(dir) && dir != "") {
+         file <- file.path(dir, file)
+     }
+     
     ## count lines in rawfile
     n.lines <- length(scan(file, what = character(), skip = 0,
                            nlines = 0, blank.lines.skip = FALSE,
@@ -270,10 +271,15 @@ read_mapmaker<-function (dir, file)
             else
                 segr.type[i]<-"M.X"
         }
-        segr.type.num[segr.type=="A.H.B"]<-1
-        segr.type.num[segr.type=="C.A"]<-3
-        segr.type.num[segr.type=="D.B"]<-2
-        segr.type.num[segr.type=="M.X"]<-4
+        segr.type.num[segr.type=="A.H.B"]<-4
+        segr.type.num[segr.type=="C.A"]<-7
+        segr.type.num[segr.type=="D.B"]<-6
+        segr.type.num[segr.type=="M.X"]<-0
+        # Adapting to change in f2 HMM == out HMM
+        geno[, segr.type=="C.A"][which(geno[, segr.type=="C.A"] == 1)] <- 2 
+        geno[, segr.type=="C.A"][which(geno[, segr.type=="C.A"] == 5)] <- 1 
+        geno[, segr.type=="D.B"][which(geno[, segr.type=="D.B"] == 4)] <- 1 
+        geno[, segr.type=="D.B"][which(geno[, segr.type=="D.B"] == 3)] <- 2 
         geno[is.na(geno)]<-0
     }
     else if(type=="backcross"){
@@ -306,9 +312,14 @@ read_mapmaker<-function (dir, file)
             cat("\t",formatC(paste(colnames(pheno)[i],":",sep=""),width=max(nchar(paste(colnames(pheno),":",sep="")))), miss.value.pheno[i], "\n")
         }
     }
-    structure(list(geno = geno, n.ind = n.ind, n.mar = n.mar,
-                   segr.type = segr.type, segr.type.num=segr.type.num,
-                   input=file, n.phe=n.phe, pheno = pheno),  class = cl)
+    
+    onemap.obj <- list(geno = geno, n.ind = n.ind, n.mar = n.mar,
+                       segr.type = segr.type, segr.type.num=segr.type.num,
+                       input=file, n.phe=n.phe, pheno = pheno)
+    class(onemap.obj) <- cl
+    new.onemap.obj <- create_probs(onemap.obj, global_error = 10^-5)
+    
+    structure(new.onemap.obj)
 }
 
 ## end of file
