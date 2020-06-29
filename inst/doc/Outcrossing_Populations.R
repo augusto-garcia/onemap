@@ -25,7 +25,7 @@ library(onemap)
 #                                       "C.8", "D1.9", "D1.10", "D1.11", "D1.12", "D1.13",
 #                                       "D2.14", "D2.15", "D2.16", "D2.17", "D2.18"),
 #             n.types = rep(3,18), pop = "F1", path.pedsim = "path/to/PedigreeSim/",
-#             name.mapfile = "mapfile.map", name.founderfile="founderfile.gen",
+#             name.mapfile = "mapfile.txt", name.founderfile="founderfile.gen",
 #             name.chromfile="sim.chrom", name.parfile="sim.par",
 #             name.out="sim_out")
 
@@ -41,16 +41,16 @@ pedsim2raw(genofile = system.file("extdata/sim_out_genotypes.dat", package = "on
 #  # Dominant markers are not supported, then, we simulate other dataset with only codominant markers
 #  run_pedsim(chromosome = "Chr1", n.marker = 42, tot.size.cm = 100, centromere = 50,
 #             n.ind = 200, mk.types = c("A1", "A2", "B3.7", "D1.9", "D1.10", "D2.14", "D2.15"),
-#             n.types = rep(6,7), pop = "F1", path.pedsim = "path/to/PedigreeSim/",
-#             name.mapfile = "mapfile.map", name.founderfile="founderfile.gen",
-#             name.chromfile="sim.chrom", name.parfile="sim.par",
+#             n.types = rep(6,7), pop = "F1", path.pedsim = "/home/rstudio/onemap/",
+#             name.mapfile = "mapfile_out.txt", name.founderfile="founderfile.gen",
+#             name.chromfile="sim_out.chrom", name.parfile="sim.par",
 #             name.out="sim_cod_out")
 
 ## ---- eval=FALSE, message=F,warning=F-----------------------------------------
 #  # For outcrossing population
 #  pedsim2vcf(inputfile = "sim_cod_out_genotypes.dat",
-#             map.file = "mapfile.map",
-#             chrom.file = "sim.chrom",
+#             map.file = "mapfile_out.txt",
+#             chrom.file = "sim_out.chrom",
 #             out.file = "simu_cod_out.vcf",
 #             miss.perc = 0,
 #             counts = TRUE,
@@ -69,8 +69,8 @@ pedsim2raw(genofile = system.file("extdata/sim_out_genotypes.dat", package = "on
 ## ---- message=F,warning=F, echo=FALSE-----------------------------------------
 # For outcrossing population
 pedsim2vcf(inputfile = system.file("extdata/sim_cod_out_genotypes.dat", package = "onemap"),
-           map.file = system.file("extdata/mapfile.map", package = "onemap"), 
-           chrom.file = system.file("extdata/sim.chrom", package = "onemap"), 
+           map.file = system.file("extdata/mapfile_out.txt", package = "onemap"), 
+           chrom.file = system.file("extdata/sim_out.chrom", package = "onemap"), 
            out.file = "simu_cod_out.vcf",
            miss.perc = 0, 
            counts = TRUE, 
@@ -92,8 +92,8 @@ pedsim2vcf(inputfile = system.file("extdata/sim_cod_out_genotypes.dat", package 
 ## ---- eval=FALSE--------------------------------------------------------------
 #  onemap_example_out <- read_onemap(inputfile = "onemap_example_out.raw")
 
-## ---- eval=FALSE, echo=FALSE--------------------------------------------------
-#  onemap_example_out <- read_onemap(inputfile = system.file("extdata/onemap_example_out.raw", package = "onemap"))
+## ---- echo=FALSE--------------------------------------------------------------
+onemap_example_out <- read_onemap(inputfile = system.file("extdata/onemap_example_out.raw", package = "onemap"))
 
 ## -----------------------------------------------------------------------------
 data("onemap_example_out")
@@ -130,9 +130,18 @@ vcfR.object <- read.vcfR(system.file("extdata/vcf_example_out.vcf", package = "o
 ## ---- echo=FALSE--------------------------------------------------------------
 data(vcf_example_out)
 
+## -----------------------------------------------------------------------------
+vcf_example_out
+
 ## ---- eval=FALSE--------------------------------------------------------------
 #  save(vcfR.object, file = "vcfR.object.RData")
 #  # rm(vcfR.object)
+
+## -----------------------------------------------------------------------------
+vcf_example_out
+
+## -----------------------------------------------------------------------------
+vcf_filtered <- filter_missing(vcf_example_out, threshold = 0.25)
 
 ## ---- message=F,warning=F-----------------------------------------------------
 # For outcrossing population
@@ -182,7 +191,7 @@ bins_example <- create_data_bins(comb_example, bins)
 bins_example
 
 ## ---- eval=FALSE--------------------------------------------------------------
-#  write_onemap_raw(comb_example, file.name = "new_dataset.raw")
+#  write_onemap_raw(bins_example, file.name = "new_dataset.raw")
 
 ## -----------------------------------------------------------------------------
 test_segregation_of_a_marker(bins_example, 4)
@@ -272,6 +281,9 @@ LG3_rcd <- rcd(LG3)
 LG3_rec <- record(LG3)
 LG3_ug <- ug(LG3)
 
+## -----------------------------------------------------------------------------
+LG3_mds <- mds_onemap(LG3)
+
 ## ---- eval=TRUE,  results='hide'----------------------------------------------
 LG3_comp <- compare(LG3)
 
@@ -294,7 +306,7 @@ rf_graph_table(LG3_final)
 rf_graph_table(LG3_final, graph.LOD = TRUE)
 
 ## ---- eval=FALSE--------------------------------------------------------------
-#  rf_graph_table(LG3_final, inter = TRUE, html.file = "LG3.html")
+#  rf_graph_table(LG3_final, inter = TRUE, mrk.axis= "names", html.file = "LG3.html")
 
 ## -----------------------------------------------------------------------------
 rf_graph_table(LG3_final, inter = FALSE, mrk.axis = "numbers")
@@ -404,8 +416,11 @@ ripple_seq(LG2_all, ws = 4, LOD = LOD_sug)
 ## -----------------------------------------------------------------------------
 LG2_test_seq <- drop_marker(LG2_all, c(23,29))
 
+## ---- eval=FALSE--------------------------------------------------------------
+#  (LG2_test_map <- map(LG2_test_seq))
+
 ## -----------------------------------------------------------------------------
-(LG2_test_map <- map(LG2_test_seq))
+(LG2_test_map <- onemap::map(LG2_test_seq))
 
 ## -----------------------------------------------------------------------------
 rf_graph_table(LG2_test_map, mrk.axis = "numbers")
@@ -450,7 +465,7 @@ rf_graph_table(LG1_mds)
 
 ## -----------------------------------------------------------------------------
 LG1_test_seq <- drop_marker(LG1_frame, c(10,11,28,42))
-LG1_test_map <- map(LG1_test_seq)
+LG1_test_map <- onemap::map(LG1_test_seq)
 
 ## -----------------------------------------------------------------------------
 rf_graph_table(LG1_test_map, mrk.axis = "numbers")
@@ -484,6 +499,9 @@ CHR2 <- make_seq(twopts, "2")
 CHR3 <- make_seq(twopts, "3")
 
 ## -----------------------------------------------------------------------------
+unique(bins_example$CHROM)
+
+## -----------------------------------------------------------------------------
 CHR_mks <- group_seq(input.2pts = twopts, seqs = "CHROM", unlink.mks = mark_no_dist,
                      repeated = FALSE)
 
@@ -509,11 +527,11 @@ CHR1_ord <- order_seq(CHR_mks$sequences$CHR1)
 CHR1_frame <- make_seq(CHR1_ord, "force")
 
 ## ---- eval=FALSE--------------------------------------------------------------
-#  rf_graph_table(CHR1_frame) # graphic not showed
+#  rf_graph_table(CHR1_frame) # graphic not shown
 
 ## -----------------------------------------------------------------------------
 CHR1_test_seq <- drop_marker(CHR1_frame, 11)
-CHR1_test_map <- map(CHR1_test_seq)
+CHR1_test_map <- onemap::map(CHR1_test_seq)
 CHR1_add11_seq <- try_seq(CHR1_test_map, 11)
 CHR1_add11 <- make_seq(CHR1_add11_seq, 25) # marker 11 was placed at the same position as before
 
@@ -536,7 +554,7 @@ CHR2_ord <- order_seq(CHR_mks$sequences$CHR2)
 CHR2_frame <- make_seq(CHR2_ord, "force")
 
 ## ---- eval=FALSE--------------------------------------------------------------
-#  rf_graph_table(CHR2_frame) # graphic not showed
+#  rf_graph_table(CHR2_frame) # graphic not shown
 
 ## -----------------------------------------------------------------------------
 CHR2_final <- CHR2_frame
@@ -628,6 +646,9 @@ draw_map2(LG2_final, CHR3_final, tag= c("SNP17", "SNP18", "M29"), main = "Chromo
 any_seq <- make_seq(twopts, c(30, 12, 3, 14, 2))
 (any_seq_map <- map(any_seq))
 
+## ---- eval=FALSE--------------------------------------------------------------
+#  (any_seq_map <- onemap::map(any_seq))
+
 ## -----------------------------------------------------------------------------
 LG2_test_map <- map_avoid_unlinked(any_seq)
 
@@ -641,11 +662,17 @@ LG2_test_map <- map_avoid_unlinked(any_seq)
 ## -----------------------------------------------------------------------------
 (any_seq <- drop_marker(any_seq, c(3, 4, 5, 12, 30)))
 
+## ---- echo=FALSE, eval=FALSE--------------------------------------------------
+#  # Need to run all code below with eval=FALSE and echo=FALSE
+#  time_spent <-time_spent/(60*60)
+#  colnames(time_spent) <- c("Without parallelization (h)", "With parallelization (h)" )
+#  knitr::kable(time_spent)
+
 ## ---- eval=FALSE--------------------------------------------------------------
 #  run_pedsim(chromosome = "Chr1", n.marker = 294, tot.size.cm = 100, centromere = 50,
 #             n.ind = 200, mk.types = c("A1", "A2", "B3.7", "D1.9", "D1.10", "D2.14", "D2.15"),
 #             n.types = rep(42,7), pop = "F1", path.pedsim = "./",
-#             name.mapfile = "mapfile.map", name.founderfile="founderfile.gen",
+#             name.mapfile = "mapfile.txt", name.founderfile="founderfile.gen",
 #             name.chromfile="sim.chrom", name.parfile="sim.par",
 #             name.out="simParall_out")
 #  
@@ -715,10 +742,11 @@ LG2_test_map <- map_avoid_unlinked(any_seq)
 #  p <- ggarrange(a,b , common.legend = TRUE,
 #            labels = c("rcd", "rcd + parallel"),
 #            vjust = 0.2,
-#            hjust= -0.8,
+#            hjust= -1.4,
+#            font.label = list(size = 10),
 #            ncol=2, nrow=1)
 #  
-#  ggsave(p, filename = "rds.jpg")
+#  ggsave(p, filename = "rcd.jpg")
 
 ## ---- echo=FALSE, eval=FALSE--------------------------------------------------
 #  # Without parallelization
@@ -750,6 +778,7 @@ LG2_test_map <- map_avoid_unlinked(any_seq)
 #            labels = c("record", "record + parallel"),
 #            vjust = 0.2,
 #            hjust= -0.8,
+#            font.label = list(size = 10),
 #            ncol=2, nrow=1)
 #  
 #  ggsave(p, filename = "record.jpg")
@@ -784,10 +813,11 @@ LG2_test_map <- map_avoid_unlinked(any_seq)
 #  p <- ggarrange(a,b , common.legend = TRUE,
 #            labels = c("ug", "ug + parallel"),
 #            vjust = 0.2,
-#            hjust= -0.8,
+#            hjust= -1.6,
+#            font.label = list(size = 10),
 #            ncol=2, nrow=1)
 #  
-#  ggsave(p, filename = "up.jpg")
+#  ggsave(p, filename = "ug.jpg")
 
 ## ---- echo=FALSE, eval=FALSE--------------------------------------------------
 #  # Without parallelization ok
@@ -819,7 +849,8 @@ LG2_test_map <- map_avoid_unlinked(any_seq)
 #  p <- ggarrange(a,b , common.legend = TRUE,
 #            labels = c("mds", "mds + parallel"),
 #            vjust = 0.2,
-#            hjust= -0.8,
+#            hjust= -1,
+#            font.label = list(size = 10),
 #            ncol=2, nrow=1)
 #  
 #  ggsave(p, filename = "mds.jpg")
@@ -861,7 +892,8 @@ LG2_test_map <- map_avoid_unlinked(any_seq)
 #  p <- ggarrange(a,b , common.legend = TRUE,
 #            labels = c("map", "map + parallel"),
 #            vjust = 0.2,
-#            hjust= -0.8,
+#            hjust= -1,
+#            font.label = list(size = 10),
 #            ncol=2, nrow=1)
 #  
 #  ggsave(p, filename = "map.jpg")

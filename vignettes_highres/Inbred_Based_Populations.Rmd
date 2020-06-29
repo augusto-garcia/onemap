@@ -1496,10 +1496,9 @@ seq_all <- make_seq(twopts, "all")
 find_bins(simParallel)
 
 # There are no distorted markers
-p <- plot(test_segregation(simParallel))
+print(test_segregation(simParallel)) # Not shown
 ```
 
-<img src="f2_img/plot.segre.jpg" width="500" height="400">
 
 To prepare the data with defined bach size we use function `pick_batch_sizes`. It selects a batch size that splits the data into even groups. Argument `size` defines the  batch size next to which an optimum size will be searched. `overlap` defines the number of markers that overlap between present batch and next. This is used because pre-defined phases at these overlap markers in present batch are used to start the HMM in the next batch. The `around` argument defines how much the function can vary around the defined number in `size` to search for the optimum batch size.
 

@@ -361,7 +361,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       
       
       mk.type <- mk.type.num <- rep("A.H", n.mk)
-      mk.type.num[mk.type=="A.H"] <- NA
+      mk.type.num[mk.type=="A.H"] <- 8
     }
   } else if(cross=="ri self" || cross=="ri sib"){
     # Marker type
@@ -410,7 +410,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       GT_matrix[idx,][which(GT_matrix[idx,] == "1/1")] <- 1
       
       mk.type <- mk.type.num <- rep("A.B", n.mk)
-      mk.type.num[mk.type=="A.B"] <- NA
+      mk.type.num[mk.type=="A.B"] <- 9
     }
   }
   
