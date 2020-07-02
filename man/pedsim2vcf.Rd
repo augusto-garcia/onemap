@@ -37,7 +37,11 @@ pedsim2vcf(
 
 \item{miss.perc}{Percentage of missing data}
 
+\item{counts}{If \code{TRUE} also simulates allele counts using approach defined in \code{method}}
+
 \item{mean.depth}{mean of the negative binomial distribution to generate depth counts}
+
+\item{p.mean.depth}{mean of the negative binomial distribution to generate depth counts for parents}
 
 \item{chr.mb}{Chromossome size in mega base.}
 

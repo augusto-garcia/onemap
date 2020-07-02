@@ -1,3 +1,5 @@
+globalVariables(c("read.table", "rnbinom", "rbinom"))
+
 #' Function to simulate depths and to convert PedigreeSim file to vcf file
 #' 
 #' Given PedigreeSim .dat .map and .chrom files generate vcf file with depths count
@@ -23,6 +25,8 @@
 #' @param disper.par Dispertion parameter for negative binomial 
 #' @param haplo.ref character indicating the reference haplotype of genotypes.dat file
 #' @param use.as.alleles if \code{TRUE} uses codification in genotypes dat to define the reference and alternative alleles fields in VCF
+#' @param counts If \code{TRUE} also simulates allele counts using approach defined in \code{method}
+#' @param p.mean.depth mean of the negative binomial distribution to generate depth counts for parents
 #' 
 #' @return vcf file located in out.file defined path
 #' 
@@ -31,6 +35,8 @@
 #' 
 #' 
 #' @author Cristiane Taniguti, \email{chtaniguti@@usp.br} 
+#' 
+#' @importFrom updog rflexdog
 #' 
 #' @references 
 #' Voorrips, R. E. , Maliepaard, C. A. (2012) The simulation of meiosis in 
@@ -167,7 +173,7 @@ pedsim2vcf <- function(inputfile=NULL,
       }
       
       for(i in 1:dim(up_matrix)[1]){
-        ref_matrix[i,] <- updog::rflexdog(sizevec = size_matrix[i,],
+        ref_matrix[i,] <- rflexdog(sizevec = size_matrix[i,],
                                           geno=up_matrix[i,],
                                           ploidy = 2,
                                           seq=10^(-mean.phred/10),

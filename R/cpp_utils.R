@@ -16,7 +16,6 @@
 #######################################################################
 
 # This function calls C++ routine to find markers with redundant information
-##' @useDynLib onemap
 ##' @import Rcpp
 get_bins <- function(geno, exact=TRUE)
 {

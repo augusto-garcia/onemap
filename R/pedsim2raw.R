@@ -1,3 +1,5 @@
+globalVariables(c("read.table"))
+
 #' Converts the output of PedigreeSim to onemap raw file
 #' 
 #' 
@@ -11,14 +13,14 @@
 #' 
 #' 
 #' @examples 
-#' # Outcrossing population
-#' pedsim2raw(cross="outcross", genofile = "sim_out_genotypes.dat", parent1 = "P1", parent2 = "P2", out.file = "sim_out.example1.raw")
-#' # F2 intercross
-#' pedsim2raw(cross="f2 intercross", genofile = "sim_out.f2_genotypes.dat", parent1 = "P1", parent2 = "P2", f1 = "F1", 
-#'            out.file = "sim_out.example2.raw", miss.perc = 10)
+#' \dontrun{
+#'  # Outcrossing population
+#'  pedsim2raw(cross="outcross", genofile = system.file("extdata/sim_out_genotypes.dat", 
+#'             package = "onemap"), parent1 = "P1", parent2 = "P2", 
+#'              out.file = "sim_out.example.raw")
 #' 
-#' df <- read_onemap(inputfile = "sim_out.example2.raw")
-#' 
+#'  df <- read_onemap(inputfile = "sim_out.example.raw")
+#' }
 #' @export
 pedsim2raw <- function(cross = c("outcross", "f2 intercross"),
                        genofile = "sim_out_genotypes.dat",

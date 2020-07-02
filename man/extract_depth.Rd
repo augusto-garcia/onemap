@@ -28,6 +28,8 @@ extract_depth(
 
 \item{f1}{if your cross type is f2, you must define the F1 individual}
 
+\item{mean_phred}{genotyping error rate to be considered when estimate genotypes by binomial approach}
+
 \item{recovering}{TRUE/FALSE, if TRUE avaliate all markers from vcf file, if FALSE avaliate only markers in onemap object}
 }
 \value{

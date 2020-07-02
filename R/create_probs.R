@@ -13,7 +13,15 @@
 ##                                                                     ##
 #######################################################################
 
+##'Converts probabilities to onemap format
+##'
+##'@param onemap.obj define
+##'@param global_error define
+##'@param genotypes_errors define
+##'@param genotypes_probs define
+##'
 ##'@importFrom reshape2 melt
+##'
 ##'@export
 create_probs <- function(onemap.obj = NULL, 
                          global_error = NULL, 
@@ -30,7 +38,7 @@ create_probs <- function(onemap.obj = NULL,
   
   crosstype <- class(onemap.obj)[2]
   
-  probs <- reshape2::melt(t(onemap.obj$geno))
+  probs <- melt(t(onemap.obj$geno))
   probs$type <- rep(onemap.obj$segr.type.num, onemap.obj$n.ind)
   
   if(!is.null(global_error) | !is.null(genotypes_errors)){
@@ -55,7 +63,7 @@ create_probs <- function(onemap.obj = NULL,
         stop("There are more individuals in errors matrix than in onemap object")
       }
       
-      error <- reshape2::melt(t(genotypes_errors))
+      error <- melt(t(genotypes_errors))
       error <- error$value
     }
     

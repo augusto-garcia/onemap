@@ -1,12 +1,39 @@
+#######################################################################
+##                                                                     ##
+## Package: onemap                                                     ##
+##                                                                     ##
+## File: test_segregation.R                                            ##
+## Contains: binom_genotype                                            ##
+##                                                                     ##
+## Written by Cristiane Taniguti                                       ##
+## copyright (c) 2020 Cristiane Taniguti                               ##
+##                                                                     ##
+## First version: 2018/07/01                                           ##
+## Last update: 2020/07/01                                             ##
+## License: GNU General Public License version 3 or later              ##
+##                                                                     ##
+#######################################################################
+
+globalVariables(c("n.ind", "palt", "oalt", "pref", 
+                  "oref", "psize", "osize", 
+                  "inds", "CHROM", "POS"))
+
 #' Estimates genotype error probabilities using binomial distribution for allele counts
 #' 
 #' Uses allele counts for each genotype from vcf, generated with NGS genotyping, to estimate 
 #' genotype error probability. These probabilities can be used in multipoint approach to 
 #' weighted the markers according with their sequecing quality
 #' 
-#' @param depth_matrix list containing ref allele counts for parents and progeny, output 
-#' from extract_depth function
+#' @param vcfR.object object output from vcfR package
+#' @param onemap.object onemap object output from read_onemap, read_mapmaker or onemap_read_vcf function
+#' @param vcf.par vcf format field that contain alelle counts informations, usually AD and DPR
+#' @param parent1 parent 1 identification in vcfR object
+#' @param parent2 parent 2 identification in vcfR objetc
+#' @param mean_phred genotyping error rate to be considered when estimate genotypes by binomial approach
+#' @param recovering TRUE/FALSE, if TRUE avaliate all markers from vcf file, if FALSE avaliate only markers in onemap object
 #' @param mean_phred mean quality phred value of the sequencing 
+#' @param depths matrix with allele depths
+#' 
 #' @return onemap object with error updated 
 #' 
 #' @author Cristiane Taniguti, \email{chtaniguti@@usp.br} 

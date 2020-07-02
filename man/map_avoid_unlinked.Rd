@@ -8,10 +8,8 @@ map_avoid_unlinked(
   input.seq,
   size = NULL,
   overlap = NULL,
-  round = 5,
   phase_cores = 1,
-  tol = 1e-05,
-  max.gap = F
+  tol = 1e-05
 )
 }
 \arguments{

@@ -13,11 +13,13 @@
 #                                                                     #
 #######################################################################
 
+globalVariables(c("gt.onemap", "gt.vcf"))
+
 #' Create database and ggplot graphic of allele reads depths
 #'
 #'
 #' @param onemap.obj an object of class \code{onemap}.
-#' @param vcf.file an object of class \code{vcfR}.
+#' @param vcfR.object an object of class \code{vcfR}.
 #' @param parent1 a character specifying the first parent ID
 #' @param parent2 a character specifying the second parent ID
 #' @param f1 if your cross type is f2, you must define the F1 individual

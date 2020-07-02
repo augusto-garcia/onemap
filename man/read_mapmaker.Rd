@@ -63,7 +63,7 @@ manual. \emph{A Whitehead Institute for Biomedical Research Technical
 Report}.
 }
 \seealso{
-\code{mapmaker_example_bc} and \code{mapmaker_example_f2} directory in the
+\code{mapmaker_example_bc} and \code{mapmaker_example_f2} raw files in the
 package source.
 }
 \author{

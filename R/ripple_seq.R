@@ -100,7 +100,6 @@
 ##' }
 ##'
 ##'@export
-
 ripple_seq<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2)
 {
   if(is(input.seq$data.name, "outcross") || is(input.seq$data.name, "f2"))
@@ -123,7 +122,7 @@ ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2) {
   if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   if(ws < 2) stop("ws must be greater than or equal to 2")
   if(ws > 5) cat("WARNING: this operation may take a VERY long time\n\n")
-  utils::flush.console()
+  flush.console()
   
   len <- length(input.seq$seq.num)
   ## computations unnecessary in this case
@@ -367,7 +366,7 @@ ripple_seq_inbred<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2)
     stop("ws must be greater than or equal to 2")
   if(ws > 5)
     cat("WARNING: this operation may take a VERY long time\n\n")
-  utils::flush.console()
+  flush.console()
   len <- length(input.seq$seq.num)
   
   ## computations unnecessary in this case

@@ -27,6 +27,9 @@ convergence.}
 \item{avoid_link_errors}{logical. If TRUE markers which do not reach the linkage
 criteria are removed of the sequence and the distances are automatically reestimated.
 If FALSE an error stops the algorithm it find these markers.}
+
+\item{export_diff}{If TRUE also returns (in the first level of the list) the differences
+in genetic distances between overlaped markers}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the

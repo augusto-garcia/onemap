@@ -226,7 +226,7 @@ print.onemap_segreg_test <- function(x,...) {
 ##' # You can store the graphic in an object, then save it.
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' # g <- plot(BC.seg)
-##' # ggplot2::ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
+##' # ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
 ##'
 ##' data(onemap_example_out) # load OneMap's fake dataset for an outcrossing population
 ##' Out.seg <- test_segregation(onemap_example_out) # Applies chi-square tests
@@ -236,7 +236,7 @@ print.onemap_segreg_test <- function(x,...) {
 ##' # You can store the graphic in an object, then save it.
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' g <- plot(Out.seg)
-##' # ggplot2::ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
+##' # ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
 ##' @method plot onemap_segreg_test
 ##' @export
 plot.onemap_segreg_test <- function(x, order=TRUE,...) {

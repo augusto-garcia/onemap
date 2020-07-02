@@ -65,6 +65,7 @@
 #'
 #'@import MDSMap
 #'@importFrom utils write.table
+#'@importFrom reshape2 melt
 #'
 #'@export
 mds_onemap <- function(input.seq, 
@@ -107,8 +108,8 @@ mds_onemap <- function(input.seq,
   mat.lod[lower.tri(mat.lod)] <- mat[lower.tri(mat)]
   mat.rf[upper.tri(mat.rf)] <- mat[upper.tri(mat)]
   
-  df <- reshape2::melt(mat.lod, na.rm = TRUE)
-  df.rf <- reshape2::melt(mat.rf, na.rm = TRUE)
+  df <- melt(mat.lod, na.rm = TRUE)
+  df.rf <- melt(mat.rf, na.rm = TRUE)
   
   df <- cbind(df.rf, df$value)
   df <- df[with(df, order(Var1, Var2)),]
@@ -121,7 +122,7 @@ mds_onemap <- function(input.seq,
               row.names = FALSE, quote = FALSE)
   
   pdf(mds.graph.file)
-  mds_map <- MDSMap::estimate.map(out.file, p = p, n=n, ispc = ispc, 
+  mds_map <- estimate.map(out.file, p = p, n=n, ispc = ispc, 
                                   displaytext = displaytext)
   dev.off()
   ord_mds <- match(as.character(mds_map$locimap[,2]), colnames(input.seq$data.name$geno)) 

@@ -10,6 +10,7 @@
 #' @param parent1 parent 1 identification in vcfR object
 #' @param parent2 parent 2 identification in vcfR objetc
 #' @param f1 if your cross type is f2, you must define the F1 individual
+#' @param mean_phred genotyping error rate to be considered when estimate genotypes by binomial approach
 #' @param recovering TRUE/FALSE, if TRUE avaliate all markers from vcf file, if FALSE avaliate only markers in onemap object
 #' @return list containing the following components: \item{palt}{a \code{matrix} with parent 1 and 2 
 #' alternative alelle counts.} \item{pref}{a \code{matrix} with parent 1 and 2 

@@ -23,6 +23,8 @@ convergence.}
 \item{rm_unlinked}{When some pair of markers do not follow the linkage criteria, 
 if \code{TRUE} one of the markers is removed and returns a vector with remaining 
 marker numbers (useful for mds_onemap and map_avoid_unlinked functions).}
+
+\item{phase_cores}{number of computer cores to be used in analysis}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the

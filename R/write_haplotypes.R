@@ -14,10 +14,13 @@
 ##                                                                     ##
 #######################################################################
 
+globalVariables(c("grp", "for.split", ".", "pos", "prob", "pos2", "homologs"))
+globalVariables(c("V1", "V2", "V3", "V4", "H1_P1", "H1_P2", "H2_P1", "H2_P2"))
+
+
 #' Generates data.frame with parents estimated haplotypes 
 #'
-#' @param x objects of class sequence
-#' @param out_file character defining the output file name
+#' @param ... objects of class sequence
 #' @param group_names vector of characters defining the group names
 #'
 #' @return data.frame with group ID (group), marker number (mk.number) 
@@ -70,7 +73,7 @@ parents_haplotypes <- function(..., group_names=NULL){
         link.phases <- apply(link.phases,1,function(x) paste(as.character(x),collapse="."))
         parents <- matrix("",length(input$seq.num),4)
         for (i in 1:length(input$seq.num))
-          parents[i,] <- onemap:::return_geno(input$data.name$segr.type[input$seq.num[i]],link.phases[i])
+          parents[i,] <- return_geno(input$data.name$segr.type[input$seq.num[i]],link.phases[i])
         out_dat_temp <- data.frame(group= group_names[z], mk.number = marnumbers, mk.names = marnames, dist = as.numeric(distances), 
                                    P1_1 = parents[,1],
                                    P1_2 = parents[,2],
@@ -208,11 +211,12 @@ progeny_haplotypes <- function(...,
 
 ##' Plots progeny haplotypes
 ##' 
-##' @param probs object of class onemap_progeny_haplotypes
+##' @param x object of class onemap_progeny_haplotypes
 ##' @param col Color of parentes' homologous.
 ##' @param position "split" or "stack"; if "split" (default) the parents' homologous are plotted separately. if "stack" the parents' homologous are plotted together.
 ##' @param show_markers logical; if  \code{TRUE}, the markers (default) are plotted.
 ##' @param main An overall title for the plot; default is \code{NULL}.
+##' @param ... currently ignored
 ##' 
 ##' @method plot onemap_progeny_haplotypes
 ##' @import ggplot2
@@ -221,15 +225,15 @@ progeny_haplotypes <- function(...,
 ##' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
 ##' 
 ##' @export
-plot.onemap_progeny_haplotypes <- function(probs,
+plot.onemap_progeny_haplotypes <- function(x,
                                            col = NULL, 
                                            position = "stack",
                                            show_markers = TRUE, 
-                                           main = "Genotypes"){
+                                           main = "Genotypes", ...){
   
-  colors <- ifelse(is(probs,"outcross"), "for.split", "parents")  
+  colors <- ifelse(is(x,"outcross"), "for.split", "parents")  
   
-  probs <- cbind(probs, for.split= paste0(probs$homologs, "_", probs$parents))
+  probs <- cbind(x, for.split= paste0(x$homologs, "_", x$parents))
   
   probs <- probs %>% group_by(ind, grp, for.split) %>%
     do(rbind(.,.[nrow(.),])) %>%

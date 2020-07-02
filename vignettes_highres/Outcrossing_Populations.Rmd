@@ -1129,9 +1129,10 @@ The function will provide a sequence with the same order of the estimated map (`
 Error in as_mapper(.f, ...) : argument ".f" is missing, with no default
 ```
 
-It's because the `map` function has a very common name and you can have in your environment other function with the same name. In the case of the pointed error, R is using `map` function from `purrr` package instead of `OneMap`, to solve this, simple specify that you want `OneMap` function:
+It's because the `map` function has a very common name and you can have in your environment other function with the same name. In the case of the pointed error, R is using `map` function from `purrr` package instead of `OneMap`, to solve this, simple specify that you want `OneMap` function with `::` command from `stringr` package:
 
 ```{r}
+library(stringr)
 (LG2_test_map <- onemap::map(LG2_test_seq))
 ```
 
@@ -1580,9 +1581,10 @@ any_seq <- make_seq(twopts, c(30, 12, 3, 14, 2))
 Error in as_mapper(.f, ...) : argument ".f" is missing, with no default
 ```
 
-It's because the `map` function has a very common name and you can have in your environment other function with the same name. In the case of the pointed error, R is using `map` function from `purrr` package instead of `OneMap`, to solve this, simple specify that you want `OneMap` function:
+It's because the `map` function has a very common name and you can have in your environment other function with the same name. In the case of the pointed error, R is using `map` function from `purrr` package instead of `OneMap`, to solve this, simple specify that you want `OneMap` function with `::` command from `stringr` package::
 
 ```{r, eval=FALSE}
+library(stringr)
 (any_seq_map <- onemap::map(any_seq))
 ```
 

@@ -16,10 +16,21 @@ binom_genotype(
 )
 }
 \arguments{
+\item{vcfR.object}{object output from vcfR package}
+
+\item{onemap.object}{onemap object output from read_onemap, read_mapmaker or onemap_read_vcf function}
+
+\item{vcf.par}{vcf format field that contain alelle counts informations, usually AD and DPR}
+
+\item{parent1}{parent 1 identification in vcfR object}
+
+\item{parent2}{parent 2 identification in vcfR objetc}
+
+\item{recovering}{TRUE/FALSE, if TRUE avaliate all markers from vcf file, if FALSE avaliate only markers in onemap object}
+
 \item{mean_phred}{mean quality phred value of the sequencing}
 
-\item{depth_matrix}{list containing ref allele counts for parents and progeny, output 
-from extract_depth function}
+\item{depths}{matrix with allele depths}
 }
 \value{
 onemap object with error updated

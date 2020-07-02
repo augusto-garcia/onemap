@@ -38,6 +38,7 @@
 ##' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
 ##' if \code{TRUE} one of the markers is removed and returns a vector with remaining 
 ##' marker numbers (useful for mds_onemap and map_avoid_unlinked functions).
+##' @param phase_cores number of computer cores to be used in analysis
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}

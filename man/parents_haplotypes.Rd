@@ -7,11 +7,9 @@
 parents_haplotypes(..., group_names = NULL)
 }
 \arguments{
+\item{...}{objects of class sequence}
+
 \item{group_names}{vector of characters defining the group names}
-
-\item{x}{objects of class sequence}
-
-\item{out_file}{character defining the output file name}
 }
 \value{
 data.frame with group ID (group), marker number (mk.number) 

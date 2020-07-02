@@ -44,7 +44,12 @@ globalVariables(c("LOD.CR", "LOD.RC", "LOD.RR"))
 ##' the type of the marker are printed, as well as the percentage of missing
 ##' data for that marker.
 ##'
-##'@import ggplot2 
+##' @import ggplot2 
+##' @importFrom reshape2 melt
+##' @importFrom grDevices rainbow
+##' @importFrom plotly ggplotly
+##' @importFrom htmlwidgets saveWidget
+##' @importFrom utils browseURL
 ##'
 ##' @param input.seq an object of class \code{sequence} with a predefined
 ##' order.
@@ -208,20 +213,20 @@ rf_graph_table <- function(input.seq,
     
     ## Merging all the matrices into one df
     df.graph <- Reduce(function(x, y) merge(x, y, all=TRUE),
-                       list(reshape2::melt(round(mat.rf,2), value.name="rf"),
-                            reshape2::melt(round(mat.LOD,2), value.name="LOD"),
-                            reshape2::melt(round(LOD$CC,2), value.name="CC"),
-                            reshape2::melt(round(LOD$CR,2), value.name="CR"),
-                            reshape2::melt(round(LOD$RC,2), value.name="RC"),
-                            reshape2::melt(round(LOD$RR,2), value.name="RR")))
+                       list(melt(round(mat.rf,2), value.name="rf"),
+                            melt(round(mat.LOD,2), value.name="LOD"),
+                            melt(round(LOD$CC,2), value.name="CC"),
+                            melt(round(LOD$CR,2), value.name="CR"),
+                            melt(round(LOD$RC,2), value.name="RC"),
+                            melt(round(LOD$RR,2), value.name="RR")))
     
     colnames(df.graph)[5:8] <- paste0("LOD.",c("CC","CR","RC","RR"))
     
     
     
   }else{
-    df.graph <- merge(reshape2::melt(round(mat.rf,2), value.name="rf"),
-                      reshape2::melt(round(mat.LOD,2), value.name="LOD"))
+    df.graph <- merge(melt(round(mat.rf,2), value.name="rf"),
+                      melt(round(mat.LOD,2), value.name="LOD"))
   }
   
   
@@ -255,12 +260,12 @@ rf_graph_table <- function(input.seq,
     if(graph.LOD!=TRUE){
       p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, x.missing = x.missing, y.missing = y.missing, fill = rf, LOD.CC=LOD.CC, LOD.CR=LOD.CR, LOD.RC=LOD.RC, LOD.RR=LOD.RR), data=df.graph) +
         geom_tile() +
-        scale_fill_gradientn(colours = grDevices::rainbow(n.colors), na.value = "white") +
+        scale_fill_gradientn(colours = rainbow(n.colors), na.value = "white") +
         theme(axis.text.x=element_text(angle=90, hjust=1))
     }else{
       p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, x.missing = x.missing, y.missing = y.missing, rf=rf, fill = LOD, LOD.CC=LOD.CC, LOD.CR=LOD.CR, LOD.RC=LOD.RC, LOD.RR=LOD.RR), data=df.graph) +
         geom_tile() +
-        scale_fill_gradientn(colours = rev(grDevices::rainbow(n.colors)), na.value = "white") +
+        scale_fill_gradientn(colours = rev(rainbow(n.colors)), na.value = "white") +
         theme(axis.text.x=element_text(angle=90, hjust=1))
     }
     
@@ -269,12 +274,12 @@ rf_graph_table <- function(input.seq,
     if(graph.LOD!=TRUE){
       p <- ggplot(aes(x, y, x.missing = x.missing, y.missing = y.missing, fill=rf, LOD=LOD), data=df.graph) +
         geom_tile() +
-        scale_fill_gradientn(colours = grDevices::rainbow(n.colors), na.value = "white") +
+        scale_fill_gradientn(colours = rainbow(n.colors), na.value = "white") +
         theme(axis.text.x=element_text(angle=90, hjust=1))
     }else{
       p <- ggplot(aes(x, y, x.missing = x.missing, y.missing = y.missing, rf=rf, fill=LOD), data=df.graph) +
         geom_tile() +
-        scale_fill_gradientn(colours = rev(grDevices::rainbow(n.colors)), na.value = "white") +
+        scale_fill_gradientn(colours = rev(rainbow(n.colors)), na.value = "white") +
         theme(axis.text.x=element_text(angle=90, hjust=1))
     }
   }
@@ -305,11 +310,11 @@ rf_graph_table <- function(input.seq,
     if(is.null(html.file)){
       stop("For iteractive mode you must define a name for the outputted html file in 'html.file' argument.")
     }else{
-      p <- plotly::ggplotly(p)
+      p <- ggplotly(p)
 
       if(display){
-        htmlwidgets::saveWidget(p, file = html.file)
-        utils::browseURL(html.file)
+        saveWidget(p, file = html.file)
+        browseURL(html.file)
       } else {
         p
       }

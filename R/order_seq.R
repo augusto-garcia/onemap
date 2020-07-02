@@ -83,6 +83,9 @@
 ##' to map more markers.
 ##' @param tol tolerance number for the C routine, i.e., the value used to
 ##' evaluate convergence of the EM algorithm.
+##' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
+##' if \code{TRUE} one of the markers is removed and returns a vector with remaining 
+##' marker numbers (useful for mds_onemap and map_avoid_unlinked functions).
 ##' @return An object of class \code{order}, which is a list containing the
 ##' following components: \item{ord}{an object of class \code{sequence}
 ##' containing the "safe" order.} \item{mrk.unpos}{a \code{vector} with

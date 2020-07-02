@@ -5,15 +5,16 @@
 \title{Plots progeny haplotypes}
 \usage{
 \method{plot}{onemap_progeny_haplotypes}(
-  probs,
+  x,
   col = NULL,
   position = "stack",
   show_markers = TRUE,
-  main = "Genotypes"
+  main = "Genotypes",
+  ...
 )
 }
 \arguments{
-\item{probs}{object of class onemap_progeny_haplotypes}
+\item{x}{object of class onemap_progeny_haplotypes}
 
 \item{col}{Color of parentes' homologous.}
 
@@ -22,6 +23,8 @@
 \item{show_markers}{logical; if  \code{TRUE}, the markers (default) are plotted.}
 
 \item{main}{An overall title for the plot; default is \code{NULL}.}
+
+\item{...}{currently ignored}
 }
 \description{
 Plots progeny haplotypes

@@ -29,6 +29,13 @@ convergence.}
 
 \item{rm_unlinked}{When some pair of markers do not follow the linkage criteria, 
 if \code{TRUE} one of the markers is removed and ug is performed again.}
+
+\item{size}{The center size around which an optimum is to be searched}
+
+\item{overlap}{The desired overlap between batches}
+
+\item{phase_cores}{The number of parallel processes to use when estimating
+the phase of a marker. (Should be no more than 4)}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the

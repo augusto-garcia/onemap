@@ -45,17 +45,19 @@ globalVariables(c("marker", "geno"))
 ##' @return a ggplot graphic
 ##'
 ##' @import ggplot2
+##' @importFrom reshape2 melt
 ##'
 ##' @examples
 ##' 
 ##' \dontrun{
+##' # library(ggplot2)
 ##' data(onemap_example_bc) # Loads a fake backcross dataset installed with onemap
 ##' plot(onemap_example_bc) # This will show you the graph
 ##'
 ##' # You can store the graphic in an object, then save it with a number of properties
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' g <- plot(onemap_example_bc)
-##' ggplot2::ggsave("MyRawData_bc.jpg", g, width=7, height=4, dpi=600)
+##' # ggsave("MyRawData_bc.jpg", g, width=7, height=4, dpi=600)
 ##'
 ##' data(onemap_example_f2) # Loads a fake backcross dataset installed with onemap
 ##' plot(onemap_example_f2) # This will show you the graph
@@ -63,7 +65,7 @@ globalVariables(c("marker", "geno"))
 ##' # You can store the graphic in an object, then save it with a number of properties
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' g <- plot(onemap_example_f2)
-##' ggplot2::ggsave("MyRawData_f2.jpg", g, width=7, height=4, dpi=600)
+##' # ggsave("MyRawData_f2.jpg", g, width=7, height=4, dpi=600)
 ##'
 ##' data(onemap_example_out) # Loads a fake full-sib dataset installed with onemap
 ##' plot(onemap_example_out) # This will show you the graph for all markers
@@ -72,7 +74,7 @@ globalVariables(c("marker", "geno"))
 ##' # You can store the graphic in an object, then save it.
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' g <- plot(onemap_example_out, all=FALSE)
-##' ggplot2::ggsave("MyRawData_out.jpg", g, width=9, height=4, dpi=600)
+##' # ggsave("MyRawData_out.jpg", g, width=9, height=4, dpi=600)
 ##'}
 ##'
 ##'@method plot onemap
@@ -174,7 +176,7 @@ plot.onemap <- function(x, all=TRUE, ...) {
     }
   else {
         df.OM <- as.matrix(x$geno)
-        df.OM <- reshape2::melt(df.OM) # function from package reshape
+        df.OM <- melt(df.OM) # function from package reshape
         df.OM[is.na(df.OM)] <- 0 # To avoid problems with NAs
         df.OM <- data.frame("ind"=1:x$n.ind, "marker"= df.OM$Var2, "geno" = df.OM$value)
         df.OM$geno <- factor(df.OM$geno)
@@ -261,6 +263,8 @@ plot.onemap <- function(x, all=TRUE, ...) {
 ##'
 ##' @param x an object of classes \code{onemap} and \code{outcross}, with data and additional information
 ##'
+##' @importFrom reshape2 melt
+##' 
 ##' @return a dataframe
 ##'
 create_dataframe_for_plot_outcross <- function(x) {
@@ -269,7 +273,7 @@ create_dataframe_for_plot_outcross <- function(x) {
     if (length(which(x$segr.type==paste("A.",i,sep="")))!=0) {
       F1.A <- as.matrix(data.frame(x$geno[,which(x$segr.type==paste("A.",i,sep=""))]))
       colnames(F1.A) <- colnames(x$geno)[which(x$segr.type==paste("A.",i,sep=""))]
-      F1.A <- reshape2::melt(F1.A)
+      F1.A <- melt(F1.A)
       F1.A <- data.frame("ind"=1:x$n.ind, "marker"= F1.A$Var2, "geno" = F1.A$value,
                          Mk.type=paste("A.",i,sep=""))
       F1.A$geno <- factor(F1.A$geno)
@@ -283,7 +287,7 @@ create_dataframe_for_plot_outcross <- function(x) {
     if (length(which(x$segr.type==paste("B",i,".",i+4,sep="")))!=0) {
       F1.B <- as.matrix(x$geno[,which(x$segr.type==paste("B",i,".",i+4,sep=""))])
       colnames(F1.B) <- colnames(x$geno)[which(x$segr.type==paste("B",i,".",i+4,sep=""))]
-      F1.B <- reshape2::melt(F1.B)
+      F1.B <- melt(F1.B)
       F1.B <- data.frame("ind"=1:x$n.ind, "marker" = F1.B$Var2, "geno" = F1.B$value,
                          Mk.type=paste("B",i,".",i+4,sep=""))
       F1.B$geno <- factor(F1.B$geno)
@@ -297,7 +301,7 @@ create_dataframe_for_plot_outcross <- function(x) {
     if (length(which(x$segr.type==paste("C.",i,sep="")))!=0) {
       F1.C <- as.matrix(x$geno[,which(x$segr.type==paste("C.",i,sep=""))])
       colnames(F1.C) <- colnames(x$geno)[which(x$segr.type==paste("C.",i,sep=""))]
-      F1.C <- reshape2::melt(F1.C)
+      F1.C <- melt(F1.C)
       F1.C <- data.frame("ind"=1:x$n.ind, "marker" = F1.C$Var2, "geno" = F1.C$value,
                          Mk.type=paste("C.",i,sep=""))
       F1.C$geno <- factor(F1.C$geno)
@@ -311,7 +315,7 @@ create_dataframe_for_plot_outcross <- function(x) {
     if (length(which(x$segr.type==paste("D1.",i,sep="")))!=0) {
       F1.D1 <- as.matrix(x$geno[,which(x$segr.type==paste("D1.",i,sep=""))])
       colnames(F1.D1) <- colnames(x$geno)[which(x$segr.type==paste("D1.",i,sep=""))]
-      F1.D1 <- reshape2::melt(F1.D1)
+      F1.D1 <- melt(F1.D1)
       F1.D1 <- data.frame("ind"=1:x$n.ind, "marker" = F1.D1$Var2, "geno" = F1.D1$value,
                           Mk.type=paste("D1.",i,sep=""))
       F1.D1$geno <- factor(F1.D1$geno)
@@ -326,7 +330,7 @@ create_dataframe_for_plot_outcross <- function(x) {
     if (length(which(x$segr.type==paste("D2.",i,sep="")))!=0) {
       F1.D2 <- as.matrix(x$geno[,which(x$segr.type==paste("D2.",i,sep=""))])
       colnames(F1.D2) <- colnames(x$geno)[which(x$segr.type==paste("D2.",i,sep=""))]
-      F1.D2 <- reshape2::melt(F1.D2)
+      F1.D2 <- melt(F1.D2)
       F1.D2 <- data.frame("ind"=1:x$n.ind, "marker" = F1.D2$Var2, "geno" = F1.D2$value,
                           Mk.type=paste("D2.",i,sep=""))
       F1.D2$geno <- factor(F1.D2$geno)
@@ -360,6 +364,8 @@ create_dataframe_for_plot_outcross <- function(x) {
 ##' @return a ggplot graphic
 ##'
 ##' @import ggplot2
+##' 
+##' @importFrom reshape2 melt
 ##'
 ##' @examples
 ##' data(onemap_example_out) #Outcrossing data
@@ -376,7 +382,7 @@ create_dataframe_for_plot_outcross <- function(x) {
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' # data(onemap_example_out) #Outcrossing data
 ##' # g <- plot_by_segreg_type(onemap_example_out)
-##' # ggplot2::ggsave("SegregationTypes.jpg", g, width=7, height=4, dpi=600)
+##' # ggsave("SegregationTypes.jpg", g, width=7, height=4, dpi=600)
 ##'
 ##'@export
 plot_by_segreg_type <- function(x, subcateg=TRUE) {

@@ -9,7 +9,7 @@ seeded_map(
   tol = 1e-04,
   phase_cores = 1,
   seeds,
-  verbosity = F,
+  verbose = F,
   rm_unlinked = F
 )
 }
@@ -25,7 +25,7 @@ the phase of a marker. (Should be no more than 4)}
 \item{seeds}{A vector given the integer encoding of phases for the first
 \emph{N} positions of the map}
 
-\item{verbosity}{A logical, if TRUE it output progress status
+\item{verbose}{A logical, if TRUE it output progress status
 information.}
 
 \item{rm_unlinked}{When some pair of markers do not follow the linkage criteria, 
@@ -59,8 +59,8 @@ codes adapted from Broman et al. (2008) were used.
 }
 \examples{
 
-  data(example.out)
-  twopt <- rf_2pts(example.out)
+  data(onemap_example_out)
+  twopt <- rf_2pts(onemap_example_out)
 
   markers <- make_seq(twopt,c(30,12,3,14,2))
   seeded_map(markers, seeds = c(4,2))

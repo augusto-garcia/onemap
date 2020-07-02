@@ -26,6 +26,8 @@
 #' according to Wu et. al 2002 table I
 #' 
 #' @author Cristiane Taniguti, \email{chtaniguti@@usp.br} 
+#' 
+#' @importFrom stringr str_pad
 #'
 #' @references 
 #'
@@ -35,16 +37,12 @@
 #'
 #' @examples
 #' \dontrun{ 
-#' # For F2
-#'run_pedsim(chromosome = c("Chr1", "Chr10"), n.marker = c(4,6), tot.size.cm = c(100,150), centromere = c(50, 75),
-#'            n.ind = 200, mk.types = c("A.H.B", "C.A", "D.B"), n.types = c(2,3,5), pop = "F2", path.pedsim = "~/Programs/PedigreeSimv2.0/",
-#'            name.mapfile = "mapfile.map", name.founderfile="founderfile.gen", name.chromfile="sim.chrom", name.parfile="sim.par",
-#'            name.out="sim_out.F2")
 #' # For outcross
-#' run_pedsim(chromosome = c("Chr1", "Chr2","Chr10"), n.marker = c(40,30,20), tot.size.cm = c(100,150, 100), centromere = c(50, 75,50),
+#' run_pedsim(chromosome = c("Chr1", "Chr2"), n.marker = c(40,32), tot.size.cm = c(100,150), centromere = c(50, 75),
 #'            n.ind = 200, mk.types = c("A1", "A2", "A3", "A4", "B1.5", "B2.6", "B3.7",
 #'                                      "C.8", "D1.9", "D1.10", "D1.11", "D1.12", "D1.13",
-#'                                      "D2.14", "D2.15", "D2.16", "D2.17", "D2.18"), n.types = rep(5,18), pop = "F1", path.pedsim = "~/Programs/PedigreeSimv2.0/",
+#'                                      "D2.14", "D2.15", "D2.16", "D2.17", "D2.18"), 
+#'                                      n.types = rep(4,18), pop = "F1", path.pedsim = "~/",
 #'            name.mapfile = "mapfile.map", name.founderfile="founderfile.gen", name.chromfile="sim.chrom", name.parfile="sim.par",
 #'            name.out="sim_out")
 #' }
@@ -84,7 +82,7 @@ run_pedsim <- function(chromosome = c("Chr1", "Chr2", "Chr3"),
   # Marker names
   marker1 <- "M"
   marker2 <- 1:sum(n.marker)
-  marker2 <- stringr::str_pad(marker2,3,pad="0",side = "left")
+  marker2 <- str_pad(marker2,3,pad="0",side = "left")
   marker <-paste0(marker1,marker2)
   
   # Chromossome and position

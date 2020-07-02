@@ -85,6 +85,8 @@
 ##' package for constructing primary genetic linkage maps of experimental and
 ##' natural populations. \emph{Genomics} 1: 174-181.
 ##' @keywords utilities
+##' 
+##' @importFrom utils head
 ##' @examples
 ##'
 ##' \dontrun{
@@ -164,7 +166,7 @@ make_seq <-
       seq.like <- NULL
       twopt <- input.obj$twopt
     } else if (is(input.obj, "compare")){
-      n.ord <- max(which(utils::head(input.obj$best.ord.LOD,-1) != -Inf))
+      n.ord <- max(which(head(input.obj$best.ord.LOD,-1) != -Inf))
       unique.orders <- unique(input.obj$best.ord[1:n.ord,])
       if(is.null(arg)) seq.num <- unique.orders[1,] # NULL = 1 is the best order
       else if(length(arg) == 1 && is.numeric(arg) && arg <= nrow(unique.orders)) seq.num <- unique.orders[arg,]

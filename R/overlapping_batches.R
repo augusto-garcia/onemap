@@ -17,9 +17,11 @@
 #######################################################################
 
 ##' Function to divide the sequence in batches with user defined size
+##' @param input.seq an object of class \code{sequence}.
+##' @param size The center size around which an optimum is to be searched
+##' @param overlap The desired overlap between batches
 ##' 
-generate_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
-                                         silent = FALSE)
+generate_overlapping_batches <- function(input.seq, size = 50, overlap = 15)
 {
   start <- 1
   end <- size
@@ -35,12 +37,12 @@ generate_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
     if(end > length(input.seq$seq.num)) end <- length(input.seq$seq.num)
   }
   sizes <- unlist(lapply(res, length))
-  if(length(sizes) < 2 & ! silent)
+  if(length(sizes) < 2)
   {
     warning("You should at least have two overlapping batches.",
             " Reconsider the size parameter.")
   }
-  if(any(sizes/size > 1.25) & ! silent)
+  if(any(sizes/size > 1.25))
   {
     warning("One group is 25% bigger than the group size. ",
             "Consider adjusting parameters.")
@@ -77,7 +79,7 @@ pick_batch_sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
   rm.num <- which(test.sizes <= (overlap+1))
   if(length(rm.num) > 0) test.sizes <- test.sizes[-rm.num]
   all.batches <- lapply(test.sizes, function(s){
-    onemap:::generate_overlapping_batches(input.seq, s, overlap, silent = TRUE)
+    generate_overlapping_batches(input.seq, s, overlap)
   })
   x <- unlist(lapply(all.batches, function(f){
     ran <- range(unlist(lapply(f,length)))
@@ -108,7 +110,7 @@ pick_batch_sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
 ##' @param overlap The desired overlap between batches
 ##' @param phase_cores The number of parallel processes to use when estimating
 ##' the phase of a marker. (Should be no more than 4)
-##' @param verbosity A logical, if TRUE its output progress status
+##' @param verbose A logical, if TRUE its output progress status
 ##' information.
 ##' @param seeds A vector of phase information used as seeds for the first
 ##' batch
@@ -136,13 +138,13 @@ pick_batch_sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
 ##' @keywords utilities
 ##' @export
 map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
-                                    phase_cores = 1, verbosity = F, 
+                                    phase_cores = 1, verbose = F, 
                                     seeds = NULL, tol=10E-5, rm_unlinked = T, max.gap=F)
 {
   #TODO: error checks...
   #Create initial set of batches
-  batches <- onemap:::generate_overlapping_batches(input.seq, size, overlap)
-  if(verbosity)
+  batches <- generate_overlapping_batches(input.seq, size, overlap)
+  if(verbose)
   {
     message("Have ", length(batches), " batches.")
     message("The number of markers in the final batch is: ",
@@ -169,7 +171,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
     LG <- seeded_map(input.seq = make_seq(input.seq$twopt, batches[[1]],
                                           twopt = input.seq$twopt), 
                      phase_cores = phase_cores,
-                     verbosity = verbosity, seeds = seeds, tol=tol)
+                     verbose = verbose, seeds = seeds, tol=tol)
     if(is(LG,"integer")){
       rmed.mks <- batches[[1]][which(!batches[[1]] %in% LG)]
       warning(cat("Markers", rmed.mks,"did not reached the OneMap default criteria. They are probably segregating independently 
@@ -187,7 +189,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
   #Start processing all following batches
   for(i in 2:length(batches))
   {
-    if(verbosity) #Print previous batch-map segment
+    if(verbose) #Print previous batch-map segment
     {
       print(LGs[[i - 1]])
       message("Processing batch ",i,"...")
@@ -199,7 +201,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
     LG <- seeded_map(input.seq = make_seq(input.seq$twopt,
                                           batches[[i]],
                                           twopt = input.seq$twopt),
-                     verbosity = verbosity,
+                     verbose = verbose,
                      seeds = seeds, rm_unlinked = rm_unlinked,
                      tol=tol)
     if(is(LG,"integer")){
@@ -235,7 +237,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
                   LGs[[i]]$seq.rf[(overlap + 1):length(LGs[[i]]$seq.rf)])
     
   }
-  if(verbosity)
+  if(verbose)
   {
     message("Final call to map...")
   }
@@ -268,7 +270,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
       cat("Markers", mp$seq.num[rm.seq], "were remove because they cause gaps higher than ", max.gap, " cM with both neighboors markers.\n")
       mp <- map_overlapping_batches(input.seq = new.seq,
                                     size = size, overlap = overlap,
-                                    phase_cores = phase_cores, verbosity = verbosity , 
+                                    phase_cores = phase_cores, verbose = verbose , 
                                     seeds = seeds, tol=tol, rm_unlinked = rm_unlinked, max.gap=max.gap)
     }
   }

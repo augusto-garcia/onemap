@@ -122,18 +122,12 @@
 try_seq<-function(input.seq,mrk,
                   tol=10E-2,
                   pos= NULL,
-                  verbose=FALSE,
-                  size = NULL, 
-                  overlap = NULL, 
-                  phase_cores = 1)
+                  verbose=FALSE)
 {
   if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2"))
     return(try_seq_outcross(input.seq=input.seq,
                             mrk=mrk, tol=tol,
-                            pos=pos, verbose=verbose,
-                            size = NULL, 
-                            overlap = NULL, 
-                            phase_cores = 1))
+                            pos=pos, verbose=verbose))
   else
     return(try_seq_inbred_bc(input.seq=input.seq,
                              mrk=mrk, tol=tol,
@@ -161,7 +155,7 @@ try_seq_inbred_f2 <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
   try.ord <- c(mrk,input.seq$seq.num)
   if(verbose) cat("TRY", 1,": ", c(mrk,input.seq$seq.num),"\n")
   else cat(format(mrk,width=num.max) , "-->", format(colnames(input.seq$data.name$geno)[mrk], width=mark.max), ": .")
-  utils::flush.console()
+  flush.console()
   seq.temp<-make_seq(input.seq$twopt, arg=try.ord)
   seq.temp$twopt<-input.seq$twopt
   rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
@@ -185,7 +179,7 @@ try_seq_inbred_f2 <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
     if(verbose)
       cat("TRY", i+1, ": ", try.ord[i+1,], "\n")
     else cat(".")
-    utils::flush.console()
+    flush.console()
     seq.temp<-make_seq(input.seq$twopt, arg=try.ord[i+1,])
     seq.temp$twopt<-input.seq$twopt
     rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
@@ -203,7 +197,7 @@ try_seq_inbred_f2 <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
   try.ord <- rbind(try.ord,c(input.seq$seq.num,mrk))
   if(verbose) cat("TRY",length(input.seq$seq.num)+1,": ", c(input.seq$seq.num,mrk) ,"\n")
   else cat(".\n")
-  utils::flush.console()
+  flush.console()
   ## estimate parameters for all possible linkage phases for this order
   final.map<-est_map_hmm_f2(geno=t(input.seq$data.name$geno[,try.ord[length(input.seq$seq.num)+1,]]),
                             error=input.seq$data.name$error[try.ord[length(input.seq$seq.num)+1,] + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(try.ord[length(input.seq$seq.num)+1,])),],
@@ -247,7 +241,7 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
   try.ord <- c(mrk,input.seq$seq.num)
   if(verbose) cat("TRY", 1,": ", c(mrk,input.seq$seq.num),"\n")
   else cat(format(mrk,width=num.max) , "-->", format(colnames(input.seq$data.name$geno)[mrk], width=mark.max), ": .")
-  utils::flush.console()
+  flush.console()
   seq.temp<-make_seq(input.seq$twopt, arg=try.ord)
   seq.temp$twopt<-input.seq$twopt
   rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
@@ -276,7 +270,7 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
     if(verbose)
       cat("TRY", i+1, ": ", try.ord[i+1,], "\n")
     else cat(".")
-    utils::flush.console()
+    flush.console()
     seq.temp<-make_seq(input.seq$twopt, arg=try.ord[i+1,])
     seq.temp$twopt<-input.seq$twopt
     rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
@@ -299,7 +293,7 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
   try.ord <- rbind(try.ord,c(input.seq$seq.num,mrk))
   if(verbose) cat("TRY",length(input.seq$seq.num)+1,": ", c(input.seq$seq.num,mrk) ,"\n")
   else cat(".\n")
-  utils::flush.console()
+  flush.console()
   ## estimate parameters for all possible linkage phases for this order
   final.map<-est_map_hmm_bc(geno=t(input.seq$data.name$geno[,try.ord[length(input.seq$seq.num)+1,]]),
                             error=input.seq$data.name$error[try.ord[length(input.seq$seq.num)+1,] + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(try.ord[length(input.seq$seq.num)+1,])),],
@@ -331,10 +325,7 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
 try_seq_outcross<- function(input.seq,mrk,
                             tol=10E-2,
                             pos= NULL,
-                            verbose=FALSE,
-                            size = NULL, 
-                            overlap = NULL, 
-                            phase_cores = 1)
+                            verbose=FALSE)
 {
   ## checking for correct objects
   if(!is(input.seq,"sequence"))
@@ -374,7 +365,7 @@ try_seq_outcross<- function(input.seq,mrk,
   try.ord <- c(mrk,input.seq$seq.num)
   if(verbose) cat("TRY", 1,": ", c(mrk,input.seq$seq.num),"\n")
   else cat(format(mrk,width=num.max) , "-->", format(colnames(input.seq$data.name$geno)[mrk], width=mark.max), ": .")
-  utils::flush.console()
+  flush.console()
   
   if(nrow(Ph.Init)>1){
     ##Removing ambigous phases
@@ -435,7 +426,7 @@ try_seq_outcross<- function(input.seq,mrk,
     try.ord <- rbind(try.ord,c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)]))
     if(verbose) cat("TRY", i+1,": ",c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)]) ,"\n")
     else cat(".")
-    utils::flush.console()
+    flush.console()
     
     if(nrow(Ph.Init)>1){
       ##Removing ambigous phases
@@ -484,7 +475,7 @@ try_seq_outcross<- function(input.seq,mrk,
   try.ord <- rbind(try.ord,c(input.seq$seq.num,mrk))
   if(verbose) cat("TRY",length(input.seq$seq.num)+1,": ", c(input.seq$seq.num,mrk) ,"\n")
   else cat(".\n")
-  utils::flush.console()
+  flush.console()
   if(nrow(Ph.Init)>1){
     ##Removing ambigous phases
     rm.ab<-rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=c(input.seq$seq.num,mrk))

@@ -52,10 +52,8 @@ seq_by_type <- function(sequence, mk_type){
 map_avoid_unlinked <- function(input.seq, 
                                size = NULL, 
                                overlap = NULL,
-                               round = 5,
                                phase_cores = 1, 
-                               tol = 1e-05,
-                               max.gap=F){
+                               tol = 1e-05){
   #TODO: error checks...
   if(phase_cores == 1){
     map_df <- map(input.seq, rm_unlinked = T)
@@ -67,7 +65,7 @@ map_avoid_unlinked <- function(input.seq,
     map_df <- map_overlapping_batches(input.seq = input.seq,
                                       size = size, overlap = overlap,
                                       phase_cores = phase_cores, 
-                                      tol=tol, rm_unlinked = T, max.gap = max.gap)
+                                      tol=tol, rm_unlinked = T)
     }
   }
   while(is(map_df, "integer")){
@@ -83,5 +81,6 @@ map_avoid_unlinked <- function(input.seq,
   }
   return(map_df)
 }
+
 
 

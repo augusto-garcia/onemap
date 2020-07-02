@@ -35,7 +35,7 @@
 ##' (2008) were used.
 ##' 
 ##' @importFrom methods is
-##' @importFrom utils setTxtProgressBar txtProgressBar tail head
+##' @importFrom utils setTxtProgressBar txtProgressBar tail head flush.console
 ##'
 ##' @param input.seq an object of class \code{sequence}.
 ##' @param n.best the number of best orders to store in object (defaults to
@@ -118,7 +118,7 @@ compare_outcross<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
     stop(sQuote(deparse(substitute(input.seq)))," is not an object of class 'sequence'")
   if(length(input.seq$seq.num) > 5)
     cat("WARNING: this operation may take a VERY long time\n")
-  utils::flush.console()
+  flush.console()
   if(length(input.seq$seq.num) > 10) {
     cat("\nIt is not wise trying to use 'compare' with more than 10 markers \n")
     ANSWER <- readline("Are you sure you want to proceed? [y or n]\n")
@@ -147,7 +147,7 @@ compare_outcross<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
       for(i in 1:nrow(all.ord)){
         ## print output for each order
         cat("Order", i, ":", all.ord[i,], "\n")
-        utils::flush.console()
+        flush.console()
         ## get initial values for the HMM
         all.match <- match(all.ord[i,],input.seq$seq.num)
         for(j in 1:(length(input.seq$seq.num)-1)){
@@ -209,7 +209,7 @@ compare_outcross<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
         ##      cat(rep("\b",nchar(nc)+1),sep="")
         ##      nc<-round(i*100/nrow(all.ord))
         ##      cat(nc,"%", sep="")
-        ##      utils::flush.console()
+        ##      flush.console()
         ##    }
         ## get initial values for the HMM
         all.match <- match(all.ord[i,],input.seq$seq.num)
@@ -283,7 +283,7 @@ compare_inbred_bc<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
     stop(sQuote(deparse(substitute(input.seq)))," is not an object of class 'sequence'")
   if(length(input.seq$seq.num) > 5)
     cat("WARNING: this operation may take a VERY long time\n")
-  utils::flush.console()
+  flush.console()
   if(length(input.seq$seq.num) > 10) {
     cat("\nIt is not wise trying to use 'compare' with more than 10 markers \n")
     ANSWER <- readline("Are you sure you want to proceed? [y or n]\n")
@@ -313,7 +313,7 @@ compare_inbred_bc<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
     {
       ## print output for each order
       if (verbose) cat("Order", i, ":", all.ord[i,], "\n")
-      utils::flush.console()
+      flush.console()
       seq.temp<-make_seq(input.seq$twopt, arg=all.ord[i,])
       seq.temp$twopt<-input.seq$twopt
       rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
@@ -364,7 +364,7 @@ compare_inbred_f2<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
     stop(sQuote(deparse(substitute(input.seq)))," is not an object of class 'sequence'")
   if(length(input.seq$seq.num) > 5)
     cat("WARNING: this operation may take a VERY long time\n")
-  utils::flush.console()
+  flush.console()
   if(length(input.seq$seq.num) > 10) {
     cat("\nIt is not wise trying to use 'compare' with more than 10 markers \n")
     ANSWER <- readline("Are you sure you want to proceed? [y or n]\n")
@@ -394,7 +394,7 @@ compare_inbred_f2<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
     {
       ## print output for each order
       if (verbose) cat("Order", i, ":", all.ord[i,], "\n")
-      utils::flush.console()
+      flush.console()
       seq.temp<-make_seq(input.seq$twopt, arg=all.ord[i,])
       seq.temp$twopt<-input.seq$twopt
       rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)

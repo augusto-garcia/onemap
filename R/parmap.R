@@ -12,6 +12,8 @@
 ##                                                                     ##
 #######################################################################
 
+globalVariables(c("var"))
+
 ##' A parallelized version of map function
 ##' 
 ##' Based on the strategy propoused by Schiffthaler et al. the markers of a
@@ -33,6 +35,8 @@
 ##' @param avoid_link_errors logical. If TRUE markers which do not reach the linkage
 ##' criteria are removed of the sequence and the distances are automatically reestimated.
 ##' If FALSE an error stops the algorithm it find these markers.
+##' @param export_diff If TRUE also returns (in the first level of the list) the differences
+##' in genetic distances between overlaped markers
 ##'   
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
@@ -92,7 +96,7 @@ parmap <- function(input.seq=NULL,
   if(avoid_link_errors){
     new.maps <- parLapply(clust, list_seq, function(x) map_avoid_unlinked(x, tol=tol))      
   } else {
-    new.maps <- parLapply(clust, list_seq, function(x) onemap::map(x, tol=tol))
+    new.maps <- parLapply(clust, list_seq, function(x) map(x, tol=tol))
   }
   
   stopCluster(clust)

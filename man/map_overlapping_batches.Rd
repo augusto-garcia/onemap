@@ -9,7 +9,7 @@ map_overlapping_batches(
   size = 50,
   overlap = 15,
   phase_cores = 1,
-  verbosity = F,
+  verbose = F,
   seeds = NULL,
   tol = 1e-04,
   rm_unlinked = T,
@@ -26,7 +26,7 @@ map_overlapping_batches(
 \item{phase_cores}{The number of parallel processes to use when estimating
 the phase of a marker. (Should be no more than 4)}
 
-\item{verbosity}{A logical, if TRUE its output progress status
+\item{verbose}{A logical, if TRUE its output progress status
 information.}
 
 \item{seeds}{A vector of phase information used as seeds for the first

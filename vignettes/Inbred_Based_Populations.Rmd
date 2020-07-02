@@ -1120,7 +1120,20 @@ LG2_edit <- drop_marker(LG2_f2_final, 23) # removing marker 23
 
 After, you need to reestimate the parameters using the same previous order. For that, use `map` function:
 
+```{r, eval=FALSE}
+LG2_edit_map <- map(LG2_edit) 
+```
+
+**Warning**: If you find an error message like:
+
+```
+Error in as_mapper(.f, ...) : argument ".f" is missing, with no default
+```
+
+It's because the `map` function has a very common name and you can have in your environment other function with the same name. In the case of the presented error, R is using `map` function from `purrr` package instead of `OneMap`, to solve this, simple specify that you want `OneMap` function with `::` command from `stringr` package:
+
 ```{r}
+library(stringr)
 LG2_edit_map <- onemap::map(LG2_edit) 
 ```
 
@@ -1337,9 +1350,10 @@ LG3seq_f2_map <- map(LG3seq_f2)
 Error in as_mapper(.f, ...) : argument ".f" is missing, with no default
 ```
 
-It's because the `map` function has a very common name and you can have in your environment other function with the same name. In the case of the presented error, R is using `map` function from `purrr` package instead of `OneMap`, to solve this, simple specify that you want `OneMap` function:
+It's because the `map` function has a very common name and you can have in your environment other function with the same name. In the case of the presented error, R is using `map` function from `purrr` package instead of `OneMap`, to solve this, simple specify that you want `OneMap` function with `::` command from `stringr` package:
 
 ```{r}
+library(stringr)
 (LG3seq_f2_map <- onemap::map(LG3seq_f2))
 ```
 

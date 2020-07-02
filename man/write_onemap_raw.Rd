@@ -10,9 +10,6 @@ write_onemap_raw(onemap.obj = NULL, file.name = "out.raw")
 \item{onemap.obj}{object of class `onemap`}
 
 \item{file.name}{a character for the onemap raw file name. Default is "out.raw"}
-
-\item{cross}{a character describing the cross type. It can be "outcrossing", 
-"f2 intercross", "f2 backcross", "ri self" or "ri sib"}
 }
 \description{
 Converts onemap R object to onemap input file. The input file brings information about the mapping population:

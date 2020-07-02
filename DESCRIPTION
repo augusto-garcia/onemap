@@ -36,11 +36,12 @@ Imports: ggplot2 (>= 2.2.1),
         doParallel,
         updog,
         dplyr,
-        tidyr
+        tidyr,
+        stringr,
+        htmlwidgets
 Suggests: qtl (>= 1.36-6), 
           knitr (>= 1.10), 
           rmarkdown, 
-          htmlwidgets,
           vcfR (>= 1.6.0),
 VignetteBuilder: knitr
 Encoding: UTF-8

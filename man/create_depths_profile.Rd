@@ -24,6 +24,8 @@ create_depths_profile(
 \arguments{
 \item{onemap.obj}{an object of class \code{onemap}.}
 
+\item{vcfR.object}{an object of class \code{vcfR}.}
+
 \item{parent1}{a character specifying the first parent ID}
 
 \item{parent2}{a character specifying the second parent ID}
@@ -47,8 +49,6 @@ create_depths_profile(
 \item{y_lim}{set scale limit for y axis}
 
 \item{x_lim}{set scale limit for x axis}
-
-\item{vcf.file}{an object of class \code{vcfR}.}
 }
 \value{
 an rds file and a ggplot graphic.

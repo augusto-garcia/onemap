@@ -29,7 +29,7 @@
 ##' @param input.seq an object of class \code{sequence}.
 ##' @param tol tolerance for the C routine, i.e., the value used to evaluate
 ##' convergence.
-##' @param verbosity A logical, if TRUE it output progress status
+##' @param verbose A logical, if TRUE it output progress status
 ##' information.
 ##' @param seeds A vector given the integer encoding of phases for the first
 ##' \emph{N} positions of the map
@@ -76,15 +76,15 @@
 ##' @keywords utilities
 ##' @examples
 ##'
-##'   data(example.out)
-##'   twopt <- rf_2pts(example.out)
+##'   data(onemap_example_out)
+##'   twopt <- rf_2pts(onemap_example_out)
 ##'
 ##'   markers <- make_seq(twopt,c(30,12,3,14,2))
 ##'   seeded_map(markers, seeds = c(4,2))
 ##'
 ##' @export
 seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
-                       seeds, verbosity = F, rm_unlinked=F)
+                       seeds, verbose = F, rm_unlinked=F)
 {
   ## checking for correct object
   if(!("sequence" %in% class(input.seq)))
@@ -105,7 +105,7 @@ seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
   #Skip all seeds i the phase estimation
   for(mrk in (length(seeds)+1):(length(seq.num)-1)) {
     results <- list(rep(NA,4),rep(-Inf,4))
-    if(verbosity)
+    if(verbose)
     {
       message("Phasing marker ", input.seq$seq.num[mrk])
     }

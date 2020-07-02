@@ -55,7 +55,7 @@ globalVariables(c("mkt.wrg"))
 ##' individual. Currently ignored.}
 ##' @author Adapted from Karl Broman (package \pkg{qtl}) by Marcelo Mollinari,
 ##' \email{mmollina@@usp.br}
-##' @seealso \code{mapmaker_example_bc} and \code{mapmaker_example_f2} directory in the
+##' @seealso \code{mapmaker_example_bc} and \code{mapmaker_example_f2} raw files in the
 ##' package source.
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
