@@ -1112,7 +1112,20 @@ LG2_edit <- drop_marker(LG2_f2_final, 23) # removing marker 23
 
 After, you need to reestimate the parameters using the same previous order. For that, use `map` function:
 
+```{r, eval=FALSE}
+LG2_edit_map <- map(LG2_edit) 
+```
+
+**Warning**: If you find an error message like:
+
+```
+Error in as_mapper(.f, ...) : argument ".f" is missing, with no default
+```
+
+It's because the `map` function has a very common name and you can have in your environment other function with the same name. In the case of the presented error, R is using `map` function from `purrr` package instead of `OneMap`, to solve this, simple specify that you want `OneMap` function with `::` command from `stringr` package:
+
 ```{r}
+library(stringr)
 LG2_edit_map <- onemap::map(LG2_edit) 
 ```
 
@@ -1329,9 +1342,10 @@ LG3seq_f2_map <- map(LG3seq_f2)
 Error in as_mapper(.f, ...) : argument ".f" is missing, with no default
 ```
 
-It's because the `map` function has a very common name and you can have in your environment other function with the same name. In the case of the presented error, R is using `map` function from `purrr` package instead of `OneMap`, to solve this, simple specify that you want `OneMap` function:
+It's because the `map` function has a very common name and you can have in your environment other function with the same name. In the case of the presented error, R is using `map` function from `purrr` package instead of `OneMap`, to solve this, simple specify that you want `OneMap` function with `::` command from `stringr` package:
 
 ```{r}
+library(stringr)
 (LG3seq_f2_map <- onemap::map(LG3seq_f2))
 ```
 
@@ -1410,7 +1424,7 @@ draw_map2(LG1_f2_final, LG2_f2_final, LG3_f2_final, main = "Only linkage informa
           group.names = c("LG1", "LG2", "LG3"), output = "map.png")
 ```
 
-<img src="map.png" width="400" height="400">
+<img src="map.png" width="300" height="400">
 
 You can include all `sequence` objects referring to the groups as the first arguments. The `main` argument define the main title of the draw and `group.names` define the names of each group. If no `output` file and file extension is defined, the draw will be generated at you working directory as `map.eps`. The eps extension is only the default option but there are others that can be used. You can have access to a list of them at the help page.
 
@@ -1483,7 +1497,7 @@ simParallel <- read_onemap("simParall_f2.raw")
 plot(simParallel)
 ```
 
-<img src="f2_img/plot.simParallel.jpg" width="500" height="400">
+<img src="f2_img/plot.simParallel.jpg" width="300" height="300">
 
 
 ```{r, eval=FALSE}
@@ -1498,7 +1512,6 @@ find_bins(simParallel)
 # There are no distorted markers
 print(test_segregation(simParallel)) # Not shown
 ```
-
 
 To prepare the data with defined bach size we use function `pick_batch_sizes`. It selects a batch size that splits the data into even groups. Argument `size` defines the  batch size next to which an optimum size will be searched. `overlap` defines the number of markers that overlap between present batch and next. This is used because pre-defined phases at these overlap markers in present batch are used to start the HMM in the next batch. The `around` argument defines how much the function can vary around the defined number in `size` to search for the optimum batch size.
 
@@ -1768,7 +1781,7 @@ time <- system.time(mds_ripple <- ripple_ord(input.seq = map_mds_par,
 Function `progeny_haplotypes` generates a data.frame with progeny phased haplotypes estimated by `OneMap` HMM. For progeny, the HMM results in probabilities for each possible genotypes, than the generated data.frame contains all possible genotypes. If `most_likely = TRUE`  the most likely genotype receives 1 and the rest 0 (if there are two most likely both receive 0.5), if `most_likely = FALSE` genotypes probabilities will be according with the HMM results. You can choose which individual to be evaluated in `ind`. The data.frame is composed by the information: individual (ind) and group (grp) ID, position in centimorgan (pos), progeny homologs (homologs) and from each parent the allele came (parents).
 
 ```{r}
-(progeny_haplot <- progeny_haplotypes(LG2_f2_final, most_likely = TRUE, ind = c(1,2), group_names = "LG2_final"))
+(progeny_haplot <- progeny_haplotypes(LG2_f2_final, most_likely = TRUE, ind = 2, group_names = "LG2_final"))
 ```
 
 You can also have a view of progeny estimated haplotypes using `plot`. It shows which markers came from each parents homologues. `position` argument defines if haplotypes will be plotted by homologs (`stack`) or alleles (`split`). `split` option is a good way to better view the likelihoods of each alleles.
@@ -1888,5 +1901,3 @@ species. **_Theoretical Population Biology_** 61, 349-363, 2002a.
 
 Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. Linkage mapping of
 sex-specific differences. **_Genetical Research_** 79, 85-96, 2002b.
-
-

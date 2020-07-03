@@ -1789,7 +1789,7 @@ time <- system.time(mds_ripple <- ripple_ord(input.seq = map_mds_par,
 Function `progeny_haplotypes` generates a data.frame with progeny phased haplotypes estimated by `OneMap` HMM. For progeny, the HMM results in probabilities for each possible genotypes, than the generated data.frame contains all possible genotypes. If `most_likely = TRUE`  the most likely genotype receives 1 and the rest 0 (if there are two most likely both receive 0.5), if `most_likely = FALSE` genotypes probabilities will be according with the HMM results. You can choose which individual to be evaluated in `ind`. The data.frame is composed by the information: individual (ind) and group (grp) ID, position in centimorgan (pos), progeny homologs (homologs) and from each parent the allele came (parents).
 
 ```{r}
-(progeny_haplot <- progeny_haplotypes(LG2_f2_final, most_likely = TRUE, ind = c(1,2), group_names = "LG2_final"))
+(progeny_haplot <- progeny_haplotypes(LG2_f2_final, most_likely = TRUE, ind = 2, group_names = "LG2_final"))
 ```
 
 You can also have a view of progeny estimated haplotypes using `plot`. It shows which markers came from each parents homologues. `position` argument defines if haplotypes will be plotted by homologs (`stack`) or alleles (`split`). `split` option is a good way to better view the likelihoods of each alleles.

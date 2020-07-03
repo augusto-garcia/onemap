@@ -147,6 +147,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
                              tol=tol, 
                              rm_unlinked = rm_unlinked)
                        })
+    gc(verbose = F)
     if(!all(sapply(phases, function(x) is(x, "sequence")))){
       if (rm_unlinked) {
         warning(cat("The linkage between markers", 
@@ -208,6 +209,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
                                  tol=tol, 
                                  rm_unlinked = rm_unlinked)
                            })
+        gc(verbose = F)
         if(!all(sapply(phases, function(x) is(x, "sequence")))){
           if(rm_unlinked){
             warning(cat("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], 

@@ -765,7 +765,6 @@ high capacity, we recommend using maximum of ten markers. **
 If you have more markers in your group, we suggest to use the following explained approaches
 `order_seq`.
 
-# Aqui
 In the example, 
 `LG3` contains only seven markers. Two of them are of type D1 and one are
 segregating in 3:1 fashion (type C). Thus, although the number 
@@ -847,7 +846,6 @@ If you change the `inter` argument to `TRUE`,  you should also specify a output 
 rf_graph_table(LG3_final, inter = TRUE, mrk.axis= "names", html.file = "LG3.html")
 ```
 
-#Aqui
 For example, passing on the cell corresponding to markers `8` and `13`, you can see their names (`M8` and `M13` ), types (`B3.7` and `C.8`), recombination fraction (`rf = 0.03`) and LOD Scores for each possible linkage phase. This is quite useful in helping to interpret the results.
 
 If you want to see corresponding marker numbers (not the names) in the axis just change the argument `mrk.axis` to `numbers`. It can make the next steps easier.

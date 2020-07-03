@@ -127,6 +127,7 @@ seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
                                       phase=Ph.Init[j,],
                                       twopt=input.seq$twopt), tol=tol)
                        })
+    gc(verbose = F)
     if(!all(sapply(phases, function(x) is(x, "sequence")))) {
       if(rm_unlinked){
         warning(cat("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], 

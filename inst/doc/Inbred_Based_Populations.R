@@ -757,7 +757,7 @@ draw_map2(LG1_f2_final, col.group = "#58A4B0", col.mark = "#335C81", output = "m
 #  
 
 ## -----------------------------------------------------------------------------
-(progeny_haplot <- progeny_haplotypes(LG2_f2_final, most_likely = TRUE, ind = c(1,2), group_names = "LG2_final"))
+(progeny_haplot <- progeny_haplotypes(LG2_f2_final, most_likely = TRUE, ind = 2, group_names = "LG2_final"))
 
 ## -----------------------------------------------------------------------------
 plot(progeny_haplot, position = "stack")
