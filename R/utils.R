@@ -55,32 +55,83 @@ map_avoid_unlinked <- function(input.seq,
                                phase_cores = 1, 
                                tol = 1e-05){
   #TODO: error checks...
+  map_df <- map_save_ram(input.seq, rm_unlinked = T, 
+                         size = size, 
+                         overlap = overlap, 
+                         tol=tol, 
+                         phase_cores = phase_cores)
+  
+  while(is(map_df, "integer")){
+    seq_true <- make_seq(input.seq$twopt, map_df)
+    map_df <- map_save_ram(input.seq = seq_true, 
+                           rm_unlinked = T, 
+                           tol=tol, 
+                           size = size, 
+                           overlap = overlap, 
+                           phase_cores = phase_cores)
+  }
+  return(map_df)
+}
+
+# Split 2pts object by mks
+split_2pts <- function(twopts.obj, mks){
+  twopts.obj <- return.map$twopt
+  mks <- return.map$seq.num
+  split.dat <- split_onemap(twopts.obj$data.name, mks)
+  twopts.obj$data.name <- split.dat
+  twopts.obj$n.mar <- length(mks)
+  twopts.obj$CHROM <- twopts.obj$CHROM[mks]
+  twopts.obj$POS <- twopts.obj$POS[mks]
+  if(is(twopts.obj$data.name, c("outcross","f2"))){
+    twopts.obj$analysis$CC <- twopts.obj$analysis$CC[mks,mks]
+    twopts.obj$analysis$RC <- twopts.obj$analysis$RC[mks,mks]
+    twopts.obj$analysis$CR <- twopts.obj$analysis$CR[mks,mks]
+    twopts.obj$analysis$RR <- twopts.obj$analysis$RR[mks,mks]
+  } else {
+    twopts.obj$analysis <- twopts.obj$analysis[mks,mks]
+  }
+  return(twopts.obj)
+}
+
+# perform map with backgroups onemap object and twopts only with sequence markers information
+# it save space in ram memory - very useful if dealing with many markers in total dataset
+map_save_ram <- function(input.seq,
+                         tol=10E-5, 
+                         verbose=FALSE, 
+                         rm_unlinked=FALSE, 
+                         phase_cores = 1, 
+                         size = NULL, 
+                         overlap = NULL){
+  
+  input.seq.tot <- input.seq
+  if(length(input.seq$seq.num) < input.seq.tot$data.name$n.mar){
+    split.twopts <- split_2pts(input.seq$twopt) 
+    input.seq <- make_seq(split.twopts, "all")
+  }
   if(phase_cores == 1){
-    map_df <- map(input.seq, rm_unlinked = T)
+    return.map <- map(input.seq, tol = tol, 
+                      verbose = verbose, 
+                      rm_unlinked = rm_unlinked, 
+                      phase_cores = phase_cores)
   } else {
     if(is.null(size) | is.null(overlap)){
       stop("If you want to parallelize the HMM in multiple cores (phase_cores != 1) 
              you should also define `size` and `overlap` arguments. See ?map_avoid_unlinked and ?pick_batch_sizes")
     } else {
-    map_df <- map_overlapping_batches(input.seq = input.seq,
-                                      size = size, overlap = overlap,
-                                      phase_cores = phase_cores, 
-                                      tol=tol, rm_unlinked = T)
+      return.map <- map_overlapping_batches(input.seq = input.seq,
+                                            size = size, overlap = overlap, 
+                                            phase_cores = phase_cores, 
+                                            tol=tol, rm_unlinked = rm_unlinked)
     }
   }
-  while(is(map_df, "integer")){
-    seq_true <- make_seq(input.seq$twopt, map_df)
-    if(is.null(size) & is.null(overlap) & phase_cores == 1){
-      map_df <- map(input.seq = seq_true, rm_unlinked = T, tol=tol)
-    }else{
-      map_df <- map_overlapping_batches(input.seq = seq_true,
-                                        size = size, overlap = overlap, 
-                                        phase_cores = phase_cores, 
-                                        tol=tol, rm_unlinked = T)
+  if(length(input.seq$seq.num) < input.seq.tot$data.name$n.mar){
+    if(!is(return.map, "integer")){ # When rm_unlinked == F
+      return.map$seq.num <- input.seq.tot$seq.num
+      return.map$data.name <- input.seq.tot$data.name
+      return.map$twopt <- input.seq.tot$twopt
     }
   }
-  return(map_df)
+  return(return.map)
 }
-
 
 
