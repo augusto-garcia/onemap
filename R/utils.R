@@ -75,8 +75,6 @@ map_avoid_unlinked <- function(input.seq,
 
 # Split 2pts object by mks
 split_2pts <- function(twopts.obj, mks){
-  twopts.obj <- return.map$twopt
-  mks <- return.map$seq.num
   split.dat <- split_onemap(twopts.obj$data.name, mks)
   twopts.obj$data.name <- split.dat
   twopts.obj$n.mar <- length(mks)
