@@ -103,7 +103,7 @@ map_save_ram <- function(input.seq,
   
   input.seq.tot <- input.seq
   if(length(input.seq$seq.num) < input.seq.tot$data.name$n.mar){
-    split.twopts <- split_2pts(input.seq$twopt) 
+    split.twopts <- split_2pts(input.seq$twopt, input.seq$seq.num) 
     input.seq <- make_seq(split.twopts, "all")
   }
   if(phase_cores == 1){
