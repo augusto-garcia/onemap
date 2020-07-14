@@ -57,12 +57,12 @@ extract_depth <- function(vcfR.object=NULL,
   n.ind <- length(ind)
   N.MKs <- dim(vcfR.object@gt)[1]
   N.IND <- dim(vcfR.object@gt)[2]-1
-  pos.vcf <- vcfR.object@fix[,2]
-  pos.onemap <- onemap.object$POS
+  chr.pos.vcf <- paste0(vcfR.object@fix[,1], "_",vcfR.object@fix[,2])
+  chr.pos.onemap <- paste0(onemap.object$CHROM,"_", onemap.object$POS)
   
   # If there are no marker names                                                                                 
   if(all(is.na(MKS)))
-    MKS <- paste0(vcfR.object@fix[,1],"_", pos.vcf)
+    MKS <- chr.pos.vcf
   
   if(is(onemap.object,"f2")){
     parents <- which(IND == f1)
@@ -71,7 +71,7 @@ extract_depth <- function(vcfR.object=NULL,
   }
   
   if(recovering==FALSE){
-    rm.mks <- which(as.numeric(pos.vcf) %in% pos.onemap==FALSE)
+    rm.mks <- which(!(chr.pos.vcf %in% chr.pos.onemap))
     rm.ind <- which(IND[-parents] %in% ind==FALSE)                                                                             
     CHROM <- onemap.object$CHROM
     POS <- onemap.object$POS
