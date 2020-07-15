@@ -63,16 +63,16 @@ create_depths_profile <- function(onemap.obj = NULL,
   if(is(onemap.obj, "outcross")){
     idx.mks <- colnames(onemap.obj$geno)[which(!(onemap.obj$segr.type %in% c("B3.7", "D1.10", "D2.15")))]
     if(length(idx.mks) > 0){
+      idx.mks <- colnames(onemap.obj$geno)[which((onemap.obj$segr.type %in% c("B3.7", "D1.10", "D2.15")))]
       warning("Only biallelic codominant markers are supported. The multiallelic markers present in onemap object will not be plotted.\n") 
-      onemaps <- split_onemap(onemap.obj, mks= idx.mks)
-      onemap.obj <- onemaps[[1]]
+      onemap.obj <- split_onemap(onemap.obj, mks= idx.mks)
     }
   } else if(is(onemap.obj,"f2")){
     idx.mks <- colnames(onemap.obj$geno)[which(!(onemap.obj$segr.type %in% c("A.H.B")))]
     if(length(idx.mks) > 0){
+      idx.mks <- colnames(onemap.obj$geno)[which((onemap.obj$segr.type %in% c("A.H.B")))]
       warning("Only codominant markers are supported. The dominant markers present in onemap object will not be plotted.\n") 
-      onemaps <- split_onemap(onemap.obj, mks= idx.mks)
-      onemap.obj <- onemaps[[1]]
+      onemap.obj <- split_onemap(onemap.obj, mks= idx.mks)
     }
   } else{
     stop("By now, this function is only available for outcrossing and f2 intercross populations\n")
