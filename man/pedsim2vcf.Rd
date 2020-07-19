@@ -55,7 +55,7 @@ pedsim2vcf(
 
 \item{disper.par}{Dispertion parameter for negative binomial}
 
-\item{pos}{Phisical map position of each marker}
+\item{pos}{vector with the position of each marker. Use "cm" if you want to use mapfile position information.}
 
 \item{chr}{Chromosome where the marker is positioned}
 

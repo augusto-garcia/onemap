@@ -17,7 +17,7 @@ globalVariables(c("read.table", "rnbinom", "rbinom"))
 #' @param chr.mb Chromossome size in mega base.
 #' @param method Choose negative binomial ("neg.binom"), poisson ("poisson") distributions or updog ("updog") model to simulate counts values
 #' @param miss.perc Percentage of missing data
-#' @param pos Phisical map position of each marker
+#' @param pos vector with the position of each marker. Use "cm" if you want to use mapfile position information.
 #' @param chr Chromosome where the marker is positioned
 #' @param phase if TRUE the genotypes in VCF will be phased
 #' @param bias The bias parameter for updog model. Pr(a read after selected) / Pr(A read after selected).
@@ -73,7 +73,7 @@ pedsim2vcf <- function(inputfile=NULL,
     stop("You must define the PedigreeSim output files genotypes, map.file and chrom.file\n")
   
   data <- read.table(paste(inputfile), stringsAsFactors = FALSE, header = TRUE)
-  
+
   # Infos
   rownames(data) <- data[,1]
   data <- data[,-1]
@@ -325,10 +325,14 @@ pedsim2vcf <- function(inputfile=NULL,
   }
   
   if(is.null(pos)){
+    chr.info <- read.table(map.file, header = TRUE, stringsAsFactors = FALSE)
     pos.info <- read.table(chrom.file, header = TRUE, stringsAsFactors = FALSE)
     pos <- chr.info$position*((chr.mb*1000)/mean(pos.info$length))
     pos <- round(pos,0)
-  } 
+  } else if(any(pos=="cM")){
+    chr.info <- read.table(map.file, header = TRUE, stringsAsFactors = FALSE)
+    pos <- round(chr.info$position,2)
+  }
   
   id <- rownames(data)
   

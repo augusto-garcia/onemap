@@ -225,7 +225,7 @@ split_onemap <- function(onemap.obj=NULL, mks=NULL){
     if(is(mks, "character")){
         idx.mks <- which(colnames(onemap.obj$geno) %in% mks)
         rev.mks <- which(!colnames(onemap.obj$geno) %in% mks)
-    } else if(is(mks, "integer")){
+    } else if(is(mks, c("numeric"))){
         idx.mks <- mks
         idx.temp <- 1:onemap.obj$n.mar
         rev.mks <- idx.temp[-mks]

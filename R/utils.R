@@ -55,11 +55,11 @@ map_avoid_unlinked <- function(input.seq,
                                phase_cores = 1, 
                                tol = 1e-05){
   #TODO: error checks...
-  map_df <- map_save_ram(input.seq, rm_unlinked = T, 
-                         size = size, 
-                         overlap = overlap, 
-                         tol=tol, 
-                         phase_cores = phase_cores)
+  map_df <- onemap:::map_save_ram(input.seq, rm_unlinked = T, 
+                                  size = size, 
+                                  overlap = overlap, 
+                                  tol=tol, 
+                                  phase_cores = phase_cores)
   
   while(is(map_df, "integer")){
     seq_true <- make_seq(input.seq$twopt, map_df)
@@ -75,19 +75,40 @@ map_avoid_unlinked <- function(input.seq,
 
 # Split 2pts object by mks
 split_2pts <- function(twopts.obj, mks){
-  split.dat <- split_onemap(twopts.obj$data.name, mks)
+  split.dat <- split_onemap(onemap.obj = twopts.obj$data.name, mks)
   twopts.obj$data.name <- split.dat
   twopts.obj$n.mar <- length(mks)
   twopts.obj$CHROM <- twopts.obj$CHROM[mks]
   twopts.obj$POS <- twopts.obj$POS[mks]
   if(is(twopts.obj$data.name, c("outcross","f2"))){
-    twopts.obj$analysis$CC <- twopts.obj$analysis$CC[mks,mks]
-    twopts.obj$analysis$RC <- twopts.obj$analysis$RC[mks,mks]
-    twopts.obj$analysis$CR <- twopts.obj$analysis$CR[mks,mks]
-    twopts.obj$analysis$RR <- twopts.obj$analysis$RR[mks,mks]
+    new.twopts <- rep(list(matrix(0,nrow = length(mks), ncol = length(mks))),4)
+    for(j in 1:(length(mks)-1)) {
+      for(i in (j+1):length(mks)) {
+        k<-sort(c(mks[i], mks[j]))
+        for(w in 1:4){
+          r.temp<-twopts.obj$analysis[[w]][k[2], k[1]]
+          new.twopts[[w]][i,j]<-r.temp
+          LOD.temp<-twopts.obj$analysis[[w]][k[1], k[2]]
+          new.twopts[[w]][j,i]<-LOD.temp
+          colnames(new.twopts[[w]]) <- rownames(new.twopts[[w]]) <- colnames(split.dat$geno)
+        }
+      }
+    }
+    names(new.twopts) <- c("CC", "CR", "RC", "RR")
   } else {
-    twopts.obj$analysis <- twopts.obj$analysis[mks,mks]
+    new.twopts <- matrix(0, nrow = length(mks), ncol = length(mks))
+    for(i in 1:(length(mks)-1)) {
+      for(j in (i+1):length(mks)) {
+        k<-sort(c(mks[i], mks[j]))
+        r.temp<-twopts.obj$analysis[k[2], k[1]]
+        new.twopts[i,j]<-r.temp
+        LOD.temp<-twopts.obj$analysis[k[1], k[2]]
+        new.twopts[j,i]<-LOD.temp
+      }
+    }
+    colnames(new.twopts) <- rownames(new.twopts) <- colnames(split.dat$geno)
   }
+  twopts.obj$analysis <- new.twopts
   return(twopts.obj)
 }
 
@@ -103,7 +124,7 @@ map_save_ram <- function(input.seq,
   
   input.seq.tot <- input.seq
   if(length(input.seq$seq.num) < input.seq.tot$data.name$n.mar){
-    split.twopts <- split_2pts(input.seq$twopt, input.seq$seq.num) 
+    split.twopts <- onemap:::split_2pts(twopts.obj = input.seq$twopt, mks = input.seq$seq.num) 
     input.seq <- make_seq(split.twopts, "all")
   }
   if(phase_cores == 1){
@@ -131,5 +152,3 @@ map_save_ram <- function(input.seq,
   }
   return(return.map)
 }
-
-

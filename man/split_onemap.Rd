@@ -9,7 +9,7 @@ split_onemap(onemap.obj = NULL, mks = NULL)
 \arguments{
 \item{onemap.obj}{object of class onemap}
 
-\item{mks}{markers names to be removed and added to a new onemap object}
+\item{mks}{markers names (vector of characters) or number (vector of integers) to be removed and added to a new onemap object}
 }
 \value{
 a list containing in first level the original onemap object without 

@@ -57,7 +57,7 @@ extract_depth <- function(vcfR.object=NULL,
   n.ind <- length(ind)
   N.MKs <- dim(vcfR.object@gt)[1]
   N.IND <- dim(vcfR.object@gt)[2]-1
-  chr.pos.vcf <- paste0(vcfR.object@fix[,1], "_",vcfR.object@fix[,2])
+  chr.pos.vcf <- paste0(vcfR.object@fix[,1], "_",as.numeric(vcfR.object@fix[,2]))
   chr.pos.onemap <- paste0(onemap.object$CHROM,"_", onemap.object$POS)
   
   # If there are no marker names                                                                                 
