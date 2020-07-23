@@ -305,6 +305,8 @@ vcf2progeny_haplotypes <- function(vcfR.object,
   
   CHROM <- vcfR.object@fix[,1]
   
+  if(is.null(group_names)) group_names <- CHROM[1]
+    
   if(length(which(unique(CHROM) %in% group_names)) != length(group_names)){
     stop("At least one of the groups in group_names was not found in vcfR object.")
   }
@@ -383,7 +385,7 @@ vcf2progeny_haplotypes <- function(vcfR.object,
           comp <- new.zs
         }
         
-        df.H <- data.frame(ind = rep(ind.number, 2*n.mk),
+        df.H <- data.frame(ind = rep(ind.id, 2*n.mk),
                            grp = rep(CHROM[CHROM.now], 2),
                            pos = rep(POS, 2),
                            prob = rep(0, 2*n.mk),
