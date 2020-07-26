@@ -114,6 +114,8 @@
 * Draw graphics for progeny haplotypes
 * F2 intercross populations now uses the same HMM than outcrossing populations. Modification needed to correct infer dominant markers and also to export progeny haplotypes.
 * Function vcf2progeny_haplotypes to convert phased VCF in onemap_progeny_haplotypes object. It make possible to draw the haplotypes for phased VCFs.
+* Function seq_by_type split sequence by marker type
+* Internal function map_save_ram creates new onemap object for only the evaluated sequence and, after finished process that require too much RAM memory, it return the complete onemap object to user. This save RAM memory in parallelization process.
 * Vignettes update
 * Documentation update
 
