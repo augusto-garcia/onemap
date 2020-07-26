@@ -113,6 +113,7 @@
 * Export parents and progeny haplotypes with write_haplotypes.R
 * Draw graphics for progeny haplotypes
 * F2 intercross populations now uses the same HMM than outcrossing populations. Modification needed to correct infer dominant markers and also to export progeny haplotypes.
+* Function vcf2progeny_haplotypes to convert phased VCF in onemap_progeny_haplotypes object. It make possible to draw the haplotypes for phased VCFs.
 * Vignettes update
 * Documentation update
 
