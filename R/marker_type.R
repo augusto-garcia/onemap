@@ -58,18 +58,19 @@
 ##'   marker_type(lg1) # segregation type for linkage group 1
 ##'
 ##'@export
-marker_type <-
-function(input.seq) {
+marker_type <- function(input.seq) {
   ## checking for correct objects
   if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
-
+  
   ## printing marker type
-
+  
+  tot <- vector()
   if(is(input.seq$data.name,"outcross")) {
-    for(i in 1:length(input.seq$seq.num))
-      cat("  Marker", input.seq$seq.num[i], "(", colnames(input.seq$twopt$analysis[[1]])[input.seq$seq.num[i]], ") is of type", input.seq$data.name$segr.type[input.seq$seq.num[i]], "\n")
-  }
-  else{
+    for(i in 1:length(input.seq$seq.num)){
+      temp <- paste("  Marker", input.seq$seq.num[i], "(", colnames(input.seq$twopt$analysis[[1]])[input.seq$seq.num[i]], ") is of type", input.seq$data.name$segr.type[input.seq$seq.num[i]], "\n")
+      tot <- c(tot, temp)
+    }
+  } else{
     for(i in 1:length(input.seq$seq.num)){
       mrk.type<-rep("NA",length(input.seq$seq.num))
       mrk.type[input.seq$data.name$segr.type[input.seq$seq.num]=="C.A"]<-"Not  AA : AA (3:1) "
@@ -78,10 +79,12 @@ function(input.seq) {
       mrk.type[input.seq$data.name$segr.type[input.seq$seq.num]=="M.X"]<-"Mixed: Dominant & Co-dominant"
       mrk.type[input.seq$data.name$segr.type[input.seq$seq.num]=="A.H"]<-"AA : AB (1:1)"
       mrk.type[input.seq$data.name$segr.type[input.seq$seq.num]=="A.B"]<-"AA : BB (1:1)"
-
-      cat("  Marker", input.seq$seq.num[i], "(", colnames(input.seq$twopt$analysis)[input.seq$seq.num[i]], ") -->", mrk.type[i], "\n")
+      
+      temp <- paste("  Marker", input.seq$seq.num[i], "(", colnames(input.seq$twopt$analysis)[input.seq$seq.num[i]], ") -->", mrk.type[i], "\n")
+      tot <- c(tot, temp)
     }
   }
+  return(tot)
 }
 
 ## end of file
