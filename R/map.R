@@ -134,9 +134,9 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
     ## linkage map is started with the first two markers in the sequence
     ## gather two-point information for this pair
     phase.init <- vector("list",1)
-    list.init <- onemap:::phases(make_seq(input.seq$twopt,seq.num[1:2],twopt=input.seq$twopt))
+    list.init <- phases(make_seq(input.seq$twopt,seq.num[1:2],twopt=input.seq$twopt))
     phase.init[[1]] <- list.init$phase.init[[1]]
-    Ph.Init <- onemap:::comb_ger(phase.init)
+    Ph.Init <- comb_ger(phase.init)
     phases <- mclapply(1:nrow(Ph.Init),
                        mc.cores = min(nrow(Ph.Init),phase_cores),
                        mc.allow.recursive = TRUE,
@@ -195,10 +195,10 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
         results <- list(rep(NA,4),rep(-Inf,4))
         ## gather two-point information
         phase.init <- vector("list",mrk)
-        list.init <- onemap:::phases(make_seq(input.seq$twopt,c(seq.num[mrk],seq.num[mrk+1]),twopt=input.seq$twopt))
+        list.init <- phases(make_seq(input.seq$twopt,c(seq.num[mrk],seq.num[mrk+1]),twopt=input.seq$twopt))
         phase.init[[mrk]] <- list.init$phase.init[[1]]
         for(j in 1:(mrk-1)) phase.init[[j]] <- seq.phase[j]
-        Ph.Init <- onemap:::comb_ger(phase.init)
+        Ph.Init <- comb_ger(phase.init)
         phases <- mclapply(1:nrow(Ph.Init),
                            mc.cores = min(nrow(Ph.Init), phase_cores),
                            mc.allow.recursive = TRUE,
