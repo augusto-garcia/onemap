@@ -97,7 +97,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   
   if(length(P1)==0 | length(P2)==0) stop("One or both parents names could not be found in your data")
   
-  # This part convert phased genotypes in mnps markers
+  # This part convert phased genotypes in mnps markers -- Need optimization: C++
   if(!only_biallelic & length(grep("[|]", GT_matrix[,c(P1,P2)])) > 0){
     all_data <- GT_matrix
     all_pos <- POS
@@ -108,10 +108,11 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     contigs <- unique(CHROM)
     # garantee that is the same contig
     for(w in 1:length(contigs)){
+      CHROM <- all_chrom
       idx <- which(CHROM == contigs[w]) 
+      CHROM[idx]
       GT_matrix <- all_data[idx,]
       POS <- all_pos[idx]
-      CHROM <- all_chrom[idx]
       MKS <- all_mks[idx]
       phased <- grep("[|]", GT_matrix[,P1])
       idx <- which(phased[-1] - phased[-length(phased)] ==1)
@@ -124,10 +125,17 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       idx.tot <- unique(sort(c(idx.p1, idx.p2)))
       
       # Filt NAs unphased heterozygotes
-      idx.tot <- idx.tot[-which(grepl(GT_matrix[idx.tot,P1], pattern = "[.]") |  grepl(GT_matrix[idx.tot,P2],pattern = "[.]"))]
-      idx.tot <- idx.tot[-which(GT_matrix[idx.tot,P1] == "0/1" |  GT_matrix[idx.tot,P2] == "0/1")]
-      idx.tot <- idx.tot[-which(GT_matrix[idx.tot,P1] == "0|0" &  GT_matrix[idx.tot,P2] == "0|0")]
-      idx.tot <- idx.tot[-which(GT_matrix[idx.tot,P1] == "1|1" |  GT_matrix[idx.tot,P2] == "1|1")]
+      idx.filt <- which(grepl(GT_matrix[idx.tot,P1], pattern = "[.]") |  grepl(GT_matrix[idx.tot,P2],pattern = "[.]"))
+      if(length(idx.filt) > 0) idx.tot <- idx.tot[-idx.filt]
+      idx.filt <- which(GT_matrix[idx.tot,P1] == "0/1" |  GT_matrix[idx.tot,P2] == "0/1")
+      if(length(idx.filt) > 0) idx.tot <- idx.tot[-idx.filt]
+      idx.filt <- which(GT_matrix[idx.tot,P1] == "0/1" |  GT_matrix[idx.tot,P2] == "0/1")
+      if(length(idx.filt) > 0) idx.tot <- idx.tot[-idx.filt]
+      idx.filt <- which(GT_matrix[idx.tot,P1] == "0|0" &  GT_matrix[idx.tot,P2] == "0|0")
+      if(length(idx.filt) > 0) idx.tot <- idx.tot[-idx.filt]
+      idx.filt <- which(GT_matrix[idx.tot,P1] == "1|1" |  GT_matrix[idx.tot,P2] == "1|1")
+      if(length(idx.filt) > 0) idx.tot <- idx.tot[-idx.filt]
+      
       
       idx <- which(idx.tot[-1] - idx.tot[-length(idx.tot)] ==1)
       idx.tot2 <- unique(sort(c(idx, idx +1)))
@@ -145,7 +153,8 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       mnp_matrix <- data.frame()
       mnp_pos <- mnp_chrom <- mnp_mk <- vector()
       for(i in 1:length(mnps)){
-        mnps[[i]][which(mnps[[i]] == ".")] <- "./." #Techical issue
+        if(sum(mnps[[i]] == ".",na.rm = T) > 0)
+          mnps[[i]][which(mnps[[i]] == ".")] <- "./." #Techical issue
         temp <- lapply(apply(mnps[[i]],2, function(x) strsplit(x, "[| /]")), function(x) do.call(rbind, x))
         alleles <- sapply(temp, function(x) apply(x,2, function(y) paste0(y,collapse = "_")))
         p.alleles <- sort(unique(as.vector(alleles[,c(P1,P2)])))

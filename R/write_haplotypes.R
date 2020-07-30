@@ -216,6 +216,7 @@ progeny_haplotypes <- function(...,
 ##' @param position "split" or "stack"; if "split" (default) the parents' homologous are plotted separately. if "stack" the parents' homologous are plotted together.
 ##' @param show_markers logical; if  \code{TRUE}, the markers (default) are plotted.
 ##' @param main An overall title for the plot; default is \code{NULL}.
+##' @param ncol number of columns of the facet_wrap
 ##' @param ... currently ignored
 ##' 
 ##' @method plot onemap_progeny_haplotypes
@@ -229,7 +230,7 @@ plot.onemap_progeny_haplotypes <- function(x,
                                            col = NULL, 
                                            position = "stack",
                                            show_markers = TRUE, 
-                                           main = "Genotypes", ...){
+                                           main = "Genotypes", ncol=4, ...){
   
   colors <- ifelse(is(x,"outcross"), "for.split", "parents")  
   
@@ -243,9 +244,10 @@ plot.onemap_progeny_haplotypes <- function(x,
               # markers
               pos = c(pos[-nrow(.)], NA)))
   
+  probs$ind <- paste("Ind -",probs$ind)
   
   p <- ggplot(probs, aes(x = pos, col=get(colors), alpha = prob)) + ggtitle(main) +
-    facet_grid(grp ~ ind,switch = "y") +
+    facet_wrap(~ ind + grp , ncol = ncol) +
     scale_alpha_continuous(range = c(0,1)) +
     guides(fill = guide_legend(reverse = TRUE)) +
     labs(alpha = "Prob", col = "Allele", x = "position (cM)")
