@@ -90,105 +90,6 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   
   CHROM <- vcf@fix[,1]
   POS <- as.numeric(vcf@fix[,2])
-  
-  # Checking marker segregation according with parents
-  P1 <- which(dimnames(vcf@gt)[[2]]==parent1) - 1
-  P2 <- which(dimnames(vcf@gt)[[2]]==parent2) - 1
-  
-  if(length(P1)==0 | length(P2)==0) stop("One or both parents names could not be found in your data")
-  
-  # This part convert phased genotypes in mnps markers
-  if(!only_biallelic & length(grep("[|]", GT_matrix[,c(P1,P2)])) > 0){
-    all_data <- GT_matrix
-    all_pos <- POS
-    all_chrom <- CHROM
-    all_mks <- MKS
-    temp_pos <- temp_chrom <- temp_mks <- vector()
-    temp_matrix <- data.frame()
-    contigs <- unique(CHROM)
-    # garantee that is the same contig
-    for(w in 1:length(contigs)){
-      idx <- which(CHROM == contigs[w]) 
-      GT_matrix <- all_data[idx,]
-      POS <- all_pos[idx]
-      CHROM <- all_chrom[idx]
-      MKS <- all_mks[idx]
-      phased <- grep("[|]", GT_matrix[,P1])
-      idx <- which(phased[-1] - phased[-length(phased)] ==1)
-      idx.tot <- unique(sort(c(idx, idx +1)))
-      idx.p1 <- phased[idx.tot]
-      phased <- grep("[|]", GT_matrix[,P2])
-      idx <- which(phased[-1] - phased[-length(phased)] ==1)
-      idx.tot <- unique(sort(c(idx, idx +1)))
-      idx.p2 <- phased[idx.tot]
-      idx.tot <- unique(sort(c(idx.p1, idx.p2)))
-      
-      # Filt NAs unphased heterozygotes
-      idx.tot <- idx.tot[-which(grepl(GT_matrix[idx.tot,P1], pattern = "[.]") |  grepl(GT_matrix[idx.tot,P2],pattern = "[.]"))]
-      idx.tot <- idx.tot[-which(GT_matrix[idx.tot,P1] == "0/1" |  GT_matrix[idx.tot,P2] == "0/1")]
-      idx.tot <- idx.tot[-which(GT_matrix[idx.tot,P1] == "0|0" &  GT_matrix[idx.tot,P2] == "0|0")]
-      idx.tot <- idx.tot[-which(GT_matrix[idx.tot,P1] == "1|1" |  GT_matrix[idx.tot,P2] == "1|1")]
-      
-      idx <- which(idx.tot[-1] - idx.tot[-length(idx.tot)] ==1)
-      idx.tot2 <- unique(sort(c(idx, idx +1)))
-      idx.tot <- idx.tot[idx.tot2]
-      
-      #list with haplo
-      mnps.num <- split(idx.tot, cumsum(c(1, diff(idx.tot) != 1)))
-      mnps <- lapply(mnps.num, function(x) GT_matrix[x,])
-      GT_matrix <- GT_matrix[-idx.tot,]
-      pos.mnps <- lapply(mnps.num, function(x) POS[x])
-      mk.mnps <- lapply(mnps.num, function(x) MKS[x])
-      POS <- POS[-idx.tot]
-      CHROM <- CHROM[-idx.tot]
-      MKS <- MKS[-idx.tot]
-      mnp_matrix <- data.frame()
-      mnp_pos <- mnp_chrom <- mnp_mk <- vector()
-      for(i in 1:length(mnps)){
-        mnps[[i]][which(mnps[[i]] == ".")] <- "./." #Techical issue
-        temp <- lapply(apply(mnps[[i]],2, function(x) strsplit(x, "[| /]")), function(x) do.call(rbind, x))
-        alleles <- sapply(temp, function(x) apply(x,2, function(y) paste0(y,collapse = "_")))
-        p.alleles <- sort(unique(as.vector(alleles[,c(P1,P2)])))
-        for(j in 1:length(p.alleles)){
-          alleles[which(alleles == p.alleles[j])] <- j -1 # We deal with the progeny missing genotypes after
-        }
-        # Haplotypes found in progeny that are not present in parents are considered missing data
-        mnp_matrix <- rbind.data.frame(mnp_matrix, t(apply(alleles, 2, function(x) paste0(x, collapse = "/"))), stringsAsFactors = F)
-        mnp_pos <- c(mnp_pos, min(pos.mnps[[i]]))
-        mnp_chrom <- c(mnp_chrom, contigs[[w]])
-        mnp_mk <- c(mnp_mk, mk.mnps[[i]][which.min(pos.mnps[[i]])]) 
-      }
-      mnp_matrix <- as.matrix(mnp_matrix)
-      mnp_matrix[grep(mnp_matrix, pattern =  "_")] <- "./."
-      POS <- c(POS, mnp_pos)
-      idx <- order(POS)
-      POS <- POS[idx]
-      GT_matrix <- rbind(GT_matrix, mnp_matrix)
-      GT_matrix <- GT_matrix[idx,]
-      CHROM <- c(CHROM, mnp_chrom)
-      MKS <- c(MKS, mnp_mk)
-      temp_matrix <- rbind.data.frame(temp_matrix, GT_matrix, stringsAsFactors = F)
-      temp_pos <- c(temp_pos, POS)
-      temp_chrom <- c(temp_chrom, CHROM)
-      temp_mks <- c(temp_mks, MKS)
-    }
-    rm(all_data)
-    GT_matrix <- temp_matrix
-    POS <- temp_pos
-    CHROM <- temp_chrom
-    MKS <- temp_mks
-  }
-  
-  if(any(grepl("[|]", GT_matrix))){
-    GT_matrix <- gsub("[|]", "/", as.matrix(GT_matrix))
-    GT_matrix[which(GT_matrix == "1/0")] <- "0/1"
-    GT_matrix[which(GT_matrix == "2/0")] <- "0/2"
-    GT_matrix[which(GT_matrix == "3/0")] <- "0/3"
-    GT_matrix[which(GT_matrix == "2/1")] <- "1/2"
-    GT_matrix[which(GT_matrix == "3/1")] <- "1/3"
-    GT_matrix[which(GT_matrix == "3/2")] <- "2/3"
-  }
-  
   # keep only biallelic
   if(only_biallelic | cross != "outcross"){
     rm_multi <- which(apply(GT_matrix, 1, function(x) any(grepl("2", x))))
@@ -200,6 +101,23 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     }
   }
   n.mk <- nrow(GT_matrix)
+  
+  # This function doesn't consider phased genotypes
+  if(any(grepl("[|]", GT_matrix))){
+    GT_matrix <- gsub("[|]", "/", GT_matrix)
+    GT_matrix[which(GT_matrix == "1/0")] <- "0/1"
+    GT_matrix[which(GT_matrix == "2/0")] <- "0/2"
+    GT_matrix[which(GT_matrix == "3/0")] <- "0/3"
+    GT_matrix[which(GT_matrix == "2/1")] <- "1/2"
+    GT_matrix[which(GT_matrix == "3/1")] <- "1/3"
+    GT_matrix[which(GT_matrix == "3/2")] <- "2/3"
+  }
+  
+  # Checking marker segregation according with parents
+  P1 <- which(dimnames(vcf@gt)[[2]]==parent1) - 1
+  P2 <- which(dimnames(vcf@gt)[[2]]==parent2) - 1
+  
+  if(length(P1)==0 | length(P2)==0) stop("One or both parents names could not be found in your data")
   
   mk.type <- mk.type.num <- rep(NA, n.mk)
   if (cross == "outcross"){
@@ -501,7 +419,9 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     onemap.obj<- NULL
     return(onemap.obj)
   } else {
+    
     # Removing parents
+    
     if(is.null(f1)){
       GT_matrix <- apply(GT_matrix[,-c(P1,P2)],2,as.numeric)
       rownames(GT_matrix)  <- MKS
@@ -558,7 +478,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
 ##'@export                  
 write_onemap_raw <- function(onemap.obj=NULL, 
                              file.name = "out.raw"){
-  
+
   if(is(onemap.obj, "outcross")){
     cross <- "outcross"
   } else if(is(onemap.obj, "f2")){
