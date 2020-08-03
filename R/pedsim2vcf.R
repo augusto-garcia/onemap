@@ -73,7 +73,7 @@ pedsim2vcf <- function(inputfile=NULL,
     stop("You must define the PedigreeSim output files genotypes, map.file and chrom.file\n")
   
   data <- read.table(paste(inputfile), stringsAsFactors = FALSE, header = TRUE)
-
+  
   # Infos
   rownames(data) <- data[,1]
   data <- data[,-1]
@@ -174,11 +174,11 @@ pedsim2vcf <- function(inputfile=NULL,
       
       for(i in 1:dim(up_matrix)[1]){
         ref_matrix[i,] <- rflexdog(sizevec = size_matrix[i,],
-                                          geno=up_matrix[i,],
-                                          ploidy = 2,
-                                          seq=10^(-mean.phred/10),
-                                          bias=bias,
-                                          od = od)
+                                   geno=up_matrix[i,],
+                                   ploidy = 2,
+                                   seq=10^(-mean.phred/10),
+                                   bias=bias,
+                                   od = od)
       }
       
       alt_matrix <- size_matrix-ref_matrix

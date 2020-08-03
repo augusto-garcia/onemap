@@ -38,7 +38,8 @@ Imports: ggplot2 (>= 2.2.1),
         dplyr,
         tidyr,
         stringr,
-        htmlwidgets
+        htmlwidgets,
+        ggpubr
 Suggests: qtl (>= 1.36-6), 
           knitr (>= 1.10), 
           rmarkdown, 

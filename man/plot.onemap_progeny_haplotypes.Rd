@@ -10,6 +10,7 @@
   position = "stack",
   show_markers = TRUE,
   main = "Genotypes",
+  ncol = 4,
   ...
 )
 }
@@ -23,6 +24,8 @@
 \item{show_markers}{logical; if  \code{TRUE}, the markers (default) are plotted.}
 
 \item{main}{An overall title for the plot; default is \code{NULL}.}
+
+\item{ncol}{number of columns of the facet_wrap}
 
 \item{...}{currently ignored}
 }

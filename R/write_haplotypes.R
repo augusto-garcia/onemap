@@ -201,11 +201,17 @@ progeny_haplotypes <- function(...,
   
   new.col <- t(sapply(strsplit(probs$homologs, "_"), "[", 1:2))
   colnames(new.col) <- c("homologs", "parents")
-  
+
   probs <- cbind(probs, new.col)
   probs <- probs[,-4]
   probs <- as.data.frame(probs)
-  class(probs) <- c("onemap_progeny_haplotypes", cross, "data.frame")
+  
+  inds <- rownames(input[[1]]$data.name$geno)
+  probs$ind <- inds[probs$ind]
+  
+  if(most_likely) flag <- "most.likely" else flag <- "by.probs"
+  
+  class(probs) <- c("onemap_progeny_haplotypes", cross, "data.frame", flag)
   return(probs)
 }
 
@@ -221,7 +227,9 @@ progeny_haplotypes <- function(...,
 ##' 
 ##' @method plot onemap_progeny_haplotypes
 ##' @import ggplot2
-##' 
+#' @import dplyr
+#' @import tidyr
+#' 
 ##' @author Getulio Caixeta Ferreira, \email{getulio.caifer@@gmail.com}
 ##' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
 ##' 
@@ -243,8 +251,6 @@ plot.onemap_progeny_haplotypes <- function(x,
               # the recombination occurs, we ilustrate it in the mean point between 
               # markers
               pos = c(pos[-nrow(.)], NA)))
-  
-  probs$ind <- paste("Ind -",probs$ind)
   
   p <- ggplot(probs, aes(x = pos, col=get(colors), alpha = prob)) + ggtitle(main) +
     facet_wrap(~ ind + grp , ncol = ncol) +
@@ -308,7 +314,7 @@ vcf2progeny_haplotypes <- function(vcfR.object,
   CHROM <- vcfR.object@fix[,1]
   
   if(is.null(group_names)) group_names <- CHROM[1]
-    
+  
   if(length(which(unique(CHROM) %in% group_names)) != length(group_names)){
     stop("At least one of the groups in group_names was not found in vcfR object.")
   }
@@ -387,12 +393,13 @@ vcf2progeny_haplotypes <- function(vcfR.object,
           comp <- new.zs
         }
         
-        df.H <- data.frame(ind = rep(ind.id, 2*n.mk),
+        num.mk <- length(CHROM.now)
+        df.H <- data.frame(ind = rep(ind.id[ind], 2*num.mk),
                            grp = rep(CHROM[CHROM.now], 2),
                            pos = rep(POS, 2),
-                           prob = rep(0, 2*n.mk),
-                           homologs = rep(c("H1", "H2")[w], n.mk),
-                           parents = rep(rep(c("P1","P2"),each =n.mk)))
+                           prob = rep(0, 2*num.mk),
+                           homologs = rep(c("H1", "H2")[w], num.mk),
+                           parents = rep(rep(c("P1","P2"),each =num.mk)))
         
         for(i in 1:length(Hs[[w]])){
           df.H$prob[which(df.H$pos == POS[i] & df.H$parents == Hs[[w]][i])] <- 1
@@ -406,11 +413,91 @@ vcf2progeny_haplotypes <- function(vcfR.object,
     # bind chromosomes
     progeny_haplotypes_obj_chr <- rbind(progeny_haplotypes_obj_chr,progeny_haplotypes_obj_ind)
   }
-  switch(crosstype, "outcross" = "outcross", "f2 intercross"="f2",
-         "f2 backcross"="backcross", "ril sib"="rils", "ril self"="rils")
   
+  crosstype <- switch(crosstype, "outcross" = "outcross", "f2 intercross"="f2",
+                      "f2 backcross"="backcross", "ril sib"="rils", "ril self"="rils")
   
-  class(progeny_haplotypes_obj_chr) <- c("onemap_progeny_haplotypes", crosstype, "data.frame")
+  flag <- "most.likely"
+  class(progeny_haplotypes_obj_chr) <- c("onemap_progeny_haplotypes", crosstype, "data.frame", flag)
   return(progeny_haplotypes_obj_chr)
 }
 
+
+#' By now only for outcrossing
+#' 
+#' Genotypes with same probability for two genotypes will be removed
+#' 
+#' @import dplyr
+#' @import tidyr
+#'@export
+progeny_haplotypes_counts <- function(x){
+  if(!is(x, "onemap_progeny_haplotypes")) stop("Input need is not of class onemap_progeny_haplotyes")
+  if(!is(x, "most.likely")) stop("The most likely genotypes must receive maximum probability (1)")
+  cross <- class(x)[2]
+  
+  x <- x[order(x$ind, x$grp, x$prob, x$homologs,x$pos),]
+  x <- x[x$prob == 1,]
+  
+  x <- x %>% group_by(ind, grp, homologs) %>%
+    mutate(seq = sequence(rle(as.character(parents))$length) == 1) %>%
+    summarise(counts = sum(seq) -1) %>% ungroup()
+  
+  class(x) <- c("onemap_progeny_haplotypes_counts", cross, "data.frame")
+  return(x)
+}
+
+
+##'
+##' @method plot onemap_progeny_haplotypes_counts
+##' @import ggplot2
+##' @importFrom ggpubr ggarrange
+##' @import dplyr
+##' @import tidyr
+##' 
+##' @export
+plot.onemap_progeny_haplotypes_counts <- function(x, by_homolog = FALSE, n.graphics =5, ncol=5){
+  if(!is(x, "onemap_progeny_haplotypes_counts")) stop("Input need is not of class onemap_progeny_haplotyes_counts")
+  p <- list()
+  if(by_homolog){
+    size <- dim(x)[1]
+    if(size%%n.graphics == 0){
+      div.n.graphics <- rep(1:n.graphics, each= size/n.graphics) 
+    } else {           
+      div.n.graphics <- c(rep(1:n.graphics, each = round(size/n.graphics,0)), rep(n.graphics, size%%n.graphics))
+    }
+    p <- x %>% mutate(div.n.graphics = div.n.graphics) %>%
+      split(., .$div.n.graphics) %>%
+      lapply(., function(x) ggplot(x, aes(x=homologs, y=counts)) +
+               geom_bar(stat="identity", aes(fill=grp)) + theme_minimal() + 
+               coord_flip() + 
+               scale_fill_brewer(palette="Set1") +
+               facet_grid(ind~., switch = "y") +
+               theme(axis.title.y = element_blank(),
+                     axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+                     strip.text.y.left = element_text(angle = 0)) + 
+               labs(fill="groups") 
+      )      
+  } else {
+    x <- x %>% group_by(ind, grp) %>%
+      summarise(counts = sum(counts))
+    
+    size <- dim(x)[1]
+    if(size%%n.graphics == 0){
+      div.n.graphics <- rep(1:n.graphics, each= size/n.graphics) 
+    } else {           
+      div.n.graphics <-   c(rep(1:n.graphics, each = round(size/n.graphics,0)),rep(n.graphics, size%%n.graphics))
+    }
+    
+    p <- x %>% ungroup() %>%  mutate(div.n.graphics = div.n.graphics) %>%
+      split(., .$div.n.graphics) %>%
+      lapply(., function(x) ggplot(x, aes(x=ind, y=counts, fill=grp)) +
+               geom_bar(stat="identity") + coord_flip() + 
+               scale_fill_brewer(palette="Set1") +
+               theme(axis.title.y = element_blank(), 
+                     axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+               labs(fill="groups") 
+      ) 
+  }
+  p <- ggarrange(plotlist = p, common.legend = T, label.x = 1, ncol = ncol, nrow = round(n.graphics/ncol,0))
+  return(p)
+}
