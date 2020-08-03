@@ -20,7 +20,7 @@ find_bins_by_probs <- function(onemap_obj, threshold.probs = 0.0001, threshold.c
     
     # Optimize
     for(i in 1:(dim(diff_geno)[1])){
-      comp <- onemap_obj$error[grep(diff_geno[i,1], rownames(onemap_obj$error)),] - onemap_obj$error[grep(diff_geno[i,2], rownames(onemap_obj$error)),]
+      comp <- onemap_obj$error[grep(paste0(diff_geno[i,1],"_"), rownames(onemap_obj$error)),] - onemap_obj$error[grep(paste0(diff_geno[i,2],"_"), rownames(onemap_obj$error)),]
       counts <- sqrt(comp^2) > threshold.probs # The difference between them is higher than the threshold?
       diff_geno[i,4:7] <- apply(counts, 2, sum) # Total number of different probs
     }
