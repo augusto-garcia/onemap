@@ -8,25 +8,27 @@ find_bins_by_probs <- function(onemap_obj, threshold.probs = 0.0001, threshold.c
   n.ind <- onemap_obj$n.ind
   types <- unique(mks.types)
   threshold.num <- n.ind*4*threshold.count
+  
+  mars <- rep(colnames(onemap_obj$geno), onemap_obj$n.ind)
+  temp <- cbind(mars, onemap_obj$error)
+  error_list <- split(onemap_obj$error, mars)
+  
   bins.all.types <- list()
   for(z in 1:length(types)){
     idx.mks <- which(mks.types == types[z])
     
     MKS <- colnames(onemap_obj$geno)[idx.mks]
     
-    diff_geno <- cbind(t(combn(MKS, 2)),mk.type=types[z],NA,NA,NA,NA)
+    diff_geno <- cbind(t(combn(MKS, 2)),mk.type=types[z],NA)
     diff_geno <- data.frame(diff_geno, stringsAsFactors = F)
-    colnames(diff_geno) <- c("Marker1", "Marker2", "Marker type", "AA", "AB", "BA", "BB")
+    colnames(diff_geno) <- c("Marker1", "Marker2", "Marker type", "total")
     
-    # Optimize
+    total <- vector()
     for(i in 1:(dim(diff_geno)[1])){
-      comp <- onemap_obj$error[grep(paste0(diff_geno[i,1],"_"), rownames(onemap_obj$error)),] - onemap_obj$error[grep(paste0(diff_geno[i,2],"_"), rownames(onemap_obj$error)),]
-      counts <- sqrt(comp^2) > threshold.probs # The difference between them is higher than the threshold?
-      diff_geno[i,4:7] <- apply(counts, 2, sum) # Total number of different probs
+      total[i] <- sum(sqrt((error_list[[diff_geno[i,1]]] - error_list[[diff_geno[i,2]]])^2) > threshold.probs)
     }
     
-    diff_geno[,4:7] <- apply(diff_geno[,4:7], 2, as.numeric)
-    diff_geno <- cbind(diff_geno, total =apply(diff_geno[,4:7], 1, sum))
+    diff_geno[,4] <- total
     bins <- diff_geno[diff_geno$total <= threshold.num,] # How many genotypes are different? Less than the threshold?
     
     if(dim(bins)[1] == 0) {
@@ -42,8 +44,8 @@ find_bins_by_probs <- function(onemap_obj, threshold.probs = 0.0001, threshold.c
       split.bins <- split(bins, bins$Marker1, drop = T)
       bins.all.types <- c(bins.all.types, split.bins)
     }
-    return(bins.all.types)
   }
+  return(bins.all.types)
 }
 
 ##' Not ready yet - use carefully 

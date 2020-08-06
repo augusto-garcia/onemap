@@ -97,7 +97,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   
   if(length(P1)==0 | length(P2)==0) stop("One or both parents names could not be found in your data")
   
-  # This part convert phased genotypes in mnps markers -- Need optimization: C++
+  # This part convert phased genotypes in mnps markers -- Need optimization
   if(!only_biallelic & length(grep("[|]", GT_matrix[,c(P1,P2)])) > 0){
     all_data <- GT_matrix
     all_pos <- POS
@@ -110,76 +110,79 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     for(w in 1:length(contigs)){
       CHROM <- all_chrom
       idx <- which(CHROM == contigs[w]) 
-      CHROM[idx]
       GT_matrix <- all_data[idx,]
       POS <- all_pos[idx]
       MKS <- all_mks[idx]
-      phased <- grep("[|]", GT_matrix[,P1])
+      if(is(GT_matrix, "matrix")) phased <- grep("[|]", GT_matrix[,P1]) else phased <- grep("[|]", GT_matrix[P1]) 
       idx <- which(phased[-1] - phased[-length(phased)] ==1)
       idx.tot <- unique(sort(c(idx, idx +1)))
       idx.p1 <- phased[idx.tot]
-      phased <- grep("[|]", GT_matrix[,P2])
+      if(is(GT_matrix, "matrix")) phased <- grep("[|]", GT_matrix[,P2]) else phased <- grep("[|]", GT_matrix[P2])
       idx <- which(phased[-1] - phased[-length(phased)] ==1)
       idx.tot <- unique(sort(c(idx, idx +1)))
       idx.p2 <- phased[idx.tot]
       idx.tot <- unique(sort(c(idx.p1, idx.p2)))
       
-      # Filt NAs unphased heterozygotes
-      idx.filt <- which(grepl(GT_matrix[idx.tot,P1], pattern = "[.]") |  grepl(GT_matrix[idx.tot,P2],pattern = "[.]"))
-      if(length(idx.filt) > 0) idx.tot <- idx.tot[-idx.filt]
-      idx.filt <- which(GT_matrix[idx.tot,P1] == "0/1" |  GT_matrix[idx.tot,P2] == "0/1")
-      if(length(idx.filt) > 0) idx.tot <- idx.tot[-idx.filt]
-      idx.filt <- which(GT_matrix[idx.tot,P1] == "0/1" |  GT_matrix[idx.tot,P2] == "0/1")
-      if(length(idx.filt) > 0) idx.tot <- idx.tot[-idx.filt]
-      idx.filt <- which(GT_matrix[idx.tot,P1] == "0|0" &  GT_matrix[idx.tot,P2] == "0|0")
-      if(length(idx.filt) > 0) idx.tot <- idx.tot[-idx.filt]
-      idx.filt <- which(GT_matrix[idx.tot,P1] == "1|1" |  GT_matrix[idx.tot,P2] == "1|1")
-      if(length(idx.filt) > 0) idx.tot <- idx.tot[-idx.filt]
-      
-      
-      idx <- which(idx.tot[-1] - idx.tot[-length(idx.tot)] ==1)
-      idx.tot2 <- unique(sort(c(idx, idx +1)))
-      idx.tot <- idx.tot[idx.tot2]
-      
-      #list with haplo
-      mnps.num <- split(idx.tot, cumsum(c(1, diff(idx.tot) != 1)))
-      mnps <- lapply(mnps.num, function(x) GT_matrix[x,])
-      GT_matrix <- GT_matrix[-idx.tot,]
-      pos.mnps <- lapply(mnps.num, function(x) POS[x])
-      mk.mnps <- lapply(mnps.num, function(x) MKS[x])
-      POS <- POS[-idx.tot]
-      CHROM <- CHROM[-idx.tot]
-      MKS <- MKS[-idx.tot]
-      mnp_matrix <- data.frame()
-      mnp_pos <- mnp_chrom <- mnp_mk <- vector()
-      for(i in 1:length(mnps)){
-        if(sum(mnps[[i]] == ".",na.rm = T) > 0)
-          mnps[[i]][which(mnps[[i]] == ".")] <- "./." #Techical issue
-        temp <- lapply(apply(mnps[[i]],2, function(x) strsplit(x, "[| /]")), function(x) do.call(rbind, x))
-        alleles <- sapply(temp, function(x) apply(x,2, function(y) paste0(y,collapse = "_")))
-        p.alleles <- sort(unique(as.vector(alleles[,c(P1,P2)])))
-        for(j in 1:length(p.alleles)){
-          alleles[which(alleles == p.alleles[j])] <- j -1 # We deal with the progeny missing genotypes after
+      if(length(idx.tot)>0){
+        # Filt NAs unphased heterozygotes
+        idx.filt <- which(grepl(GT_matrix[idx.tot,P1], pattern = "[.]") |  grepl(GT_matrix[idx.tot,P2],pattern = "[.]"))
+        if(length(idx.filt) > 0) idx.tot <- idx.tot[-idx.filt]
+        idx.filt <- which(GT_matrix[idx.tot,P1] == "0/1" |  GT_matrix[idx.tot,P2] == "0/1")
+        if(length(idx.filt) > 0) idx.tot <- idx.tot[-idx.filt]
+        idx.filt <- which(GT_matrix[idx.tot,P1] == "0/1" |  GT_matrix[idx.tot,P2] == "0/1")
+        if(length(idx.filt) > 0) idx.tot <- idx.tot[-idx.filt]
+        idx.filt <- which(GT_matrix[idx.tot,P1] == "0|0" &  GT_matrix[idx.tot,P2] == "0|0")
+        if(length(idx.filt) > 0) idx.tot <- idx.tot[-idx.filt]
+        idx.filt <- which(GT_matrix[idx.tot,P1] == "1|1" |  GT_matrix[idx.tot,P2] == "1|1")
+        if(length(idx.filt) > 0) idx.tot <- idx.tot[-idx.filt]
+        
+        
+        idx <- which(idx.tot[-1] - idx.tot[-length(idx.tot)] ==1)
+        idx.tot2 <- unique(sort(c(idx, idx +1)))
+        idx.tot <- idx.tot[idx.tot2]
+        
+        if(length(idx.tot)>0){
+          #list with haplo
+          mnps.num <- split(idx.tot, cumsum(c(1, diff(idx.tot) != 1)))
+          mnps <- lapply(mnps.num, function(x) GT_matrix[x,])
+          GT_matrix <- GT_matrix[-idx.tot,]
+          pos.mnps <- lapply(mnps.num, function(x) POS[x])
+          mk.mnps <- lapply(mnps.num, function(x) MKS[x])
+          POS <- POS[-idx.tot]
+          CHROM <- CHROM[-idx.tot]
+          MKS <- MKS[-idx.tot]
+          mnp_matrix <- data.frame()
+          mnp_pos <- mnp_chrom <- mnp_mk <- vector()
+          for(i in 1:length(mnps)){
+            if(sum(mnps[[i]] == ".",na.rm = T) > 0)
+              mnps[[i]][which(mnps[[i]] == ".")] <- "./." #Techical issue
+            temp <- lapply(apply(mnps[[i]],2, function(x) strsplit(x, "[| /]")), function(x) do.call(rbind, x))
+            alleles <- sapply(temp, function(x) apply(x,2, function(y) paste0(y,collapse = "_")))
+            p.alleles <- sort(unique(as.vector(alleles[,c(P1,P2)])))
+            for(j in 1:length(p.alleles)){
+              alleles[which(alleles == p.alleles[j])] <- j -1 # We deal with the progeny missing genotypes after
+            }
+            # Haplotypes found in progeny that are not present in parents are considered missing data
+            mnp_matrix <- rbind.data.frame(mnp_matrix, t(apply(alleles, 2, function(x) paste0(x, collapse = "/"))), stringsAsFactors = F)
+            mnp_pos <- c(mnp_pos, min(pos.mnps[[i]]))
+            mnp_chrom <- c(mnp_chrom, contigs[[w]])
+            mnp_mk <- c(mnp_mk, mk.mnps[[i]][which.min(pos.mnps[[i]])]) 
+          }
+          mnp_matrix <- as.matrix(mnp_matrix)
+          mnp_matrix[grep(mnp_matrix, pattern =  "_")] <- "./."
+          POS <- c(POS, mnp_pos)
+          idx <- order(POS)
+          POS <- POS[idx]
+          GT_matrix <- rbind(GT_matrix, mnp_matrix)
+          GT_matrix <- GT_matrix[idx,]
+          CHROM <- c(CHROM, mnp_chrom)
+          MKS <- c(MKS, mnp_mk)
+          temp_matrix <- rbind.data.frame(temp_matrix, GT_matrix, stringsAsFactors = F)
+          temp_pos <- c(temp_pos, POS)
+          temp_chrom <- c(temp_chrom, CHROM)
+          temp_mks <- c(temp_mks, MKS)
         }
-        # Haplotypes found in progeny that are not present in parents are considered missing data
-        mnp_matrix <- rbind.data.frame(mnp_matrix, t(apply(alleles, 2, function(x) paste0(x, collapse = "/"))), stringsAsFactors = F)
-        mnp_pos <- c(mnp_pos, min(pos.mnps[[i]]))
-        mnp_chrom <- c(mnp_chrom, contigs[[w]])
-        mnp_mk <- c(mnp_mk, mk.mnps[[i]][which.min(pos.mnps[[i]])]) 
       }
-      mnp_matrix <- as.matrix(mnp_matrix)
-      mnp_matrix[grep(mnp_matrix, pattern =  "_")] <- "./."
-      POS <- c(POS, mnp_pos)
-      idx <- order(POS)
-      POS <- POS[idx]
-      GT_matrix <- rbind(GT_matrix, mnp_matrix)
-      GT_matrix <- GT_matrix[idx,]
-      CHROM <- c(CHROM, mnp_chrom)
-      MKS <- c(MKS, mnp_mk)
-      temp_matrix <- rbind.data.frame(temp_matrix, GT_matrix, stringsAsFactors = F)
-      temp_pos <- c(temp_pos, POS)
-      temp_chrom <- c(temp_chrom, CHROM)
-      temp_mks <- c(temp_mks, MKS)
     }
     rm(all_data)
     GT_matrix <- temp_matrix
@@ -508,6 +511,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   
   if(dim(GT_matrix)[1]==0){
     onemap.obj<- NULL
+    warning("No informative marker was found in VCF file.")
     return(onemap.obj)
   } else {
     # Removing parents
@@ -520,6 +524,39 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       GT_matrix <- apply(GT_matrix[,-c(P1,P2,F1)],2,as.numeric)
       rownames(GT_matrix)  <- MKS
       colnames(GT_matrix)  <-  INDS[-c(P1,P2,F1)] 
+    }
+    
+    # Removing duplicated markers
+    dupli <- MKS[duplicated(MKS)]
+    if(length(dupli)>0){
+      n.rm.mks <- length(dupli)
+      dupli <- unique(dupli)
+      cat(paste("There are more than one marker with the same IDs:", paste(MKS[duplicated(MKS)], collapse = " "), "\nOnly the one with less missing data was kept."))
+      for(w in 1:length(dupli)){
+        temp_GT <- GT_matrix[MKS==dupli[w],]
+        mis_count <- apply(temp_GT, 1, function(x) sum(x==0))
+        discard <- temp_GT[-which.min(mis_count),]
+        if(is(discard, "matrix")){
+          for(j in 1:dim(discard)[1]){
+            idx <- which(apply(GT_matrix, 1, function(x) all(x == discard[j,])))
+            GT_matrix <- GT_matrix[-idx,]
+            mk.type <- mk.type[-idx]
+            mk.type.num <- mk.type.num[-idx] 
+            CHROM <- CHROM[-idx]
+            POS <- POS[-idx]
+            MKS <- MKS[-idx]
+          }
+        } else {
+          idx <- which(apply(GT_matrix, 1, function(x) all(x == discard)))
+          GT_matrix <- GT_matrix[-idx,]
+          mk.type <- mk.type[-idx]
+          mk.type.num <- mk.type.num[-idx] 
+          CHROM <- CHROM[-idx]
+          POS <- POS[-idx]
+          MKS <- MKS[-idx]
+        }
+      }
+      n.mk <- n.mk - n.rm.mks
     }
     
     legacy_crosses <- setNames(c("outcross", "f2", "backcross", "riself", "risib"), 
