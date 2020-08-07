@@ -320,7 +320,7 @@ vcf2progeny_haplotypes <- function(vcfR.object,
   }
   
   progeny_haplotypes_obj_chr <- data.frame()
-  for(chr in 1:length(group_names)){
+  for(chr in 1:length(group_names)){ ### Need optimization
     CHROM.now <- which(CHROM %in% group_names[chr])
     POS <- as.numeric(vcfR.object@fix[,2])[CHROM.now]
     
@@ -332,8 +332,8 @@ vcf2progeny_haplotypes <- function(vcfR.object,
     
     P1_1 <- sapply(strsplit(GT_matrix[CHROM.now,P1.idx], "[|]"), "[",1)
     P1_2 <- sapply(strsplit(GT_matrix[CHROM.now,P1.idx], "[|]"), "[",2)
-    P2_1 <- sapply(strsplit(GT_matrix[CHROM.now,P2.idx], "[|]"), "[",2)
-    P2_2 <- sapply(strsplit(GT_matrix[CHROM.now,P2.idx], "[|]"), "[",1)
+    P2_1 <- sapply(strsplit(GT_matrix[CHROM.now,P2.idx], "[|]"), "[",1)
+    P2_2 <- sapply(strsplit(GT_matrix[CHROM.now,P2.idx], "[|]"), "[",2)
     
     progeny_haplotypes_obj_ind <- data.frame()
     for(ind in 1:length(ind.id)){
