@@ -539,6 +539,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
         if(is(discard, "matrix")){
           for(j in 1:dim(discard)[1]){
             idx <- which(apply(GT_matrix, 1, function(x) all(x == discard[j,])))
+            idx <- idx[MKS[idx] == dupli[w]][1]
             GT_matrix <- GT_matrix[-idx,]
             mk.type <- mk.type[-idx]
             mk.type.num <- mk.type.num[-idx] 
@@ -548,6 +549,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
           }
         } else {
           idx <- which(apply(GT_matrix, 1, function(x) all(x == discard)))
+          idx <- idx[MKS[idx] == dupli[w]][1]
           GT_matrix <- GT_matrix[-idx,]
           mk.type <- mk.type[-idx]
           mk.type.num <- mk.type.num[-idx] 
