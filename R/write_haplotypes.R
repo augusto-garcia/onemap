@@ -201,7 +201,7 @@ progeny_haplotypes <- function(...,
   
   new.col <- t(sapply(strsplit(probs$homologs, "_"), "[", 1:2))
   colnames(new.col) <- c("homologs", "parents")
-
+  
   probs <- cbind(probs, new.col)
   probs <- probs[,-4]
   probs <- as.data.frame(probs)
@@ -455,16 +455,27 @@ progeny_haplotypes_counts <- function(x){
 ##' @import tidyr
 ##' 
 ##' @export
-plot.onemap_progeny_haplotypes_counts <- function(x, by_homolog = FALSE, n.graphics =5, ncol=5){
+plot.onemap_progeny_haplotypes_counts <- function(x, by_homolog = FALSE, n.graphics =NULL, ncol=NULL){
   if(!is(x, "onemap_progeny_haplotypes_counts")) stop("Input need is not of class onemap_progeny_haplotyes_counts")
   p <- list()
   if(by_homolog){
+    if(is.null(n.graphics) & is.null(ncol)){
+      n.ind <- dim(x)[1]
+      if(n.ind/25 <= 1) {
+        n.graphics = 1
+        ncol=1 
+      }else { n.graphics = round(n.ind/25,0)
+      ncol=round(n.ind/25,0)
+      }
+    }
     size <- dim(x)[1]
     if(size%%n.graphics == 0){
       div.n.graphics <- rep(1:n.graphics, each= size/n.graphics) 
     } else {           
       div.n.graphics <- c(rep(1:n.graphics, each = round(size/n.graphics,0)), rep(n.graphics, size%%n.graphics))
     }
+    
+    div.n.graphics <- div.n.graphics[1:size]
     p <- x %>% mutate(div.n.graphics = div.n.graphics) %>%
       split(., .$div.n.graphics) %>%
       lapply(., function(x) ggplot(x, aes(x=homologs, y=counts)) +
@@ -481,13 +492,24 @@ plot.onemap_progeny_haplotypes_counts <- function(x, by_homolog = FALSE, n.graph
     x <- x %>% group_by(ind, grp) %>%
       summarise(counts = sum(counts))
     
+    if(is.null(n.graphics) & is.null(ncol)){
+      n.ind <- dim(x)[1]
+      if(n.ind/25 <= 1) {
+        n.graphics = 1
+        ncol=1 
+      }else { 
+        n.graphics = round(n.ind/25,0)
+        ncol=round(n.ind/25,0)
+      }
+    }
+    
     size <- dim(x)[1]
     if(size%%n.graphics == 0){
       div.n.graphics <- rep(1:n.graphics, each= size/n.graphics) 
     } else {           
       div.n.graphics <-   c(rep(1:n.graphics, each = round(size/n.graphics,0)),rep(n.graphics, size%%n.graphics))
     }
-    
+    div.n.graphics <- div.n.graphics[1:size]
     p <- x %>% ungroup() %>%  mutate(div.n.graphics = div.n.graphics) %>%
       split(., .$div.n.graphics) %>%
       lapply(., function(x) ggplot(x, aes(x=ind, y=counts, fill=grp)) +
