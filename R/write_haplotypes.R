@@ -95,7 +95,7 @@ parents_haplotypes <- function(..., group_names=NULL){
 #' Generate data.frame with genotypes estimated by HMM and its probabilities
 #'
 #' @param ... Map(s) or list(s) of maps. Object(s) of class sequence.
-#' @param ind vector with individual index to be evaluated
+#' @param ind vector with individual index to be evaluated or "all" to include all individuals
 #' @param most_likely logical; if  \code{TRUE}, the most likely genotype receive 1 and all the rest 0. 
 #' If there are more than one most likely both receive 0.5.
 #' if FALSE (default) the genotype probability is plotted.
@@ -124,7 +124,9 @@ progeny_haplotypes <- function(...,
   if(is.null(group_names)) group_names <- paste("Group",seq(input.map), sep = " - ")
   n.mar <- sapply(input.map, function(x) length(x$seq.num))
   n.ind <- sapply(input.map, function(x) ncol(x$probs))/n.mar
-  ind.select <- ind
+  if(ind[1] == "all"){
+    ind <- 1:n.ind
+  } 
   
   probs <- lapply(1:length(input.map), function(x) cbind(ind = rep(1:n.ind[x], each = n.mar[x]),
                                                          grp = group_names[x],
@@ -510,6 +512,9 @@ plot.onemap_progeny_haplotypes_counts <- function(x, by_homolog = FALSE, n.graph
       div.n.graphics <-   c(rep(1:n.graphics, each = round(size/n.graphics,0)),rep(n.graphics, size%%n.graphics))
     }
     div.n.graphics <- div.n.graphics[1:size]
+    
+    x$ind <- factor(as.character(x$ind), levels = sort(as.character(x$ind)))
+    
     p <- x %>% ungroup() %>%  mutate(div.n.graphics = div.n.graphics) %>%
       split(., .$div.n.graphics) %>%
       lapply(., function(x) ggplot(x, aes(x=ind, y=counts, fill=grp)) +
