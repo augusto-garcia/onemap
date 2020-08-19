@@ -2,10 +2,10 @@
 % Please edit documentation in R/find_bins_by_prob.R
 \name{find_bins_by_probs}
 \alias{find_bins_by_probs}
-\title{Still in development}
+\title{Not ready yet - use carefully}
 \usage{
 find_bins_by_probs(onemap_obj, threshold.probs = 1e-04, threshold.count = 0.08)
 }
 \description{
-Still in development
+Not ready yet - use carefully
 }

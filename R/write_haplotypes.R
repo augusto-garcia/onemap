@@ -124,11 +124,15 @@ progeny_haplotypes <- function(...,
   if(is.null(group_names)) group_names <- paste("Group",seq(input.map), sep = " - ")
   n.mar <- sapply(input.map, function(x) length(x$seq.num))
   n.ind <- sapply(input.map, function(x) ncol(x$probs))/n.mar
+  ind.names <- lapply(input.map, function(x) rownames(x$data.name$geno))
+  ind.names <- unique(do.call(c,ind.names)) 
+  if(length(unique(n.ind)) != 1) stop("At least one of the sequences have different number of individuals in dataset.")
+  n.ind <- unique(n.ind)
   if(ind[1] == "all"){
     ind <- 1:n.ind
   } 
   
-  probs <- lapply(1:length(input.map), function(x) cbind(ind = rep(1:n.ind[x], each = n.mar[x]),
+  probs <- lapply(1:length(input.map), function(x) cbind(ind = rep(1:n.ind, each = n.mar[x]),
                                                          grp = group_names[x],
                                                          marker = input.map[[x]]$seq.num,
                                                          #pos = c(0,cumsum(get(get(".map.fun", envir=.onemapEnv))(input.map[[x]]$seq.rf))),
@@ -208,8 +212,7 @@ progeny_haplotypes <- function(...,
   probs <- probs[,-4]
   probs <- as.data.frame(probs)
   
-  inds <- rownames(input[[1]]$data.name$geno)
-  probs$ind <- inds[probs$ind]
+  probs$ind <- ind.names[probs$ind]
   
   if(most_likely) flag <- "most.likely" else flag <- "by.probs"
   
@@ -437,8 +440,15 @@ progeny_haplotypes_counts <- function(x){
   if(!is(x, "most.likely")) stop("The most likely genotypes must receive maximum probability (1)")
   cross <- class(x)[2]
   
+  # Some genotypes receveis prob of 0.5, here we need to make a decision about them
+  doubt <- x[which(x$prob == 0.5),]
+  if(dim(doubt)[1] > 0){
+    nondupli <- which(!duplicated(paste0(doubt$ind, doubt$grp, doubt$pos)))
+    x[which(x$prob == 0.5),][nondupli,]$prob <- 1
+  }
+  
+  x <- x[which(x$prob == 1),]
   x <- x[order(x$ind, x$grp, x$prob, x$homologs,x$pos),]
-  x <- x[x$prob == 1,]
   
   x <- x %>% group_by(ind, grp, homologs) %>%
     mutate(seq = sequence(rle(as.character(parents))$length) == 1) %>%
@@ -455,9 +465,14 @@ progeny_haplotypes_counts <- function(x){
 ##' @importFrom ggpubr ggarrange
 ##' @import dplyr
 ##' @import tidyr
+##' @importFrom RColorBrewer brewer.pal
+##' @importFrom grDevices colorRamp
 ##' 
 ##' @export
-plot.onemap_progeny_haplotypes_counts <- function(x, by_homolog = FALSE, n.graphics =NULL, ncol=NULL){
+plot.onemap_progeny_haplotypes_counts <- function(x, 
+                                                  by_homolog = FALSE, 
+                                                  n.graphics =NULL, 
+                                                  ncol=NULL){
   if(!is(x, "onemap_progeny_haplotypes_counts")) stop("Input need is not of class onemap_progeny_haplotyes_counts")
   p <- list()
   if(by_homolog){
@@ -494,8 +509,8 @@ plot.onemap_progeny_haplotypes_counts <- function(x, by_homolog = FALSE, n.graph
     x <- x %>% group_by(ind, grp) %>%
       summarise(counts = sum(counts))
     
+    n.ind <- length(unique(x$ind))
     if(is.null(n.graphics) & is.null(ncol)){
-      n.ind <- dim(x)[1]
       if(n.ind/25 <= 1) {
         n.graphics = 1
         ncol=1 
@@ -505,21 +520,26 @@ plot.onemap_progeny_haplotypes_counts <- function(x, by_homolog = FALSE, n.graph
       }
     }
     
-    size <- dim(x)[1]
+    size <-n.ind
     if(size%%n.graphics == 0){
       div.n.graphics <- rep(1:n.graphics, each= size/n.graphics) 
     } else {           
       div.n.graphics <-   c(rep(1:n.graphics, each = round(size/n.graphics,0)),rep(n.graphics, size%%n.graphics))
     }
-    div.n.graphics <- div.n.graphics[1:size]
+    div.n.graphics <- div.n.graphics[1:n.ind]
+    div.n.graphics <- rep(div.n.graphics, each = length(unique(x$grp)))
     
-    x$ind <- factor(as.character(x$ind), levels = sort(as.character(x$ind)))
+    x$ind <- factor(as.character(x$ind), levels = sort(as.character(unique(x$ind))))
     
+    nb.cols <- n.ind
+    mycolors <- colorRampPalette(brewer.pal(12, "Paired"))(nb.cols)
+    set.seed(20)
+    mycolors <- sample(mycolors)
     p <- x %>% ungroup() %>%  mutate(div.n.graphics = div.n.graphics) %>%
       split(., .$div.n.graphics) %>%
       lapply(., function(x) ggplot(x, aes(x=ind, y=counts, fill=grp)) +
                geom_bar(stat="identity") + coord_flip() + 
-               scale_fill_brewer(palette="Set1") +
+               scale_fill_manual(values=mycolors) +
                theme(axis.title.y = element_blank(), 
                      axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
                labs(fill="groups") 

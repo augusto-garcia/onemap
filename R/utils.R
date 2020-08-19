@@ -152,3 +152,25 @@ map_save_ram <- function(input.seq,
   }
   return(return.map)
 }
+
+
+#'Remove inviduals from the onemap object
+#'
+#'@param onemap.obj object of class onemap
+#'@param rm.ind vector of charaters with individuals names
+#'
+#'@export
+remove_inds <- function(onemap.obj, rm.ind){
+  if(!is(onemap.obj, "onemap")) stop("Input must to be of onemap class \n")
+  if(!(length(which(rownames(onemap.obj$geno) %in% rm.ind)) >0)) stop("We could not find any of these individuals in the dataset \n")
+  
+  rm.ind <- c("II_3_08", "II_1_37", "I_4_62", "I_4_28", "I_4_21", "I_3_72", "I_3_70")
+  new.onemap.obj <- onemap.obj
+  new.onemap.obj$geno <- onemap.obj$geno[-which(rownames(onemap.obj$geno) %in% rm.ind),]
+  new.onemap.obj$n.ind <- onemap.obj$n.ind - length(rm.ind)
+  for(i in 1:length(rm.ind)){
+    rm.idx <- grep(paste0("_",rm.ind[i],"$"), rownames(new.onemap.obj$error))
+    new.onemap.obj$error <- new.onemap.obj$error[-rm.idx,]
+  }
+  return(new.onemap.obj)
+}

@@ -2,10 +2,10 @@
 % Please edit documentation in R/find_bins_by_prob.R
 \name{create_data_bins_by_prob}
 \alias{create_data_bins_by_prob}
-\title{Still in development}
+\title{Not ready yet - use carefully}
 \usage{
 create_data_bins_by_prob(onemap_obj, bins)
 }
 \description{
-Still in development
+Not ready yet - use carefully
 }

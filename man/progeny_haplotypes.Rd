@@ -9,7 +9,7 @@ progeny_haplotypes(..., ind = 1, group_names = NULL, most_likely = FALSE)
 \arguments{
 \item{...}{Map(s) or list(s) of maps. Object(s) of class sequence.}
 
-\item{ind}{vector with individual index to be evaluated}
+\item{ind}{vector with individual index to be evaluated or "all" to include all individuals}
 
 \item{group_names}{Names of the groups.}
 
