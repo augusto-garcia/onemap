@@ -345,7 +345,7 @@ pedsim2vcf <- function(inputfile=NULL,
   }
   alt <- rep(NA, length(ref))
   ## ALT
-  done <- vector() # vector to store markers already avaliated
+  done <- vector() # vector to store markers already evaluated
   guide <- 1:dim(check_matrix)[1]
   for(j in c(3,2,1)){
     if(length(done) != 0){

@@ -34,7 +34,7 @@ seq_by_type <- function(sequence, mk_type){
   if(!is(sequence, c("sequence"))) stop("Input object must be of class sequence")
   if(length(mk_type) > 1) pat <- paste0(mk_type, collapse = "|") else pat <- mk_type
   type <- sequence$seq.num[grep(pat, sequence$data.name$segr.type[sequence$seq.num])]
-  new.seq <- make_seq(sequence$data.name, type)
+  new.seq <- make_seq(sequence$twopt, type)
   return(new.seq)
 }
 
