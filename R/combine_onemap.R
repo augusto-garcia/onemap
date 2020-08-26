@@ -79,8 +79,18 @@ combine_onemap <- function(...) {
         if(!is(onemap.objs[[i]], "onemap"))
             stop("All objects must be of class 'onemap'.")
     }
+    
+    n.mar.all <- sapply(onemap.objs, "[[",3)
+    idx <- which(n.mar.all == 0)
+    if(length(idx) > 0){
+        warning(paste("Object", idx, "has no markers.\n"))
+        onemap.objs <- onemap.objs[-idx]
+        n.objs <- length(onemap.objs)
+    }
+    
     if (n.objs == 1) {
-        stop("Nothing to merge.")
+        warning("Nothing to merge.")
+        return(onemap.objs[[1]])
     }
     
     ## Check if all objects are of the same cross type
@@ -116,8 +126,7 @@ combine_onemap <- function(...) {
             if(onemap.objs[[i]]$n.ind != n.ind)
                 stop("Sample IDs are missing in at least one dataset. All objects must contain the same number of individuals and in the same order.")
         }
-    }
-    else {
+    }   else {
         n.ind <- length(sampleIDs)
     }
     
@@ -135,8 +144,7 @@ combine_onemap <- function(...) {
     POS <- rep(NA, n.mar)
     if (n.phe) {
         pheno <- matrix(NA, nrow = n.ind, ncol = n.phe)
-    }
-    else {
+    }    else {
         pheno <- NULL
     }
     

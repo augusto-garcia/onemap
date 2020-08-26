@@ -78,6 +78,38 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   n.ind <- dim(vcf@gt)[2]-1
   INDS <- dimnames(vcf@gt)[[2]][-1]
   
+  legacy_crosses <- setNames(c("outcross", "f2", "backcross", "riself", "risib"), 
+                             c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"))
+  
+  
+  # Checking marker segregation according with parents
+  P1 <- which(dimnames(vcf@gt)[[2]]==parent1) 
+  P2 <- which(dimnames(vcf@gt)[[2]]==parent2) 
+  
+  if(dim(vcf@gt)[1] == 0){
+    warning("Input vcfR object do not have markers. An empty object onemap will be generated.")
+    geno <- matrix(0, ncol = 0, nrow = length(colnames(vcf@gt)[-c(1, P1, P2)]))
+    rownames(geno) <- colnames(vcf@gt)[-c(1, P1, P2)]
+    onemap.obj <- structure(list(geno= geno,
+                                 n.ind = dim(GT_matrix)[2],
+                                 n.mar = n.mk,
+                                 segr.type = mk.type,
+                                 segr.type.num = as.numeric(mk.type.num),
+                                 n.phe = 0,
+                                 pheno = NULL,
+                                 CHROM = CHROM,
+                                 POS = POS,
+                                 input = "vcfR.object"),
+                            class=c("onemap",legacy_crosses[cross]))
+    
+    return(onemap.obj)
+  }
+  
+  
+  # Checking marker segregation according with parents
+  P1 <- which(dimnames(vcf@gt)[[2]]==parent1) -1 
+  P2 <- which(dimnames(vcf@gt)[[2]]==parent2) -1
+  
   MKS <- vcf@fix[,3]
   if (any(MKS == "." | is.na(MKS))) MKS <- paste0(vcf@fix[,1],"_", vcf@fix[,2])
   
@@ -90,10 +122,6 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   
   CHROM <- vcf@fix[,1]
   POS <- as.numeric(vcf@fix[,2])
-  
-  # Checking marker segregation according with parents
-  P1 <- which(dimnames(vcf@gt)[[2]]==parent1) - 1
-  P2 <- which(dimnames(vcf@gt)[[2]]==parent2) - 1
   
   if(length(P1)==0 | length(P2)==0) stop("One or both parents names could not be found in your data")
   
@@ -561,9 +589,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       n.mk <- n.mk - n.rm.mks
     }
     
-    legacy_crosses <- setNames(c("outcross", "f2", "backcross", "riself", "risib"), 
-                               c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"))
-    onemap.obj <- structure(list(geno= t(GT_matrix),
+     onemap.obj <- structure(list(geno= t(GT_matrix),
                                  n.ind = dim(GT_matrix)[2],
                                  n.mar = n.mk,
                                  segr.type = mk.type,
