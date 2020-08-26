@@ -127,8 +127,8 @@ rf_graph_table <- function(input.seq,
   ## extracting data
   if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2"))
   {
-    if(input.seq$seq.phases[1] == -1 || input.seq$seq.rf[1] == -1 || is.null(input.seq$seq.like))
-      stop("You must estimate parameters before running 'rf_graph_table' ")
+    #if(input.seq$seq.phases[1] == -1 || input.seq$seq.rf[1] == -1 || is.null(input.seq$seq.like))
+     # stop("You must estimate parameters before running 'rf_graph_table' ")
     ## making a list with necessary information
     n.mrk <- length(input.seq$seq.num)
     LOD <- lapply(input.seq$twopt$analysis,
@@ -145,8 +145,8 @@ rf_graph_table <- function(input.seq,
     )
     mat<-t(get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
   } else {
-    if(input.seq$seq.rf[1] == -1 || is.null(input.seq$seq.like))
-      stop("You must estimate parameters before running 'rf_graph_table' ")
+    #if(input.seq$seq.rf[1] == -1 || is.null(input.seq$seq.like))
+      #stop("You must estimate parameters before running 'rf_graph_table' ")
     ## making a list with necessary information
     n.mrk <- length(input.seq$seq.num) 
     LOD<-matrix(0, length(input.seq$seq.num), length(input.seq$seq.num))
@@ -194,10 +194,11 @@ rf_graph_table <- function(input.seq,
   types <- input.seq$data.name$segr.type[input.seq$seq.num]
   
   ##Write multipoint estimates
-  for (i in 1:(n.mrk-1)){
-    mat[i+1,i] <- input.seq$seq.rf[i]
+  if(length(input.seq$seq.rf) > 1){
+    for (i in 1:(n.mrk-1)){
+      mat[i+1,i] <- input.seq$seq.rf[i]
+    }
   }
-  
   missing<-100*apply(input.seq$data.name$geno[,input.seq$seq.num],2, function(x) sum(x==0))/input.seq$data.name$n.ind
   
   ## Building the data.frame to plot

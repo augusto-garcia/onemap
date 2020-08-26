@@ -174,3 +174,22 @@ remove_inds <- function(onemap.obj, rm.ind){
   }
   return(new.onemap.obj)
 }
+
+#' Sort markers in onemap object by their position in reference genome
+#' 
+#' @param onemap.obj object of class onemap
+#' 
+#' @export
+sort_by_pos <- function(onemap.obj){
+  
+  idx <- order(onemap.obj$CHROM, onemap.obj$POS)
+  
+  new.obj <- onemap.obj
+  new.obj$geno <- onemap.obj$geno[,idx]
+  new.obj$segr.type <- onemap.obj$segr.type[idx]
+  new.obj$segr.type.num <- onemap.obj$segr.type.num[idx]
+  new.obj$CHROM <- onemap.obj$CHROM[idx]
+  new.obj$POS <- onemap.obj$POS[idx]
+  new.obj$error <- onemap.obj$error[idx + rep(c(0:(onemap.obj$n.ind-1))*onemap.obj$n.mar, each=length(idx)),]
+  return(new.obj)
+}

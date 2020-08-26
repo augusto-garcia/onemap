@@ -136,7 +136,6 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
         idx.filt <- which(GT_matrix[idx.tot,P1] == "1|1" |  GT_matrix[idx.tot,P2] == "1|1")
         if(length(idx.filt) > 0) idx.tot <- idx.tot[-idx.filt]
         
-        
         idx <- which(idx.tot[-1] - idx.tot[-length(idx.tot)] ==1)
         idx.tot2 <- unique(sort(c(idx, idx +1)))
         idx.tot <- idx.tot[idx.tot2]
@@ -177,11 +176,12 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
           GT_matrix <- GT_matrix[idx,]
           CHROM <- c(CHROM, mnp_chrom)
           MKS <- c(MKS, mnp_mk)
-          temp_matrix <- rbind.data.frame(temp_matrix, GT_matrix, stringsAsFactors = F)
-          temp_pos <- c(temp_pos, POS)
-          temp_chrom <- c(temp_chrom, CHROM)
-          temp_mks <- c(temp_mks, MKS)
         }
+        # Markers not joint in mnps will be kept for next steps
+        temp_matrix <- rbind.data.frame(temp_matrix, GT_matrix, stringsAsFactors = F)
+        temp_pos <- c(temp_pos, POS)
+        temp_chrom <- c(temp_chrom, CHROM)
+        temp_mks <- c(temp_mks, MKS)
       }
     }
     rm(all_data)
