@@ -77,6 +77,8 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   n.mk <- dim(vcf@gt)[1]
   n.ind <- dim(vcf@gt)[2]-1
   INDS <- dimnames(vcf@gt)[[2]][-1]
+  CHROM <- vcf@fix[,1]
+  POS <- as.numeric(vcf@fix[,2])
   
   legacy_crosses <- setNames(c("outcross", "f2", "backcross", "riself", "risib"), 
                              c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"))
@@ -119,9 +121,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   
   for(i in 2:(n.ind+1))
     GT_matrix[,i-1] <- unlist(lapply(strsplit(vcf@gt[,i], split=":"), "[[", GT))
-  
-  CHROM <- vcf@fix[,1]
-  POS <- as.numeric(vcf@fix[,2])
+
   
   if(length(P1)==0 | length(P2)==0) stop("One or both parents names could not be found in your data")
   
