@@ -32,6 +32,12 @@ create_probs <- function(onemap.obj = NULL,
     stop("onemap.obj should be of class onemap")
   }
   
+  # Empty object
+  if(onemap.obj$n.mar == 0){
+    warning("It is a empty onemap object. Nothing will be done.")
+    return(onemap.obj)
+  }
+  
   if(all(is.null(c(global_error, genotypes_errors, genotypes_probs)))){
     global_error <- 10^-5
   }
