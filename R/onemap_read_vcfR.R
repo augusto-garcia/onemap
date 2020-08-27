@@ -107,7 +107,6 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     return(onemap.obj)
   }
   
-  
   # Checking marker segregation according with parents
   P1 <- which(dimnames(vcf@gt)[[2]]==parent1) -1 
   P2 <- which(dimnames(vcf@gt)[[2]]==parent2) -1
@@ -517,7 +516,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     }
     
     if(dim(GT_matrix)[1]==0){
-      cat("All markers in VCF were filtered, onemap object can not be built")
+      cat("All markers in VCF were filtered, an empty onemap object will be generated")
     } else {
       
       # Onemap codification
@@ -538,8 +537,20 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   }
   
   if(dim(GT_matrix)[1]==0){
-    onemap.obj<- NULL
     warning("No informative marker was found in VCF file.")
+    geno <- matrix(0, ncol = 0, nrow = length(colnames(vcf@gt)[-c(1, P1, P2)]))
+    rownames(geno) <- colnames(vcf@gt)[-c(1, P1, P2)]
+    onemap.obj <- structure(list(geno= geno,
+                                 n.ind = dim(geno)[2],
+                                 n.mar = n.mk,
+                                 segr.type = logical(),
+                                 segr.type.num = as.numeric(),
+                                 n.phe = 0,
+                                 pheno = NULL,
+                                 CHROM = CHROM,
+                                 POS = POS,
+                                 input = "vcfR.object"),
+                            class=c("onemap",legacy_crosses[cross]))
     return(onemap.obj)
   } else {
     # Removing parents
