@@ -210,7 +210,7 @@ combine_onemap <- function(...) {
     structure(list(geno = geno, n.ind = n.ind, n.mar = n.mar,
                    segr.type = segr.type, segr.type.num = segr.type.num,
                    n.phe = n.phe, pheno = pheno, CHROM = CHROM, POS = POS,
-                   error=error, input = input),
+                   input = input, error=error),
               class = c("onemap", crosstype))
 }
 
