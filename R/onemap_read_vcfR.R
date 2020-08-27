@@ -91,7 +91,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     geno <- matrix(0, ncol = 0, nrow = length(colnames(vcf@gt)[-c(1, P1, P2)]))
     rownames(geno) <- colnames(vcf@gt)[-c(1, P1, P2)]
     onemap.obj <- structure(list(geno= geno,
-                                 n.ind = dim(GT_matrix)[2],
+                                 n.ind = dim(geno)[2],
                                  n.mar = n.mk,
                                  segr.type = mk.type,
                                  segr.type.num = as.numeric(mk.type.num),
