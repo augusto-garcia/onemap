@@ -55,7 +55,7 @@ map_avoid_unlinked <- function(input.seq,
                                phase_cores = 1, 
                                tol = 1e-05){
   #TODO: error checks...
-  map_df <- onemap:::map_save_ram(input.seq, rm_unlinked = T, 
+  map_df <- map_save_ram(input.seq, rm_unlinked = T, 
                                   size = size, 
                                   overlap = overlap, 
                                   tol=tol, 
@@ -123,12 +123,13 @@ map_save_ram <- function(input.seq,
                          overlap = NULL){
   
   input.seq.tot <- input.seq
+  input.seq_ram <- input.seq
   if(length(input.seq$seq.num) < input.seq.tot$data.name$n.mar){
     split.twopts <- onemap:::split_2pts(twopts.obj = input.seq$twopt, mks = input.seq$seq.num) 
-    input.seq <- make_seq(split.twopts, "all")
+    input.seq_ram <- make_seq(split.twopts, "all")
   }
   if(phase_cores == 1){
-    return.map <- map(input.seq, tol = tol, 
+    return.map <- map(input.seq_ram, tol = tol, 
                       verbose = verbose, 
                       rm_unlinked = rm_unlinked, 
                       phase_cores = phase_cores)
@@ -137,17 +138,21 @@ map_save_ram <- function(input.seq,
       stop("If you want to parallelize the HMM in multiple cores (phase_cores != 1) 
              you should also define `size` and `overlap` arguments. See ?map_avoid_unlinked and ?pick_batch_sizes")
     } else {
-      return.map <- map_overlapping_batches(input.seq = input.seq,
+      return.map <- map_overlapping_batches(input.seq = input.seq_ram,
                                             size = size, overlap = overlap, 
                                             phase_cores = phase_cores, 
                                             tol=tol, rm_unlinked = rm_unlinked)
     }
   }
-  if(length(input.seq$seq.num) < input.seq.tot$data.name$n.mar){
+  if(length(input.seq_ram$seq.num) < input.seq.tot$data.name$n.mar){
     if(!is(return.map, "integer")){ # When rm_unlinked == F
       return.map$seq.num <- input.seq.tot$seq.num
       return.map$data.name <- input.seq.tot$data.name
       return.map$twopt <- input.seq.tot$twopt
+    } else {
+      remain <- colnames(input.seq_ram$data.name$geno)[return.map]
+      old <- colnames(input.seq.tot$data.name$geno)[input.seq.tot$seq.num]
+      return.map <- input.seq.tot$seq.num[old %in% remain] 
     }
   }
   return(return.map)

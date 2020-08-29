@@ -475,7 +475,7 @@ plot.onemap_progeny_haplotypes_counts <- function(x,
                                                   ncol=NULL){
   if(!is(x, "onemap_progeny_haplotypes_counts")) stop("Input need is not of class onemap_progeny_haplotyes_counts")
   p <- list()
-  if(by_homolog){
+  if(by_homolog){ ## Bug! 
     if(is.null(n.graphics) & is.null(ncol)){
       n.ind <- dim(x)[1]
       if(n.ind/25 <= 1) {
@@ -492,6 +492,7 @@ plot.onemap_progeny_haplotypes_counts <- function(x,
       div.n.graphics <- c(rep(1:n.graphics, each = round(size/n.graphics,0)), rep(n.graphics, size%%n.graphics))
     }
     
+    y_lim_counts <- max(x$counts)
     div.n.graphics <- div.n.graphics[1:size]
     p <- x %>% mutate(div.n.graphics = div.n.graphics) %>%
       split(., .$div.n.graphics) %>%
@@ -503,7 +504,8 @@ plot.onemap_progeny_haplotypes_counts <- function(x,
                theme(axis.title.y = element_blank(),
                      axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
                      strip.text.y.left = element_text(angle = 0)) + 
-               labs(fill="groups") 
+               labs(fill="groups") +
+               ylim(0,y_lim_counts)
       )      
   } else {
     x <- x %>% group_by(ind, grp) %>%
@@ -531,6 +533,10 @@ plot.onemap_progeny_haplotypes_counts <- function(x,
     
     x$ind <- factor(as.character(x$ind), levels = sort(as.character(unique(x$ind))))
     
+    temp <- x %>% ungroup() %>% group_by(ind) %>%
+      summarise(total = sum(counts))
+      
+    y_lim_counts <- max(temp$total)
     nb.cols <- n.ind
     mycolors <- colorRampPalette(brewer.pal(12, "Paired"))(nb.cols)
     set.seed(20)
@@ -542,7 +548,8 @@ plot.onemap_progeny_haplotypes_counts <- function(x,
                scale_fill_manual(values=mycolors) +
                theme(axis.title.y = element_blank(), 
                      axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-               labs(fill="groups") 
+               labs(fill="groups") +
+               ylim(0,y_lim_counts)
       ) 
   }
   p <- ggarrange(plotlist = p, common.legend = T, label.x = 1, ncol = ncol, nrow = round(n.graphics/ncol,0))
