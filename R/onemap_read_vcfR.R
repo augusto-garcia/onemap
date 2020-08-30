@@ -85,9 +85,9 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   P1 <- which(dimnames(vcf@gt)[[2]]==parent1) 
   P2 <- which(dimnames(vcf@gt)[[2]]==parent2) 
   
-  if(is.vector(GT_matrix)){
+  if(is.vector(vcf@gt)){
     jump <- 1
-  } else if(dim(GT_matrix)[1]==0){
+  } else if(dim(vcf@gt)[1] == 0){
     jump <- 1
   } else jump <- 0
   
