@@ -198,3 +198,25 @@ sort_by_pos <- function(onemap.obj){
   new.obj$error <- onemap.obj$error[idx + rep(c(0:(onemap.obj$n.ind-1))*onemap.obj$n.mar, each=length(idx)),]
   return(new.obj)
 }
+
+# Produce empty object to avoid code break
+empty_onemap_obj <- function(vcf, P1, P2, cross){
+  legacy_crosses <- setNames(c("outcross", "f2", "backcross", "riself", "risib"), 
+                             c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"))
+  
+  geno <- matrix(0, ncol = 0, nrow = length(colnames(vcf@gt)[-c(1, P1, P2)]))
+  
+  rownames(geno) <- colnames(vcf@gt)[-c(1, P1, P2)]    
+  onemap.obj <- structure(list(geno= geno,
+                               n.ind = dim(geno)[2],
+                               n.mar = 0,
+                               segr.type = logical(),
+                               segr.type.num = as.numeric(),
+                               n.phe = 0,
+                               pheno = NULL,
+                               CHROM = logical(),
+                               POS = logical(),
+                               input = "vcfR.object"),
+                          class=c("onemap",legacy_crosses[cross]))
+  return(onemap.obj)
+}

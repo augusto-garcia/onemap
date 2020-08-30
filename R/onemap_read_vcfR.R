@@ -80,30 +80,21 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   CHROM <- vcf@fix[,1]
   POS <- as.numeric(vcf@fix[,2])
   
-  legacy_crosses <- setNames(c("outcross", "f2", "backcross", "riself", "risib"), 
-                             c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"))
-  
   
   # Checking marker segregation according with parents
   P1 <- which(dimnames(vcf@gt)[[2]]==parent1) 
   P2 <- which(dimnames(vcf@gt)[[2]]==parent2) 
   
-  if(dim(vcf@gt)[1] == 0){
+  if(is.vector(GT_matrix)){
+    jump <- 1
+  } else if(dim(GT_matrix)[1]==0){
+    jump <- 1
+  } else jump <- 0
+  
+  if(jump == 1){
     warning("Input vcfR object do not have markers. An empty object onemap will be generated.")
-    geno <- matrix(0, ncol = 0, nrow = length(colnames(vcf@gt)[-c(1, P1, P2)]))
-    rownames(geno) <- colnames(vcf@gt)[-c(1, P1, P2)]
-    onemap.obj <- structure(list(geno= geno,
-                                 n.ind = dim(geno)[2],
-                                 n.mar = n.mk,
-                                 segr.type = logical(),
-                                 segr.type.num = as.numeric(),
-                                 n.phe = 0,
-                                 pheno = NULL,
-                                 CHROM = CHROM,
-                                 POS = POS,
-                                 input = "vcfR.object"),
-                            class=c("onemap",legacy_crosses[cross]))
     
+    onemap.obj <- empty_onemap_obj(vcf, P1, P2, cross)
     return(onemap.obj)
   }
   
@@ -120,7 +111,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   
   for(i in 2:(n.ind+1))
     GT_matrix[,i-1] <- unlist(lapply(strsplit(vcf@gt[,i], split=":"), "[[", GT))
-
+  
   
   if(length(P1)==0 | length(P2)==0) stop("One or both parents names could not be found in your data")
   
@@ -303,89 +294,98 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       mk.type.num <- mk.type.num[-rm_mk]
     } 
     
-    if(dim(GT_matrix)[1]==0){
-      cat("All markers in VCF were filtered, onemap object can not be built")
-    } else {
+    
+    if(is.vector(GT_matrix)){
+      jump <- 1
+    } else if(dim(GT_matrix)[1]==0){
+      jump <- 1
+    } else jump <- 0
+    
+    if(jump == 1){
+      warning("Input vcfR object do not have markers. An empty object onemap will be generated.")
       
-      # Codification for OneMap
-      idx <- which(mk.type=="A.1" | mk.type=="A.2")
-      cat <- paste0(P1_1[idx], "/", P2_1[idx])
-      cat.rev <- paste0(P2_1[idx], "/", P1_1[idx])
-      GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 1
-      cat <- paste0(P1_1[idx], "/", P2_2[idx])
-      cat.rev <- paste0(P2_2[idx], "/", P1_1[idx])
-      GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 2
-      cat <- paste0(P1_2[idx], "/", P2_1[idx])
-      cat.rev <- paste0(P2_1[idx], "/", P1_2[idx])
-      GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 3
-      cat <- paste0(P1_2[idx], "/", P2_2[idx])
-      cat.rev <- paste0(P2_2[idx], "/", P1_2[idx])
-      GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 4
-      
-      idx <- which(mk.type=="B3.7")
-      cat <- paste0(P1_1[idx], "/", P2_1[idx])
-      cat.rev <- paste0(P2_1[idx], "/", P1_1[idx])
-      GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 1
-      cat <- paste0(P1_1[idx], "/", P2_2[idx])
-      cat.rev <- paste0(P2_2[idx], "/", P1_1[idx])
-      GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 2
-      cat <- paste0(P1_2[idx], "/", P2_2[idx])
-      cat.rev <- paste0(P2_2[idx], "/", P1_2[idx])
-      GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 3
-      
-      idx <- which(mk.type=="D1.10")
-      idx.sub <- which(P1_1[idx] == P2_1[idx])
-      cat <- paste0(P1_1[idx][idx.sub], "/", P2_1[idx][idx.sub])
-      cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_1[idx][idx.sub])
-      GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 1
-      cat <- paste0(P1_2[idx][idx.sub], "/", P2_1[idx][idx.sub])
-      cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_2[idx][idx.sub])
-      GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 2
-      
-      idx.sub <- which(P1_2[idx] == P2_1[idx])
-      cat <- paste0(P1_2[idx][idx.sub], "/", P2_1[idx][idx.sub])
-      cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_2[idx][idx.sub])
-      GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 1
-      cat <- paste0(P1_1[idx][idx.sub], "/", P2_1[idx][idx.sub])
-      cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_1[idx][idx.sub])
-      GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 2
-      
-      idx <- which(mk.type=="D1.9")
-      cat <- paste0(P1_1[idx], "/", P2_1[idx])
-      cat.rev <- paste0(P2_1[idx], "/", P1_1[idx])
-      GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 1
-      cat <- paste0(P1_2[idx], "/", P2_1[idx])
-      cat.rev <- paste0(P2_1[idx], "/", P1_2[idx])
-      GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 2
-      
-      idx <- which(mk.type=="D2.15" )
-      idx.sub <- which(P1_1[idx] == P2_1[idx])
-      cat <- paste0(P1_1[idx][idx.sub], "/", P2_1[idx][idx.sub])
-      cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_1[idx][idx.sub])
-      GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 1
-      cat <- paste0(P1_1[idx][idx.sub], "/", P2_2[idx][idx.sub])
-      cat.rev <- paste0(P2_2[idx][idx.sub], "/", P1_2[idx][idx.sub])
-      GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 2
-      
-      idx.sub <- which(P1_1[idx] == P2_2[idx])
-      cat <- paste0(P1_2[idx][idx.sub], "/", P2_2[idx][idx.sub])
-      cat.rev <- paste0(P2_2[idx][idx.sub], "/", P1_2[idx][idx.sub])
-      GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 1
-      cat <- paste0(P1_1[idx][idx.sub], "/", P2_1[idx][idx.sub])
-      cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_1[idx][idx.sub])
-      GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 2
-      
-      idx <- which(mk.type=="D2.14")
-      cat <- paste0(P1_1[idx], "/", P2_1[idx])
-      cat.rev <- paste0(P2_1[idx], "/", P1_1[idx])
-      GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 1
-      cat <- paste0(P1_1[idx], "/", P2_2[idx])
-      cat.rev <- paste0(P2_2[idx], "/", P1_1[idx])
-      GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 2
-      
-      GT_matrix[grepl("/", GT_matrix)] <- 0
-      GT_matrix[grepl("[.]", GT_matrix)] <- 0
-    }    
+      onemap.obj <- empty_onemap_obj(vcf, P1, P2, cross)
+      return(onemap.obj)
+    }     
+    # Codification for OneMap
+    idx <- which(mk.type=="A.1" | mk.type=="A.2")
+    cat <- paste0(P1_1[idx], "/", P2_1[idx])
+    cat.rev <- paste0(P2_1[idx], "/", P1_1[idx])
+    GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 1
+    cat <- paste0(P1_1[idx], "/", P2_2[idx])
+    cat.rev <- paste0(P2_2[idx], "/", P1_1[idx])
+    GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 2
+    cat <- paste0(P1_2[idx], "/", P2_1[idx])
+    cat.rev <- paste0(P2_1[idx], "/", P1_2[idx])
+    GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 3
+    cat <- paste0(P1_2[idx], "/", P2_2[idx])
+    cat.rev <- paste0(P2_2[idx], "/", P1_2[idx])
+    GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 4
+    
+    idx <- which(mk.type=="B3.7")
+    cat <- paste0(P1_1[idx], "/", P2_1[idx])
+    cat.rev <- paste0(P2_1[idx], "/", P1_1[idx])
+    GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 1
+    cat <- paste0(P1_1[idx], "/", P2_2[idx])
+    cat.rev <- paste0(P2_2[idx], "/", P1_1[idx])
+    GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 2
+    cat <- paste0(P1_2[idx], "/", P2_2[idx])
+    cat.rev <- paste0(P2_2[idx], "/", P1_2[idx])
+    GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 3
+    
+    idx <- which(mk.type=="D1.10")
+    idx.sub <- which(P1_1[idx] == P2_1[idx])
+    cat <- paste0(P1_1[idx][idx.sub], "/", P2_1[idx][idx.sub])
+    cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_1[idx][idx.sub])
+    GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 1
+    cat <- paste0(P1_2[idx][idx.sub], "/", P2_1[idx][idx.sub])
+    cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_2[idx][idx.sub])
+    GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 2
+    
+    idx.sub <- which(P1_2[idx] == P2_1[idx])
+    cat <- paste0(P1_2[idx][idx.sub], "/", P2_1[idx][idx.sub])
+    cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_2[idx][idx.sub])
+    GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 1
+    cat <- paste0(P1_1[idx][idx.sub], "/", P2_1[idx][idx.sub])
+    cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_1[idx][idx.sub])
+    GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 2
+    
+    idx <- which(mk.type=="D1.9")
+    cat <- paste0(P1_1[idx], "/", P2_1[idx])
+    cat.rev <- paste0(P2_1[idx], "/", P1_1[idx])
+    GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 1
+    cat <- paste0(P1_2[idx], "/", P2_1[idx])
+    cat.rev <- paste0(P2_1[idx], "/", P1_2[idx])
+    GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 2
+    
+    idx <- which(mk.type=="D2.15" )
+    idx.sub <- which(P1_1[idx] == P2_1[idx])
+    cat <- paste0(P1_1[idx][idx.sub], "/", P2_1[idx][idx.sub])
+    cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_1[idx][idx.sub])
+    GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 1
+    cat <- paste0(P1_1[idx][idx.sub], "/", P2_2[idx][idx.sub])
+    cat.rev <- paste0(P2_2[idx][idx.sub], "/", P1_2[idx][idx.sub])
+    GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 2
+    
+    idx.sub <- which(P1_1[idx] == P2_2[idx])
+    cat <- paste0(P1_2[idx][idx.sub], "/", P2_2[idx][idx.sub])
+    cat.rev <- paste0(P2_2[idx][idx.sub], "/", P1_2[idx][idx.sub])
+    GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 1
+    cat <- paste0(P1_1[idx][idx.sub], "/", P2_1[idx][idx.sub])
+    cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_1[idx][idx.sub])
+    GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 2
+    
+    idx <- which(mk.type=="D2.14")
+    cat <- paste0(P1_1[idx], "/", P2_1[idx])
+    cat.rev <- paste0(P2_1[idx], "/", P1_1[idx])
+    GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 1
+    cat <- paste0(P1_1[idx], "/", P2_2[idx])
+    cat.rev <- paste0(P2_2[idx], "/", P1_1[idx])
+    GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 2
+    
+    GT_matrix[grepl("/", GT_matrix)] <- 0
+    GT_matrix[grepl("[.]", GT_matrix)] <- 0
+    
   } else if(cross== "f2 intercross"){
     # Marker type
     mk.type[which(GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "1/1")] <- "A.H.B.1"
@@ -417,25 +417,35 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       mk.type.num <- mk.type.num[-rm_mk]
     } 
     
-    if(dim(GT_matrix)[1]==0){
-      cat("All markers in VCF were filtered, onemap object can not be built")
-    } else {
+    
+    if(is.vector(GT_matrix)){
+      jump <- 1
+    } else if(dim(GT_matrix)[1]==0){
+      jump <- 1
+    } else jump <- 0
+    
+    if(jump == 1){
+      warning("Input vcfR object do not have markers. An empty object onemap will be generated.")
       
-      # Codification for OneMap
-      GT_matrix[-which(GT_matrix == "1/1" | GT_matrix == "0/0" | GT_matrix == "0/1")] <- 0
-      GT_matrix[which(GT_matrix == "0/1")] <- 2
-      
-      idx <- which(mk.type=="A.H.B.1")
-      GT_matrix[idx,][which(GT_matrix[idx,] == "0/0")] <- 1
-      GT_matrix[idx,][which(GT_matrix[idx,] == "1/1")] <- 3
-      
-      idx <- which(mk.type=="A.H.B.2")
-      GT_matrix[idx,][which(GT_matrix[idx,] == "0/0")] <- 3
-      GT_matrix[idx,][which(GT_matrix[idx,] == "1/1")] <- 1
-      
-      mk.type <- mk.type.num <- rep("A.H.B", n.mk)
-      mk.type.num[mk.type=="A.H.B"] <- 4
+      onemap.obj <- empty_onemap_obj(vcf, P1, P2, cross)
+      return(onemap.obj)
     }
+    
+    # Codification for OneMap
+    GT_matrix[-which(GT_matrix == "1/1" | GT_matrix == "0/0" | GT_matrix == "0/1")] <- 0
+    GT_matrix[which(GT_matrix == "0/1")] <- 2
+    
+    idx <- which(mk.type=="A.H.B.1")
+    GT_matrix[idx,][which(GT_matrix[idx,] == "0/0")] <- 1
+    GT_matrix[idx,][which(GT_matrix[idx,] == "1/1")] <- 3
+    
+    idx <- which(mk.type=="A.H.B.2")
+    GT_matrix[idx,][which(GT_matrix[idx,] == "0/0")] <- 3
+    GT_matrix[idx,][which(GT_matrix[idx,] == "1/1")] <- 1
+    
+    mk.type <- mk.type.num <- rep("A.H.B", n.mk)
+    mk.type.num[mk.type=="A.H.B"] <- 4
+    
   } else if(cross=="f2 backcross"){
     mk.type[which(GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "1/1")] <- "A.H.1"
     mk.type[which(GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "0/0")] <- "A.H.2"
@@ -465,26 +475,35 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       mk.type.num <- mk.type.num[-rm_mk]
     } 
     
-    if(dim(GT_matrix)[1]==0){
-      cat("All markers in VCF were filtered, onemap object can not be built")
-    } else {
+    
+    if(is.vector(GT_matrix)){
+      jump <- 1
+    } else if(dim(GT_matrix)[1]==0){
+      jump <- 1
+    } else jump <- 0
+    
+    if(jump == 1){
+      warning("Input vcfR object do not have markers. An empty object onemap will be generated.")
       
-      
-      GT_matrix[-which(GT_matrix == "1/1" | GT_matrix == "0/0" | GT_matrix == "0/1")] <- 0
-      GT_matrix[which(GT_matrix == "0/1")] <- 2
-      
-      idx <- which(mk.type=="A.H.1")
-      GT_matrix[idx,][which(GT_matrix[idx,] == "0/0")] <- 1
-      GT_matrix[idx,][which(GT_matrix[idx,] == "1/1")] <- 0
-      
-      idx <- which(mk.type=="A.H.2")
-      GT_matrix[idx,][which(GT_matrix[idx,] == "0/0")] <- 0
-      GT_matrix[idx,][which(GT_matrix[idx,] == "1/1")] <- 1
-      
-      
-      mk.type <- mk.type.num <- rep("A.H", n.mk)
-      mk.type.num[mk.type=="A.H"] <- 8
+      onemap.obj <- empty_onemap_obj(vcf, P1, P2, cross)
+      return(onemap.obj)
     }
+    
+    GT_matrix[-which(GT_matrix == "1/1" | GT_matrix == "0/0" | GT_matrix == "0/1")] <- 0
+    GT_matrix[which(GT_matrix == "0/1")] <- 2
+    
+    idx <- which(mk.type=="A.H.1")
+    GT_matrix[idx,][which(GT_matrix[idx,] == "0/0")] <- 1
+    GT_matrix[idx,][which(GT_matrix[idx,] == "1/1")] <- 0
+    
+    idx <- which(mk.type=="A.H.2")
+    GT_matrix[idx,][which(GT_matrix[idx,] == "0/0")] <- 0
+    GT_matrix[idx,][which(GT_matrix[idx,] == "1/1")] <- 1
+    
+    
+    mk.type <- mk.type.num <- rep("A.H", n.mk)
+    mk.type.num[mk.type=="A.H"] <- 8
+    
   } else if(cross=="ri self" || cross=="ri sib"){
     # Marker type
     mk.type[which(GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "1/1")] <- "A.B.1"
@@ -515,79 +534,76 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       mk.type.num <- mk.type.num[-rm_mk]
     }
     
-    if(dim(GT_matrix)[1]==0){
-      cat("All markers in VCF were filtered, an empty onemap object will be generated")
-    } else {
+    
+    if(is.vector(GT_matrix)){
+      jump <- 1
+    } else if(dim(GT_matrix)[1]==0){
+      jump <- 1
+    } else jump <- 0
+    
+    if(jump == 1){
+      warning("Input vcfR object do not have markers. An empty object onemap will be generated.")
       
-      # Onemap codification
-      GT_matrix[-which(GT_matrix == "1/1" | GT_matrix == "0/0" | GT_matrix == "0/1")] <- 0
-      GT_matrix[which(GT_matrix == "0/1")] <- 0
-      
-      idx <- which(mk.type=="A.B.1")
-      GT_matrix[idx,][which(GT_matrix[idx,] == "0/0")] <- 1
-      GT_matrix[idx,][which(GT_matrix[idx,] == "1/1")] <- 3
-      
-      idx <- which(mk.type=="A.B.2")
-      GT_matrix[idx,][which(GT_matrix[idx,] == "0/0")] <- 3
-      GT_matrix[idx,][which(GT_matrix[idx,] == "1/1")] <- 1
-      
-      mk.type <- mk.type.num <- rep("A.B", n.mk)
-      mk.type.num[mk.type=="A.B"] <- 9
-    }
-  }
-  
-  if(dim(GT_matrix)[1]==0){
-    warning("No informative marker was found in VCF file.")
-    geno <- matrix(0, ncol = 0, nrow = length(colnames(vcf@gt)[-c(1, P1, P2)]))
-    rownames(geno) <- colnames(vcf@gt)[-c(1, P1, P2)]
-    onemap.obj <- structure(list(geno= geno,
-                                 n.ind = dim(geno)[2],
-                                 n.mar = n.mk,
-                                 segr.type = logical(),
-                                 segr.type.num = as.numeric(),
-                                 n.phe = 0,
-                                 pheno = NULL,
-                                 CHROM = CHROM,
-                                 POS = POS,
-                                 input = "vcfR.object"),
-                            class=c("onemap",legacy_crosses[cross]))
-    return(onemap.obj)
-  } else {
-    # Removing parents
-    if(is.null(f1)){
-      GT_matrix <- apply(GT_matrix[,-c(P1,P2)],2,as.numeric)
-      rownames(GT_matrix)  <- MKS
-      colnames(GT_matrix)  <-  INDS[-c(P1,P2)] 
-    } else{
-      F1 <- which(dimnames(vcf@gt)[[2]]==f1) - 1
-      GT_matrix <- apply(GT_matrix[,-c(P1,P2,F1)],2,as.numeric)
-      rownames(GT_matrix)  <- MKS
-      colnames(GT_matrix)  <-  INDS[-c(P1,P2,F1)] 
+      onemap.obj <- empty_onemap_obj(vcf, P1, P2, cross)
+      return(onemap.obj)
     }
     
-    # Removing duplicated markers
-    dupli <- MKS[duplicated(MKS)]
-    if(length(dupli)>0){
-      n.rm.mks <- length(dupli)
-      dupli <- unique(dupli)
-      cat(paste("There are more than one marker with the same IDs:", paste(MKS[duplicated(MKS)], collapse = " "), "\nOnly the one with less missing data was kept."))
-      for(w in 1:length(dupli)){
-        temp_GT <- GT_matrix[MKS==dupli[w],]
-        mis_count <- apply(temp_GT, 1, function(x) sum(x==0))
-        discard <- temp_GT[-which.min(mis_count),]
-        if(is(discard, "matrix")){
-          for(j in 1:dim(discard)[1]){
-            idx <- which(apply(GT_matrix, 1, function(x) all(x == discard[j,])))
-            idx <- idx[MKS[idx] == dupli[w]][1]
-            GT_matrix <- GT_matrix[-idx,]
-            mk.type <- mk.type[-idx]
-            mk.type.num <- mk.type.num[-idx] 
-            CHROM <- CHROM[-idx]
-            POS <- POS[-idx]
-            MKS <- MKS[-idx]
-          }
-        } else {
-          idx <- which(apply(GT_matrix, 1, function(x) all(x == discard)))
+    # Onemap codification
+    GT_matrix[-which(GT_matrix == "1/1" | GT_matrix == "0/0" | GT_matrix == "0/1")] <- 0
+    GT_matrix[which(GT_matrix == "0/1")] <- 0
+    
+    idx <- which(mk.type=="A.B.1")
+    GT_matrix[idx,][which(GT_matrix[idx,] == "0/0")] <- 1
+    GT_matrix[idx,][which(GT_matrix[idx,] == "1/1")] <- 3
+    
+    idx <- which(mk.type=="A.B.2")
+    GT_matrix[idx,][which(GT_matrix[idx,] == "0/0")] <- 3
+    GT_matrix[idx,][which(GT_matrix[idx,] == "1/1")] <- 1
+    
+    mk.type <- mk.type.num <- rep("A.B", n.mk)
+    mk.type.num[mk.type=="A.B"] <- 9
+    
+  }
+  
+  
+  if(is.vector(GT_matrix)){
+    jump <- 1
+  } else if(dim(GT_matrix)[1]==0){
+    jump <- 1
+  } else jump <- 0
+  
+  if(jump == 1){
+    warning("Input vcfR object do not have markers. An empty object onemap will be generated.")
+    
+    onemap.obj <- empty_onemap_obj(vcf, P1, P2, cross)
+    return(onemap.obj)
+  }
+  
+  # Removing parents
+  if(is.null(f1)){
+    GT_matrix <- apply(GT_matrix[,-c(P1,P2)],2,as.numeric)
+    rownames(GT_matrix)  <- MKS
+    colnames(GT_matrix)  <-  INDS[-c(P1,P2)] 
+  } else{
+    F1 <- which(dimnames(vcf@gt)[[2]]==f1) - 1
+    GT_matrix <- apply(GT_matrix[,-c(P1,P2,F1)],2,as.numeric)
+    rownames(GT_matrix)  <- MKS
+    colnames(GT_matrix)  <-  INDS[-c(P1,P2,F1)] 
+  }
+  
+  # Removing duplicated markers
+  dupli <- MKS[duplicated(MKS)]
+  if(length(dupli)>0){
+    n.rm.mks <- length(dupli)
+    dupli <- unique(dupli)
+    cat(paste("There are more than one marker with the same IDs:", paste(MKS[duplicated(MKS)], collapse = " "), "\nOnly the one with less missing data was kept."))
+    for(w in 1:length(dupli)){
+      temp_GT <- GT_matrix[MKS==dupli[w],]
+      mis_count <- apply(temp_GT, 1, function(x) sum(x==0))
+      discard <- temp_GT[-which.min(mis_count),]
+      if(is(discard, "matrix")){
+        for(j in 1:dim(discard)[1]){
+          idx <- which(apply(GT_matrix, 1, function(x) all(x == discard[j,])))
           idx <- idx[MKS[idx] == dupli[w]][1]
           GT_matrix <- GT_matrix[-idx,]
           mk.type <- mk.type[-idx]
@@ -596,25 +612,34 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
           POS <- POS[-idx]
           MKS <- MKS[-idx]
         }
+      } else {
+        idx <- which(apply(GT_matrix, 1, function(x) all(x == discard)))
+        idx <- idx[MKS[idx] == dupli[w]][1]
+        GT_matrix <- GT_matrix[-idx,]
+        mk.type <- mk.type[-idx]
+        mk.type.num <- mk.type.num[-idx] 
+        CHROM <- CHROM[-idx]
+        POS <- POS[-idx]
+        MKS <- MKS[-idx]
       }
-      n.mk <- n.mk - n.rm.mks
     }
-    
-     onemap.obj <- structure(list(geno= t(GT_matrix),
-                                 n.ind = dim(GT_matrix)[2],
-                                 n.mar = n.mk,
-                                 segr.type = mk.type,
-                                 segr.type.num = as.numeric(mk.type.num),
-                                 n.phe = 0,
-                                 pheno = NULL,
-                                 CHROM = CHROM,
-                                 POS = POS,
-                                 input = "vcfR.object"),
-                            class=c("onemap",legacy_crosses[cross]))
-    
-    new.onemap.obj <- create_probs(onemap.obj, global_error = 10^-5)
-    return(new.onemap.obj)
+    n.mk <- n.mk - n.rm.mks
   }
+  
+  onemap.obj <- structure(list(geno= t(GT_matrix),
+                               n.ind = dim(GT_matrix)[2],
+                               n.mar = n.mk,
+                               segr.type = mk.type,
+                               segr.type.num = as.numeric(mk.type.num),
+                               n.phe = 0,
+                               pheno = NULL,
+                               CHROM = CHROM,
+                               POS = POS,
+                               input = "vcfR.object"),
+                          class=c("onemap",legacy_crosses[cross]))
+  
+  new.onemap.obj <- create_probs(onemap.obj, global_error = 10^-5)
+  return(new.onemap.obj)
 }
 
 
