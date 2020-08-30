@@ -625,6 +625,8 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     }
     n.mk <- n.mk - n.rm.mks
   }
+  legacy_crosses <- setNames(c("outcross", "f2", "backcross", "riself", "risib"), 
+                             c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"))
   
   onemap.obj <- structure(list(geno= t(GT_matrix),
                                n.ind = dim(GT_matrix)[2],
