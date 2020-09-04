@@ -128,7 +128,7 @@ rf_graph_table <- function(input.seq,
   if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2"))
   {
     #if(input.seq$seq.phases[1] == -1 || input.seq$seq.rf[1] == -1 || is.null(input.seq$seq.like))
-     # stop("You must estimate parameters before running 'rf_graph_table' ")
+    # stop("You must estimate parameters before running 'rf_graph_table' ")
     ## making a list with necessary information
     n.mrk <- length(input.seq$seq.num)
     LOD <- lapply(input.seq$twopt$analysis,
@@ -146,7 +146,7 @@ rf_graph_table <- function(input.seq,
     mat<-t(get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
   } else {
     #if(input.seq$seq.rf[1] == -1 || is.null(input.seq$seq.like))
-      #stop("You must estimate parameters before running 'rf_graph_table' ")
+    #stop("You must estimate parameters before running 'rf_graph_table' ")
     ## making a list with necessary information
     n.mrk <- length(input.seq$seq.num) 
     LOD<-matrix(0, length(input.seq$seq.num), length(input.seq$seq.num))
@@ -170,7 +170,7 @@ rf_graph_table <- function(input.seq,
   
   if (mrk.axis == "numbers")
     colnames(mat) <- rownames(mat)<- input.seq$seq.num
-
+  
   # Be compatible with older versions
   # if(all(is.na(input.seq$data.name$segr.type.num))){
   #   if(is(input.seq$data.name, "backcross")){
@@ -181,15 +181,16 @@ rf_graph_table <- function(input.seq,
   # } else {
   #   segr.type.num <- input.seq$data.name$segr.type.num
   # }
-    
+  
   ##Write NAs in two-point recombination fractions between markers of type D1 and D2
-  types <- input.seq$data.name$segr.type.num[input.seq$seq.num]
-  for(i in 1:length(types))
-    for(j in 1:(length(types)-1))
-      if((types[i] == 7 & types[j] == 6) | (types[i] == 6 & types[j] == 7)){
-        mat[i,j] <- mat[j,i] <- NA
-      }
-
+  if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2")){
+    types <- input.seq$data.name$segr.type.num[input.seq$seq.num]
+    for(i in 1:length(types))
+      for(j in 1:(length(types)-1))
+        if((types[i] == 7 & types[j] == 6) | (types[i] == 6 & types[j] == 7)){
+          mat[i,j] <- mat[j,i] <- NA
+        }
+  }
   ## Marker types
   types <- input.seq$data.name$segr.type[input.seq$seq.num]
   
@@ -312,7 +313,7 @@ rf_graph_table <- function(input.seq,
       stop("For iteractive mode you must define a name for the outputted html file in 'html.file' argument.")
     }else{
       p <- ggplotly(p)
-
+      
       if(display){
         saveWidget(p, file = html.file)
         browseURL(html.file)
