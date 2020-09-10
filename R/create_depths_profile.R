@@ -74,10 +74,8 @@ create_depths_profile <- function(onemap.obj = NULL,
       warning("Only codominant markers are supported. The dominant markers present in onemap object will not be plotted.\n") 
       onemap.obj <- split_onemap(onemap.obj, mks= idx.mks)
     }
-  } else{
-    stop("By now, this function is only available for outcrossing and f2 intercross populations\n")
-  }
-  
+  } 
+
   if(is.null(parent1) | is.null(parent2)) stop("Parents ID must be defined.")
   
   # do the checks
@@ -91,7 +89,8 @@ create_depths_profile <- function(onemap.obj = NULL,
     alt <- depths$palt %>% data.frame(mks=depths$mks) %>% gather("ind", "alt", -"mks")
     ref <- depths$pref %>% data.frame(mks=depths$mks) %>% gather("ind", "ref", -"mks")
     parents <- merge(alt,ref)
-    
+    parents$mks <- gsub("[|]", ".", parents$mks)
+
     p1[which(onemap.obj$segr.type == "D1.10")] <- 2
     p1[which(onemap.obj$segr.type == "D2.15")] <- 1
     p1[which(onemap.obj$segr.type == "B3.7")] <- 2
@@ -113,8 +112,21 @@ create_depths_profile <- function(onemap.obj = NULL,
     p1 <- 2
     id.parents <- f1
     p.gt <- data.frame(mks=colnames(onemap.obj$geno), p1)
-  } else{
-    stop("By now, this function don't support this cross type\n")
+  } else {
+    alt <- depths$palt %>% data.frame(mks=depths$mks) %>% gather("ind", "alt", -"mks")
+    ref <- depths$pref %>% data.frame(mks=depths$mks) %>% gather("ind", "ref", -"mks")
+    parents <- merge(alt,ref)
+    
+    if(is(onemap.obj,c("riself", "risib"))){
+      p1 <- 1
+      p2 <- 3
+    } else{
+      p1 <- 1
+      p2 <- 2
+    }
+    
+    id.parents <- c(parent1, parent2)
+    p.gt <- data.frame(mks=colnames(onemap.obj$geno), p1, p2)
   }
   
   colnames(p.gt) <- c("mks", id.parents)
@@ -126,26 +138,34 @@ create_depths_profile <- function(onemap.obj = NULL,
   gts <- vcfR.object@gt[,-1] %>% strsplit(":") %>% sapply("[",1) %>% matrix(ncol = dim(vcfR.object@gt)[2] -1)
   
   MKS <- vcfR.object@fix[,3]
-  if (any(MKS == "." | is.na(MKS))) MKS <- paste0(vcfR.object@fix[,1],"_", vcfR.object@fix[,2])
+  if (any(MKS == "." | is.na(MKS))) MKS <- paste0(vcfR.object@fix[,1], "_",vcfR.object@fix[,2])
   
   p.gt <- data.frame(mks = MKS, gts[,idx.parents], stringsAsFactors = F)
   colnames(p.gt) <- c("mks", id.parents)
   p.gt <- gather(p.gt, "ind", "gt.vcf", -"mks")
   parents <- merge(parents, p.gt)
   
-  parents <- data.frame(parents, A=NA, AB=NA, BA=NA, B=NA)
-  
+  if(is(onemap.obj, "outcross") | is(onemap.obj, "f2")){
+    parents <- data.frame(parents, A=NA, AB=NA, BA=NA, B=NA)
+  } else {
+    parents <- data.frame(parents, A=NA, AB=NA)
+  }
   # progeny depth
   alt <- depths$oalt %>% data.frame(mks=depths$mks) %>% gather("ind", "alt", -"mks")
   ref <- depths$oref %>% data.frame(mks=depths$mks) %>% gather("ind", "ref", -"mks")
   progeny <- merge(alt,ref)
-  
+
   # progeny onemap genotypes
-  gt <- data.frame(ind = rownames(onemap.obj$geno), onemap.obj$geno)
+  gt <- as.data.frame(cbind(ind = rownames(onemap.obj$geno), onemap.obj$geno))
   gt <- gather(gt,  "mks","gt.onemap", -"ind")
   temp <- match(paste0(gt$mks, "_", gt$ind), rownames(onemap.obj$error))
   gt <- data.frame(gt, onemap.obj$error[temp,])
-  colnames(gt) <- c("ind", "mks", "gt.onemap", "A", "AB", "BA", "B")
+  
+  if(is(onemap.obj, "outcross") | is(onemap.obj, "f2")){
+    colnames(gt) <- c("ind", "mks", "gt.onemap", "A", "AB", "BA", "B")
+  } else {
+    colnames(gt) <- c("ind", "mks", "gt.onemap", "A", "AB")
+  }
   progeny <- merge(progeny, gt)
   
   # progeny vcf genotypes
@@ -155,9 +175,9 @@ create_depths_profile <- function(onemap.obj = NULL,
   progeny <- merge(progeny, pro.gt)
   data <- rbind(parents, progeny)
   data$gt.onemap[which(data$gt.onemap==0)] <- "missing"
-  data$gt.onemap[which(data$gt.onemap==1)] <- "homozygous"
+  data$gt.onemap[which(data$gt.onemap==1)] <- "homozygous-P1"
   data$gt.onemap[which(data$gt.onemap==2)] <- "heterozygote"
-  data$gt.onemap[which(data$gt.onemap==3)] <- "homozygous"
+  data$gt.onemap[which(data$gt.onemap==3)] <- "homozygous-P2"
   
   # removing phased
   data$gt.vcf <- gsub(pattern = "[|]", replacement = "/", data$gt.vcf)
@@ -184,8 +204,8 @@ create_depths_profile <- function(onemap.obj = NULL,
     x_lim <- max(data$alt)
   
   if(GTfrom == "onemap"){
-    colors <- c("#58355e", "#4D9DE0", "#ADE25D")
-    names(colors) <-  c("missing", "homozygous", "heterozygote")
+    colors <- rainbow(length(levels(data$gt.onemap)))
+    names(colors) <-  sort(levels(data$gt.onemap))
     
     p <- data %>% ggplot(aes(x=ref, y=alt, color=gt.onemap)) + 
       geom_point(alpha = alpha) +
@@ -202,7 +222,12 @@ create_depths_profile <- function(onemap.obj = NULL,
       xlim(0, x_lim) +
       ylim(0, y_lim)
   } else if(GTfrom == "prob"){
-    errors <- apply(data[,7:10], 1, function(x) {
+    if(is(onemap.obj, "outcross") | is(onemap.obj, "f2")){
+      idx <- 7:10
+    } else {
+      idx <- 7:8
+    }
+    errors <- apply(data[,idx], 1, function(x) {
       if(all(is.na(x)) | all(x == 1)) {
         return(NA) 
       } else { 

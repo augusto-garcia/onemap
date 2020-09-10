@@ -202,7 +202,7 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FA
         } else {
           new_seqs_unique_temp[[i]] <- mks_new_seqs[[i]][-pos_repeated[[i]]]
           new_seqs_unique[[i]] <- make_seq(input.2pts, new_seqs_unique_temp[[i]])
-          new_seqs_unique[[i]]$twopt <- deparse(substitute(input.2pts))}
+          new_seqs_unique[[i]]$twopt <- input.2pts}
       }
       names(new_seqs_unique) <- names_seqs
       structure(list(data.name= input.2pts$data.name, 

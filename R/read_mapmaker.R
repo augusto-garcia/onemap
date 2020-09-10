@@ -36,8 +36,6 @@ globalVariables(c("mkt.wrg"))
 ##' read for each marker in \code{onemap} fashion. Each column contains data
 ##' for a marker and each row represents an individual.}
 ##'
-##' \item{geno.mmk}{ a matrix with
-##' integers indicating the genotypes read for each marker in
 ##' \code{MAPMAKER/EXP} fashion, i.e., 1, 2, 3: AA, AB, BB, respectively; 3, 4:
 ##' BB, not BB, respectively; 1, 5: AA, not AA, respectively. Each column
 ##' contains data for a marker and each row represents an individual.}

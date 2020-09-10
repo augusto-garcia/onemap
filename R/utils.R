@@ -220,3 +220,52 @@ empty_onemap_obj <- function(vcf, P1, P2, cross){
                           class=c("onemap",legacy_crosses[cross]))
   return(onemap.obj)
 }
+
+
+try_seq_by_seq <- function(sequence, markers, cM.thr= 10, lod.thr=-10){
+  
+  seq_now <- sequence
+  for(i in 1:length(markers)){
+    try_edit <- try_seq(seq_now, markers[i])  
+    pos <- which(try_edit$LOD == 0)[1]
+    new_map <- make_seq(try_edit, pos)
+    size_new <- cumsum(kosambi(new_map$seq.rf))[length(new_map$seq.rf)]
+    size_old <- cumsum(kosambi(seq_now$seq.rf))[length(seq_now$seq.rf)]
+    lod_new <- new_map$seq.like
+    lod_old <- seq_now$seq.like
+    diff_size <- size_new - size_old
+    diff_lod <- lod_new - lod_old
+    if(diff_size < cM.thr & diff_lod > lod.thr){
+      seq_now <- new_map
+      cat("Marker", markers[i], "was included \n")
+    } 
+  }
+  return(seq_now)
+}
+
+add_redundants <- function(sequence, onemap.obj, bins){
+  
+  idx <- match(colnames(sequence$data.name$geno)[sequence$seq.num], names(bins[[1]]))
+  
+  sizes <- sapply(bins[[1]][idx], function(x) dim(x)[1])
+  
+  mks <- sapply(bins[[1]][idx], rownames)
+  mks <- do.call(c, mks)
+  mks.num <- match(mks, colnames(onemap.obj$geno))
+  
+  new.seq.rf <- as.list(cumsum(c(0,sequence$seq.rf)))
+  
+  for(i in 1:length(new.seq.rf)){
+    new.seq.rf[[i]] <- rep(new.seq.rf[[i]], each = sizes[i])
+  }
+  
+  new.seq.rf <- do.call(c, new.seq.rf)
+  new.seq.rf <- diff(new.seq.rf)
+  new_sequence <- sequence
+  new_sequence$seq.num <- mks.num
+  new_sequence$seq.rf <- new.seq.rf
+  new_sequence$data.name <- onemap.obj
+  new_sequence$probs <- "with redundants"
+  return(new_sequence)  
+}
+
