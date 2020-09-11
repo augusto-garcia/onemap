@@ -385,7 +385,6 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     
     GT_matrix[grepl("/", GT_matrix)] <- 0
     GT_matrix[grepl("[.]", GT_matrix)] <- 0
-    
   } else if(cross== "f2 intercross"){
     # Marker type
     mk.type[which(GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "1/1")] <- "A.H.B.1"
@@ -564,7 +563,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     mk.type.num[mk.type=="A.B"] <- 9
     
   }
-  
+  GT_matrix[is.na(GT_matrix)] <- 0
   
   if(is.vector(GT_matrix)){
     jump <- 1
