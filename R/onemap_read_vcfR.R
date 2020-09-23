@@ -115,7 +115,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   
   if(length(P1)==0 | length(P2)==0) stop("One or both parents names could not be found in your data")
   
-  # This part convert phased genotypes in mnps markers -- Need optimization
+  # Bugfix: Need optimization
   if(!only_biallelic & length(grep("[|]", GT_matrix[,c(P1,P2)])) > 0){
     all_data <- GT_matrix
     all_pos <- POS
@@ -195,7 +195,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
           CHROM <- c(CHROM, mnp_chrom)
           MKS <- c(MKS, mnp_mk)
         }
-        # Markers not joint in mnps will be kept for next steps
+        # Markers not joint will be kept for next steps
         temp_matrix <- rbind.data.frame(temp_matrix, GT_matrix, stringsAsFactors = F)
         temp_pos <- c(temp_pos, POS)
         temp_chrom <- c(temp_chrom, CHROM)
