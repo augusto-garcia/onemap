@@ -115,7 +115,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   
   if(length(P1)==0 | length(P2)==0) stop("One or both parents names could not be found in your data")
   
-  # Bugfix: Need optimization
+  # Bugfix
   if(!only_biallelic & length(grep("[|]", GT_matrix[,c(P1,P2)])) > 0){
     all_data <- GT_matrix
     all_pos <- POS

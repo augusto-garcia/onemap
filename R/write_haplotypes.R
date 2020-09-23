@@ -432,6 +432,8 @@ vcf2progeny_haplotypes <- function(vcfR.object,
 #' 
 #' Genotypes with same probability for two genotypes will be removed
 #' 
+#' @param x object of class onemap_progeny_haplotypes
+#' 
 #' @import dplyr
 #' @import tidyr
 #'@export
@@ -460,6 +462,12 @@ progeny_haplotypes_counts <- function(x){
 
 
 ##'
+##'
+##' @param x object of class onemap_progeny_haplotypes_counts
+##' @param by_homolog logical, if TRUE plots counts by homolog (two for each individuals), if FALSE plots total counts by individual
+##' @param n.graphics integer defining the number of graphics to be plotted, they separate the individuals in different plots 
+##' @param ncol integer defining the number of columns in plot
+##' 
 ##' @method plot onemap_progeny_haplotypes_counts
 ##' @import ggplot2
 ##' @importFrom ggpubr ggarrange
@@ -470,12 +478,12 @@ progeny_haplotypes_counts <- function(x){
 ##' 
 ##' @export
 plot.onemap_progeny_haplotypes_counts <- function(x, 
-                                                  by_homolog = FALSE, 
+                                                  by_homolog = FALSE, # Do not use TRUE yet
                                                   n.graphics =NULL, 
                                                   ncol=NULL){
   if(!is(x, "onemap_progeny_haplotypes_counts")) stop("Input need is not of class onemap_progeny_haplotyes_counts")
   p <- list()
-  if(by_homolog){ ## Bug! 
+  if(by_homolog){ ## Bugfix! 
     if(is.null(n.graphics) & is.null(ncol)){
       n.ind <- dim(x)[1]
       if(n.ind/25 <= 1) {
