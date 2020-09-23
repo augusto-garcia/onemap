@@ -17,11 +17,9 @@ components: \item{geno}{a matrix with integers indicating the genotypes
 read for each marker in \code{onemap} fashion. Each column contains data
 for a marker and each row represents an individual.}
 
-\item{geno.mmk}{ a matrix with
-integers indicating the genotypes read for each marker in
 \code{MAPMAKER/EXP} fashion, i.e., 1, 2, 3: AA, AB, BB, respectively; 3, 4:
 BB, not BB, respectively; 1, 5: AA, not AA, respectively. Each column
-contains data for a marker and each row represents an individual.}
+contains data for a marker and each row represents an individual.
 
 \item{n.ind}{number of individuals.} \item{n.mar}{number of markers.}
 \item{segr.type}{a vector with the segregation type of each marker, as

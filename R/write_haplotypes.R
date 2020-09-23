@@ -461,7 +461,7 @@ progeny_haplotypes_counts <- function(x){
 }
 
 
-##'
+##' Plot recombination breakpoints counts for each individual
 ##'
 ##' @param x object of class onemap_progeny_haplotypes_counts
 ##' @param by_homolog logical, if TRUE plots counts by homolog (two for each individuals), if FALSE plots total counts by individual

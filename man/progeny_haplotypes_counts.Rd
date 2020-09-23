@@ -6,6 +6,9 @@
 \usage{
 progeny_haplotypes_counts(x)
 }
+\arguments{
+\item{x}{object of class onemap_progeny_haplotypes}
+}
 \description{
 Genotypes with same probability for two genotypes will be removed
 }
