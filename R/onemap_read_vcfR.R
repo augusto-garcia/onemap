@@ -112,7 +112,6 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   for(i in 2:(n.ind+1))
     GT_matrix[,i-1] <- unlist(lapply(strsplit(vcf@gt[,i], split=":"), "[[", GT))
   
-  
   if(length(P1)==0 | length(P2)==0) stop("One or both parents names could not be found in your data")
   
   # Bugfix
@@ -209,8 +208,9 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     MKS <- temp_mks
   }
   
+  # This function doesn't consider phased genotypes
   if(any(grepl("[|]", GT_matrix))){
-    GT_matrix <- gsub("[|]", "/", as.matrix(GT_matrix))
+    GT_matrix <- gsub("[|]", "/", GT_matrix)
     GT_matrix[which(GT_matrix == "1/0")] <- "0/1"
     GT_matrix[which(GT_matrix == "2/0")] <- "0/2"
     GT_matrix[which(GT_matrix == "3/0")] <- "0/3"
@@ -229,8 +229,8 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       MKS <- MKS[-rm_multi]
     }
   }
-  n.mk <- nrow(GT_matrix)
-  
+  n.mk <- nrow(GT_matrix)                                                            
+
   mk.type <- mk.type.num <- rep(NA, n.mk)
   if (cross == "outcross"){
     P1_1 <- sapply(strsplit(GT_matrix[,P1], "/"), "[", 1)
@@ -293,8 +293,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       mk.type <- mk.type[-rm_mk]
       mk.type.num <- mk.type.num[-rm_mk]
     } 
-    
-    
+   
     if(is.vector(GT_matrix)){
       jump <- 1
     } else if(dim(GT_matrix)[1]==0){
@@ -669,7 +668,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
 ##'@export                  
 write_onemap_raw <- function(onemap.obj=NULL, 
                              file.name = "out.raw"){
-  
+
   if(is(onemap.obj, "outcross")){
     cross <- "outcross"
   } else if(is(onemap.obj, "f2")){
