@@ -87,15 +87,19 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FA
   if(!is(input.2pts,"rf_2pts")) stop(deparse(substitute(input.2pts)),
                                      " is not an object of class 'rf_2pts'")
   
-  if(all(seqs=="CHROM")){
-    
-    ## making CHROM sequences
-    CHROM <- unique(input.2pts$CHROM)
-    CHROM <- CHROM[!is.na(CHROM)]
-    names_seqs <- paste0("CHR",CHROM)
-    seqs.int <- list()
-    for(i in 1:length(CHROM)) seqs.int[[i]] <- make_seq(input.2pts, CHROM[i])
-    
+  
+  
+  if(!is(seqs, "list")){
+    if(seqs == "CHROM"){
+      ## making CHROM sequences
+      CHROM <- unique(input.2pts$CHROM)
+      CHROM <- CHROM[!is.na(CHROM)]
+      names_seqs <- paste0("CHR",CHROM)
+      seqs.int <- list()
+      for(i in 1:length(CHROM)) seqs.int[[i]] <- make_seq(input.2pts, CHROM[i])
+    } else {
+      stop("This option is not available in argument seqs")
+    }
   } else{
     ## checking for correct object for seqs argument
     seqs.int <- seqs
@@ -116,10 +120,11 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FA
     max.rf <- input.2pts$max.rf
   
   ## Defining the makers to be tested
-  mk_seqs <- unlist(sapply(seqs.int, '[[',1))
+  mk_seqs <- sapply(seqs.int, '[[',1)
+  mk_seqs <- do.call(c, mk_seqs)
   mk_rest <- c(1:input.2pts$n.mar)[-mk_seqs]
   
-  if(all(unlink.mks == "all")){
+  if(unlink.mks[1] == "all"){
   } else {
     ## checking for correct object for unlink.mks argument
     if (!is(unlink.mks,"sequence")) {
@@ -127,8 +132,8 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FA
     } else {
       mk_rest <- mk_rest[match(unlink.mks$seq.num, mk_rest)]
       mk_rest <- mk_rest[!is.na(mk_rest)]
-      }
     }
+  }
   
   ## Grouping
   groups <- new_seqs <- select_group <- seqs_groups <- list()
@@ -139,7 +144,8 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FA
     seqs_groups[[i]] <- groups[[i]]$groups[1:length(seqs.int[[i]]$seq.num)]
     same[i] <- length(unique(seqs_groups[[i]])) == 1
     select_group[[i]] <- as.numeric(names(which.max(table(seqs_groups[[i]]))))
-    new_seqs[[i]] <- make_seq(groups[[i]], select_group[[i]])}
+    new_seqs[[i]] <- make_seq(groups[[i]], select_group[[i]])
+  }
   
   if(!all(same)) cat("One or more of the provided marker sequences from",deparse(substitute(seqs)),
                      "do not form single linkage groups. The group with the highest number of markers belonging to the sequence will be considered.")
@@ -149,7 +155,7 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FA
   
   # Find repeated markers
   mks_new_seqs <- lapply(new_seqs, '[[',1)
-  all_grouped_mk <- unlist(mks_new_seqs)
+  all_grouped_mk <- do.call(c, mks_new_seqs)
   repeated_mks <- unique(all_grouped_mk[duplicated(all_grouped_mk)])
   pos_repeated <- lapply(mks_new_seqs,function(x) which(x %in% repeated_mks))
   
@@ -196,7 +202,7 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FA
         } else {
           new_seqs_unique_temp[[i]] <- mks_new_seqs[[i]][-pos_repeated[[i]]]
           new_seqs_unique[[i]] <- make_seq(input.2pts, new_seqs_unique_temp[[i]])
-          new_seqs_unique[[i]]$twopt <- deparse(substitute(input.2pts))}
+          new_seqs_unique[[i]]$twopt <- input.2pts}
       }
       names(new_seqs_unique) <- names_seqs
       structure(list(data.name= input.2pts$data.name, 

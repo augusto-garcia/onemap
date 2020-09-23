@@ -95,7 +95,7 @@ parents_haplotypes <- function(..., group_names=NULL){
 #' Generate data.frame with genotypes estimated by HMM and its probabilities
 #'
 #' @param ... Map(s) or list(s) of maps. Object(s) of class sequence.
-#' @param ind vector with individual index to be evaluated
+#' @param ind vector with individual index to be evaluated or "all" to include all individuals
 #' @param most_likely logical; if  \code{TRUE}, the most likely genotype receive 1 and all the rest 0. 
 #' If there are more than one most likely both receive 0.5.
 #' if FALSE (default) the genotype probability is plotted.
@@ -124,9 +124,15 @@ progeny_haplotypes <- function(...,
   if(is.null(group_names)) group_names <- paste("Group",seq(input.map), sep = " - ")
   n.mar <- sapply(input.map, function(x) length(x$seq.num))
   n.ind <- sapply(input.map, function(x) ncol(x$probs))/n.mar
-  ind.select <- ind
+  ind.names <- lapply(input.map, function(x) rownames(x$data.name$geno))
+  ind.names <- unique(do.call(c,ind.names)) 
+  if(length(unique(n.ind)) != 1) stop("At least one of the sequences have different number of individuals in dataset.")
+  n.ind <- unique(n.ind)
+  if(ind[1] == "all"){
+    ind <- 1:n.ind
+  } 
   
-  probs <- lapply(1:length(input.map), function(x) cbind(ind = rep(1:n.ind[x], each = n.mar[x]),
+  probs <- lapply(1:length(input.map), function(x) cbind(ind = rep(1:n.ind, each = n.mar[x]),
                                                          grp = group_names[x],
                                                          marker = input.map[[x]]$seq.num,
                                                          #pos = c(0,cumsum(get(get(".map.fun", envir=.onemapEnv))(input.map[[x]]$seq.rf))),
@@ -205,7 +211,12 @@ progeny_haplotypes <- function(...,
   probs <- cbind(probs, new.col)
   probs <- probs[,-4]
   probs <- as.data.frame(probs)
-  class(probs) <- c("onemap_progeny_haplotypes", cross, "data.frame")
+  
+  probs$ind <- ind.names[probs$ind]
+  
+  if(most_likely) flag <- "most.likely" else flag <- "by.probs"
+  
+  class(probs) <- c("onemap_progeny_haplotypes", cross, "data.frame", flag)
   return(probs)
 }
 
@@ -221,7 +232,9 @@ progeny_haplotypes <- function(...,
 ##' 
 ##' @method plot onemap_progeny_haplotypes
 ##' @import ggplot2
-##' 
+#' @import dplyr
+#' @import tidyr
+#' 
 ##' @author Getulio Caixeta Ferreira, \email{getulio.caifer@@gmail.com}
 ##' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
 ##' 
@@ -243,8 +256,6 @@ plot.onemap_progeny_haplotypes <- function(x,
               # the recombination occurs, we ilustrate it in the mean point between 
               # markers
               pos = c(pos[-nrow(.)], NA)))
-  
-  probs$ind <- paste("Ind -",probs$ind)
   
   p <- ggplot(probs, aes(x = pos, col=get(colors), alpha = prob)) + ggtitle(main) +
     facet_wrap(~ ind + grp , ncol = ncol) +
@@ -308,13 +319,13 @@ vcf2progeny_haplotypes <- function(vcfR.object,
   CHROM <- vcfR.object@fix[,1]
   
   if(is.null(group_names)) group_names <- CHROM[1]
-    
+  
   if(length(which(unique(CHROM) %in% group_names)) != length(group_names)){
     stop("At least one of the groups in group_names was not found in vcfR object.")
   }
   
   progeny_haplotypes_obj_chr <- data.frame()
-  for(chr in 1:length(group_names)){
+  for(chr in 1:length(group_names)){ ### Need optimization
     CHROM.now <- which(CHROM %in% group_names[chr])
     POS <- as.numeric(vcfR.object@fix[,2])[CHROM.now]
     
@@ -326,8 +337,8 @@ vcf2progeny_haplotypes <- function(vcfR.object,
     
     P1_1 <- sapply(strsplit(GT_matrix[CHROM.now,P1.idx], "[|]"), "[",1)
     P1_2 <- sapply(strsplit(GT_matrix[CHROM.now,P1.idx], "[|]"), "[",2)
-    P2_1 <- sapply(strsplit(GT_matrix[CHROM.now,P2.idx], "[|]"), "[",2)
-    P2_2 <- sapply(strsplit(GT_matrix[CHROM.now,P2.idx], "[|]"), "[",1)
+    P2_1 <- sapply(strsplit(GT_matrix[CHROM.now,P2.idx], "[|]"), "[",1)
+    P2_2 <- sapply(strsplit(GT_matrix[CHROM.now,P2.idx], "[|]"), "[",2)
     
     progeny_haplotypes_obj_ind <- data.frame()
     for(ind in 1:length(ind.id)){
@@ -387,12 +398,13 @@ vcf2progeny_haplotypes <- function(vcfR.object,
           comp <- new.zs
         }
         
-        df.H <- data.frame(ind = rep(ind.id, 2*n.mk),
+        num.mk <- length(CHROM.now)
+        df.H <- data.frame(ind = rep(ind.id[ind], 2*num.mk),
                            grp = rep(CHROM[CHROM.now], 2),
                            pos = rep(POS, 2),
-                           prob = rep(0, 2*n.mk),
-                           homologs = rep(c("H1", "H2")[w], n.mk),
-                           parents = rep(rep(c("P1","P2"),each =n.mk)))
+                           prob = rep(0, 2*num.mk),
+                           homologs = rep(c("H1", "H2")[w], num.mk),
+                           parents = rep(rep(c("P1","P2"),each =num.mk)))
         
         for(i in 1:length(Hs[[w]])){
           df.H$prob[which(df.H$pos == POS[i] & df.H$parents == Hs[[w]][i])] <- 1
@@ -406,11 +418,148 @@ vcf2progeny_haplotypes <- function(vcfR.object,
     # bind chromosomes
     progeny_haplotypes_obj_chr <- rbind(progeny_haplotypes_obj_chr,progeny_haplotypes_obj_ind)
   }
-  switch(crosstype, "outcross" = "outcross", "f2 intercross"="f2",
-         "f2 backcross"="backcross", "ril sib"="rils", "ril self"="rils")
   
+  crosstype <- switch(crosstype, "outcross" = "outcross", "f2 intercross"="f2",
+                      "f2 backcross"="backcross", "ril sib"="rils", "ril self"="rils")
   
-  class(progeny_haplotypes_obj_chr) <- c("onemap_progeny_haplotypes", crosstype, "data.frame")
+  flag <- "most.likely"
+  class(progeny_haplotypes_obj_chr) <- c("onemap_progeny_haplotypes", crosstype, "data.frame", flag)
   return(progeny_haplotypes_obj_chr)
 }
 
+
+#' By now only for outcrossing
+#' 
+#' Genotypes with same probability for two genotypes will be removed
+#' 
+#' @param x object of class onemap_progeny_haplotypes
+#' 
+#' @import dplyr
+#' @import tidyr
+#'@export
+progeny_haplotypes_counts <- function(x){
+  if(!is(x, "onemap_progeny_haplotypes")) stop("Input need is not of class onemap_progeny_haplotyes")
+  if(!is(x, "most.likely")) stop("The most likely genotypes must receive maximum probability (1)")
+  cross <- class(x)[2]
+  
+  # Some genotypes receveis prob of 0.5, here we need to make a decision about them
+  doubt <- x[which(x$prob == 0.5),]
+  if(dim(doubt)[1] > 0){
+    nondupli <- which(!duplicated(paste0(doubt$ind, doubt$grp, doubt$pos)))
+    x[which(x$prob == 0.5),][nondupli,]$prob <- 1
+  }
+  
+  x <- x[which(x$prob == 1),]
+  x <- x[order(x$ind, x$grp, x$prob, x$homologs,x$pos),]
+  
+  x <- x %>% group_by(ind, grp, homologs) %>%
+    mutate(seq = sequence(rle(as.character(parents))$length) == 1) %>%
+    summarise(counts = sum(seq) -1) %>% ungroup()
+  
+  class(x) <- c("onemap_progeny_haplotypes_counts", cross, "data.frame")
+  return(x)
+}
+
+
+##' Plot recombination breakpoints counts for each individual
+##'
+##' @param x object of class onemap_progeny_haplotypes_counts
+##' @param by_homolog logical, if TRUE plots counts by homolog (two for each individuals), if FALSE plots total counts by individual
+##' @param n.graphics integer defining the number of graphics to be plotted, they separate the individuals in different plots 
+##' @param ncol integer defining the number of columns in plot
+##' 
+##' @method plot onemap_progeny_haplotypes_counts
+##' @import ggplot2
+##' @importFrom ggpubr ggarrange
+##' @import dplyr
+##' @import tidyr
+##' @importFrom RColorBrewer brewer.pal
+##' @importFrom grDevices colorRamp
+##' 
+##' @export
+plot.onemap_progeny_haplotypes_counts <- function(x, 
+                                                  by_homolog = FALSE, # Do not use TRUE yet
+                                                  n.graphics =NULL, 
+                                                  ncol=NULL){
+  if(!is(x, "onemap_progeny_haplotypes_counts")) stop("Input need is not of class onemap_progeny_haplotyes_counts")
+  p <- list()
+  if(by_homolog){ ## Bugfix! 
+    if(is.null(n.graphics) & is.null(ncol)){
+      n.ind <- dim(x)[1]
+      if(n.ind/25 <= 1) {
+        n.graphics = 1
+        ncol=1 
+      }else { n.graphics = round(n.ind/25,0)
+      ncol=round(n.ind/25,0)
+      }
+    }
+    size <- dim(x)[1]
+    if(size%%n.graphics == 0){
+      div.n.graphics <- rep(1:n.graphics, each= size/n.graphics) 
+    } else {           
+      div.n.graphics <- c(rep(1:n.graphics, each = round(size/n.graphics,0)), rep(n.graphics, size%%n.graphics))
+    }
+    
+    y_lim_counts <- max(x$counts)
+    div.n.graphics <- div.n.graphics[1:size]
+    p <- x %>% mutate(div.n.graphics = div.n.graphics) %>%
+      split(., .$div.n.graphics) %>%
+      lapply(., function(x) ggplot(x, aes(x=homologs, y=counts)) +
+               geom_bar(stat="identity", aes(fill=grp)) + theme_minimal() + 
+               coord_flip() + 
+               scale_fill_brewer(palette="Set1") +
+               facet_grid(ind~., switch = "y") +
+               theme(axis.title.y = element_blank(),
+                     axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+                     strip.text.y.left = element_text(angle = 0)) + 
+               labs(fill="groups") +
+               ylim(0,y_lim_counts)
+      )      
+  } else {
+    x <- x %>% group_by(ind, grp) %>%
+      summarise(counts = sum(counts))
+    
+    n.ind <- length(unique(x$ind))
+    if(is.null(n.graphics) & is.null(ncol)){
+      if(n.ind/25 <= 1) {
+        n.graphics = 1
+        ncol=1 
+      }else { 
+        n.graphics = round(n.ind/25,0)
+        ncol=round(n.ind/25,0)
+      }
+    }
+    
+    size <-n.ind
+    if(size%%n.graphics == 0){
+      div.n.graphics <- rep(1:n.graphics, each= size/n.graphics) 
+    } else {           
+      div.n.graphics <-   c(rep(1:n.graphics, each = round(size/n.graphics,0)),rep(n.graphics, size%%n.graphics))
+    }
+    div.n.graphics <- div.n.graphics[1:n.ind]
+    div.n.graphics <- rep(div.n.graphics, each = length(unique(x$grp)))
+    
+    x$ind <- factor(as.character(x$ind), levels = sort(as.character(unique(x$ind))))
+    
+    temp <- x %>% ungroup() %>% group_by(ind) %>%
+      summarise(total = sum(counts))
+      
+    y_lim_counts <- max(temp$total)
+    nb.cols <- n.ind
+    mycolors <- colorRampPalette(brewer.pal(12, "Paired"))(nb.cols)
+    set.seed(20)
+    mycolors <- sample(mycolors)
+    p <- x %>% ungroup() %>%  mutate(div.n.graphics = div.n.graphics) %>%
+      split(., .$div.n.graphics) %>%
+      lapply(., function(x) ggplot(x, aes(x=ind, y=counts, fill=grp)) +
+               geom_bar(stat="identity") + coord_flip() + 
+               scale_fill_manual(values=mycolors) +
+               theme(axis.title.y = element_blank(), 
+                     axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+               labs(fill="groups") +
+               ylim(0,y_lim_counts)
+      ) 
+  }
+  p <- ggarrange(plotlist = p, common.legend = T, label.x = 1, ncol = ncol, nrow = round(n.graphics/ncol,0))
+  return(p)
+}
