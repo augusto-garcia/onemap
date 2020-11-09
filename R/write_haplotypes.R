@@ -4,7 +4,8 @@
 ##                                                                     ##
 ## File: write_haplotypes.R                                            ##
 ## Contains: parents_haplotypes, progeny_haplotypes,                   ##
-## plot.onemap_progeny_haplotypes                                      ##
+## plot.onemap_progeny_haplotypes,                                     ##
+## plot.onemap_progeny_haplotypes_counts                               ##
 ##                                                                     ##
 ## Written by  Getulio Caixeta Ferreira and Cristiane Taniguti         ##
 ##                                                                     ##
@@ -467,6 +468,7 @@ progeny_haplotypes_counts <- function(x){
 ##' @param by_homolog logical, if TRUE plots counts by homolog (two for each individuals), if FALSE plots total counts by individual
 ##' @param n.graphics integer defining the number of graphics to be plotted, they separate the individuals in different plots 
 ##' @param ncol integer defining the number of columns in plot
+##' @param ... currently ignored
 ##' 
 ##' @method plot onemap_progeny_haplotypes_counts
 ##' @import ggplot2
@@ -474,13 +476,13 @@ progeny_haplotypes_counts <- function(x){
 ##' @import dplyr
 ##' @import tidyr
 ##' @importFrom RColorBrewer brewer.pal
-##' @importFrom grDevices colorRamp
+##' @importFrom grDevices colorRamp colorRampPalette
 ##' 
 ##' @export
 plot.onemap_progeny_haplotypes_counts <- function(x, 
                                                   by_homolog = FALSE, # Do not use TRUE yet
                                                   n.graphics =NULL, 
-                                                  ncol=NULL){
+                                                  ncol=NULL, ...){
   if(!is(x, "onemap_progeny_haplotypes_counts")) stop("Input need is not of class onemap_progeny_haplotyes_counts")
   p <- list()
   if(by_homolog){ ## Bugfix! 
