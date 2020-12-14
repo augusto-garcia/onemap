@@ -462,6 +462,9 @@ progeny_haplotypes_counts <- function(x){
 }
 
 
+globalVariables(c("counts", "colorRampPalette", "parents"))
+
+
 ##' Plot recombination breakpoints counts for each individual
 ##'
 ##' @param x object of class onemap_progeny_haplotypes_counts

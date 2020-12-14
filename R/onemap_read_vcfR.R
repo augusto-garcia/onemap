@@ -209,6 +209,14 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     MKS <- temp_mks
   }
   
+  # Searching not splitted multi
+  if (all(dim(GT_matrix)==0)) {
+    GT_matrix <- matrix(rep(NA, n.ind * n.mk), ncol = n.ind, 
+                        nrow = n.mk)
+    for (i in 2:(n.ind + 1)) GT_matrix[, i - 1] <- unlist(lapply(strsplit(vcf@gt[, 
+                                                                                 i], split = ":"), "[[", GT))
+  }
+  
   # This function do not consider phased genotypes
   if(any(grepl("[|]", GT_matrix))){
     GT_matrix <- gsub("[|]", "/", as.matrix(GT_matrix))

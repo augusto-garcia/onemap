@@ -4,7 +4,7 @@
 \alias{plot.onemap_progeny_haplotypes_counts}
 \title{Plot recombination breakpoints counts for each individual}
 \usage{
-\method{plot}{onemap_progeny_haplotypes_counts}(x, by_homolog = FALSE, n.graphics = NULL, ncol = NULL)
+\method{plot}{onemap_progeny_haplotypes_counts}(x, by_homolog = FALSE, n.graphics = NULL, ncol = NULL, ...)
 }
 \arguments{
 \item{x}{object of class onemap_progeny_haplotypes_counts}
@@ -14,6 +14,8 @@
 \item{n.graphics}{integer defining the number of graphics to be plotted, they separate the individuals in different plots}
 
 \item{ncol}{integer defining the number of columns in plot}
+
+\item{...}{currently ignored}
 }
 \description{
 Plot recombination breakpoints counts for each individual
