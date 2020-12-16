@@ -55,7 +55,6 @@
 ##' }
 ##'                 
 ##'@export                  
-
 onemap_read_vcfR <- function(vcfR.object=NULL,
                              cross = c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"),
                              parent1 =NULL,
@@ -79,7 +78,6 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   INDS <- dimnames(vcf@gt)[[2]][-1]
   CHROM <- vcf@fix[,1]
   POS <- as.numeric(vcf@fix[,2])
-  
   
   # Checking marker segregation according with parents
   P1 <- which(dimnames(vcf@gt)[[2]]==parent1) 
@@ -111,7 +109,6 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   
   for(i in 2:(n.ind+1))
     GT_matrix[,i-1] <- unlist(lapply(strsplit(vcf@gt[,i], split=":"), "[[", GT))
-  
   
   if(length(P1)==0 | length(P2)==0) stop("One or both parents names could not be found in your data")
   
@@ -303,7 +300,6 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       mk.type.num <- mk.type.num[-rm_mk]
     } 
     
-    
     if(is.vector(GT_matrix)){
       jump <- 1
     } else if(dim(GT_matrix)[1]==0){
@@ -315,7 +311,8 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       
       onemap.obj <- empty_onemap_obj(vcf, P1, P2, cross)
       return(onemap.obj)
-    }     
+    }
+    GT_matrix <- as.matrix(GT_matrix)
     # Codification for OneMap
     idx <- which(mk.type=="A.1" | mk.type=="A.2")
     cat <- paste0(P1_1[idx], "/", P2_1[idx])
@@ -424,7 +421,6 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       mk.type <- mk.type[-rm_mk]
       mk.type.num <- mk.type.num[-rm_mk]
     } 
-    
     
     if(is.vector(GT_matrix)){
       jump <- 1
@@ -542,7 +538,6 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       mk.type.num <- mk.type.num[-rm_mk]
     }
     
-    
     if(is.vector(GT_matrix)){
       jump <- 1
     } else if(dim(GT_matrix)[1]==0){
@@ -589,15 +584,16 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   
   # Removing parents
   if(is.null(f1)){
-    GT_matrix <- apply(GT_matrix[,-c(P1,P2)],2,as.numeric)
-    rownames(GT_matrix)  <- MKS
+    GT_matrix <- apply(GT_matrix[,-c(P1,P2), drop=F],2,as.numeric)
+    if(is(GT_matrix, "vector")) GT_matrix <- t(as.matrix(GT_matrix)) # If there is only one marker
     colnames(GT_matrix)  <-  INDS[-c(P1,P2)] 
   } else{
     F1 <- which(dimnames(vcf@gt)[[2]]==f1) - 1
-    GT_matrix <- apply(GT_matrix[,-c(P1,P2,F1)],2,as.numeric)
-    rownames(GT_matrix)  <- MKS
+    GT_matrix <- apply(GT_matrix[,-c(P1,P2,F1), drop=F],2,as.numeric)
+    if(is(GT_matrix, "vector")) GT_matrix <- t(as.matrix(GT_matrix))
     colnames(GT_matrix)  <-  INDS[-c(P1,P2,F1)] 
   }
+  rownames(GT_matrix)  <- MKS
   
   # Removing duplicated markers
   dupli <- MKS[duplicated(MKS)]
@@ -637,7 +633,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
                              c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"))
   
   onemap.obj <- structure(list(geno= t(GT_matrix),
-                               n.ind = dim(GT_matrix)[2],
+                               n.ind = if(is(GT_matrix, "vector")) length(GT_matrix) else dim(GT_matrix)[2],
                                n.mar = n.mk,
                                segr.type = mk.type,
                                segr.type.num = as.numeric(mk.type.num),
