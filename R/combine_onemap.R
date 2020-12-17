@@ -194,10 +194,6 @@ combine_onemap <- function(...) {
     }
     
     rownames(error) <- rownames.error
-    if (anyDuplicated(colnames(geno))) {
-        warning("Duplicate marker names found. Please check.")
-    }
-    
     if (all(is.na(CHROM))) {
         CHROM <- NULL
     }
@@ -207,11 +203,14 @@ combine_onemap <- function(...) {
     
     ## Return "onemap" object
     input <- "combined"
-    structure(list(geno = geno, n.ind = n.ind, n.mar = n.mar,
+    onemap.obj <- structure(list(geno = geno, n.ind = n.ind, n.mar = n.mar,
                    segr.type = segr.type, segr.type.num = segr.type.num,
                    n.phe = n.phe, pheno = pheno, CHROM = CHROM, POS = POS,
                    input = input, error=error),
               class = c("onemap", crosstype))
+    
+    onemap.obj <- rm_dupli_mks(onemap.obj)
+    return(onemap.obj)
 }
 
 #' Split onemap data sets
@@ -240,7 +239,6 @@ split_onemap <- function(onemap.obj=NULL, mks=NULL){
     }
     
     new.obj <- onemap.obj
-    
     new.obj$geno <- onemap.obj$geno[,idx.mks]
     new.obj$n.mar <- length(idx.mks)
     new.obj$segr.type <- onemap.obj$segr.type[idx.mks]
@@ -248,8 +246,6 @@ split_onemap <- function(onemap.obj=NULL, mks=NULL){
     new.obj$CHROM <- onemap.obj$CHROM[idx.mks]
     new.obj$POS <- onemap.obj$POS[idx.mks]
     new.obj$error <- onemap.obj$error[idx.mks + rep(c(0:(onemap.obj$n.ind-1))*onemap.obj$n.mar, each=length(idx.mks)),]
-    #    rownames(new.obj$error) <- rownames(onemap.obj$error[idx.mks + rep(c(0:(onemap.obj$n.ind-1))*onemap.obj$n.mar, each=length(idx.mks)),])
-
     return(new.obj)
 }
 

@@ -3,9 +3,11 @@
 # Package: onemap                                                     #
 #                                                                     #
 # File: utils.R                                                       #
-# Contains: acum                                                      #
+# Contains: acum seq_by_type map_avoid_unlinked split_2pts            #
+# map_save_ram remove_inds sort_by_pos empty_onemap_obj               #
+# try_seq_by_seq add_redundants rm_dupli_mks                          #
 #                                                                     #
-# Written by Gabriel Rodrigues Alves Margarido                        #
+# Written by Gabriel Rodrigues Alves Margarido and Cristiane Taniguti #
 # copyright (c) 2007-9, Gabriel R A Margarido                         #
 #                                                                     #
 # First version: 11/07/2007                                           #
@@ -268,4 +270,47 @@ add_redundants <- function(sequence, onemap.obj, bins){
   new_sequence$probs <- "with redundants"
   return(new_sequence)  
 }
+
+# Removing duplicated markers, kept the one with less missing data
+rm_dupli_mks <- function(onemap.obj){
+  MKS <- colnames(onemap.obj$geno)
+  GT_matrix <- t(onemap.obj$geno)
+  n.mk <- length(MKS)
+  dupli <- MKS[duplicated(MKS)]
+  if(length(dupli)>0){
+    n.rm.mks <- length(dupli)
+    dupli <- unique(dupli)
+    warning(paste("There are duplicated markers IDs:", paste(MKS[duplicated(MKS)], collapse = " "), "\nOnly the one with less missing data was kept."))
+    for(w in 1:length(dupli)){
+      temp_GT <- GT_matrix[MKS==dupli[w],]
+      mis_count <- apply(temp_GT, 1, function(x) sum(x==0))
+      discard <- temp_GT[-which.min(mis_count),]
+      if(is(discard, "matrix")){
+        for(j in 1:dim(discard)[1]){
+          idx <- which(apply(GT_matrix, 1, function(x) all(x == discard[j,])))
+          idx <- idx[MKS[idx] == dupli[w]][1]
+          GT_matrix <- GT_matrix[-idx,]
+          mk.type <- mk.type[-idx]
+          mk.type.num <- mk.type.num[-idx] 
+          onemap.obj$CHROM <- onemap.obj$CHROM[-idx]
+          onemap.obj$POS <- onemap.obj$POS[-idx]
+          MKS <- MKS[-idx]
+        }
+      } else {
+        idx <- which(apply(GT_matrix, 1, function(x) all(x == discard)))
+        idx <- idx[MKS[idx] == dupli[w]][1]
+        GT_matrix <- GT_matrix[-idx,]
+        onemap.obj$segr.type <- onemap.obj$segr.type[-idx]
+        onemap.obj$segr.type.num <- onemap.obj$segr.type.num[-idx] 
+        onemap.obj$CHROM <- onemap.obj$CHROM[-idx]
+        onemap.obj$POS <- onemap.obj$POS[-idx]
+        MKS <- MKS[-idx]
+      }
+    }
+    onemap.obj$n.mar <- n.mk - n.rm.mks
+    onemap.obj$geno <- t(GT_matrix)
+  } 
+  return(onemap.obj)
+}
+
 
