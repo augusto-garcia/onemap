@@ -91,7 +91,6 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   
   if(jump == 1){
     warning("Input vcfR object do not have markers. An empty object onemap will be generated.")
-    
     onemap.obj <- empty_onemap_obj(vcf, P1, P2, cross)
     return(onemap.obj)
   }
@@ -585,55 +584,21 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   # Removing parents
   if(is.null(f1)){
     GT_matrix <- apply(GT_matrix[,-c(P1,P2), drop=F],2,as.numeric)
-    if(is(GT_matrix, "vector")) GT_matrix <- t(as.matrix(GT_matrix)) # If there is only one marker
+    if(!is(GT_matrix, "matrix")) GT_matrix <- t(as.matrix(GT_matrix)) # If there is only one marker
     colnames(GT_matrix)  <-  INDS[-c(P1,P2)] 
   } else{
     F1 <- which(dimnames(vcf@gt)[[2]]==f1) - 1
     GT_matrix <- apply(GT_matrix[,-c(P1,P2,F1), drop=F],2,as.numeric)
-    if(is(GT_matrix, "vector")) GT_matrix <- t(as.matrix(GT_matrix))
+    if(!is(GT_matrix, "matrix")) GT_matrix <- t(as.matrix(GT_matrix))
     colnames(GT_matrix)  <-  INDS[-c(P1,P2,F1)] 
   }
   rownames(GT_matrix)  <- MKS
-  
-  # Removing duplicated markers
-  dupli <- MKS[duplicated(MKS)]
-  if(length(dupli)>0){
-    n.rm.mks <- length(dupli)
-    dupli <- unique(dupli)
-    cat(paste("There are more than one marker with the same IDs:", paste(MKS[duplicated(MKS)], collapse = " "), "\nOnly the one with less missing data was kept."))
-    for(w in 1:length(dupli)){
-      temp_GT <- GT_matrix[MKS==dupli[w],]
-      mis_count <- apply(temp_GT, 1, function(x) sum(x==0))
-      discard <- temp_GT[-which.min(mis_count),]
-      if(is(discard, "matrix")){
-        for(j in 1:dim(discard)[1]){
-          idx <- which(apply(GT_matrix, 1, function(x) all(x == discard[j,])))
-          idx <- idx[MKS[idx] == dupli[w]][1]
-          GT_matrix <- GT_matrix[-idx,]
-          mk.type <- mk.type[-idx]
-          mk.type.num <- mk.type.num[-idx] 
-          CHROM <- CHROM[-idx]
-          POS <- POS[-idx]
-          MKS <- MKS[-idx]
-        }
-      } else {
-        idx <- which(apply(GT_matrix, 1, function(x) all(x == discard)))
-        idx <- idx[MKS[idx] == dupli[w]][1]
-        GT_matrix <- GT_matrix[-idx,]
-        mk.type <- mk.type[-idx]
-        mk.type.num <- mk.type.num[-idx] 
-        CHROM <- CHROM[-idx]
-        POS <- POS[-idx]
-        MKS <- MKS[-idx]
-      }
-    }
-    n.mk <- n.mk - n.rm.mks
-  }
+
   legacy_crosses <- setNames(c("outcross", "f2", "backcross", "riself", "risib"), 
                              c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"))
   
   onemap.obj <- structure(list(geno= t(GT_matrix),
-                               n.ind = if(is(GT_matrix, "vector")) length(GT_matrix) else dim(GT_matrix)[2],
+                               n.ind = if(!is(GT_matrix, "matrix")) length(GT_matrix) else dim(GT_matrix)[2],
                                n.mar = n.mk,
                                segr.type = mk.type,
                                segr.type.num = as.numeric(mk.type.num),
@@ -644,7 +609,8 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
                                input = "vcfR.object"),
                           class=c("onemap",legacy_crosses[cross]))
   
-  new.onemap.obj <- create_probs(onemap.obj, global_error = 10^-5)
+  onemap.obj  <- onemap:::rm_dupli_mks(onemap.obj)
+  new.onemap.obj <- onemap:::create_probs(onemap.obj, global_error = 10^-5)
   return(new.onemap.obj)
 }
 
