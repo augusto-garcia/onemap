@@ -207,10 +207,16 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   
   # Searching not splitted multi
   if (all(dim(GT_matrix)==0)) {
-    GT_matrix <- matrix(rep(NA, n.ind * n.mk), ncol = n.ind, 
+    GT_matrix <- matrix(rep(NA, n.ind * n.mk), 
+                        ncol = n.ind, 
                         nrow = n.mk)
-    for (i in 2:(n.ind + 1)) GT_matrix[, i - 1] <- unlist(lapply(strsplit(vcf@gt[, 
-                                                                                 i], split = ":"), "[[", GT))
+    for (i in 2:(n.ind + 1)){
+      GT_matrix[, i - 1] <- unlist(lapply(strsplit(vcf@gt[, i], split = ":"), "[[", GT))
+    }
+    CHROM <- vcf@fix[,1]
+    POS <- as.numeric(vcf@fix[,2])
+    MKS <- vcf@fix[,3]
+    if (any(MKS == "." | is.na(MKS))) MKS <- paste0(vcf@fix[,1],"_", vcf@fix[,2])
   }
   
   # This function do not consider phased genotypes
@@ -408,7 +414,6 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     if (length(idx) > 0)
       cat(length(MKS[idx]), "Markers were removed from the dataset because they are monomorphic for the parents, these markers are not informative for the genetic map.\n") 
     
-    
     # Excluding non-informative markers
     rm_mk <- which(is.na(mk.type))
     if(length(rm_mk)!=0){
@@ -477,7 +482,6 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
       mk.type <- mk.type[-rm_mk]
       mk.type.num <- mk.type.num[-rm_mk]
     } 
-    
     
     if(is.vector(GT_matrix)){
       jump <- 1
@@ -593,7 +597,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     colnames(GT_matrix)  <-  INDS[-c(P1,P2,F1)] 
   }
   rownames(GT_matrix)  <- MKS
-
+  
   legacy_crosses <- setNames(c("outcross", "f2", "backcross", "riself", "risib"), 
                              c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"))
   
@@ -609,8 +613,8 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
                                input = "vcfR.object"),
                           class=c("onemap",legacy_crosses[cross]))
   
-  onemap.obj  <- onemap:::rm_dupli_mks(onemap.obj)
-  new.onemap.obj <- onemap:::create_probs(onemap.obj, global_error = 10^-5)
+  onemap.obj  <- rm_dupli_mks(onemap.obj)
+  new.onemap.obj <- create_probs(onemap.obj, global_error = 10^-5)
   return(new.onemap.obj)
 }
 
