@@ -131,7 +131,7 @@ extract_depth <- function(vcfR.object=NULL,
   n.ind <- N.IND - length(rm.ind)
   n.mks <- N.MKs - length(rm.mks)
   
-  # The probabilities must be calculated if AD or DPR parameters were choosed                                    
+  # The probabilities must be calculated if AD or DPR parameters were chosen                                    
   if(vcf.par=="AD" | vcf.par=="DPR"){
     ref_matrix <- matrix(as.numeric(unlist(lapply(strsplit(par_matrix, split = ","), "[[",1))), nrow = n.mks, ncol = n.ind)
     alt_matrix <- matrix(as.numeric(unlist(lapply(strsplit(par_matrix, split = ","), "[[",2))), nrow = n.mks, ncol = n.ind)
