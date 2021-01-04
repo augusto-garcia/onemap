@@ -399,7 +399,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   } else if(cross== "f2 intercross"){
     # Marker type
     mk.type[which(GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "1/1")] <- "A.H.B.1"
-    mk.type[which(GT_matrix[,P1][i] == "1/1" & GT_matrix[,P2][i] == "0/0")] <- "A.H.B.2"
+    mk.type[which(GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "0/0")] <- "A.H.B.2"
     
     # Informs to user why markers are being removed
     idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./.")
