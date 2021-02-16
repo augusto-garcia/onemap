@@ -126,7 +126,7 @@ progeny_haplotypes <- function(...,
   n.mar <- sapply(input.map, function(x) length(x$seq.num))
   n.ind <- sapply(input.map, function(x) ncol(x$probs))/n.mar
   ind.names <- lapply(input.map, function(x) rownames(x$data.name$geno))
-  ind.names <- unique(do.call(c,ind.names)) 
+  ind.names <- unique(unlist(ind.names)) 
   if(length(unique(n.ind)) != 1) stop("At least one of the sequences have different number of individuals in dataset.")
   n.ind <- unique(n.ind)
   if(ind[1] == "all"){
@@ -136,8 +136,7 @@ progeny_haplotypes <- function(...,
   probs <- lapply(1:length(input.map), function(x) cbind(ind = rep(1:n.ind, each = n.mar[x]),
                                                          grp = group_names[x],
                                                          marker = input.map[[x]]$seq.num,
-                                                         #pos = c(0,cumsum(get(get(".map.fun", envir=.onemapEnv))(input.map[[x]]$seq.rf))),
-                                                         pos = c(0,cumsum(kosambi(input.map[[x]]$seq.rf))),
+                                                         pos = c(0,cumsum(get(get(".map.fun", envir=.onemapEnv))(input.map[[x]]$seq.rf))),
                                                          as.data.frame(t(input.map[[x]]$probs))))
   probs <- lapply(probs, function(x) split.data.frame(x, x$ind)[ind])
   
