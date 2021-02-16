@@ -169,15 +169,24 @@ create_depths_profile <- function(onemap.obj = NULL,
   progeny <- merge(progeny, gt)
   
   # progeny vcf genotypes
-  pro.gt <- data.frame(mks = MKS, gts[,-idx.parents], stringsAsFactors = F)
+  pro.gt <- data.frame(mks = MKS, gts[, -idx.parents], stringsAsFactors = F)
   colnames(pro.gt) <- c("mks", colnames(vcfR.object@gt)[-1][-idx.parents])
   pro.gt <- gather(pro.gt, "ind", "gt.vcf", -"mks")
   progeny <- merge(progeny, pro.gt)
   data <- rbind(parents, progeny)
-  data$gt.onemap[which(data$gt.onemap==0)] <- "missing"
-  data$gt.onemap[which(data$gt.onemap==1)] <- "homozygous-P1"
-  data$gt.onemap[which(data$gt.onemap==2)] <- "heterozygote"
-  data$gt.onemap[which(data$gt.onemap==3)] <- "homozygous-P2"
+  
+  # Add marker type
+  data$mk.type <- onemap.obj$segr.type[match(data$mks, colnames(onemap.obj$geno))]
+  
+  data$gt.onemap[which(data$gt.onemap == 0)] <- "missing"
+  data$gt.onemap[which(data$gt.onemap == 1 & (data$mk.type == "D2.15" | data$mk.type == "B3.7"))] <- "homozygous-P1"
+  data$gt.onemap[which(data$gt.onemap == 1 & data$mk.type == "D1.10")] <- "homozygous-P2"
+  data$gt.onemap[which(data$gt.onemap == 2)] <- "heterozygous"
+  data$gt.onemap[which(data$gt.onemap == 3)] <- "homozygous-P2"
+  
+  data$gt.onemap.alt.ref <- data$gt.onemap
+  data$gt.onemap.alt.ref[grepl("homozygous", data$gt.onemap.alt.ref) & data$alt < data$ref] <- "homozygous-ref"
+  data$gt.onemap.alt.ref[grepl("homozygous", data$gt.onemap.alt.ref) & data$alt > data$ref] <- "homozygous-alt"
   
   # removing phased
   data$gt.vcf <- gsub(pattern = "[|]", replacement = "/", data$gt.vcf)
@@ -186,9 +195,16 @@ create_depths_profile <- function(onemap.obj = NULL,
     data$gt.vcf[grep(pattern = ",", data$gt.vcf)] <- NA
   }
   
+  data$gt.vcf <- gsub(pattern = "[|]", replacement = "/", data$gt.vcf)
+  data$gt.vcf.alt.ref <- data$gt.vcf
+  data$gt.vcf.alt.ref[grep("[.]", data$gt.vcf.alt.ref)] <- "missing"
+  data$gt.vcf.alt.ref[grep("0/0", data$gt.vcf.alt.ref)] <- "homozygous-ref"
+  data$gt.vcf.alt.ref[grep("1/1", data$gt.vcf.alt.ref)] <- "homozygous-alt"
+  data$gt.vcf.alt.ref[grepl("0/1", data$gt.vcf.alt.ref) | grepl("1/0", data$gt.vcf.alt.ref)] <- "heterozygous"
+  
   data$ind <- as.factor(data$ind)
-  data$gt.onemap <- as.factor(data$gt.onemap)
-  data$gt.vcf <- as.factor(data$gt.vcf)
+  data$gt.onemap.alt.ref <- as.factor(data$gt.onemap.alt.ref)
+  data$gt.vcf.alt.ref <- as.factor(data$gt.vcf.alt.ref)
   
   if(class(mks) == "character"){
     data <- data[which(data$mks %in% mks),]
@@ -204,10 +220,10 @@ create_depths_profile <- function(onemap.obj = NULL,
     x_lim <- max(data$alt)
   
   if(GTfrom == "onemap"){
-    colors <- rainbow(length(levels(data$gt.onemap)))
-    names(colors) <-  sort(levels(data$gt.onemap))
+    colors <- rainbow(length(levels(data$gt.onemap.alt.ref)))
+    names(colors) <-  sort(levels(data$gt.onemap.alt.ref))
     
-    p <- data %>% ggplot(aes(x=ref, y=alt, color=gt.onemap)) + 
+    p <- data %>% ggplot(aes(x=ref, y=alt, color=gt.onemap.alt.ref)) + 
       geom_point(alpha = alpha) +
       labs(title= "Depths",x="ref", y = "alt", color="Genotypes") +
       scale_colour_manual(name="Genotypes", values = colors) +
@@ -215,7 +231,7 @@ create_depths_profile <- function(onemap.obj = NULL,
       xlim(0, x_lim) +
       ylim(0, y_lim)
   } else if(GTfrom == "vcf"){
-    p <- data %>% ggplot(aes(x=ref, y=alt, color=gt.vcf)) + 
+    p <- data %>% ggplot(aes(x=ref, y=alt, color=gt.vcf.alt.ref)) + 
       geom_point(alpha=alpha) +
       labs(title= "Depths",x="ref", y = "alt", color="Genotypes") +
       guides(colour = guide_legend(override.aes = list(alpha = 1)))+ 
