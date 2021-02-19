@@ -75,7 +75,7 @@ create_depths_profile <- function(onemap.obj = NULL,
       onemap.obj <- split_onemap(onemap.obj, mks= idx.mks)
     }
   } 
-
+  
   if(is.null(parent1) | is.null(parent2)) stop("Parents ID must be defined.")
   
   # do the checks
@@ -90,7 +90,7 @@ create_depths_profile <- function(onemap.obj = NULL,
     ref <- depths$pref %>% data.frame(mks=depths$mks) %>% gather("ind", "ref", -"mks")
     parents <- merge(alt,ref)
     parents$mks <- gsub("[|]", ".", parents$mks)
-
+    
     p1[which(onemap.obj$segr.type == "D1.10")] <- 2
     p1[which(onemap.obj$segr.type == "D2.15")] <- 1
     p1[which(onemap.obj$segr.type == "B3.7")] <- 2
@@ -154,7 +154,7 @@ create_depths_profile <- function(onemap.obj = NULL,
   alt <- depths$oalt %>% data.frame(mks=depths$mks) %>% gather("ind", "alt", -"mks")
   ref <- depths$oref %>% data.frame(mks=depths$mks) %>% gather("ind", "ref", -"mks")
   progeny <- merge(alt,ref)
-
+  
   # progeny onemap genotypes
   gt <- as.data.frame(cbind(ind = rownames(onemap.obj$geno), onemap.obj$geno))
   gt <- gather(gt,  "mks","gt.onemap", -"ind")
@@ -178,15 +178,43 @@ create_depths_profile <- function(onemap.obj = NULL,
   # Add marker type
   data$mk.type <- onemap.obj$segr.type[match(data$mks, colnames(onemap.obj$geno))]
   
-  data$gt.onemap[which(data$gt.onemap == 0)] <- "missing"
-  data$gt.onemap[which(data$gt.onemap == 1 & (data$mk.type == "D2.15" | data$mk.type == "B3.7"))] <- "homozygous-P1"
-  data$gt.onemap[which(data$gt.onemap == 1 & data$mk.type == "D1.10")] <- "homozygous-P2"
-  data$gt.onemap[which(data$gt.onemap == 2)] <- "heterozygous"
-  data$gt.onemap[which(data$gt.onemap == 3)] <- "homozygous-P2"
-  
   data$gt.onemap.alt.ref <- data$gt.onemap
-  data$gt.onemap.alt.ref[grepl("homozygous", data$gt.onemap.alt.ref) & data$alt < data$ref] <- "homozygous-ref"
-  data$gt.onemap.alt.ref[grepl("homozygous", data$gt.onemap.alt.ref) & data$alt > data$ref] <- "homozygous-alt"
+  data$gt.onemap.alt.ref[which(data$gt.onemap == 0)] <- "missing"
+  data$gt.onemap.alt.ref[which(data$gt.onemap == 2)] <- "heterozygous"
+  
+  # Search the ref and alt alleles using parents
+  
+  # D2.15 = aa x ab
+  idx <- data$gt.onemap == 1 & (data$mk.type == "D2.15")
+  temp <- data[idx,]
+  temp.ref <- temp[temp$ind==id.parents[1] & temp$alt < temp$ref,]$mks # if parent 1 have reference allele
+  data$gt.onemap.alt.ref[which(idx & data$mks %in% temp.ref)] <- "homozygous-ref"
+  temp.ref <- temp[temp$ind==id.parents[1] & temp$alt > temp$ref,]$mks # if parent 1 have alternative allele
+  data$gt.onemap.alt.ref[which(idx & data$mks %in% temp.ref)] <- "homozygous-alt"
+  # We do not expect heterozygous parents in these cases, if counts are the same, NA is inserted
+  temp.ref <- temp[temp$ind==id.parents[1] & temp$alt == temp$ref,]$mks 
+  if(length(temp.ref) > 0){
+    data$gt.onemap.alt.ref[which(idx & data$mks %in% temp.ref)] <- "homozygous-alt == ref"
+  }
+  
+  # D1.10 = ab x aa
+  idx <- data$gt.onemap == 1 & (data$mk.type == "D1.10")
+  temp <- data[idx,]
+  temp.ref <- temp[temp$ind==id.parents[2] & temp$alt < temp$ref,]$mks # if parent 2 have reference allele
+  data$gt.onemap.alt.ref[which(idx & data$mks %in% temp.ref)] <- "homozygous-ref"
+  temp.ref <- temp[temp$ind==id.parents[2] & temp$alt > temp$ref,]$mks # if parent 2 have alternative allele
+  data$gt.onemap.alt.ref[which(idx & data$mks %in% temp.ref)] <- "homozygous-alt"
+  # We do not expect heterozygous parents in these cases, if counts are the same, NA is inserted
+  temp.ref <- temp[temp$ind==id.parents[2] & temp$alt == temp$ref,]$mks 
+  if(length(temp.ref) > 0){
+    data$gt.onemap.alt.ref[which(idx & data$mks %in% temp.ref)] <- "homozygous-alt == ref"
+  }
+  
+  # B3.7 - can not take the alleles from parents, here we make by individual
+  idx <- data$gt.onemap %in% c(1,3) & (data$mk.type == "B3.7")
+  data$gt.onemap.alt.ref[idx & data$alt > data$ref] <- "homozygous-alt"
+  data$gt.onemap.alt.ref[idx & data$alt < data$ref] <- "homozygous-ref"
+  data$gt.onemap.alt.ref[idx & data$alt == data$ref] <- "homozygous-alt == ref" # If counts are the same we can not recover the information
   
   # removing phased
   data$gt.vcf <- gsub(pattern = "[|]", replacement = "/", data$gt.vcf)
@@ -220,13 +248,10 @@ create_depths_profile <- function(onemap.obj = NULL,
     x_lim <- max(data$alt)
   
   if(GTfrom == "onemap"){
-    colors <- rainbow(length(levels(data$gt.onemap.alt.ref)))
-    names(colors) <-  sort(levels(data$gt.onemap.alt.ref))
-    
     p <- data %>% ggplot(aes(x=ref, y=alt, color=gt.onemap.alt.ref)) + 
       geom_point(alpha = alpha) +
       labs(title= "Depths",x="ref", y = "alt", color="Genotypes") +
-      scale_colour_manual(name="Genotypes", values = colors) +
+      scale_colour_viridis_d() +
       guides(colour = guide_legend(override.aes = list(alpha = 1))) + 
       xlim(0, x_lim) +
       ylim(0, y_lim)
@@ -234,6 +259,7 @@ create_depths_profile <- function(onemap.obj = NULL,
     p <- data %>% ggplot(aes(x=ref, y=alt, color=gt.vcf.alt.ref)) + 
       geom_point(alpha=alpha) +
       labs(title= "Depths",x="ref", y = "alt", color="Genotypes") +
+      scale_colour_viridis_d() +
       guides(colour = guide_legend(override.aes = list(alpha = 1)))+ 
       xlim(0, x_lim) +
       ylim(0, y_lim)
