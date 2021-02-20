@@ -136,7 +136,7 @@ progeny_haplotypes <- function(...,
   probs <- lapply(1:length(input.map), function(x) cbind(ind = rep(1:n.ind, each = n.mar[x]),
                                                          grp = group_names[x],
                                                          marker = input.map[[x]]$seq.num,
-                                                         pos = c(0,cumsum(get(get(".map.fun", envir=.onemapEnv))(input.map[[x]]$seq.rf))),
+                                                         pos = c(0,cumsum(kosambi(input.map[[x]]$seq.rf))),
                                                          as.data.frame(t(input.map[[x]]$probs))))
   probs <- lapply(probs, function(x) split.data.frame(x, x$ind)[ind])
   
@@ -165,8 +165,8 @@ progeny_haplotypes <- function(...,
     }
     
     probs <- probs %>%
-      mutate(H1_P1 = V1 + V2,
-             H1_P2 = V3 + V4,
+      mutate(H1_P1 = V3 + V4,
+             H1_P2 = V1 + V2,
              H2_P1 = V1 + V3,
              H2_P2 = V2 + V4) 
     
