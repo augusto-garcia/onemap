@@ -165,10 +165,10 @@ progeny_haplotypes <- function(...,
     }
     
     probs <- probs %>%
-      mutate(H1_P1 = V3 + V4,
-             H1_P2 = V1 + V2,
-             H2_P1 = V1 + V3,
-             H2_P2 = V2 + V4) 
+      mutate(H1_P1 = V1 + V2,
+             H1_P2 = V3 + V4,
+             H2_P1 = V2 + V4,
+             H2_P2 = V1 + V3) 
     
     if(is(input.map[[1]]$data.name, "outcross")){
       cross <- "outcross"
@@ -547,7 +547,7 @@ plot.onemap_progeny_haplotypes_counts <- function(x,
     
     temp <- x %>% ungroup() %>% group_by(ind) %>%
       summarise(total = sum(counts))
-      
+    
     y_lim_counts <- max(temp$total)
     nb.cols <- n.ind
     mycolors <- colorRampPalette(brewer.pal(12, "Paired"))(nb.cols)
