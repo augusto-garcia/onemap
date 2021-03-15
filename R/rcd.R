@@ -49,6 +49,12 @@
 ##' value above.
 ##' @param tol tolerance for the C routine, i.e., the value used to evaluate
 ##' convergence.
+##' @param size The center size around which an optimum is to be searched
+##' @param overlap The desired overlap between batches
+##' @param phase_cores The number of parallel processes to use when estimating
+##' the phase of a marker. (Should be no more than 4)
+#' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
+#' if \code{TRUE} one of the markers is removed and rcd is performed again.
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}
@@ -95,71 +101,107 @@
 ##'   LG1.rcd
 ##' }
 ##'@export
-rcd <-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5)
+rcd <-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5, 
+               rm_unlinked= TRUE,
+               size = NULL, 
+               overlap = NULL, 
+               phase_cores = 1)
 {
-    ## checking for correct object
-    if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is
+  ## checking for correct object
+  if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is
     not an object of class 'sequence'")
-    n.mrk <- length(input.seq$seq.num)
-
-    ## create reconmbination fraction matrix
-
-    if(is(get(input.seq$twopt),"outcross"))
-        r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
-    else
-        r<-get_mat_rf_in(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
-    r[is.na(r)]<-0.5
-    diag(r)<-NA
-
-    ## x defines the non-positioned markers
-    x <- 1:n.mrk
-
-    ## the group starts with the closest two markers
-    i <- which(r==r[which.min(r)])
-    i <- i[sample(length(i),1)]
-
-    ## 'first' and 'last' are the markers on the edges of the ordered group
-    first <- ceiling(i/n.mrk)
-    last <- i-((first-1)*n.mrk)
-
-    ## the two markers are set next to each other
-    order <- c(first,last)
-
-    ## markers already ordered are marked as NaN
-    x[first] <- NA
-    x[last] <- NA
-
-    ## extending the chain
-    while (length(order) < n.mrk) {
-        ## get the markers closest to the left end of the group
-        j <- which(r[first,][x]==r[first,which.min(r[first,][x])])
-        ## randomly choose one of them
-        if (length(j) > 1) j <- j[sample(length(j),1)]
-
-        ## get the markers closest to the right end of the group
-        k <- which(r[last,][x]==r[last,which.min(r[last,][x])])
-        ## randomly choose one of them
-        if (length(k) > 1) k <- k[sample(length(k),1)]
-
-        if (r[first,j] < r[last,k]) {  ## place a marker at the left side
-            order <- c(j,order)
-            x[j] <- NA
-            first <- j
-        }
+  n.mrk <- length(input.seq$seq.num)
+  
+  ## create reconmbination fraction matrix
+  
+  if(is(input.seq$twopt,"outcross") || is(input.seq$twopt,"f2"))
+    r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
+  else
+    r<-get_mat_rf_in(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
+  r[is.na(r)]<-0.5
+  diag(r)<-NA
+  
+  ## x defines the non-positioned markers
+  x <- 1:n.mrk
+  
+  ## the group starts with the closest two markers
+  i <- which(r==r[which.min(r)])
+  i <- i[sample(length(i),1)]
+  
+  ## 'first' and 'last' are the markers on the edges of the ordered group
+  first <- ceiling(i/n.mrk)
+  last <- i-((first-1)*n.mrk)
+  
+  ## the two markers are set next to each other
+  order <- c(first,last)
+  
+  ## markers already ordered are marked as NaN
+  x[first] <- NA
+  x[last] <- NA
+  
+  ## extending the chain
+  while (length(order) < n.mrk) {
+    ## get the markers closest to the left end of the group
+    j <- which(r[first,][x]==r[first,which.min(r[first,][x])])
+    ## randomly choose one of them
+    if (length(j) > 1) j <- j[sample(length(j),1)]
+    
+    ## get the markers closest to the right end of the group
+    k <- which(r[last,][x]==r[last,which.min(r[last,][x])])
+    ## randomly choose one of them
+    if (length(k) > 1) k <- k[sample(length(k),1)]
+    
+    if (r[first,j] < r[last,k]) {  ## place a marker at the left side
+      order <- c(j,order)
+      x[j] <- NA
+      first <- j
+    }
     else if (r[first,j] > r[last,k]) {  ## or at the right side
-        order <- c(order,k)
-        x[k] <- NA
-        last <- k }
+      order <- c(order,k)
+      x[k] <- NA
+      last <- k }
     else {  ## if the distance is the same, randomly choose one side
-        rand <- sample(2,1)
-        if (rand==1) { order <- c(j,order); x[j] <- NA; first <- j }
+      rand <- sample(2,1)
+      if (rand==1) { order <- c(j,order); x[j] <- NA; first <- j }
       else { order <- c(order,k); x[k] <- NA; last <- k }
     }
+  }
+  ## end of chain
+  cat("\norder obtained using RCD algorithm:\n\n", input.seq$seq.num[avoid_reverse(order)], "\n\ncalculating multipoint map using tol = ", tol, ".\n\n")
+  
+  if(phase_cores == 1){
+    rcd.hmm <- map(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(order)],
+                            twopt=input.seq$twopt), 
+                   tol=tol,
+                   rm_unlinked = rm_unlinked)
+  } else{
+    if(is.null(size) | is.null(overlap)){
+      stop("If you want to parallelize the HMM in multiple cores (phase_cores != 1) 
+             you must also define `size` and `overlap` arguments.")
+    } else {
+      rcd.hmm <- map_overlapping_batches(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(order)],
+                                                  twopt=input.seq$twopt), 
+                                         tol=tol,
+                                         size = size, overlap = overlap, 
+                                         phase_cores = phase_cores,
+                                         rm_unlinked = rm_unlinked)
     }
-    ## end of chain
-    cat("\norder obtained using RCD algorithm:\n\n", input.seq$seq.num[avoid_reverse(order)], "\n\ncalculating multipoint map using tol = ", tol, ".\n\n")
-    map(make_seq(get(input.seq$twopt),input.seq$seq.num[avoid_reverse(order)],twopt=input.seq$twopt), tol=tol)
+  }
+  
+  if(!is.list(rcd.hmm)) {
+    new.seq <- make_seq(input.seq$twopt, rcd.hmm)
+    rcd.hmm <- rcd(input.seq = new.seq, 
+                   LOD=LOD, 
+                   max.rf=max.rf, tol=tol, 
+                   rm_unlinked= rm_unlinked,
+                   size = size, 
+                   overlap = overlap, 
+                   phase_cores = phase_cores)
+  }
+  
+  return(rcd.hmm)
 }
+
 ## end of file
 
 

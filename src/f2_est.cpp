@@ -78,7 +78,6 @@ Rcpp::NumericVector est_rf_C_C(std::vector<int> k_sub,
     }
     else n0++;
   }
-  if((n_ind - n0) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
   //EM algorithm
   while(abs(rold-rnew) > TOL)
   {
@@ -131,17 +130,11 @@ Rcpp::NumericVector est_rf_C_D_43(std::vector<int> k_sub,
     }
     else n0++;
   }
-  if((n_ind - n0) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
   //EM algorithm
   while(abs(rold-rnew) > TOL)
   {
     rold=rnew;
-    rnew=(n6+
-      n5*2*(1-rold)*rold/(rold*rold+2*(1-rold)*rold) +
-      n8*(1-rold)*rold/((1-rold)*rold+(1-rold)*(1-rold)+rold*rold) +
-      n4*2*(1-rold)*rold/((1-rold)*(1-rold)+2*(1-rold)*rold) +
-      2*(n3 + n5*rold*rold/(rold*rold+2*(1-rold)*rold) +
-      n8*rold*rold/((1-rold)*rold+(1-rold)*(1-rold)+rold*rold)))/(2*(n_ind-n0));
+    rnew=((n5 + n1 + 2*n8 + 2*n6 + n4 + n3)*rold + n1 + n4)/(2*(n_ind-n0));
   }
   //Likelihood
   if(rnew > rf_TOL_max)
@@ -151,14 +144,10 @@ Rcpp::NumericVector est_rf_C_D_43(std::vector<int> k_sub,
     return(r);
   }
   if(rnew < rf_TOL_min) rnew=rf_TOL_min;
-  l=n1 * (2.0*log(1.0-rnew)) +
-    n6  *  (log(rnew*(1.0-rnew))) +
-    n5  *  (log(1.0-(1.0-rnew)*(1.0-rnew))) +
-    n8  *  (log(1.0-rnew*(1.0-rnew))) +
-    n4  *  (log(1.0-rnew*rnew)) +
-    n3 * (2.0*log(rnew));
+  
+  l=(n1+n4)*log(rnew) + (n5 + n3)*log(1-rnew)-log(2)*n8 - log(2)*n6;
   //Likelihood unde H0: r=0.5
-  l0= -2 * M_LN2 *(n3 + n6 + n1) + LN_75*(n4 + n8 + n5);
+  l0= -M_LN2*(n_ind-n0);
   r(0)=rnew;
   r(1)=(l-l0)/log(10.0); //transforming to base 10 logarithm
   return (r);
@@ -195,23 +184,12 @@ Rcpp::NumericVector est_rf_C_D_51(std::vector<int> k_sub,
     
     else n0++;
   }
-  if((n_ind - n0) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
   //EM algorithm
   while(abs(rold-rnew) > TOL)
   {
     rold=rnew;
-    r0=(1-rold)*(1-rold);
-    r1=(1-rold)*rold;
-    r2=rold*rold;
-    rnew=(n6 + n5*2.0*r1/(r2+2*r1) +
-      n8*r1/(r1+r0+r2) +
-      n4*2*r1/(r0+2*r1) +
-      2*(n3 + n5*r2/(r2+2*r1) +
-      n8*r2/(r1+r0+r2)))/(2.0*(n_ind-n0));
+    rnew=((n3 + n4 + 2*n6 + 2*n8 + n1 + n5)*rold + n4 + n1)/(2*(n_ind-n0));
   }
-  r0=(1.0-rnew)*(1.0-rnew);
-  r1=rnew*(1.0-rnew);
-  r2=rnew*rnew;
   //Likelihood
   if(rnew > rf_TOL_max)
   {
@@ -220,11 +198,9 @@ Rcpp::NumericVector est_rf_C_D_51(std::vector<int> k_sub,
     return(r);
   }
   if(rnew < rf_TOL_min) rnew=rf_TOL_min;
-  l=n1 * (2.0*log(1.0-rnew)) + n6  *  (log(r1)) +
-    n5  *  (log(1.0-r0)) + n8  *  (log(1.0-r1)) +
-    n4  *  (log(1.0-r2)) + n3 * (2.0*log(rnew));
+  l=(n4 + n1)*log(rnew) + (n3 + n5)*log(1 - rnew) - log(2)*n6 - log(2)*n8;
   //Likelihood unde H0: r=0.5
-  l0= -2 * M_LN2 *(n3 + n6 + n1) + LN_75*(n4 + n8 + n5);
+  l0= -M_LN2*(n_ind-n0);
   r(0)=rnew;
   r(1)=(l-l0)/log(10.0); //transforming to base 10 logarithm
   return (r);
@@ -254,7 +230,6 @@ Rcpp::NumericVector est_rf_D_D_43(std::vector<int> k_sub,
     }
     else n0++;
   }
-  if((n_ind - n0) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
   //EM algorithm
   while(abs(rold-rnew) > TOL)
   {
@@ -314,7 +289,6 @@ Rcpp::NumericVector est_rf_D_D_51(std::vector<int> k_sub,
     }
     else n0++;
   }
-  if((n_ind - n0) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
   //EM algorithm
   while(abs(rold-rnew) > TOL)
   {
@@ -371,7 +345,6 @@ Rcpp::NumericVector est_rf_D_D_43_51(std::vector<int> k_sub,
     }
     else n0++;
   }
-  if((n_ind - n0) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
   //EM algorithm
   while(abs(rold-rnew) > TOL)
   {
@@ -462,7 +435,6 @@ Rcpp::NumericVector est_rf_A_A(std::vector<int> k_sub,
     }
     else n0++;
   }
-  if((n_ind - n0) ==0) warning("Recombination fraction between some markers could not be estimated, because there are excess of missing data. We suggest to filter your data for missing data.\n");
   //EM algorithm
   while(abs(rold-rnew) > TOL)
   {

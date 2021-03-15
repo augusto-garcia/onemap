@@ -83,13 +83,12 @@
 ##'                            # least two samples have to be concordant
 ##'   }
 ##'   
-##'@useDynLib onemap
 ##'@export
 
 vcf2raw <- function(input = NULL, output = NULL,
                     cross = c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"),
                     parent1 = NULL, parent2 = NULL, min_class = 1.0) {
-  .Defunct(msg = "Defunct since version 2.1.1006")
+  .Defunct(msg = "Defunct since version 2.1.1006. See onemap_read_vcfR function.")
   if (is.null(input)) {
     stop("You must specify the input file path.")
   }
@@ -110,14 +109,14 @@ vcf2raw <- function(input = NULL, output = NULL,
     stop("You must specify at least one sample each as parents 1 and 2.")
   }
 
-  convert <- .C("vcf2raw",
-                as.character(input),
-                as.character(output),
-                as.character(cross),
-                as.integer(length(parent1)),
-                as.character(parent1),
-                as.integer(length(parent2)),
-                as.character(parent2),
-                as.numeric(min_class),
-                PACKAGE = "onemap")
+  # convert <- .C("vcf2raw",
+  #               as.character(input),
+  #               as.character(output),
+  #               as.character(cross),
+  #               as.integer(length(parent1)),
+  #               as.character(parent1),
+  #               as.integer(length(parent2)),
+  #               as.character(parent2),
+  #               as.numeric(min_class),
+  #               PACKAGE = "onemap")
 }

@@ -87,7 +87,7 @@ write_map<-function(map.list,file.out){
     if(!is(map.list[[i]],"sequence")) stop("Object ", i , " in map.list is not an object of class 'sequnece'")
     if(is.null(map.list[[i]]$seq.like))  stop("Parameters are not estimated for object ", i, " in map.list")
     map<-cumsum(c(0,get(get(".map.fun", envir=.onemapEnv))(map.list[[i]]$seq.rf)))
-    marnames<-colnames(get(map.list[[i]]$data.name, pos=1)$geno)[map.list[[i]]$seq.num]
+    marnames<-colnames(map.list[[i]]$data.name$geno)[map.list[[i]]$seq.num]
     write(t(cbind(i,marnames,map)), file=file.out, ncolumns =3, append=TRUE)
   }
 }

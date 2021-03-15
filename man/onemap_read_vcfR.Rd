@@ -8,7 +8,9 @@ onemap_read_vcfR(
   vcfR.object = NULL,
   cross = c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"),
   parent1 = NULL,
-  parent2 = NULL
+  parent2 = NULL,
+  f1 = NULL,
+  only_biallelic = TRUE
 )
 }
 \arguments{
@@ -22,6 +24,10 @@ onemap_read_vcfR(
 \item{parent1}{\code{string} specifying sample ID of the first parent.}
 
 \item{parent2}{\code{string} specifying sample ID of the second parent.}
+
+\item{f1}{\code{string} if you are working with f2 intercross or backcross populations you may have f1 parents in you vcf, specify its ID here}
+
+\item{only_biallelic}{if TRUE (default) only biallelic markers are considered, if FALSE multiallelic markers are included.}
 }
 \description{
 Converts data from a vcfR package to onemap initial object, while trying to identify 
@@ -45,7 +51,7 @@ Reference sequence ID and position for each variant site are also stored.
 \examples{
 
 \dontrun{
-vcfR.object <- vcfR::read.vcfR(system.file("extdata/vcf_example_out.vcf", package = "onemap"))
+vcfR.object <- read.vcfR(system.file("extdata/vcf_example_out.vcf", package = "onemap"))
 data <- onemap_read_vcfR(vcfR.object=vcfR.object,
                  cross="outcross",
                  parent1=c("P1"),

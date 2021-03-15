@@ -12,7 +12,6 @@
 #' @param n Vector of integers or strings containing markers to be omitted from
 #' the analysis.
 #' @param displaytext Shows markers names in analysis graphic view
-#' @param hmm Multipoint genetic distance estimation
 #' @param weightfn Character string specifying the values to use for the weight
 #' matrix in the MDS 'lod2' or 'lod'.
 #' @param mapfn Character string specifying the map function to use on the
@@ -20,8 +19,15 @@
 #' @param ispc Logical determining the method to be used to estimate the map. By default 
 #' this is TRUE and the method of principal curves will be used. If FALSE then the 
 #' constrained MDS method will be used.
-#' @param mds.seq When some pair of markers do not follow the linkage criteria, 
+#' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
 #' if \code{TRUE} one of the markers is removed and mds is performed again.
+#' @param size The center size around which an optimum is to be searched
+#' @param overlap The desired overlap between batches
+#' @param phase_cores The number of parallel processes to use when estimating
+#' the phase of a marker. (Should be no more than 4)
+#' @param tol tolerance for the C routine, i.e., the value used to evaluate
+#' convergence.
+#' 
 #' @return An object of class \code{sequence}, which is a list containing the
 #' following components: \item{seq.num}{a \code{vector} containing the
 #' (ordered) indices of markers in the sequence, according to the input file.}
@@ -59,19 +65,39 @@
 #'
 #'@import MDSMap
 #'@importFrom utils write.table
+#'@importFrom reshape2 melt
 #'
 #'@export
-mds_onemap <- function(input.seq, out.file= "out.file", mds.graph.file="NULL.pdf", p = NULL, n=NULL, ispc=TRUE,
-                       displaytext=FALSE, weightfn='lod2', mapfn='haldane', hmm = TRUE, mds.seq=TRUE){
+mds_onemap <- function(input.seq, 
+                       out.file= "out.file", 
+                       mds.graph.file="NULL.pdf", 
+                       p = NULL, 
+                       n=NULL, 
+                       ispc=TRUE,
+                       displaytext=FALSE, 
+                       weightfn='lod2', 
+                       mapfn='haldane',
+                       rm_unlinked=TRUE, 
+                       size = NULL, 
+                       overlap = NULL,
+                       phase_cores = 1, 
+                       tol = 1e-05){
   
   ## checking for correct object
   if(!is(input.seq, "sequence"))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   
-  
-  n_ind <- get(input.seq$data.name)$n.ind
-  if(is(get(input.seq$data.name),"outcross")){
-    mat<-get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1)
+  n_ind <- input.seq$data.name$n.ind
+  if(is(input.seq$data.name,c("outcross", "f2"))){
+    mat<- get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1)
+    # Include NA in D1D2 markers
+    seg_type <- input.seq$data.name$segr.type.num[input.seq$seq.num]
+    for(i in 1:length(seg_type))
+      for(j in 1:(length(seg_type)-1))
+        if((seg_type[i] == 7 & seg_type[j] == 6) | (seg_type[i] == 6 & seg_type[j] == 7)){
+          mat[i,j] <- mat[j,i] <- NA
+        }
+    
   } else {
     mat<-get_mat_rf_in(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1)
   }
@@ -82,8 +108,8 @@ mds_onemap <- function(input.seq, out.file= "out.file", mds.graph.file="NULL.pdf
   mat.lod[lower.tri(mat.lod)] <- mat[lower.tri(mat)]
   mat.rf[upper.tri(mat.rf)] <- mat[upper.tri(mat)]
   
-  df <- reshape2::melt(mat.lod, na.rm = TRUE)
-  df.rf <- reshape2::melt(mat.rf, na.rm = TRUE)
+  df <- melt(mat.lod, na.rm = TRUE)
+  df.rf <- melt(mat.rf, na.rm = TRUE)
   
   df <- cbind(df.rf, df$value)
   df <- df[with(df, order(Var1, Var2)),]
@@ -96,21 +122,39 @@ mds_onemap <- function(input.seq, out.file= "out.file", mds.graph.file="NULL.pdf
               row.names = FALSE, quote = FALSE)
   
   pdf(mds.graph.file)
-  mds_map <- MDSMap::estimate.map(out.file, p = p, n=n, ispc = ispc, 
+  mds_map <- estimate.map(out.file, p = p, n=n, ispc = ispc, 
                                   displaytext = displaytext)
   dev.off()
-  if(hmm==TRUE){
-    ord_mds <- match(as.character(mds_map$locimap[,2]), colnames(get(input.seq$data.name)$geno)) 
-    seq_mds <- make_seq(get(input.seq$twopt), ord_mds)
-    seq_mds$twopt <- input.seq$twopt
-    mds_map <- map(seq_mds, mds.seq = mds.seq)
+  ord_mds <- match(as.character(mds_map$locimap[,2]), colnames(input.seq$data.name$geno)) 
+  seq_mds <- make_seq(input.seq$twopt, ord_mds)
+  if(phase_cores == 1){
+    mds_map <- map(seq_mds, rm_unlinked = rm_unlinked)
+  } else{
+    if(is.null(size) | is.null(overlap)){
+      stop("If you want to parallelize the HMM in multiple cores (phase_cores != 1) 
+             you should also define `size` and `overlap` arguments.")
+    } else {
+      mds_map <- map_overlapping_batches(input.seq = seq_mds,
+                                         size = size, overlap = overlap, 
+                                         phase_cores = phase_cores, 
+                                         tol=tol, rm_unlinked = rm_unlinked)
+    }
   }
   
+  
   if(!is.list(mds_map)) {
-    new.seq <- make_seq(get(input.seq$twopt), mds_map)
-    new.seq$twopt <- input.seq$twopt
-    mds_map <- mds_onemap(new.seq, out.file= out.file, mds.graph.file=mds.graph.file, p = NULL, n=NULL, ispc=TRUE,
-                          displaytext=displaytext, weightfn=weightfn, mapfn=mapfn, hmm = hmm, mds.seq=mds.seq)
+    new.seq <- make_seq(input.seq$twopt, mds_map)
+    mds_map <- mds_onemap(new.seq, out.file= out.file, 
+                          mds.graph.file=mds.graph.file, 
+                          p = NULL, n=NULL, ispc=TRUE,
+                          displaytext=displaytext, 
+                          weightfn=weightfn, 
+                          mapfn=mapfn, 
+                          rm_unlinked=rm_unlinked,
+                          size = size, 
+                          overlap = overlap,
+                          phase_cores = phase_cores, 
+                          tol = tol)
   }
   return(mds_map)
 }

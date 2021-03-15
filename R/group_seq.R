@@ -82,25 +82,29 @@
 ##'
 ##'@export
 group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FALSE, LOD=NULL, max.rf=NULL){
-
+  
   ## checking for correct object
   if(!is(input.2pts,"rf_2pts")) stop(deparse(substitute(input.2pts)),
-                                              " is not an object of class 'rf_2pts'")
-
-  if(all(seqs=="CHROM")){
-
-    ## making CHROM sequences
-    CHROM <- unique(input.2pts$CHROM)
-    CHROM <- CHROM[!is.na(CHROM)]
-    names_seqs <- paste0("CHR",CHROM)
-    seqs.int <- list()
-    for(i in 1:length(CHROM)) seqs.int[[i]] <- make_seq(input.2pts, CHROM[i])
-
+                                     " is not an object of class 'rf_2pts'")
+  
+  
+  
+  if(!is(seqs, "list")){
+    if(seqs == "CHROM"){
+      ## making CHROM sequences
+      CHROM <- unique(input.2pts$CHROM)
+      CHROM <- CHROM[!is.na(CHROM)]
+      names_seqs <- paste0("CHR",CHROM)
+      seqs.int <- list()
+      for(i in 1:length(CHROM)) seqs.int[[i]] <- make_seq(input.2pts, CHROM[i])
+    } else {
+      stop("This option is not available in argument seqs")
+    }
   } else{
     ## checking for correct object for seqs argument
     seqs.int <- seqs
     if(!is(seqs.int,"list")) stop(deparse(substitute(seqs)),
-                                           " is not an object of class 'list'")
+                                  " is not an object of class 'list'")
     trueseqs <- vector()
     for(i in 1:length(seqs.int)) trueseqs[i] <- is(seqs.int[[i]],"sequence")
     if(!all(trueseqs)) stop(" the objects inside the list ",
@@ -108,26 +112,29 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FA
     if(is.null(names(seqs.int))) {names_seqs <- paste0("seq",1:length(seqs.int))
     } else { names_seqs <- names(seqs.int)}
   }
-
+  
   ## determining thresholds
   if (is.null(LOD))
     LOD <- input.2pts$LOD
   if (is.null(max.rf))
     max.rf <- input.2pts$max.rf
-
+  
   ## Defining the makers to be tested
-  mk_seqs <- unlist(sapply(seqs.int, '[[',1))
+  mk_seqs <- sapply(seqs.int, '[[',1)
+  mk_seqs <- do.call(c, mk_seqs)
   mk_rest <- c(1:input.2pts$n.mar)[-mk_seqs]
-
-  if(all(unlink.mks == "all")){
+  
+  if(unlink.mks[1] == "all"){
   } else {
     ## checking for correct object for unlink.mks argument
     if (!is(unlink.mks,"sequence")) {
       stop(" the objects", deparse(substitute(unlink.mks)), " are not of class 'sequence'")
     } else {
       mk_rest <- mk_rest[match(unlink.mks$seq.num, mk_rest)]
-      mk_rest <- mk_rest[!is.na(mk_rest)]}}
-
+      mk_rest <- mk_rest[!is.na(mk_rest)]
+    }
+  }
+  
   ## Grouping
   groups <- new_seqs <- select_group <- seqs_groups <- list()
   same <- vector()
@@ -137,46 +144,55 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FA
     seqs_groups[[i]] <- groups[[i]]$groups[1:length(seqs.int[[i]]$seq.num)]
     same[i] <- length(unique(seqs_groups[[i]])) == 1
     select_group[[i]] <- as.numeric(names(which.max(table(seqs_groups[[i]]))))
-    new_seqs[[i]] <- make_seq(groups[[i]], select_group[[i]])}
-
+    new_seqs[[i]] <- make_seq(groups[[i]], select_group[[i]])
+  }
+  
   if(!all(same)) cat("One or more of the provided marker sequences from",deparse(substitute(seqs)),
                      "do not form single linkage groups. The group with the highest number of markers belonging to the sequence will be considered.")
-
+  
   # Changing twopoints name
-  for (i in 1:length(new_seqs)) new_seqs[[i]]$twopt <- deparse(substitute(input.2pts))
-
+  for (i in 1:length(new_seqs)) new_seqs[[i]]$twopt <- input.2pts
+  
   # Find repeated markers
   mks_new_seqs <- lapply(new_seqs, '[[',1)
-  all_grouped_mk <- unlist(mks_new_seqs)
-  repeated_mks <- all_grouped_mk[duplicated(all_grouped_mk)]
-  pos_repeated <- sapply(mks_new_seqs,function(input.2pts) which(input.2pts %in% repeated_mks))
-
+  all_grouped_mk <- do.call(c, mks_new_seqs)
+  repeated_mks <- unique(all_grouped_mk[duplicated(all_grouped_mk)])
+  pos_repeated <- lapply(mks_new_seqs,function(x) which(x %in% repeated_mks))
+  
   # Unlinked markers
   all <- c(mk_seqs,mk_rest)
   unlinked <- all[-match(all_grouped_mk,all)]
   if(identical(unlinked, integer(0))) unlinked <- NA
-
+  
   names(new_seqs) <- names_seqs
   mk_names <- dimnames(input.2pts$analysis[[1]])[[1]]
-
+  
   if(!(identical(repeated_mks, integer(0)) || identical(repeated_mks, numeric(0)))) {
     cat("There are one or more markers that grouped in more than one sequence")
-
+    
     # List with repeated markers
-    repeated_mks_list <- list()
+    repeated_mks_list <- pos_repeated
     for(i in 1:length(seqs.int)) {
-      repeated_mks_list[[i]] <- mks_new_seqs[[i]][pos_repeated[[i]]]
-      if(identical(repeated_mks_list[[i]], numeric(0)))
-        repeated_mks_list[[i]] <- NA}
+      for(j in 1:length(pos_repeated[[i]]))
+        repeated_mks_list[[i]][j] <- mks_new_seqs[[i]][pos_repeated[[i]][j]]
+    }
     names(repeated_mks_list) <- names_seqs
-
+    
     # Including or not the repeated in the sequences
-    if(repeated==FALSE){
-      structure(list(data.name= input.2pts$data.name, twopt=deparse(substitute(input.2pts)),
-                     mk.names = mk_names, input.seqs= sapply(seqs.int, '[[',1), input.unlink.mks= mk_rest,
-                     out.seqs = mks_new_seqs, n.unlinked = length(unlinked[!is.na(unlinked)]),
-                     n.repeated = length(unique(unlist(repeated_mks_list))), n.mar=length(all), LOD=LOD, max.rf=max.rf,
-                     sequences=new_seqs, repeated=repeated_mks_list,
+    if(repeated){
+      structure(list(data.name= input.2pts$data.name, 
+                     twopt=input.2pts,
+                     mk.names = mk_names, 
+                     input.seqs= sapply(seqs.int, '[[',1), 
+                     input.unlink.mks= mk_rest,
+                     out.seqs = mks_new_seqs, 
+                     n.unlinked = length(unlinked[!is.na(unlinked)]),
+                     n.repeated = length(unique(unlist(repeated_mks_list))), 
+                     n.mar=length(all), 
+                     LOD=LOD, 
+                     max.rf=max.rf,
+                     sequences=new_seqs, 
+                     repeated=repeated_mks_list,
                      unlinked= unlinked), class = "group_seq")
     } else {
       new_seqs_unique_temp <- new_seqs_unique <- list()
@@ -186,26 +202,41 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FA
         } else {
           new_seqs_unique_temp[[i]] <- mks_new_seqs[[i]][-pos_repeated[[i]]]
           new_seqs_unique[[i]] <- make_seq(input.2pts, new_seqs_unique_temp[[i]])
-          new_seqs_unique[[i]]$twopt <- deparse(substitute(input.2pts))}
+          new_seqs_unique[[i]]$twopt <- input.2pts}
       }
       names(new_seqs_unique) <- names_seqs
-      structure(list(data.name= input.2pts$data.name, twopt=deparse(substitute(input.2pts)),
-                     mk.names = mk_names, input.seqs= sapply(seqs.int, '[[',1), input.unlink.mks= mk_rest,
-                     out.seqs = mks_new_seqs, n.unlinked = length(unlinked[!is.na(unlinked)]),
-                     n.repeated = length(unique(unlist(repeated_mks_list))), n.mar=length(all), LOD=LOD, max.rf=max.rf,
-                     sequences=new_seqs_unique, repeated=repeated_mks_list,
+      structure(list(data.name= input.2pts$data.name, 
+                     twopt=input.2pts,
+                     mk.names = mk_names, 
+                     input.seqs= sapply(seqs.int, '[[',1), 
+                     input.unlink.mks= mk_rest,
+                     out.seqs = sapply(new_seqs_unique, '[[',1), 
+                     n.unlinked = length(unlinked[!is.na(unlinked)]),
+                     n.repeated = length(unique(unlist(repeated_mks_list))), 
+                     n.mar=length(all), 
+                     OD=LOD, 
+                     ax.rf=max.rf,
+                     sequences=new_seqs_unique, 
+                     repeated=repeated_mks_list,
                      unlinked= unlinked), class = "group_seq")}
-
+    
   } else {
-    structure(list(data.name= input.2pts$data.name, twopt=deparse(substitute(input.2pts)),
-                   mk.names = mk_names, input.seqs= sapply(seqs.int, '[[',1), input.unlink.mks= mk_rest,
-                   out.seqs = mks_new_seqs, n.unlinked = length(unlinked[!is.na(unlinked)]),
-                   n.repeated = 0, n.mar=length(all), LOD=LOD, max.rf=max.rf,
-                   sequences=new_seqs, repeated=NA,
+    structure(list(data.name= input.2pts$data.name, 
+                   twopt=input.2pts,
+                   mk.names = mk_names, 
+                   input.seqs= sapply(seqs.int, '[[',1), 
+                   input.unlink.mks= mk_rest,
+                   out.seqs = mks_new_seqs, 
+                   n.unlinked = length(unlinked[!is.na(unlinked)]),
+                   n.repeated = 0, 
+                   n.mar=length(all), 
+                   LOD=LOD, 
+                   max.rf=max.rf,
+                   sequences=new_seqs, 
+                   repeated=NA,
                    unlinked= unlinked), class = "group_seq")
   }
 }
-
 
 ##' Show the results of grouping markers to preexisting sequence
 ##'
@@ -224,31 +255,29 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FA
 ##' @method print group_seq
 ##' @export
 print.group_seq <- function(x, detailed=TRUE,...) {
-
+  
   ## checking for correct object
   if(!is(x,"group_seq")) stop(deparse(substitute(x))," is not an object of class 'group_seq'")
-
+  
   cat("  This is an object of class 'group_seq'\n")
-  cat(paste("  It was generated from the object \"", x[[1]][[1]],
-            "\"\n\n",sep=""))
-
+  
   ## criteria
   cat("  Criteria used to assign markers to groups:\n")
   cat("    LOD =", x$LOD, ", Maximum recombination fraction =",
       x$max.rf, "\n")
-
+  
   ## printing summary
   cat("\n  No. markers in input sequences:\n")
-
+  
   for(i in 1:length(x$sequences)){ cat("                      ",names(x$sequences)[[i]],":  ",
                                        length(x$input.seqs[[i]]), "markers\n")}
   cat("\n  No. unlinked input markers:  ", length(x$input.unlink.mks), "markers\n")
   cat("\n  No. markers in output sequences:\n")
   for(i in 1:length(x$sequences)){ cat("                      ",names(x$sequences)[[i]],":  ",
-                                    length(x$out.seqs[[i]]), "markers\n")}
+                                       length(x$out.seqs[[i]]), "markers\n")}
   cat("  No. unlinked:                ", x$n.unlinked, "markers\n")
   cat("  No. repeated:                ", x$n.repeated, "markers\n")
-
+  
   if (detailed) {
     ## printing detailed results (markers in each linkage group)
     cat("\n  Printing output sequences:")

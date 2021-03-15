@@ -14,8 +14,11 @@ mds_onemap(
   displaytext = FALSE,
   weightfn = "lod2",
   mapfn = "haldane",
-  hmm = TRUE,
-  mds.seq = TRUE
+  rm_unlinked = TRUE,
+  size = NULL,
+  overlap = NULL,
+  phase_cores = 1,
+  tol = 1e-05
 )
 }
 \arguments{
@@ -43,10 +46,18 @@ matrix in the MDS 'lod2' or 'lod'.}
 \item{mapfn}{Character string specifying the map function to use on the
 recombination fractions 'haldane' is default, 'kosambi' or 'none'.}
 
-\item{hmm}{Multipoint genetic distance estimation}
-
-\item{mds.seq}{When some pair of markers do not follow the linkage criteria, 
+\item{rm_unlinked}{When some pair of markers do not follow the linkage criteria, 
 if \code{TRUE} one of the markers is removed and mds is performed again.}
+
+\item{size}{The center size around which an optimum is to be searched}
+
+\item{overlap}{The desired overlap between batches}
+
+\item{phase_cores}{The number of parallel processes to use when estimating
+the phase of a marker. (Should be no more than 4)}
+
+\item{tol}{tolerance for the C routine, i.e., the value used to evaluate
+convergence.}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the

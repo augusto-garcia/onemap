@@ -35,7 +35,7 @@
 ##' (2008) were used.
 ##' 
 ##' @importFrom methods is
-##' @importFrom utils setTxtProgressBar txtProgressBar tail head
+##' @importFrom utils setTxtProgressBar txtProgressBar tail head flush.console
 ##'
 ##' @param input.seq an object of class \code{sequence}.
 ##' @param n.best the number of best orders to store in object (defaults to
@@ -103,267 +103,187 @@
 ##'@export
 
 compare<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
-    if(is(get(input.seq$data.name), "outcross"))
-        return(compare_outcross(input.seq=input.seq,n.best=n.best,tol=tol,verbose=verbose))
-    else if(is(get(input.seq$data.name), "f2"))
-      return(compare_inbred_f2(input.seq=input.seq,n.best=n.best,tol=tol,verbose=verbose))
-    else 
-      return(compare_inbred_bc(input.seq=input.seq,n.best=n.best,tol=tol,verbose=verbose))
+  if(is(input.seq$data.name, "outcross") || is(input.seq$data.name, "f2"))
+    return(compare_outcross(input.seq=input.seq,n.best=n.best,tol=tol,verbose=verbose))
+  else 
+    return(compare_inbred_bc(input.seq=input.seq,n.best=n.best,tol=tol,verbose=verbose))
 }
 
 ## Compare all possible orders (exhaustive search) for a given sequence of
 ## markers (for outcrosses)
 compare_outcross<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
 {
-    ## checking for correct objects
-    if(!is(input.seq,"sequence"))
-        stop(sQuote(deparse(substitute(input.seq)))," is not an object of class 'sequence'")
-    if(length(input.seq$seq.num) > 5)
-        cat("WARNING: this operation may take a VERY long time\n")
-    utils::flush.console()
-    if(length(input.seq$seq.num) > 10) {
-        cat("\nIt is not wise trying to use 'compare' with more than 10 markers \n")
-        ANSWER <- readline("Are you sure you want to proceed? [y or n]\n")
-        while(substr(ANSWER, 1, 1) != "n" & substr(ANSWER, 1, 1) != "y")
-            ANSWER <- readline("\nPlease answer: 'y' or 'n' \n")
-        if (substr(ANSWER, 1, 1) == "n") stop("Execution stopped!")
-    }
-    if(length(input.seq$seq.num) == 2)
-        return(map(input.seq, tol=tol)) ## nothing to be done for 2 markers
-    else {
-        ## allocating variables
-        rf.init <- vector("list",length(input.seq$seq.num)-1)
-        phase.init <- vector("list",length(input.seq$seq.num)-1)
-        best.ord <- matrix(NA,(n.best+1),length(input.seq$seq.num))
-        best.ord.rf <- matrix(NA,(n.best+1),length(input.seq$seq.num)-1)
-        best.ord.phase <- matrix(NA,(n.best+1),length(input.seq$seq.num)-1)
-        best.ord.like <- best.ord.LOD <- rep(-Inf,(n.best+1))
-
-        ## 'phases' gathers information from two-point analyses
-        list.init <- phases(input.seq)
-
-        ## 'perm_pars' generates all n!/2 orders
-        all.ord <- perm_pars(input.seq$seq.num)
-        cat("\nComparing",nrow(all.ord),"orders:     \n\n")
-        if (verbose){
-            for(i in 1:nrow(all.ord)){
-                ## print output for each order
-                cat("Order", i, ":", all.ord[i,], "\n")
-                utils::flush.console()
-                ## get initial values for the HMM
-                all.match <- match(all.ord[i,],input.seq$seq.num)
-                for(j in 1:(length(input.seq$seq.num)-1)){
-                    if(all.match[j] > all.match[j+1]){
-                        rf.init[[j]] <- list.init$rf.init[[acum(all.match[j]-2)+all.match[j+1]]]
-                        phase.init[[j]] <- list.init$phase.init[[acum(all.match[j]-2)+all.match[j+1]]]
-                    }
-                    else {
-                        rf.init[[j]] <- list.init$rf.init[[acum(all.match[j+1]-2)+all.match[j]]]
-                        phase.init[[j]] <- list.init$phase.init[[acum(all.match[j+1]-2)+all.match[j]]]
-                    }
-                }
-                Ph.Init <- comb_ger(phase.init)
-                Rf.Init <- comb_ger(rf.init)
-                if(nrow(Ph.Init)>1){
-                    ##Removing ambigous phases
-                    rm.ab<-rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=all.ord[i,])
-                    Ph.Init <- Ph.Init[rm.ab,]
-                    Rf.Init <- Rf.Init[rm.ab,]
-                    if(is(Ph.Init,"integer")){
-                        Ph.Init<-matrix(Ph.Init,nrow=1)
-                        Rf.Init<-matrix(Rf.Init,nrow=1)
-                    }
-                }
-                for(j in 1:nrow(Ph.Init)){
-                    ## estimate parameters
-                    final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
-                                                 type=get(input.seq$data.name, pos=1)$segr.type.num[all.ord[i,]],
-                                                 phase=Ph.Init[j,],
-                                                 rf.vec=Rf.Init[j,],
-                                                 verbose=FALSE,
-                                                 tol=tol)
-                    best.ord[(n.best+1),] <- all.ord[i,]
-                    best.ord.rf[(n.best+1),] <- final.map$rf
-                    best.ord.phase[(n.best+1),] <- Ph.Init[j,]
-                    best.ord.like[(n.best+1)] <- final.map$loglike
-
-                    ## arrange orders according to the likelihood
-                    like.order <- order(best.ord.like, decreasing=TRUE)
-                    best.ord <- best.ord[like.order,]
-                    best.ord.rf <- best.ord.rf[like.order,]
-                    best.ord.phase <- best.ord.phase[like.order,]
-                    best.ord.like <- sort(best.ord.like, decreasing=TRUE)
-                }
-            }
-        }
-    else{
-        count <- 0
-        pb <- txtProgressBar(style=3)
-        setTxtProgressBar(pb, 0)
-
-        ## nc<-NA
-        ## out.pr <- seq(from=1,to=nrow(all.ord), length.out=20)
-        cat("    ")
-        for(i in 1:nrow(all.ord)){
-            ## print output for each order
-            ##    if (sum(i == round(out.pr))){
-            ##      cat(rep("\b",nchar(nc)+1),sep="")
-            ##      nc<-round(i*100/nrow(all.ord))
-            ##      cat(nc,"%", sep="")
-            ##      utils::flush.console()
-            ##    }
-            ## get initial values for the HMM
-            all.match <- match(all.ord[i,],input.seq$seq.num)
-            for(j in 1:(length(input.seq$seq.num)-1)){
-                if(all.match[j] > all.match[j+1]){
-                    rf.init[[j]] <- list.init$rf.init[[acum(all.match[j]-2)+all.match[j+1]]]
-                    phase.init[[j]] <- list.init$phase.init[[acum(all.match[j]-2)+all.match[j+1]]]
-                }
-          else {
-              rf.init[[j]] <- list.init$rf.init[[acum(all.match[j+1]-2)+all.match[j]]]
-              phase.init[[j]] <- list.init$phase.init[[acum(all.match[j+1]-2)+all.match[j]]]
+  ## checking for correct objects
+  if(!is(input.seq,"sequence"))
+    stop(sQuote(deparse(substitute(input.seq)))," is not an object of class 'sequence'")
+  if(length(input.seq$seq.num) > 5)
+    cat("WARNING: this operation may take a VERY long time\n")
+  flush.console()
+  if(length(input.seq$seq.num) > 10) {
+    cat("\nIt is not wise trying to use 'compare' with more than 10 markers \n")
+    ANSWER <- readline("Are you sure you want to proceed? [y or n]\n")
+    while(substr(ANSWER, 1, 1) != "n" & substr(ANSWER, 1, 1) != "y")
+      ANSWER <- readline("\nPlease answer: 'y' or 'n' \n")
+    if (substr(ANSWER, 1, 1) == "n") stop("Execution stopped!")
+  }
+  if(length(input.seq$seq.num) == 2)
+    return(map(input.seq, tol=tol)) ## nothing to be done for 2 markers
+  else {
+    ## allocating variables
+    rf.init <- vector("list",length(input.seq$seq.num)-1)
+    phase.init <- vector("list",length(input.seq$seq.num)-1)
+    best.ord <- matrix(NA,(n.best+1),length(input.seq$seq.num))
+    best.ord.rf <- matrix(NA,(n.best+1),length(input.seq$seq.num)-1)
+    best.ord.phase <- matrix(NA,(n.best+1),length(input.seq$seq.num)-1)
+    best.ord.like <- best.ord.LOD <- rep(-Inf,(n.best+1))
+    
+    ## 'phases' gathers information from two-point analyses
+    list.init <- phases(input.seq)
+    
+    ## 'perm_pars' generates all n!/2 orders
+    all.ord <- perm_pars(input.seq$seq.num)
+    cat("\nComparing",nrow(all.ord),"orders:     \n\n")
+    if (verbose){
+      for(i in 1:nrow(all.ord)){
+        ## print output for each order
+        cat("Order", i, ":", all.ord[i,], "\n")
+        flush.console()
+        ## get initial values for the HMM
+        all.match <- match(all.ord[i,],input.seq$seq.num)
+        for(j in 1:(length(input.seq$seq.num)-1)){
+          if(all.match[j] > all.match[j+1]){
+            rf.init[[j]] <- list.init$rf.init[[acum(all.match[j]-2)+all.match[j+1]]]
+            phase.init[[j]] <- list.init$phase.init[[acum(all.match[j]-2)+all.match[j+1]]]
           }
-            }
-            Ph.Init <- comb_ger(phase.init)
-            Rf.Init <- comb_ger(rf.init)
-            if(nrow(Ph.Init)>1){
-                ##Removing ambigous phases
-                rm.ab<-rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=all.ord[i,])
-                Ph.Init <- Ph.Init[rm.ab,]
-                Rf.Init <- Rf.Init[rm.ab,]
-                if(is(Ph.Init,"integer")){
-                    Ph.Init<-matrix(Ph.Init,nrow=1)
-                    Rf.Init<-matrix(Rf.Init,nrow=1)
-                }
-            }
-            for(j in 1:nrow(Ph.Init)){
-                ## estimate parameters
-                final.map <- est_map_hmm_out(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
-                                             type=get(input.seq$data.name, pos=1)$segr.type.num[all.ord[i,]],
-                                             phase=Ph.Init[j,],
-                                             rf.vec=Rf.Init[j,],
-                                             verbose=FALSE,
-                                             tol=tol)
-                best.ord[(n.best+1),] <- all.ord[i,]
-                best.ord.rf[(n.best+1),] <- final.map$rf
-                best.ord.phase[(n.best+1),] <- Ph.Init[j,]
-                best.ord.like[(n.best+1)] <- final.map$loglike
-
-                ## arrange orders according to the likelihood
-                like.order <- order(best.ord.like, decreasing=TRUE)
-                best.ord <- best.ord[like.order,]
-                best.ord.rf <- best.ord.rf[like.order,]
-                best.ord.phase <- best.ord.phase[like.order,]
-                best.ord.like <- sort(best.ord.like, decreasing=TRUE)
-            }
-            count<-count+1
-            setTxtProgressBar(pb, count/nrow(all.ord))
+          else {
+            rf.init[[j]] <- list.init$rf.init[[acum(all.match[j+1]-2)+all.match[j]]]
+            phase.init[[j]] <- list.init$phase.init[[acum(all.match[j+1]-2)+all.match[j]]]
+          }
         }
-        close(pb)
+        Ph.Init <- comb_ger(phase.init)
+        Rf.Init <- comb_ger(rf.init)
+        if(nrow(Ph.Init)>1){
+          ##Removing ambigous phases
+          rm.ab<-rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=all.ord[i,])
+          Ph.Init <- Ph.Init[rm.ab,]
+          Rf.Init <- Rf.Init[rm.ab,]
+          if(is(Ph.Init,"integer")){
+            Ph.Init<-matrix(Ph.Init,nrow=1)
+            Rf.Init<-matrix(Rf.Init,nrow=1)
+          }
+        }
+        for(j in 1:nrow(Ph.Init)){
+          ## estimate parameters
+          final.map <- est_map_hmm_out(geno=t(input.seq$data.name$geno[,all.ord[i,]]),
+                                       error=input.seq$data.name$error[all.ord[i,] + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(all.ord[i,])),],
+                                       type=input.seq$data.name$segr.type.num[all.ord[i,]],
+                                       phase=Ph.Init[j,],
+                                       rf.vec=Rf.Init[j,],
+                                       verbose=FALSE,
+                                       tol=tol)
+          best.ord[(n.best+1),] <- all.ord[i,]
+          best.ord.rf[(n.best+1),] <- final.map$rf
+          best.ord.phase[(n.best+1),] <- Ph.Init[j,]
+          best.ord.like[(n.best+1)] <- final.map$loglike
+          
+          ## arrange orders according to the likelihood
+          like.order <- order(best.ord.like, decreasing=TRUE)
+          best.ord <- best.ord[like.order,]
+          best.ord.rf <- best.ord.rf[like.order,]
+          best.ord.phase <- best.ord.phase[like.order,]
+          best.ord.like <- sort(best.ord.like, decreasing=TRUE)
+        }
+      }
     }
-        cat("\n")
-        best.ord.LOD <- round((best.ord.like-max(best.ord.like))/log(10),4)
-        structure(list(best.ord = best.ord,
-                       best.ord.rf = best.ord.rf,
-                       best.ord.phase = best.ord.phase,
-                       best.ord.like = best.ord.like,
-                       best.ord.LOD = best.ord.LOD,
-                       data.name=input.seq$data.name,
-                       twopt=input.seq$twopt), class = "compare")
-
+    else{
+      count <- 0
+      pb <- txtProgressBar(style=3)
+      setTxtProgressBar(pb, 0)
+      
+      ## nc<-NA
+      ## out.pr <- seq(from=1,to=nrow(all.ord), length.out=20)
+      cat("    ")
+      for(i in 1:nrow(all.ord)){
+        ## print output for each order
+        ##    if (sum(i == round(out.pr))){
+        ##      cat(rep("\b",nchar(nc)+1),sep="")
+        ##      nc<-round(i*100/nrow(all.ord))
+        ##      cat(nc,"%", sep="")
+        ##      flush.console()
+        ##    }
+        ## get initial values for the HMM
+        all.match <- match(all.ord[i,],input.seq$seq.num)
+        for(j in 1:(length(input.seq$seq.num)-1)){
+          if(all.match[j] > all.match[j+1]){
+            rf.init[[j]] <- list.init$rf.init[[acum(all.match[j]-2)+all.match[j+1]]]
+            phase.init[[j]] <- list.init$phase.init[[acum(all.match[j]-2)+all.match[j+1]]]
+          }
+          else {
+            rf.init[[j]] <- list.init$rf.init[[acum(all.match[j+1]-2)+all.match[j]]]
+            phase.init[[j]] <- list.init$phase.init[[acum(all.match[j+1]-2)+all.match[j]]]
+          }
+        }
+        Ph.Init <- comb_ger(phase.init)
+        Rf.Init <- comb_ger(rf.init)
+        if(nrow(Ph.Init)>1){
+          ##Removing ambigous phases
+          rm.ab<-rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=all.ord[i,])
+          Ph.Init <- Ph.Init[rm.ab,]
+          Rf.Init <- Rf.Init[rm.ab,]
+          if(is(Ph.Init,"integer")){
+            Ph.Init<-matrix(Ph.Init,nrow=1)
+            Rf.Init<-matrix(Rf.Init,nrow=1)
+          }
+        }
+        for(j in 1:nrow(Ph.Init)){
+          ## estimate parameters
+          final.map <- est_map_hmm_out(geno=t(input.seq$data.name$geno[,all.ord[i,]]),
+                                       error=input.seq$data.name$error[all.ord[i,] + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(all.ord[i,])),],
+                                       type=input.seq$data.name$segr.type.num[all.ord[i,]],
+                                       phase=Ph.Init[j,],
+                                       rf.vec=Rf.Init[j,],
+                                       verbose=FALSE,
+                                       tol=tol)
+          best.ord[(n.best+1),] <- all.ord[i,]
+          best.ord.rf[(n.best+1),] <- final.map$rf
+          best.ord.phase[(n.best+1),] <- Ph.Init[j,]
+          best.ord.like[(n.best+1)] <- final.map$loglike
+          
+          ## arrange orders according to the likelihood
+          like.order <- order(best.ord.like, decreasing=TRUE)
+          best.ord <- best.ord[like.order,]
+          best.ord.rf <- best.ord.rf[like.order,]
+          best.ord.phase <- best.ord.phase[like.order,]
+          best.ord.like <- sort(best.ord.like, decreasing=TRUE)
+        }
+        count<-count+1
+        setTxtProgressBar(pb, count/nrow(all.ord))
+      }
+      close(pb)
     }
+    cat("\n")
+    best.ord.LOD <- round((best.ord.like-max(best.ord.like))/log(10),4)
+    structure(list(best.ord = best.ord,
+                   best.ord.rf = best.ord.rf,
+                   best.ord.phase = best.ord.phase,
+                   best.ord.like = best.ord.like,
+                   best.ord.LOD = best.ord.LOD,
+                   data.name=input.seq$data.name,
+                   twopt=input.seq$twopt), class = "compare")
+    
+  }
 }
 
 ## Compare all possible orders (exhaustive search) for a given sequence of
 ## markers (crosses derived from inbred lines)
 compare_inbred_bc<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE) 
 {
-    ## checking for correct objects
-    if(!is(input.seq,"sequence"))
-        stop(sQuote(deparse(substitute(input.seq)))," is not an object of class 'sequence'")
-    if(length(input.seq$seq.num) > 5)
-        cat("WARNING: this operation may take a VERY long time\n")
-    utils::flush.console()
-    if(length(input.seq$seq.num) > 10) {
-        cat("\nIt is not wise trying to use 'compare' with more than 10 markers \n")
-        ANSWER <- readline("Are you sure you want to proceed? [y or n]\n")
-        while(substr(ANSWER, 1, 1) != "n" & substr(ANSWER, 1, 1) != "y")
-            ANSWER <- readline("\nPlease answer: 'y' or 'n' \n")
-        if (substr(ANSWER, 1, 1) == "n") stop("Execution stopped!")
-    }
-    if(length(input.seq$seq.num) == 2)
-        return(map(input.seq, tol=tol)) ## nothing to be done for 2 markers
-    else
-    {
-        ## allocating variables
-        all.ord <- perm_pars(input.seq$seq.num)
-        rf.init <- matrix(NA,nrow(all.ord),length(input.seq$seq.num)-1)
-        best.ord <- matrix(NA,(n.best+1),length(input.seq$seq.num))
-        best.ord.rf <- matrix(NA,(n.best+1),length(input.seq$seq.num)-1)
-        best.ord.like <- best.ord.LOD <- rep(-Inf,(n.best+1))
-        cat("\nComparing",nrow(all.ord),"orders:     \n\n")
-        if(!verbose)
-        {
-            count <- 0
-            pb <- txtProgressBar(style=3)
-            setTxtProgressBar(pb, 0)
-            cat("    ")
-        }
-        for(i in 1:nrow(all.ord))
-        {
-            ## print output for each order
-            if (verbose) cat("Order", i, ":", all.ord[i,], "\n")
-            utils::flush.console()
-            seq.temp<-make_seq(get(input.seq$twopt), arg=all.ord[i,])
-            seq.temp$twopt<-input.seq$twopt
-            rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
-            final.map<-est_map_hmm_bc(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
-                                      rf.vec=rf.temp,
-                                      verbose=FALSE,
-                                      tol=tol)
-            if(is(get(input.seq$data.name, pos=1), "riself") ||
-               is(get(input.seq$data.name, pos=1), "risib"))
-              final.map$rf<-adjust_rf_ril(final.map$rf,
-                                                   type=class(get(input.seq$data.name, pos=1))[2],
-                                                   expand = FALSE)
-            best.ord[(n.best+1),] <- all.ord[i,]
-            best.ord.rf[(n.best+1),] <- final.map$rf
-            best.ord.like[(n.best+1)] <- final.map$loglike
-            ## arrange orders according to the likelihood
-            like.order <- order(best.ord.like, decreasing=TRUE)
-            best.ord <- best.ord[like.order,]
-            best.ord.rf <- best.ord.rf[like.order,]
-            best.ord.like <- sort(best.ord.like, decreasing=TRUE)
-            if(!verbose)
-            {
-                count<-count+1
-                setTxtProgressBar(pb, count/nrow(all.ord))
-            }
-        }
-        close(pb)
-        ## cat("\nFinished\n\n")
-        cat("\n")
-        best.ord.LOD <- round((best.ord.like-max(best.ord.like))/log(10),4)
-        structure(list(best.ord = best.ord,
-                       best.ord.rf = best.ord.rf,
-                       best.ord.phase = matrix(1, nrow(best.ord.rf), ncol(best.ord.rf)),
-                       best.ord.like = best.ord.like,
-                       best.ord.LOD = best.ord.LOD,
-                       data.name=input.seq$data.name,
-                       twopt=input.seq$twopt), class = "compare")
-    }
-}
-
-## Compare all possible orders (exhaustive search) for a given sequence of
-## markers (crosses derived from inbred lines)
-compare_inbred_f2<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE) 
-{
   ## checking for correct objects
   if(!is(input.seq,"sequence"))
     stop(sQuote(deparse(substitute(input.seq)))," is not an object of class 'sequence'")
   if(length(input.seq$seq.num) > 5)
     cat("WARNING: this operation may take a VERY long time\n")
-  utils::flush.console()
+  flush.console()
   if(length(input.seq$seq.num) > 10) {
     cat("\nIt is not wise trying to use 'compare' with more than 10 markers \n")
     ANSWER <- readline("Are you sure you want to proceed? [y or n]\n")
@@ -393,11 +313,92 @@ compare_inbred_f2<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
     {
       ## print output for each order
       if (verbose) cat("Order", i, ":", all.ord[i,], "\n")
-      utils::flush.console()
-      seq.temp<-make_seq(get(input.seq$twopt), arg=all.ord[i,])
+      flush.console()
+      seq.temp<-make_seq(input.seq$twopt, arg=all.ord[i,])
       seq.temp$twopt<-input.seq$twopt
       rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
-      final.map<-est_map_hmm_f2(geno=t(get(input.seq$data.name, pos=1)$geno[,all.ord[i,]]),
+      final.map<-est_map_hmm_f2(geno=t(input.seq$data.name$geno[,all.ord[i,]]),
+                                error=input.seq$data.name$error[all.ord[i,] + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(all.ord[i,])),],
+                                rf.vec=rf.temp,
+                                verbose=FALSE,
+                                tol=tol)
+      if(is(input.seq$data.name, "riself") ||
+         is(input.seq$data.name, "risib"))
+        final.map$rf<-adjust_rf_ril(final.map$rf,
+                                    type=class(input.seq$data.name)[2],
+                                    expand = FALSE)
+      best.ord[(n.best+1),] <- all.ord[i,]
+      best.ord.rf[(n.best+1),] <- final.map$rf
+      best.ord.like[(n.best+1)] <- final.map$loglike
+      ## arrange orders according to the likelihood
+      like.order <- order(best.ord.like, decreasing=TRUE)
+      best.ord <- best.ord[like.order,]
+      best.ord.rf <- best.ord.rf[like.order,]
+      best.ord.like <- sort(best.ord.like, decreasing=TRUE)
+      if(!verbose)
+      {
+        count<-count+1
+        setTxtProgressBar(pb, count/nrow(all.ord))
+      }
+    }
+    close(pb)
+    ## cat("\nFinished\n\n")
+    cat("\n")
+    best.ord.LOD <- round((best.ord.like-max(best.ord.like))/log(10),4)
+    structure(list(best.ord = best.ord,
+                   best.ord.rf = best.ord.rf,
+                   best.ord.phase = matrix(1, nrow(best.ord.rf), ncol(best.ord.rf)),
+                   best.ord.like = best.ord.like,
+                   best.ord.LOD = best.ord.LOD,
+                   data.name=input.seq$data.name,
+                   twopt=input.seq$twopt), class = "compare")
+  }
+}
+
+## Compare all possible orders (exhaustive search) for a given sequence of
+## markers (crosses derived from inbred lines)
+compare_inbred_f2<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE) 
+{
+  ## checking for correct objects
+  if(!is(input.seq,"sequence"))
+    stop(sQuote(deparse(substitute(input.seq)))," is not an object of class 'sequence'")
+  if(length(input.seq$seq.num) > 5)
+    cat("WARNING: this operation may take a VERY long time\n")
+  flush.console()
+  if(length(input.seq$seq.num) > 10) {
+    cat("\nIt is not wise trying to use 'compare' with more than 10 markers \n")
+    ANSWER <- readline("Are you sure you want to proceed? [y or n]\n")
+    while(substr(ANSWER, 1, 1) != "n" & substr(ANSWER, 1, 1) != "y")
+      ANSWER <- readline("\nPlease answer: 'y' or 'n' \n")
+    if (substr(ANSWER, 1, 1) == "n") stop("Execution stopped!")
+  }
+  if(length(input.seq$seq.num) == 2)
+    return(map(input.seq, tol=tol)) ## nothing to be done for 2 markers
+  else
+  {
+    ## allocating variables
+    all.ord <- perm_pars(input.seq$seq.num)
+    rf.init <- matrix(NA,nrow(all.ord),length(input.seq$seq.num)-1)
+    best.ord <- matrix(NA,(n.best+1),length(input.seq$seq.num))
+    best.ord.rf <- matrix(NA,(n.best+1),length(input.seq$seq.num)-1)
+    best.ord.like <- best.ord.LOD <- rep(-Inf,(n.best+1))
+    cat("\nComparing",nrow(all.ord),"orders:     \n\n")
+    if(!verbose)
+    {
+      count <- 0
+      pb <- txtProgressBar(style=3)
+      setTxtProgressBar(pb, 0)
+      cat("    ")
+    }
+    for(i in 1:nrow(all.ord))
+    {
+      ## print output for each order
+      if (verbose) cat("Order", i, ":", all.ord[i,], "\n")
+      flush.console()
+      seq.temp<-make_seq(input.seq$twopt, arg=all.ord[i,])
+      seq.temp$twopt<-input.seq$twopt
+      rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
+      final.map<-est_map_hmm_f2(geno=t(input.seq$data.name$geno[,all.ord[i,]]),
                                 rf.vec=rf.temp,
                                 verbose=FALSE,
                                 tol=tol)
@@ -433,52 +434,51 @@ compare_inbred_f2<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
 ##'@export
 ##'@method print compare
 print.compare <- function(x,...) {
-        FLAG<-0
-        if(!is(get(x$data.name, pos=1), "outcross")) FLAG<-1
-
-        phases.char <- c("CC","CR","RC","RR")
-        n.ord <- max(which(head(x$best.ord.LOD,-1) != -Inf))
-        unique.orders <- unique(x$best.ord[1:n.ord,])
-        n.ord.nest <- nrow(unique.orders)
-        phases.nested <- vector("list",n.ord.nest)
-        LOD <- vector("list",n.ord.nest)
-        if(!FLAG){
-            for (i in 1:n.ord.nest) {
-                same.order <- which(apply(x$best.ord[1:n.ord,],1,function(x) all(x==unique.orders[i,])))
-                ifelse(length(same.order)==1,phases.nested[[i]] <- t(as.matrix(x$best.ord.phase[same.order,])),phases.nested[[i]] <- x$best.ord.phase[same.order,])
-                LOD[[i]] <- x$best.ord.LOD[same.order]
-            }
-        }
-        skip <- c(nchar(n.ord.nest),max(nchar(unique.orders[1,])+2))
-        cat("\nNumber of orders:",n.ord,"\n")
-        if(FLAG==0){ ## outcrossing
-            leng.print <- nchar(paste("order ",format(n.ord.nest,width=skip[1]),":  ",paste(format(unique.orders[1,],width=skip[2]),collapse=""),"     ",format(11.11,digits=2,format="f",width=6),"     ",format(11.11,digits=2,format="f",width=6),"\n",sep=""))
-            cat(paste("Best ",n.ord.nest," unique orders",paste(rep(" ",leng.print-37),collapse=""),"LOD    Nested LOD","\n",sep=""))
-            cat(paste(rep("-",leng.print),collapse=""),"\n")
-        }
-    else if(FLAG==1){ ## other
-        leng.print <- nchar(paste("order ",format(n.ord.nest,width=skip[1]),":  ",paste(format(unique.orders[1,],width=skip[2]),collapse=""),"     ",format(11.11,digits=2,format="f",width=6),"\n",sep=""))
-        cat(paste("Best ",n.ord.nest," unique orders",paste(rep(" ",leng.print-25),collapse=""),"LOD","\n",sep=""))
-        cat(paste(rep("-",leng.print),collapse=""),"\n")
+  FLAG<-0
+  if(!(is(x$data.name, "outcross") | is(x$data.name, "f2"))) FLAG<-1
+  phases.char <- c("CC","CR","RC","RR")
+  n.ord <- max(which(head(x$best.ord.LOD,-1) != -Inf))
+  unique.orders <- unique(x$best.ord[1:n.ord,])
+  n.ord.nest <- nrow(unique.orders)
+  phases.nested <- vector("list",n.ord.nest)
+  LOD <- vector("list",n.ord.nest)
+  if(!FLAG){
+    for (i in 1:n.ord.nest) {
+      same.order <- which(apply(x$best.ord[1:n.ord,],1,function(x) all(x==unique.orders[i,])))
+      ifelse(length(same.order)==1,phases.nested[[i]] <- t(as.matrix(x$best.ord.phase[same.order,])),phases.nested[[i]] <- x$best.ord.phase[same.order,])
+      LOD[[i]] <- x$best.ord.LOD[same.order]
     }
-    else stop ("Should not get here!")
-        if(FLAG==0){ ## outcrossing
-            for (i in 1:n.ord.nest) {
-                cat(paste("order ",format(i,width=skip[1]),":  ",paste(format(unique.orders[i,],width=skip[2]),collapse=""),"\n",sep=""))
-                for (j in 1:dim(phases.nested[[i]])[1]) {
-                    cat(paste("\t",paste(rep(" ",1+skip[1]+skip[2]),collapse=""),paste(format(phases.char[phases.nested[[i]][j,]],width=skip[2]),collapse=""),"     ",formatC(round(LOD[[i]][j],2),digits=2,format="f",width=6),"     ",formatC(round(LOD[[i]][j]-LOD[[i]][1],2),digits=2,format="f",width=6),"\n",sep=""))
-                }
-                cat(paste(rep("-",leng.print),collapse=""))
-                cat("\n")
-            }
-        }
-    else if(FLAG==1){ ## other
-        for (i in 1:n.ord.nest) {
-            cat(paste("order ",format(i,width=skip[1]),":  ",paste(format(unique.orders[i,],width=skip[2]),collapse=""), "     ",formatC(round(x$best.ord.LOD[i],2),digits=2,format="f",width=6),  "\n",sep=""))
-        }
-        cat(paste(rep("-",leng.print),collapse=""))
-        cat("\n")
+  }
+  skip <- c(nchar(n.ord.nest),max(nchar(unique.orders[1,])+2))
+  cat("\nNumber of orders:",n.ord,"\n")
+  if(FLAG==0){ ## outcrossing
+    leng.print <- nchar(paste("order ",format(n.ord.nest,width=skip[1]),":  ",paste(format(unique.orders[1,],width=skip[2]),collapse=""),"     ",format(11.11,digits=2,format="f",width=6),"     ",format(11.11,digits=2,format="f",width=6),"\n",sep=""))
+    cat(paste("Best ",n.ord.nest," unique orders",paste(rep(" ",leng.print-37),collapse=""),"LOD    Nested LOD","\n",sep=""))
+    cat(paste(rep("-",leng.print),collapse=""),"\n")
+  }
+  else if(FLAG==1){ ## other
+    leng.print <- nchar(paste("order ",format(n.ord.nest,width=skip[1]),":  ",paste(format(unique.orders[1,],width=skip[2]),collapse=""),"     ",format(11.11,digits=2,format="f",width=6),"\n",sep=""))
+    cat(paste("Best ",n.ord.nest," unique orders",paste(rep(" ",leng.print-25),collapse=""),"LOD","\n",sep=""))
+    cat(paste(rep("-",leng.print),collapse=""),"\n")
+  }
+  else stop ("Should not get here!")
+  if(FLAG==0){ ## outcrossing
+    for (i in 1:n.ord.nest) {
+      cat(paste("order ",format(i,width=skip[1]),":  ",paste(format(unique.orders[i,],width=skip[2]),collapse=""),"\n",sep=""))
+      for (j in 1:dim(phases.nested[[i]])[1]) {
+        cat(paste("\t",paste(rep(" ",1+skip[1]+skip[2]),collapse=""),paste(format(phases.char[phases.nested[[i]][j,]],width=skip[2]),collapse=""),"     ",formatC(round(LOD[[i]][j],2),digits=2,format="f",width=6),"     ",formatC(round(LOD[[i]][j]-LOD[[i]][1],2),digits=2,format="f",width=6),"\n",sep=""))
+      }
+      cat(paste(rep("-",leng.print),collapse=""))
+      cat("\n")
     }
-    else stop ("Should not get here!")
+  }
+  else if(FLAG==1){ ## other
+    for (i in 1:n.ord.nest) {
+      cat(paste("order ",format(i,width=skip[1]),":  ",paste(format(unique.orders[i,],width=skip[2]),collapse=""), "     ",formatC(round(x$best.ord.LOD[i],2),digits=2,format="f",width=6),  "\n",sep=""))
+    }
+    cat(paste(rep("-",leng.print),collapse=""))
+    cat("\n")
+  }
+  else stop ("Should not get here!")
 }
 ## end of file

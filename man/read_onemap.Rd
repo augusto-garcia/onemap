@@ -4,12 +4,12 @@
 \alias{read_onemap}
 \title{Read data from all types of progenies supported by OneMap}
 \usage{
-read_onemap(dir, inputfile)
+read_onemap(inputfile = NULL, dir = NULL)
 }
 \arguments{
-\item{dir}{directory where the input file is located.}
-
 \item{inputfile}{the name of the input file which contains the data to be read.}
+
+\item{dir}{directory where the input file is located.}
 }
 \value{
 An object of class \code{onemap}, i.e., a list with the following

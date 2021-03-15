@@ -16,7 +16,6 @@
 #######################################################################
 
 # This function calls C++ routine to find markers with redundant information
-##' @useDynLib onemap
 ##' @import Rcpp
 get_bins <- function(geno, exact=TRUE)
 {
@@ -45,6 +44,22 @@ est_rf_out<-function(geno, mrk=0, seg_type=NULL, nind, verbose=TRUE)
   {
       names(r)<-c("CC", "CR", "RC", "RR")
       for(i in 1:4) dimnames(r[[i]])<-list(colnames(geno), colnames(geno))
+      
+      # Bug fix with D1D2 - It can be estimated than receive 0 for LOD and 0.25 for rf
+      for(i in 1:length(seg_type))
+        for(j in 1:(length(seg_type)-1))
+          if((seg_type[i] == 7 & seg_type[j] == 6) | (seg_type[i] == 6 & seg_type[j] == 7)){
+            r[[1]][i,j] <- r[[2]][i,j] <- r[[3]][i,j] <- r[[4]][i,j] <- 0.25
+            r[[1]][j,i] <- r[[2]][j,i] <- r[[3]][j,i] <- r[[4]][j,i] <- 0
+          }
+      
+      # Bug fix: If rf is very close to 0.5, LOD can be very close to zero, but with negative value
+      # This is causing numerical problems in further analysis
+      r[[1]][which(r[[1]] < 0)] <- 10^(-5)
+      r[[2]][which(r[[2]] < 0)] <- 10^(-5)
+      r[[3]][which(r[[3]] < 0)] <- 10^(-5)
+      r[[4]][which(r[[4]] < 0)] <- 10^(-5)
+      
       return(r)
   }
   else
@@ -56,6 +71,7 @@ est_rf_out<-function(geno, mrk=0, seg_type=NULL, nind, verbose=TRUE)
       return(r)
   }
 }
+
 
 # This function calls C++ routine for two-point analysis (F2)
 ##' @useDynLib onemap
@@ -98,34 +114,36 @@ est_rf_bc<-function(geno, mrk=0,  nind, type=0, verbose=TRUE)
 # This function calls C++ routine for multipoint analysis (f2)
 ##' @useDynLib onemap
 ##' @import Rcpp
-est_map_hmm_f2<-function(geno, rf.vec=NULL, verbose=TRUE, tol=1e-6)
+est_map_hmm_f2<-function(geno, error, rf.vec=NULL, verbose=TRUE, tol=1e-6)
 {
     if(length(rf.vec) != (nrow(geno)-1))
         rf.vec = rep(0.1, (nrow(geno)-1))
     r<-.Call("est_hmm_f2",
              geno,
+	     error,
              as.numeric(rf.vec),
              as.numeric(verbose),
              as.numeric(tol),
              PACKAGE = "onemap" )
-    names(r)<-c("rf", "loglike")
+    names(r)<-c("rf", "loglike", "probs")
     return(r)
 }
 
 # This function calls C++ routine for multipoint analysis (bc)
 ##' @useDynLib onemap
 ##' @import Rcpp
-est_map_hmm_bc<-function(geno, rf.vec=NULL, verbose=TRUE, tol=1e-6)
+est_map_hmm_bc<-function(geno, error, rf.vec=NULL, verbose=TRUE, tol=1e-6)
 {
     if(length(rf.vec) != (nrow(geno)-1))
         rf.vec = rep(0.1, (nrow(geno)-1))
     r<-.Call("est_hmm_bc",
              geno,
+	     error,
              as.numeric(rf.vec),
              as.numeric(verbose),
              as.numeric(tol),
              PACKAGE = "onemap" )
-    names(r)<-c("rf", "loglike")
+    names(r)<-c("rf", "loglike", "probs")
     return(r)
 }
 
@@ -164,19 +182,20 @@ est_map_hmm_bc<-function(geno, rf.vec=NULL, verbose=TRUE, tol=1e-6)
 ##' @useDynLib onemap
 ##' @import Rcpp
 ##' 
-est_map_hmm_out<-function(geno, type,  phase, rf.vec=NULL, verbose=TRUE, tol=1e-6)
+est_map_hmm_out<-function(geno, error, type,  phase, rf.vec=NULL, verbose=TRUE, tol=1e-6)
 {
   if(is.null(rf.vec))
     rf.vec<-rep(0.1, (nrow(geno)-1))
   r<-.Call("est_hmm_out",
            geno,
+	         error,
            as.numeric(type),
            as.numeric(phase),
            as.numeric(rf.vec),
            as.numeric(verbose),
            as.numeric(tol),
            PACKAGE = "onemap")
-  names(r)<-c("rf", "loglike")
+  names(r)<-c("rf", "loglike", "probs")
   return(r)
 }
 #end of the file

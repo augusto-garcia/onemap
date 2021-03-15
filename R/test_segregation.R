@@ -66,14 +66,14 @@ test_segregation_of_a_marker <- function(x, marker) {
       H0 <- "1:2:1"
     }
     else if (grepl("C.A",x$segr.type[marker])) {
-      if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
-      if (is.element(5,x$geno[,marker])) c2 <- count[names(count)==5] else c2 <- 0
+      if (is.element(2,x$geno[,marker])) c1 <- count[names(count)==2] else c1 <- 0
+      if (is.element(1,x$geno[,marker])) c2 <- count[names(count)==1] else c2 <- 0
       qui <- chisq.test(as.vector(c(c1,c2)), p=rev(p.c), correct = FALSE)
       H0 <- "3:1"
     }
     else if (grepl("D.B",x$segr.type[marker])) {
-      if (is.element(3,x$geno[,marker])) c1 <- count[names(count)==3] else c1 <- 0
-      if (is.element(4,x$geno[,marker])) c2 <- count[names(count)==4] else c2 <- 0
+      if (is.element(2,x$geno[,marker])) c1 <- count[names(count)==2] else c1 <- 0
+      if (is.element(1,x$geno[,marker])) c2 <- count[names(count)==1] else c2 <- 0
       qui <- chisq.test(as.vector(c(c1,c2)), p=rev(p.c), correct = FALSE)
       H0 <- "3:1"
     }
@@ -226,7 +226,7 @@ print.onemap_segreg_test <- function(x,...) {
 ##' # You can store the graphic in an object, then save it.
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' # g <- plot(BC.seg)
-##' # ggplot2::ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
+##' # ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
 ##'
 ##' data(onemap_example_out) # load OneMap's fake dataset for an outcrossing population
 ##' Out.seg <- test_segregation(onemap_example_out) # Applies chi-square tests
@@ -236,7 +236,7 @@ print.onemap_segreg_test <- function(x,...) {
 ##' # You can store the graphic in an object, then save it.
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' g <- plot(Out.seg)
-##' # ggplot2::ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
+##' # ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
 ##' @method plot onemap_segreg_test
 ##' @export
 plot.onemap_segreg_test <- function(x, order=TRUE,...) {

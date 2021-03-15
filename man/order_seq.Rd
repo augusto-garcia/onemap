@@ -14,7 +14,8 @@ order_seq(
   twopt.alg = c("rec", "rcd", "ser", "ug"),
   THRES = 3,
   touchdown = FALSE,
-  tol = 0.1
+  tol = 0.1,
+  rm_unlinked = FALSE
 )
 }
 \arguments{
@@ -51,6 +52,10 @@ to map more markers.}
 
 \item{tol}{tolerance number for the C routine, i.e., the value used to
 evaluate convergence of the EM algorithm.}
+
+\item{rm_unlinked}{When some pair of markers do not follow the linkage criteria, 
+if \code{TRUE} one of the markers is removed and returns a vector with remaining 
+marker numbers (useful for mds_onemap and map_avoid_unlinked functions).}
 }
 \value{
 An object of class \code{order}, which is a list containing the
