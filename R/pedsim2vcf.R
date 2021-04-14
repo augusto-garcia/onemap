@@ -9,12 +9,12 @@ globalVariables(c("read.table", "rnbinom", "rbinom"))
 #' 
 #' @param inputfile file .dat output from PedigreeSim software
 #' @param map.file file .map input in PedigreeSim software
-#' @param chrom.file file.chrom input in PedigreeSIm software
+#' @param chrom.file file.chrom input in PedigreeSim software
 #' @param out.file path to vcf output file
 #' @param mean.depth mean of the negative binomial distribution to generate depth counts
 #' @param disper.par dispersion parameter for negative binomial distribution
 #' @param mean.phred Sequencing error parameter
-#' @param chr.mb Chromossome size in mega base.
+#' @param chr.mb Chromosome size in mega base.
 #' @param method Choose negative binomial ("neg.binom"), poisson ("poisson") distributions or updog ("updog") model to simulate counts values
 #' @param miss.perc Percentage of missing data
 #' @param pos vector with the position of each marker. Use "cm" if you want to use mapfile position information.
@@ -391,6 +391,8 @@ pedsim2vcf <- function(inputfile=NULL,
                              "QUAL"=qual, "FILTER"=filter,"INFO"=info,"FORMAT"=format,vcf_format, stringsAsFactors = FALSE)
   
   vcf_vector <- apply(vcf_file_mks, 1, function(x) paste(x, collapse = "\t"))
+  # Remove empty space before position
+  vcf_vector <- gsub(pattern = " ", replacement = "",x = vcf_vector)
   
   header1 <- paste0(colnames(vcf_file_mks), collapse = "\t")
   header <- paste0("##fileformat=VCFv4.1", "\n", "##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">", '\n',
