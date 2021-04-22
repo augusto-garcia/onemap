@@ -6,7 +6,9 @@
 #' 
 #' @param vcfR.object object output from vcfR package
 #' @param onemap.object onemap object output from read_onemap, read_mapmaker or onemap_read_vcf function
-#' @param vcf.par vcf format field that contain alelle counts informations, usually AD and DPR
+#' @param vcf.par vcf format field that contain alelle counts informations, the implemented are: AD, DPR, GQ, PL. 
+#' AD and DPR return a list with allele depth information. GQ returns a matrix with error probability for each genotype. 
+#' PL return a data.frame with genotypes probabilities for every genotype. 
 #' @param parent1 parent 1 identification in vcfR object
 #' @param parent2 parent 2 identification in vcfR objetc
 #' @param f1 if your cross type is f2, you must define the F1 individual
@@ -22,12 +24,13 @@
 #' \item{n.ind}{total number of individuals in progeny.} \item{inds}{progeny individuals identification.}
 #' \item{mks}{markers identification.} \item{onemap.object}{same onemap.object inputed}
 #' 
+#' @import dplyr
 #' @author Cristiane Taniguti, \email{chtaniguti@@usp.br} 
 #' @export
 
 extract_depth <- function(vcfR.object=NULL,
                           onemap.object= NULL,
-                          vcf.par = c("GQ","AD", "DPR"),
+                          vcf.par = c("GQ","AD", "DPR, PL"),
                           parent1="P1",
                           parent2="P2",
                           f1="F1",
@@ -81,6 +84,11 @@ extract_depth <- function(vcfR.object=NULL,
     rm.mks <- NULL
     rm.ind <- NULL
   }
+  
+  if(vcf.par == "PL")
+    n.par <- sapply(strsplit(vcfR.object@gt[,1], split=":"), function(x) which(x =="PL"))
+  lengths <- sapply(strsplit(vcfR.object@gt[,1], split=":"), length)
+  n.par.diff <- unique(lengths) - unique(n.par)
   if(vcf.par=="GQ")
     n.par <- which(strsplit(vcfR.object@gt[1,1], split=":")[[1]]=="GQ")
   if(vcf.par=="AD")
@@ -101,19 +109,36 @@ extract_depth <- function(vcfR.object=NULL,
     if(vcf.par=="AD" | vcf.par=="DPR"){
       vcfR.object@gt[miss.num] <- paste0(rep("0,0",n.par),":", collapse = "")
       split.gt <- strsplit(vcfR.object@gt, split=":")
-    } else {vcfR.object@gt[miss.num] <- paste0(rep("0",n.par),":", collapse = "")}
+    } else if (vcf.par == "PL"){
+      vcfR.object@gt[miss.num] <- paste0(rep("0,0,0",n.par),":", collapse = "")
+    } else {
+      vcfR.object@gt[miss.num] <- paste0(rep("0",n.par),":", collapse = "")
+    }
   }
-  # Extracting choosed parameter matrix                                                                          
-  par_matrix <- matrix(unlist(lapply(split.gt,  "[", n.par)), nrow = N.MKs, ncol = N.IND+1)[,-1]
+  # Extracting chosen parameter matrix
   
+  if(vcf.par == "PL"){
+    genos <- sapply(split.gt, function(x) {
+      for(i in 1:length(unique(lengths))){ 
+        if(length(x) == unique(lengths)[i]){
+          y <- x[unique(lengths)[i]-n.par.diff[i]]
+        }
+      }
+      return(y)
+    })
+    par_matrix <- matrix(genos, nrow = N.MKs, ncol = N.IND+1)
+  } else {
+    par_matrix <- matrix(unlist(lapply(split.gt,  "[", n.par)), nrow = N.MKs, ncol = N.IND+1)[,-1]
+  }
   # Replacing missing data with compatible format                                                                
   if(length(which(par_matrix == ".")) > 0 | length(which(is.na(par_matrix))) > 0 ){
     if(vcf.par=="GQ") {
       par_matrix[which(par_matrix == ".")] <- NA
       par_matrix[which(is.na(par_matrix))] <- NA
-    }else{
+    } else if (vcf.par == "PL") { 
+      par_matrix[which(par_matrix == ".")] <- "0,0,0"
+    } else {
       par_matrix[which(par_matrix == ".")] <- "0,0"
-      par_matrix[which(is.na(par_matrix))]
     }
   }
   if(length(rm.mks)>0 & length(rm.ind)>0){
@@ -130,7 +155,6 @@ extract_depth <- function(vcfR.object=NULL,
   
   n.ind <- N.IND - length(rm.ind)
   n.mks <- N.MKs - length(rm.mks)
-  
   # The probabilities must be calculated if AD or DPR parameters were chosen                                    
   if(vcf.par=="AD" | vcf.par=="DPR"){
     ref_matrix <- matrix(as.numeric(unlist(lapply(strsplit(par_matrix, split = ","), "[[",1))), nrow = n.mks, ncol = n.ind)
@@ -144,9 +168,22 @@ extract_depth <- function(vcfR.object=NULL,
     rownames(error_matrix) <- IND[-idx]
     colnames(error_matrix) <- MKS
     return(error_matrix)
+  } else if (vcf.par == "PL") {
+    idx <- which(IND %in% c(parent1, parent2, f1))
+    probs <- par_matrix %>% .[,-1] %>% .[,-idx] %>% strsplit(., ",") %>% 
+      do.call(rbind, .) %>% apply(., 2,as.numeric) %>% 
+      apply(., 2, function(x) 10^(-x)/10) 
+    
+    sums <- apply(probs, 1, sum)
+    comb <- expand.grid(MKS, IND[-idx])
+    
+    # Probs sum 1
+    probs <- probs/sums 
+    rownames(probs) <- paste0(comb$Var1, "_", comb$Var2)
+    return(probs)
   }
   
-  if(vcf.par!="GQ"){
+  if(vcf.par!="GQ" | vcf.par!="PL"){
     if(vcf.par=="DPR"){
       size_matrix <- ref_matrix
       ref_matrix <- size_matrix - alt_matrix

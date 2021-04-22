@@ -19,7 +19,7 @@
 
 \item{col}{Color of parentes' homologous.}
 
-\item{position}{"split" or "stack"; if "split" (default) the parents' homologous are plotted separately. if "stack" the parents' homologous are plotted together.}
+\item{position}{"split" or "stack"; if "split" (default) the alleles' are plotted separately. if "stack" the parents' alleles are plotted together.}
 
 \item{show_markers}{logical; if  \code{TRUE}, the markers (default) are plotted.}
 

@@ -31,7 +31,7 @@ pedsim2vcf(
 
 \item{map.file}{file .map input in PedigreeSim software}
 
-\item{chrom.file}{file.chrom input in PedigreeSIm software}
+\item{chrom.file}{file.chrom input in PedigreeSim software}
 
 \item{out.file}{path to vcf output file}
 
@@ -43,7 +43,7 @@ pedsim2vcf(
 
 \item{p.mean.depth}{mean of the negative binomial distribution to generate depth counts for parents}
 
-\item{chr.mb}{Chromossome size in mega base.}
+\item{chr.mb}{Chromosome size in mega base.}
 
 \item{method}{Choose negative binomial ("neg.binom"), poisson ("poisson") distributions or updog ("updog") model to simulate counts values}
 

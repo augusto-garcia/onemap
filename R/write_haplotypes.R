@@ -16,7 +16,7 @@
 #######################################################################
 
 globalVariables(c("grp", "for.split", ".", "pos", "prob", "pos2", "homologs"))
-globalVariables(c("V1", "V2", "V3", "V4", "H1_P1", "H1_P2", "H2_P1", "H2_P2"))
+globalVariables(c("V1", "V2", "V3", "V4", "H1_A1", "H1_A2", "H2_A1", "H2_A2"))
 
 
 #' Generates data.frame with parents estimated haplotypes 
@@ -76,10 +76,10 @@ parents_haplotypes <- function(..., group_names=NULL){
         for (i in 1:length(input$seq.num))
           parents[i,] <- return_geno(input$data.name$segr.type[input$seq.num[i]],link.phases[i])
         out_dat_temp <- data.frame(group= group_names[z], mk.number = marnumbers, mk.names = marnames, dist = as.numeric(distances), 
-                                   P1_1 = parents[,1],
-                                   P1_2 = parents[,2],
-                                   P2_1 = parents[,3],
-                                   P2_2 = parents[,4])
+                                   A1_1 = parents[,1],
+                                   A1_2 = parents[,2],
+                                   A2_1 = parents[,3],
+                                   A2_2 = parents[,4])
         out_dat <- rbind(out_dat, out_dat_temp)
       }
       ## whithout diplotypes for other classes
@@ -103,8 +103,8 @@ parents_haplotypes <- function(..., group_names=NULL){
 #' @param group_names Names of the groups.
 #' 
 #' @return a data.frame information: individual (ind) and group (grp) ID, position in centimorgan (pos), 
-#' position adjusted for build graphic (pos2), f1 homologs (f1), progeny homologs (prog), 
-#' parents homologs (parents) IDs and genotypes probabilities (prob)
+#' group (grp), genotypes probabilities (prob), progeny homologs (homologs), and the alleles (alleles) 
+#' in that homolog and position. 
 #' 
 #' @import dplyr
 #' @import tidyr
@@ -165,10 +165,10 @@ progeny_haplotypes <- function(...,
     }
     
     probs <- probs %>%
-      mutate(H1_P1 = V1 + V2,
-             H1_P2 = V3 + V4,
-             H2_P1 = V2 + V4,
-             H2_P2 = V1 + V3) 
+      mutate(H1_A1 = V1 + V2,
+             H1_A2 = V3 + V4,
+             H2_A1 = V2 + V4,
+             H2_A2 = V1 + V3) 
     
     if(is(input.map[[1]]$data.name, "outcross")){
       cross <- "outcross"
@@ -186,27 +186,27 @@ progeny_haplotypes <- function(...,
     if (is(input.map[[1]]$data.name, c("backcross"))){
       cross <- "backcross"
       probs <- probs %>% 
-        mutate(H1_P1 = V1 + V2, # homozigote parent
-               H1_P2 = 0,
-               H2_P1 = V2, 
-               H2_P2 = V1) 
+        mutate(H1_A1 = V1 + V2, # homozigote parent
+               H1_A2 = 0,
+               H2_A1 = V2, 
+               H2_A2 = V1) 
       
     } else if (is(input.map[[1]]$data.name, c("riself", "risib"))){
       cross <- "rils"
       probs <- probs %>%
-        mutate(H1_P1 = V1,
-               H1_P2 = V2,
-               H2_P1 = V1,
-               H2_P2 = V2)
+        mutate(H1_A1 = V1,
+               H1_A2 = V2,
+               H2_A1 = V1,
+               H2_A2 = V2)
     }
   }
   
   probs <- probs %>% 
-    select(ind, grp, pos, H1_P1, H1_P2, H2_P1, H2_P2) %>% 
-    gather(homologs, prob, H1_P1, H1_P2, H2_P1, H2_P2) 
+    select(ind, grp, pos, H1_A1, H1_A2, H2_A1, H2_A2) %>% 
+    gather(homologs, prob, H1_A1, H1_A2, H2_A1, H2_A2) 
   
   new.col <- t(sapply(strsplit(probs$homologs, "_"), "[", 1:2))
-  colnames(new.col) <- c("homologs", "parents")
+  colnames(new.col) <- c("homologs", "alleles")
   
   probs <- cbind(probs, new.col)
   probs <- probs[,-4]
@@ -224,7 +224,7 @@ progeny_haplotypes <- function(...,
 ##' 
 ##' @param x object of class onemap_progeny_haplotypes
 ##' @param col Color of parentes' homologous.
-##' @param position "split" or "stack"; if "split" (default) the parents' homologous are plotted separately. if "stack" the parents' homologous are plotted together.
+##' @param position "split" or "stack"; if "split" (default) the alleles' are plotted separately. if "stack" the parents' alleles are plotted together.
 ##' @param show_markers logical; if  \code{TRUE}, the markers (default) are plotted.
 ##' @param main An overall title for the plot; default is \code{NULL}.
 ##' @param ncol number of columns of the facet_wrap
@@ -245,9 +245,9 @@ plot.onemap_progeny_haplotypes <- function(x,
                                            show_markers = TRUE, 
                                            main = "Genotypes", ncol=4, ...){
   
-  colors <- ifelse(is(x,"outcross"), "for.split", "parents")  
+  colors <- ifelse(is(x,"outcross"), "for.split", "alleles")  
   
-  probs <- cbind(x, for.split= paste0(x$homologs, "_", x$parents))
+  probs <- cbind(x, for.split= paste0(x$homologs, "_", x$alleles))
   
   probs <- probs %>% group_by(ind, grp, for.split) %>%
     do(rbind(.,.[nrow(.),])) %>%
@@ -332,27 +332,27 @@ vcf2progeny_haplotypes <- function(vcfR.object,
     colnames(GT_matrix) <- INDS
     rownames(GT_matrix) <- MKS
     
-    P1.idx <- grep(parent1, INDS)
-    P2.idx <- grep(parent2, INDS)
+    A1.idx <- grep(parent1, INDS)
+    A2.idx <- grep(parent2, INDS)
     
-    P1_1 <- sapply(strsplit(GT_matrix[CHROM.now,P1.idx], "[|]"), "[",1)
-    P1_2 <- sapply(strsplit(GT_matrix[CHROM.now,P1.idx], "[|]"), "[",2)
-    P2_1 <- sapply(strsplit(GT_matrix[CHROM.now,P2.idx], "[|]"), "[",1)
-    P2_2 <- sapply(strsplit(GT_matrix[CHROM.now,P2.idx], "[|]"), "[",2)
+    A1_1 <- sapply(strsplit(GT_matrix[CHROM.now,A1.idx], "[|]"), "[",1)
+    A1_2 <- sapply(strsplit(GT_matrix[CHROM.now,A1.idx], "[|]"), "[",2)
+    A2_1 <- sapply(strsplit(GT_matrix[CHROM.now,A2.idx], "[|]"), "[",1)
+    A2_2 <- sapply(strsplit(GT_matrix[CHROM.now,A2.idx], "[|]"), "[",2)
     
     progeny_haplotypes_obj_ind <- data.frame()
     for(ind in 1:length(ind.id)){
       ind.idx <- grep(ind.id[ind], INDS)
-      ind.number <- grep(ind.id[ind], INDS[-c(P1.idx, P2.idx)])
+      ind.number <- grep(ind.id[ind], INDS[-c(A1.idx, A2.idx)])
       ind_1 <- sapply(strsplit(GT_matrix[CHROM.now,ind.idx], "[|]"), "[",1)
       ind_2 <- sapply(strsplit(GT_matrix[CHROM.now,ind.idx], "[|]"), "[",2)
       
-      p.names <- c("P1", "P2", "P1", "P2")
+      p.names <- c("A1", "A2", "A1", "A2")
       Hs <-  rep(list(rep(NA, length(ind_1))),2)
       progeny_haplotypes_obj <- data.frame()
       for(w in 1:2){
         ref.frags<-rep(1, length(ind_1))
-        comp <- list(cbind(P1_1, P1_2, P2_1,P2_2,H1=ind_1, H2=ind_2))
+        comp <- list(cbind(A1_1, A1_2, A2_1,A2_2,H1=ind_1, H2=ind_2))
         idx.cum <- 1
         while(any(is.na(Hs[[w]]))){
           # count how many equal characters are consecutive
@@ -404,10 +404,10 @@ vcf2progeny_haplotypes <- function(vcfR.object,
                            pos = rep(POS, 2),
                            prob = rep(0, 2*num.mk),
                            homologs = rep(c("H1", "H2")[w], num.mk),
-                           parents = rep(rep(c("P1","P2"),each =num.mk)))
+                           alleles = rep(rep(c("A1","A2"),each =num.mk)))
         
         for(i in 1:length(Hs[[w]])){
-          df.H$prob[which(df.H$pos == POS[i] & df.H$parents == Hs[[w]][i])] <- 1
+          df.H$prob[which(df.H$pos == POS[i] & df.H$alleles == Hs[[w]][i])] <- 1
         }
         # bind homologs
         progeny_haplotypes_obj <- rbind(progeny_haplotypes_obj, df.H)
@@ -428,9 +428,8 @@ vcf2progeny_haplotypes <- function(vcfR.object,
 }
 
 
-#' By now only for outcrossing
-#' 
-#' Genotypes with same probability for two genotypes will be removed
+#' Count the number of break points considering the most likely genotypes estimated by the HMM.
+#' By now, only available for outcrossing and f2 intercross. Genotypes with same probability for two genotypes are removed.
 #' 
 #' @param x object of class onemap_progeny_haplotypes
 #' 
@@ -453,7 +452,7 @@ progeny_haplotypes_counts <- function(x){
   x <- x[order(x$ind, x$grp, x$prob, x$homologs,x$pos),]
   
   x <- x %>% group_by(ind, grp, homologs) %>%
-    mutate(seq = sequence(rle(as.character(parents))$length) == 1) %>%
+    mutate(seq = sequence(rle(as.character(alleles))$length) == 1) %>%
     summarise(counts = sum(seq) -1) %>% ungroup()
   
   class(x) <- c("onemap_progeny_haplotypes_counts", cross, "data.frame")
@@ -461,7 +460,7 @@ progeny_haplotypes_counts <- function(x){
 }
 
 
-globalVariables(c("counts", "colorRampPalette", "parents"))
+globalVariables(c("counts", "colorRampPalette", "alleles"))
 
 
 ##' Plot recombination breakpoints counts for each individual
@@ -487,9 +486,9 @@ plot.onemap_progeny_haplotypes_counts <- function(x,
                                                   ncol=NULL, ...){
   if(!is(x, "onemap_progeny_haplotypes_counts")) stop("Input need is not of class onemap_progeny_haplotyes_counts")
   p <- list()
-  if(by_homolog){ ## Bugfix! 
+  if(by_homolog){ 
     if(is.null(n.graphics) & is.null(ncol)){
-      n.ind <- dim(x)[1]
+      n.ind <- dim(x)[1]/2
       if(n.ind/25 <= 1) {
         n.graphics = 1
         ncol=1 
@@ -511,8 +510,8 @@ plot.onemap_progeny_haplotypes_counts <- function(x,
       lapply(., function(x) ggplot(x, aes(x=homologs, y=counts)) +
                geom_bar(stat="identity", aes(fill=grp)) + theme_minimal() + 
                coord_flip() + 
-               scale_fill_brewer(palette="Set1") +
-               facet_grid(ind~., switch = "y") +
+               scale_fill_manual(values=mycolors) +
+               facet_grid(ind ~ ., switch = "y") +
                theme(axis.title.y = element_blank(),
                      axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
                      strip.text.y.left = element_text(angle = 0)) + 
@@ -520,7 +519,7 @@ plot.onemap_progeny_haplotypes_counts <- function(x,
                ylim(0,y_lim_counts)
       )      
   } else {
-    x <- x %>% group_by(ind, grp) %>%
+    x <- x %>% ungroup %>% group_by(ind, grp) %>%
       summarise(counts = sum(counts))
     
     n.ind <- length(unique(x$ind))

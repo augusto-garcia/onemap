@@ -73,6 +73,7 @@ create_probs <- function(onemap.obj = NULL,
       error <- error$value
     }
     
+    # Check if is working with f2
     if(crosstype == "outcross" | crosstype == "f2"){
       prob <- matrix(NA, nrow=length(probs$value), ncol = 4)
       idx <- which(probs$value == 0)
@@ -91,7 +92,7 @@ create_probs <- function(onemap.obj = NULL,
       
       # B1
       idx <- which(probs$value == 1  & probs$type == 2)
-      prob[idx,] <- c(rep(1-error[idx],2), rep(error[idx]/2,2))
+      prob[idx,] <- c(rep(1-error[idx],2), rep(error[idx],2))
       idx <- which(probs$value == 2  & probs$type == 2)
       prob[idx,] <- c(rep(error[idx]/3,2), 1-error[idx], error[idx]/3)
       idx <- which(probs$value == 3  & probs$type == 2)
@@ -99,7 +100,7 @@ create_probs <- function(onemap.obj = NULL,
       
       # B2
       idx <- which(probs$value == 1  & probs$type == 3)
-      prob[idx,] <- c(1-error[idx], error[idx]/2, 1-error[idx], error[idx]/2)
+      prob[idx,] <- c(1-error[idx], error[idx], 1-error[idx], error[idx])
       idx <- which(probs$value == 2  & probs$type == 3)
       prob[idx,] <- c(error[idx]/3, 1-error[idx], rep(error[idx]/3,2))
       idx <- which(probs$value == 3  & probs$type == 3)
@@ -109,29 +110,29 @@ create_probs <- function(onemap.obj = NULL,
       idx <- which(probs$value == 1  & probs$type == 4)
       prob[idx,] <- c(1-error[idx], rep(error[idx]/3,3))
       idx <- which(probs$value == 2  & probs$type == 4)
-      prob[idx,] <- c(error[idx]/2, rep(1-error[idx],2), error[idx]/2)
+      prob[idx,] <- c(error[idx], rep(1-error[idx],2), error[idx])
       idx <- which(probs$value == 3  & probs$type == 4)
       prob[idx,] <- c(rep(error[idx]/3,3), 1-error[idx])
       
       # C
       idx <- which(probs$value == 1  & probs$type == 5)
-      prob[idx,] <- c(rep(1-error[idx],3), error[idx])
+      prob[idx,] <- c(rep((1-error[idx])/3,3), error[idx])
       idx <- which(probs$value == 2  & probs$type == 5)
       prob[idx,] <- c(rep(error[idx]/3,3), 1-error[idx])
       
       # D1
       idx <- which(probs$value == 1  & probs$type == 6)
-      prob[idx,] <- c(rep(1-error[idx],2), rep(error[idx]/2,2))
+      prob[idx,] <- c(rep(1-error[idx],2), rep(error[idx],2))
       idx <- which(probs$value == 2  & probs$type == 6)
-      prob[idx,] <- c(rep(error[idx]/2,2), rep(1-error[idx],2))
+      prob[idx,] <- c(rep(error[idx],2), rep(1-error[idx],2))
       idx <- which(probs$value == 3  & probs$type == 6)
       prob[idx,] <- 1
       
       # D2
       idx <- which(probs$value == 1  & probs$type == 7)
-      prob[idx,] <- c(1-error[idx], error[idx]/2, 1-error[idx], error[idx]/2)
+      prob[idx,] <- c(1-error[idx], error[idx], 1-error[idx], error[idx])
       idx <- which(probs$value == 2  & probs$type == 7)
-      prob[idx,] <- c(error[idx]/2, 1-error[idx], error[idx]/2, 1-error[idx])
+      prob[idx,] <- c(error[idx], 1-error[idx], error[idx], 1-error[idx])
       idx <- which(probs$value == 3  & probs$type == 7)
       prob[idx,] <- 1
       
@@ -272,6 +273,10 @@ create_probs <- function(onemap.obj = NULL,
         prob[idx,] <- 1
       }
     }
+    
+    # The values of estimated genotypes must sum 1
+    
+    
   }
   
   rownames(prob) <- paste0(probs$Var1, "_", probs$Var2)

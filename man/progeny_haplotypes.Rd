@@ -19,8 +19,8 @@ if FALSE (default) the genotype probability is plotted.}
 }
 \value{
 a data.frame information: individual (ind) and group (grp) ID, position in centimorgan (pos), 
-position adjusted for build graphic (pos2), f1 homologs (f1), progeny homologs (prog), 
-parents homologs (parents) IDs and genotypes probabilities (prob)
+group (grp), genotypes probabilities (prob), progeny homologs (homologs), and the alleles (alleles) 
+in that homolog and position.
 }
 \description{
 Generate data.frame with genotypes estimated by HMM and its probabilities

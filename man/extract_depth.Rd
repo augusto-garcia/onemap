@@ -7,7 +7,7 @@
 extract_depth(
   vcfR.object = NULL,
   onemap.object = NULL,
-  vcf.par = c("GQ", "AD", "DPR"),
+  vcf.par = c("GQ", "AD", "DPR, PL"),
   parent1 = "P1",
   parent2 = "P2",
   f1 = "F1",
@@ -20,7 +20,9 @@ extract_depth(
 
 \item{onemap.object}{onemap object output from read_onemap, read_mapmaker or onemap_read_vcf function}
 
-\item{vcf.par}{vcf format field that contain alelle counts informations, usually AD and DPR}
+\item{vcf.par}{vcf format field that contain alelle counts informations, the implemented are: AD, DPR, GQ, PL. 
+AD and DPR return a list with allele depth information. GQ returns a matrix with error probability for each genotype. 
+PL return a data.frame with genotypes probabilities for every genotype.}
 
 \item{parent1}{parent 1 identification in vcfR object}
 
