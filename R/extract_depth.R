@@ -85,10 +85,11 @@ extract_depth <- function(vcfR.object=NULL,
     rm.ind <- NULL
   }
   
-  if(vcf.par == "PL")
+  if(vcf.par == "PL"){
     n.par <- sapply(strsplit(vcfR.object@gt[,1], split=":"), function(x) which(x =="PL"))
-  lengths <- sapply(strsplit(vcfR.object@gt[,1], split=":"), length)
-  n.par.diff <- unique(lengths) - unique(n.par)
+    lengths <- sapply(strsplit(vcfR.object@gt[,1], split=":"), length)
+    n.par.diff <- unique(lengths) - unique(n.par)
+  }
   if(vcf.par=="GQ")
     n.par <- which(strsplit(vcfR.object@gt[1,1], split=":")[[1]]=="GQ")
   if(vcf.par=="AD")
