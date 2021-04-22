@@ -30,7 +30,7 @@
 
 extract_depth <- function(vcfR.object=NULL,
                           onemap.object= NULL,
-                          vcf.par = c("GQ","AD", "DPR, PL"),
+                          vcf.par = c("GQ","AD", "DPR, PL", "GL"),
                           parent1="P1",
                           parent2="P2",
                           f1="F1",
@@ -85,8 +85,8 @@ extract_depth <- function(vcfR.object=NULL,
     rm.ind <- NULL
   }
   
-  if(vcf.par == "PL"){
-    n.par <- sapply(strsplit(vcfR.object@gt[,1], split=":"), function(x) which(x =="PL"))
+  if(vcf.par == "PL" | vcf.par == "GL"){
+    n.par <- sapply(strsplit(vcfR.object@gt[,1], split=":"), function(x) which(x =="PL" | x =="GL"))
     lengths <- sapply(strsplit(vcfR.object@gt[,1], split=":"), length)
     n.par.diff <- unique(lengths) - unique(n.par)
   }
@@ -110,7 +110,7 @@ extract_depth <- function(vcfR.object=NULL,
     if(vcf.par=="AD" | vcf.par=="DPR"){
       vcfR.object@gt[miss.num] <- paste0(rep("0,0",n.par),":", collapse = "")
       split.gt <- strsplit(vcfR.object@gt, split=":")
-    } else if (vcf.par == "PL"){
+    } else if (vcf.par == "PL" | vcf.par == "GL"){
       vcfR.object@gt[miss.num] <- paste0(rep("0,0,0",n.par),":", collapse = "")
     } else {
       vcfR.object@gt[miss.num] <- paste0(rep("0",n.par),":", collapse = "")
@@ -118,7 +118,7 @@ extract_depth <- function(vcfR.object=NULL,
   }
   # Extracting chosen parameter matrix
   
-  if(vcf.par == "PL"){
+  if(vcf.par == "PL" | vcf.par == "GL"){
     genos <- sapply(split.gt, function(x) {
       for(i in 1:length(unique(lengths))){ 
         if(length(x) == unique(lengths)[i]){
@@ -136,7 +136,7 @@ extract_depth <- function(vcfR.object=NULL,
     if(vcf.par=="GQ") {
       par_matrix[which(par_matrix == ".")] <- NA
       par_matrix[which(is.na(par_matrix))] <- NA
-    } else if (vcf.par == "PL") { 
+    } else if (vcf.par == "PL" | vcf.par == "GL") { 
       par_matrix[which(par_matrix == ".")] <- "0,0,0"
     } else {
       par_matrix[which(par_matrix == ".")] <- "0,0"
@@ -169,7 +169,7 @@ extract_depth <- function(vcfR.object=NULL,
     rownames(error_matrix) <- IND[-idx]
     colnames(error_matrix) <- MKS
     return(error_matrix)
-  } else if (vcf.par == "PL") {
+  } else if (vcf.par == "PL" | vcf.par == "GL") {
     idx <- which(IND %in% c(parent1, parent2, f1))
     probs <- par_matrix %>% .[,-1] %>% .[,-idx] %>% strsplit(., ",") %>% 
       do.call(rbind, .) %>% apply(., 2,as.numeric) %>% 
