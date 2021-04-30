@@ -16,7 +16,7 @@
 #######################################################################
 
 globalVariables(c("grp", "for.split", ".", "pos", "prob", "pos2", "homologs"))
-globalVariables(c("V1", "V2", "V3", "V4", "H1_A1", "H1_A2", "H2_A1", "H2_A2"))
+globalVariables(c("V1", "V2", "V3", "V4", "P1_H1", "P1_H2", "P2_H1", "P2_H2"))
 
 
 #' Generates data.frame with parents estimated haplotypes 
@@ -103,7 +103,7 @@ parents_haplotypes <- function(..., group_names=NULL){
 #' @param group_names Names of the groups.
 #' 
 #' @return a data.frame information: individual (ind) and group (grp) ID, position in centimorgan (pos), 
-#' group (grp), genotypes probabilities (prob), progeny homologs (homologs), and the alleles (alleles) 
+#' group (grp), genotypes probabilities (prob), parent (homologs), and the parents homologs (homologs) 
 #' in that homolog and position. 
 #' 
 #' @import dplyr
@@ -165,10 +165,10 @@ progeny_haplotypes <- function(...,
     }
     
     probs <- probs %>%
-      mutate(H1_A1 = V1 + V2,
-             H1_A2 = V3 + V4,
-             H2_A1 = V2 + V4,
-             H2_A2 = V1 + V3) 
+      mutate(P1_H1 = V1 + V2,
+             P1_H2 = V3 + V4,
+             P2_H1 = V2 + V4,
+             P2_H2 = V1 + V3) 
     
     if(is(input.map[[1]]$data.name, "outcross")){
       cross <- "outcross"
@@ -186,27 +186,27 @@ progeny_haplotypes <- function(...,
     if (is(input.map[[1]]$data.name, c("backcross"))){
       cross <- "backcross"
       probs <- probs %>% 
-        mutate(H1_A1 = V1 + V2, # homozigote parent
-               H1_A2 = 0,
-               H2_A1 = V2, 
-               H2_A2 = V1) 
+        mutate(P1_H1 = V1 + V2, # homozigote parent
+               P1_H2 = 0,
+               P2_H1 = V2, 
+               P2_H2 = V1) 
       
     } else if (is(input.map[[1]]$data.name, c("riself", "risib"))){
       cross <- "rils"
       probs <- probs %>%
-        mutate(H1_A1 = V1,
-               H1_A2 = V2,
-               H2_A1 = V1,
-               H2_A2 = V2)
+        mutate(P1_H1 = V1,
+               P1_H2 = V2,
+               P2_H1 = V1,
+               P2_H2 = V2)
     }
   }
   
   probs <- probs %>% 
-    select(ind, grp, pos, H1_A1, H1_A2, H2_A1, H2_A2) %>% 
-    gather(homologs, prob, H1_A1, H1_A2, H2_A1, H2_A2) 
+    select(ind, grp, pos, P1_H1, P1_H2, P2_H1, P2_H2) %>% 
+    gather(parents, prob, P1_H1, P1_H2, P2_H1, P2_H2) 
   
-  new.col <- t(sapply(strsplit(probs$homologs, "_"), "[", 1:2))
-  colnames(new.col) <- c("homologs", "alleles")
+  new.col <- t(sapply(strsplit(probs$parents, "_"), "[", 1:2))
+  colnames(new.col) <- c("parents", "homologs")
   
   probs <- cbind(probs, new.col)
   probs <- probs[,-4]
@@ -247,7 +247,7 @@ plot.onemap_progeny_haplotypes <- function(x,
   
   colors <- ifelse(is(x,"outcross"), "for.split", "alleles")  
   
-  probs <- cbind(x, for.split= paste0(x$homologs, "_", x$alleles))
+  probs <- cbind(x, for.split= paste0(x$parents, "_", x$homologs))
   
   probs <- probs %>% group_by(ind, grp, for.split) %>%
     do(rbind(.,.[nrow(.),])) %>%
@@ -267,8 +267,8 @@ plot.onemap_progeny_haplotypes <- function(x,
   else p <- p + scale_color_manual(values = rev(col))
   
   if(position == "stack"){
-    p <- p + geom_line(aes(x = pos2, y = homologs), size = ifelse(show_markers, 4, 5)) + labs(y = "homologs")
-    if(show_markers) p <- p + geom_point(aes(y = homologs), size = 5, stroke = 2, na.rm = T, shape = "|")
+    p <- p + geom_line(aes(x = pos2, y = parents), size = ifelse(show_markers, 4, 5)) + labs(y = "parents")
+    if(show_markers) p <- p + geom_point(aes(y = parents), size = 5, stroke = 2, na.rm = T, shape = "|")
   } 
   if(position == "split"){
     p <- p + geom_line(aes(x = pos2, y = for.split), size = ifelse(show_markers, 4, 5))
@@ -403,8 +403,8 @@ vcf2progeny_haplotypes <- function(vcfR.object,
                            grp = rep(CHROM[CHROM.now], 2),
                            pos = rep(POS, 2),
                            prob = rep(0, 2*num.mk),
-                           homologs = rep(c("H1", "H2")[w], num.mk),
-                           alleles = rep(rep(c("A1","A2"),each =num.mk)))
+                           parents = rep(c("P1", "P2")[w], num.mk),
+                           homologs = rep(rep(c("H1","H2"),each =num.mk)))
         
         for(i in 1:length(Hs[[w]])){
           df.H$prob[which(df.H$pos == POS[i] & df.H$alleles == Hs[[w]][i])] <- 1
@@ -449,9 +449,9 @@ progeny_haplotypes_counts <- function(x){
   }
   
   x <- x[which(x$prob == 1),]
-  x <- x[order(x$ind, x$grp, x$prob, x$homologs,x$pos),]
+  x <- x[order(x$ind, x$grp, x$prob, x$parents,x$pos),]
   
-  x <- x %>% group_by(ind, grp, homologs) %>%
+  x <- x %>% group_by(ind, grp, parents) %>%
     mutate(seq = sequence(rle(as.character(alleles))$length) == 1) %>%
     summarise(counts = sum(seq) -1) %>% ungroup()
   
@@ -507,7 +507,7 @@ plot.onemap_progeny_haplotypes_counts <- function(x,
     div.n.graphics <- div.n.graphics[1:size]
     p <- x %>% mutate(div.n.graphics = div.n.graphics) %>%
       split(., .$div.n.graphics) %>%
-      lapply(., function(x) ggplot(x, aes(x=homologs, y=counts)) +
+      lapply(., function(x) ggplot(x, aes(x=parents, y=counts)) +
                geom_bar(stat="identity", aes(fill=grp)) + theme_minimal() + 
                coord_flip() + 
                scale_fill_manual(values=mycolors) +
