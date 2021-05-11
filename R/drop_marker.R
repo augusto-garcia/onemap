@@ -50,8 +50,8 @@
 ##' @seealso \code{\link[onemap]{add_marker}}
 ##'
 ##' @examples
-##' data(example_out)
-##' twopt <- rf_2pts(example_out)
+##' data(onemap_example_out)
+##' twopt <- rf_2pts(onemap_example_out)
 ##' all_mark <- make_seq(twopt,"all")
 ##' groups <- group(all_mark)
 ##' (LG1 <- make_seq(groups,1))
@@ -61,7 +61,7 @@
 
 drop_marker<-function(input.seq, mrks)
   {
-    if (!any(class(input.seq) == "sequence"))
+    if (!is(input.seq,"sequence"))
       stop(deparse(substitute(input.seq)), " is not an object of class 'sequence'")
     seq.num<-input.seq$seq.num;count<-numeric()
     for(i in 1:length(mrks)){
@@ -76,5 +76,5 @@ drop_marker<-function(input.seq, mrks)
       warning(msg, domain=NA)
       mrks<-mrks[-count]
     }
-    return(make_seq(get(input.seq$twopt),seq.num,twopt=input.seq$twopt))
+    return(make_seq(input.seq$twopt,seq.num,twopt=input.seq$twopt))
   }

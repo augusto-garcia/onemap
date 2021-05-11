@@ -45,8 +45,8 @@ using \code{NULL}, the new values override the ones in object
 }
 \examples{
 
-  data(example_out)
-  twopts <- rf_2pts(example_out)
+  data(onemap_example_out)
+  twopts <- rf_2pts(onemap_example_out)
 
   all.data <- make_seq(twopts,"all")
   link_gr <- group(all.data)

@@ -4,7 +4,13 @@
 \alias{map}
 \title{Construct the linkage map for a sequence of markers}
 \usage{
-map(input.seq, tol = 1e-04, verbose = FALSE)
+map(
+  input.seq,
+  tol = 1e-04,
+  verbose = FALSE,
+  rm_unlinked = FALSE,
+  phase_cores = 1
+)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}
@@ -13,6 +19,12 @@ map(input.seq, tol = 1e-04, verbose = FALSE)
 convergence.}
 
 \item{verbose}{If \code{TRUE}, print tracing information.}
+
+\item{rm_unlinked}{When some pair of markers do not follow the linkage criteria, 
+if \code{TRUE} one of the markers is removed and returns a vector with remaining 
+marker numbers (useful for mds_onemap and map_avoid_unlinked functions).}
+
+\item{phase_cores}{number of computer cores to be used in analysis}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the
@@ -43,15 +55,16 @@ same in both parents. Hidden Markov chain codes adapted from Broman et al.
 (2008) were used.
 }
 \examples{
-
-  data(example_out)
-  twopt <- rf_2pts(example_out)
+\dontrun{
+  data(onemap_example_out)
+  twopt <- rf_2pts(onemap_example_out)
 
   markers <- make_seq(twopt,c(30,12,3,14,2)) # correct phases
   map(markers)
 
   markers <- make_seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
   map(markers)
+  }
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
@@ -79,6 +92,7 @@ sex-specific differences. \emph{Genetical Research} 79: 85-96
 }
 \author{
 Adapted from Karl Broman (package 'qtl') by Gabriel R A Margarido,
-\email{gramarga@usp.br} and Marcelo Mollinari, \email{mmollina@gmail.com}
+\email{gramarga@usp.br} and Marcelo Mollinari, \email{mmollina@gmail.com},
+with minor changes by Cristiane Taniguti and Bastian Schiffthaler
 }
 \keyword{utilities}

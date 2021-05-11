@@ -1,7 +1,14 @@
+^Meta$
+^doc$
 todo
 copying
 ^\.travis\.yml$
 ^.*\.Rproj$
 ^NEWS\.md$
-
+^vignettes_highres$
 ^\.Rproj\.user$
+
+^README.md
+^vignettes_highres
+Dockerfile
+

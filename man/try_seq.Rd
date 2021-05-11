@@ -48,8 +48,8 @@ the original linkage map unaltered.
 
 \dontrun{
   #outcrossing example
-  data(example_out)
-  twopt <- rf_2pts(example_out)
+  data(onemap_example_out)
+  twopt <- rf_2pts(onemap_example_out)
   markers <- make_seq(twopt,c(2,3,12,14))
   markers.comp <- compare(markers)
   base.map <- make_seq(markers.comp,1)

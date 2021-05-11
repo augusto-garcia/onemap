@@ -50,30 +50,31 @@
 ##' @keywords utilities
 ##' @examples
 ##'
-##'   data(example_out)
+##'   data(onemap_example_out)
 ##'
-##'   twopts <- rf_2pts(example_out,LOD=3,max.rf=0.5) # perform two-point analyses
+##'   twopts <- rf_2pts(onemap_example_out,LOD=3,max.rf=0.5) # perform two-point analyses
 ##'   twopts
 ##'
 ##'   print(twopts,c("M1","M2")) # detailed results for markers 1 and 2
 ##'@export
 rf_2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE) {
     ## checking for correct object
-    if(!any(c("onemap", "outcross", "f2", "backcross", "riself", "risib") %in% class(input.obj)))
+    if(!is(input.obj, c("onemap", "outcross", "f2", "backcross", "riself", "risib")))
         stop(deparse(substitute(input.obj))," is not an object of class 'onemap'.")
     if (input.obj$n.mar<2) stop("there must be at least two markers to proceed with analysis")
     ## creating variables (result storage and progress output)
-    if(("outcross" %in% class(input.obj)))
+    if(is(input.obj,"outcross"))
         r<-est_rf_out(geno = input.obj$geno, seg_type = input.obj$segr.type.num, nind = input.obj$n.ind, verbose = verbose)
-    else if(("f2" %in% class(input.obj)))
-        r<-est_rf_f2(geno = input.obj$geno, seg_type = input.obj$segr.type.num, nind = input.obj$n.ind, verbose = verbose)
-    else if(("backcross" %in% class(input.obj)))
+    else if(is(input.obj, "f2"))
+        r<-est_rf_out(geno = input.obj$geno, seg_type = input.obj$segr.type.num, nind = input.obj$n.ind, verbose = verbose)
+    else if(is(input.obj,"backcross"))
         r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=0, verbose = verbose)
-    else if(("riself" %in% class(input.obj)))
+    else if(is(input.obj,"riself"))
         r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=1, verbose = verbose)
-    else if(("risib" %in% class(input.obj)))
+    else if(is(input.obj, "risib"))
         r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=2, verbose = verbose)
-    structure(list(data.name=as.character(sys.call())[2], n.mar=input.obj$n.mar, LOD=LOD, max.rf=max.rf,
+        
+    structure(list(data.name= input.obj, n.mar=input.obj$n.mar, LOD=LOD, max.rf=max.rf,
                    input=input.obj$input, CHROM = input.obj$CHROM, POS= input.obj$POS, analysis=r),
               class = c("rf_2pts", class(input.obj)[2]))
 }
@@ -116,7 +117,7 @@ print.rf_2pts <- function(x, mrk=NULL,...) {
       ## checking if markers exist and converting character to numeric
       if(length(mrk)!=2)
           stop(deparse(substitute(mrk))," must be a pair of markers")
-      if(is(x, "f2") || is(x, "backcross") || is(x, "risib") || is(x, "riself"))
+      if(is(x, "backcross") || is(x, "risib") || is(x, "riself"))
       {
           if (is.character(mrk[1]) && is.character(mrk[2])) {
               mrk1name<-mrk[1]
@@ -155,7 +156,7 @@ print.rf_2pts <- function(x, mrk=NULL,...) {
           names(output)<-c("rf","LOD")
           print(output)
       }
-    else if(is(x, "outcross"))
+    else if(is(x, "outcross") || is(x,"f2"))
     {
         if (is.character(mrk[1]) && is.character(mrk[2])) {
             mrk1name<-mrk[1]

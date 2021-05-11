@@ -7,7 +7,7 @@
 suggest_lod(x)
 }
 \arguments{
-\item{x}{an object of class \code{onemap}}
+\item{x}{an object of class \code{sequence} or \code{onemap}}
 }
 \value{
 the suggested LOD to be used for testing linkage
@@ -28,7 +28,7 @@ This can be seen as just an initial approximation to help users to select a LOD 
 point tests.
 }
 \examples{
-data(example_bc) # Loads a fake backcross dataset installed with onemap
-suggest_lod(example_bc) # An value that should be used to start the analysis
+data(onemap_example_bc) # Loads a fake backcross dataset installed with onemap
+suggest_lod(onemap_example_bc) # An value that should be used to start the analysis
 
 }

@@ -4,12 +4,12 @@
 \alias{read_mapmaker}
 \title{Read data from a Mapmaker raw file}
 \usage{
-read_mapmaker(dir, file)
+read_mapmaker(file = NULL, dir = NULL)
 }
 \arguments{
-\item{dir}{directory where the input file is located.}
-
 \item{file}{the name of the input file which contains the data to be read.}
+
+\item{dir}{directory where the input file is located.}
 }
 \value{
 An object of class \code{onemap}, i.e., a list with the following
@@ -17,11 +17,9 @@ components: \item{geno}{a matrix with integers indicating the genotypes
 read for each marker in \code{onemap} fashion. Each column contains data
 for a marker and each row represents an individual.}
 
-\item{geno.mmk}{ a matrix with
-integers indicating the genotypes read for each marker in
 \code{MAPMAKER/EXP} fashion, i.e., 1, 2, 3: AA, AB, BB, respectively; 3, 4:
 BB, not BB, respectively; 1, 5: AA, not AA, respectively. Each column
-contains data for a marker and each row represents an individual.}
+contains data for a marker and each row represents an individual.
 
 \item{n.ind}{number of individuals.} \item{n.mar}{number of markers.}
 \item{segr.type}{a vector with the segregation type of each marker, as
@@ -63,7 +61,7 @@ manual. \emph{A Whitehead Institute for Biomedical Research Technical
 Report}.
 }
 \seealso{
-\code{mapmaker_example_bc} and \code{mapmaker_example_f2} directory in the
+\code{mapmaker_example_bc} and \code{mapmaker_example_f2} raw files in the
 package source.
 }
 \author{

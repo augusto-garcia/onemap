@@ -9,3 +9,6 @@ onemap.Rproj
 *.cro
 *.map
 *.bak
+*.Rproj
+Meta
+new_find_bins

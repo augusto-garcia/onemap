@@ -4,7 +4,16 @@
 \alias{ug}
 \title{Unidirectional Growth}
 \usage{
-ug(input.seq, LOD = 0, max.rf = 0.5, tol = 1e-04)
+ug(
+  input.seq,
+  LOD = 0,
+  max.rf = 0.5,
+  tol = 1e-04,
+  rm_unlinked = TRUE,
+  size = NULL,
+  overlap = NULL,
+  phase_cores = 1
+)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}
@@ -17,6 +26,16 @@ value above.}
 
 \item{tol}{tolerance for the C routine, i.e., the value used to evaluate
 convergence.}
+
+\item{rm_unlinked}{When some pair of markers do not follow the linkage criteria, 
+if \code{TRUE} one of the markers is removed and ug is performed again.}
+
+\item{size}{The center size around which an optimum is to be searched}
+
+\item{overlap}{The desired overlap between batches}
+
+\item{phase_cores}{The number of parallel processes to use when estimating
+the phase of a marker. (Should be no more than 4)}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the
@@ -50,8 +69,8 @@ using the multipoint approach (function \code{\link[onemap]{map}}).
 
 \dontrun{
   #outcross example
-  data(example_out)
-  twopt <- rf_2pts(example_out)
+  data(onemap_example_out)
+  twopt <- rf_2pts(onemap_example_out)
   all_mark <- make_seq(twopt,"all")
   groups <- group(all_mark)
   LG1 <- make_seq(groups,1)

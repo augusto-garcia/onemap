@@ -4,8 +4,7 @@
 \alias{make_seq}
 \title{Create a sequence of markers}
 \usage{
-make_seq(input.obj, arg = NULL, phase = NULL, data.name = NULL,
-  twopt = NULL)
+make_seq(input.obj, arg = NULL, phase = NULL, data.name = NULL, twopt = NULL)
 }
 \arguments{
 \item{input.obj}{an object of class \code{onemap}, \code{rf_2pts},
@@ -75,8 +74,8 @@ Makes a sequence of markers based on an object of another type.
 \examples{
 
 \dontrun{
-  data(example_out)
-  twopt <- rf_2pts(example_out)
+  data(onemap_example_out)
+  twopt <- rf_2pts(onemap_example_out)
 
   all_mark <- make_seq(twopt,"all")
   all_mark <- make_seq(twopt,1:30) # same as above, for this data set

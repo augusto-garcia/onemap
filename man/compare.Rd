@@ -54,8 +54,8 @@ same in both parents. Hidden Markov chain codes adapted from Broman et al.
 
 \dontrun{
   #outcrossing example
-  data(example_out)
-  twopt <- rf_2pts(example_out)
+  data(onemap_example_out)
+  twopt <- rf_2pts(onemap_example_out)
   markers <- make_seq(twopt,c(12,14,15,26,28))
   (markers.comp <- compare(markers))
   (markers.comp <- compare(markers,verbose=TRUE))

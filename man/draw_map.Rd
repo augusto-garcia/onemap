@@ -4,8 +4,14 @@
 \alias{draw_map}
 \title{Draw a genetic map}
 \usage{
-draw_map(map.list, horizontal = FALSE, names = FALSE, grid = FALSE,
-  cex.mrk = 1, cex.grp = 0.75)
+draw_map(
+  map.list,
+  horizontal = FALSE,
+  names = FALSE,
+  grid = FALSE,
+  cex.mrk = 1,
+  cex.grp = 0.75
+)
 }
 \arguments{
 \item{map.list}{a map, i.e. an object of class \code{sequence} with a
@@ -32,8 +38,8 @@ Provides a simple draw of a genetic map.
 
 \dontrun{
  #outcross example
-  data(example_out)
-  twopt <- rf_2pts(example_out)
+  data(onemap_example_out)
+  twopt <- rf_2pts(onemap_example_out)
   lg<-group(make_seq(twopt, "all"))
   maps<-vector("list", lg$n.groups)
   for(i in 1:lg$n.groups)

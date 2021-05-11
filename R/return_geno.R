@@ -161,6 +161,30 @@ function(segr.type, link.phases) {
                   '-1.1'  = return(c("o","o","a","o")),
                   '-1.-1' = return(c("o","o","o","a"))
                   )
+         },
+         'C.A' = {
+           switch(EXPR=link.phases,
+                  '1.1'   = return(c("a","o","o","o")),
+                  '1.-1'  = return(c("a","o","o","o")),
+                  '-1.1'  = return(c("o","a","o","o")),
+                  '-1.-1' = return(c("o","a","o","o"))
+           )
+         },
+         'D.B' = {
+           switch(EXPR=link.phases,
+                  '1.1'   = return(c("o","o","a","o")),
+                  '1.-1'  = return(c("o","o","o","a")),
+                  '-1.1'  = return(c("o","o","a","o")),
+                  '-1.-1' = return(c("o","o","o","a"))
+           )
+         },
+         'A.H.B' = {
+           switch(EXPR=link.phases,
+                  '1.1'   = return(c("a","b","a","b")),
+                  '1.-1'  = return(c("a","b","b","a")),
+                  '-1.1'  = return(c("b","a","a","b")),
+                  '-1.-1' = return(c("b","a","b","a"))
+           )
          }
          )
 }

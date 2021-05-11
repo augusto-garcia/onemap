@@ -46,7 +46,7 @@ RcppExport SEXP est_rf_f2_wrap(SEXP geno_R, SEXP mrk_R, SEXP segreg_type_R, SEXP
   int n_ind = Rcpp::as<int>(n_ind_R);
   int verbose = Rcpp::as<int>(verbose_R);
   int mrk = Rcpp::as<int>(mrk_R);
-  Rcpp::NumericVector segreg_type = Rcpp::as<Rcpp::NumericVector>(segreg_type_R);
+  Rcpp::IntegerVector segreg_type = Rcpp::as<Rcpp::IntegerVector>(segreg_type_R);
   Rcpp::NumericVector geno = Rcpp::as<Rcpp::NumericVector>(geno_R);
   NumericMatrix z = est_rf_f2(geno, mrk, segreg_type, n_ind, verbose);
   return(wrap(z));
@@ -54,7 +54,7 @@ RcppExport SEXP est_rf_f2_wrap(SEXP geno_R, SEXP mrk_R, SEXP segreg_type_R, SEXP
 
 Rcpp::NumericMatrix est_rf_f2(Rcpp::NumericVector geno, 
 			      int mrk, 
-			      Rcpp::NumericVector segreg_type, 
+			      Rcpp::IntegerVector segreg_type, 
 			      int n_ind, int verbose)
 {
   int n_mar=((int)geno.size()/n_ind), k1, k2;

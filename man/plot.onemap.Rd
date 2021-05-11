@@ -33,13 +33,14 @@ pattern.
 \examples{
 
 \dontrun{
-data(example_bc) # Loads a fake backcross dataset installed with onemap
-plot(example_bc) # This will show you the graph
+# library(ggplot2)
+data(onemap_example_bc) # Loads a fake backcross dataset installed with onemap
+plot(onemap_example_bc) # This will show you the graph
 
 # You can store the graphic in an object, then save it with a number of properties
 # For details, see the help of ggplot2's function ggsave()
-g <- plot(example_bc)
-ggplot2::ggsave("MyRawData_bc.jpg", g, width=7, height=4, dpi=600)
+g <- plot(onemap_example_bc)
+# ggsave("MyRawData_bc.jpg", g, width=7, height=4, dpi=600)
 
 data(onemap_example_f2) # Loads a fake backcross dataset installed with onemap
 plot(onemap_example_f2) # This will show you the graph
@@ -47,16 +48,16 @@ plot(onemap_example_f2) # This will show you the graph
 # You can store the graphic in an object, then save it with a number of properties
 # For details, see the help of ggplot2's function ggsave()
 g <- plot(onemap_example_f2)
-ggplot2::ggsave("MyRawData_f2.jpg", g, width=7, height=4, dpi=600)
+# ggsave("MyRawData_f2.jpg", g, width=7, height=4, dpi=600)
 
-data(example_out) # Loads a fake full-sib dataset installed with onemap
-plot(example_out) # This will show you the graph for all markers
-plot(example_out, all=FALSE) # This will show you the graph splitted for marker types
+data(onemap_example_out) # Loads a fake full-sib dataset installed with onemap
+plot(onemap_example_out) # This will show you the graph for all markers
+plot(onemap_example_out, all=FALSE) # This will show you the graph splitted for marker types
 
 # You can store the graphic in an object, then save it.
 # For details, see the help of ggplot2's function ggsave()
-g <- plot(example_out, all=FALSE)
-ggplot2::ggsave("MyRawData_out.jpg", g, width=9, height=4, dpi=600)
+g <- plot(onemap_example_out, all=FALSE)
+# ggsave("MyRawData_out.jpg", g, width=9, height=4, dpi=600)
 }
 
 }

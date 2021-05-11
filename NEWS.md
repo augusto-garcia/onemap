@@ -55,4 +55,70 @@
 * rf_graph_table updated with ggplot2 and plotly
 * NAMESPACE automated with roxygen2
 
+# onemap 2.1.1004
+
+* write_onemap_raw function
+
+# onemap 2.1.1005
+
+* Vignette updated
+
+# onemap 2.1.1006
+
+* vcf2raw as defunct
+
+# onemap 2.1.1007
+
+* draw_map2 function
+* Vignette update
+
+# onemap 2.1.1008
+
+* mds_onemap function
+* Vignette update
+
+# onemap.2.1.2
+
+* Submitted to CRAN
+
+# onemap 2.1.2001
+
+* Adapt compare to rils and backcross
+
+# onemap 2.1.3
+
+* draw_map2 now receives data.frames
+* Changing class functions to is
+* Adapt try_seq to rils and backcross
+* onemap_read_vcfR also accept phased VCF
+* Submitted to CRAN
+
+# onemap 2.2.0
+
+* split_onemap function to split onemap objects
+* filter_missing function to filter markers in onemap object by missing data
+* map parallelized with Batchmap method
+* Option rm_unlinked in map to remove markers which not reach the linkage criterias when estimating genetic distances by HMM
+* All ordering algorithms now presents the possibility to parallelize the last step (map) and remove automatically unlinked markers and repeat the ordering procedure
+* suggest_lod function now works also with sequence objects
+* Remove argument hmm from mds_onemap
+* Solve numerical problems with small negative LOD values in rf_2pts 
+* Update all RDatas to new format and compressed form
+* Function map_avoid_unlinked to automatically remove the unlinked markers and restart the map
+* create_depths_profile plots allele counts and genotypes from vcf, onemap and errors
+* runpedsim  wrapper function for PedigreeSim software
+* pedsim2raw converts PedigreeSim outputs to onemap raw file
+* pedsim2vcf converts PedigreeSim outputs to VCF file simulating counts with updog or negative binomial
+* Replace all get() by nothing
+* Export parents and progeny haplotypes with write_haplotypes.R
+* Draw graphics for progeny haplotypes
+* F2 intercross populations now uses the same HMM than outcrossing populations. Modification needed to correct infer dominant markers and also to export progeny haplotypes.
+* Function vcf2progeny_haplotypes to convert phased VCF in onemap_progeny_haplotypes object. It make possible to draw the haplotypes for phased VCFs.
+* Function seq_by_type split sequence by marker type
+* Internal function map_save_ram creates new onemap object for only the evaluated sequence and, after finished process that require too much RAM memory, it return the complete onemap object to user. This save RAM memory in parallelization process.
+* Vignettes update
+* Documentation update
+
+
+
 

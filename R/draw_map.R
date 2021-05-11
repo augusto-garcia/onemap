@@ -39,8 +39,8 @@
 ##'
 ##' \dontrun{
 ##'  #outcross example
-##'   data(example_out)
-##'   twopt <- rf_2pts(example_out)
+##'   data(onemap_example_out)
+##'   twopt <- rf_2pts(onemap_example_out)
 ##'   lg<-group(make_seq(twopt, "all"))
 ##'   maps<-vector("list", lg$n.groups)
 ##'   for(i in 1:lg$n.groups)
@@ -64,10 +64,10 @@
 ##'@export
 draw_map<-function(map.list, horizontal=FALSE, names=FALSE, grid=FALSE, cex.mrk=1, cex.grp=.75){
   ## checking for correct object
-  if(!any(class(map.list)=="list" | class(map.list)=="sequence")) stop(deparse(substitute(map.list))," is not an object of class 'list' or 'sequnece'")
+  if(!(is(map.list,"list") | is(map.list,"sequence"))) stop(deparse(substitute(map.list))," is not an object of class 'list' or 'sequnece'")
 
   ## if map.list is just a single chormosome, convert it  into a list
-  if(class(map.list)=="sequence") map.list<-list(map.list)
+  if(is(map.list,"sequence")) map.list<-list(map.list)
   j<-1
 
   ##converting to data.frame
@@ -75,10 +75,10 @@ draw_map<-function(map.list, horizontal=FALSE, names=FALSE, grid=FALSE, cex.mrk=
   pos<-NULL #to satisfy codetools
   marker<-NULL #to satisfy codetools
   for(i in length(map.list):1){
-    if(!any(class(map.list[[i]])=="sequence")) stop("Object ", i , " in map.list is not an object of class 'sequnece'")
+    if(!is(map.list[[i]],"sequence")) stop("Object ", i , " in map.list is not an object of class 'sequnece'")
     if(is.null(map.list[[i]]$seq.like))  stop("Parameters are not estimated for object ", i, " in map.list")
     map<-cumsum(c(0,get(get(".map.fun", envir=.onemapEnv))(map.list[[i]]$seq.rf)))
-    marnames<-colnames(get(map.list[[i]]$data.name, pos=1)$geno)[map.list[[i]]$seq.num]
+    marnames<-colnames(map.list[[i]]$data.name$geno)[map.list[[i]]$seq.num]
     out<-rbind(out, data.frame(dist=map, pos=j,marker=marnames))
     j<-j+1
   }

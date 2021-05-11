@@ -5,9 +5,18 @@
 \title{Search for the best order of markers combining compare and try_seq
 functions}
 \usage{
-order_seq(input.seq, n.init = 5, subset.search = c("twopt", "sample"),
-  subset.n.try = 30, subset.THRES = 3, twopt.alg = c("rec", "rcd", "ser",
-  "ug"), THRES = 3, touchdown = FALSE, tol = 0.1)
+order_seq(
+  input.seq,
+  n.init = 5,
+  subset.search = c("twopt", "sample"),
+  subset.n.try = 30,
+  subset.THRES = 3,
+  twopt.alg = c("rec", "rcd", "ser", "ug"),
+  THRES = 3,
+  touchdown = FALSE,
+  tol = 0.1,
+  rm_unlinked = FALSE
+)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence}.}
@@ -43,6 +52,10 @@ to map more markers.}
 
 \item{tol}{tolerance number for the C routine, i.e., the value used to
 evaluate convergence of the EM algorithm.}
+
+\item{rm_unlinked}{When some pair of markers do not follow the linkage criteria, 
+if \code{TRUE} one of the markers is removed and returns a vector with remaining 
+marker numbers (useful for mds_onemap and map_avoid_unlinked functions).}
 }
 \value{
 An object of class \code{order}, which is a list containing the
@@ -96,8 +109,8 @@ resulting in a map with all markers positioned.
 
 \dontrun{
   #outcross example
-  data(example_out)
-  twopt <- rf_2pts(example_out)
+  data(onemap_example_out)
+  twopt <- rf_2pts(onemap_example_out)
   all_mark <- make_seq(twopt,"all")
   groups <- group(all_mark)
   LG2 <- make_seq(groups,2)

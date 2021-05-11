@@ -5,11 +5,12 @@
 # File: suggest_lod.R                                                 #
 # Contains: suggest_lod                                               #
 #                                                                     #
-# Written by Antonio Augusto Franco Garcia                            #
+# Written by Antonio Augusto Franco Garcia and updated by Cristiane   #
+# Taniguti                                                            #
 # copyright (c) 2015 Antonio Augusto Franco Garcia                    #
 #                                                                     #
 # First version: 2015/04/21                                           #
-# Last update: 2016/01/14                                             #
+# Last update: 2020/06/04                                             #
 # License: GNU General Public License version 3 or later              #
 #                                                                     #
 #######################################################################
@@ -29,18 +30,21 @@
 ##' This can be seen as just an initial approximation to help users to select a LOD Score for two
 ##' point tests.
 ##'
-##' @param x an object of class \code{onemap}
+##' @param x an object of class \code{sequence} or \code{onemap}
 ##'
 ##' @return the suggested LOD to be used for testing linkage
 ##'
 ##' @examples
-##' data(example_bc) # Loads a fake backcross dataset installed with onemap
-##' suggest_lod(example_bc) # An value that should be used to start the analysis
+##' data(onemap_example_bc) # Loads a fake backcross dataset installed with onemap
+##' suggest_lod(onemap_example_bc) # An value that should be used to start the analysis
 ##'
 ##' @export
 suggest_lod <- function(x) {
-    if (is(x,"onemap")) {
-        num.tests <- choose(x$n.mar, 2) #Number of pairwise tests
+    if (is(x,c("sequence", "onemap"))) { # Keep onemap class just to be compatible with older versions
+        if(is(x, "onemap"))
+            num.tests <- choose(x$n.mar, 2) #Number of pairwise tests
+        if(is(x, "sequence"))
+            num.tests <- choose(length(x$seq.num), 2)
         LOD <- 0.2172 * qchisq(1-0.05/num.tests, 1) #Corresponding LOD
         return(LOD)
     }
