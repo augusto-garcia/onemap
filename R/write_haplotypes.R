@@ -200,16 +200,18 @@ progeny_haplotypes <- function(...,
                P2_H2 = V2)
     }
   }
+                             
+  probs$marker = colnames(input.map[[1]]$data.name$geno)[probs$marker]
   
   probs <- probs %>% 
-    select(ind, grp, pos, P1_H1, P1_H2, P2_H1, P2_H2) %>% 
+    select(ind, marker, grp, pos, P1_H1, P1_H2, P2_H1, P2_H2) %>% 
     gather(parents, prob, P1_H1, P1_H2, P2_H1, P2_H2) 
   
   new.col <- t(sapply(strsplit(probs$parents, "_"), "[", 1:2))
   colnames(new.col) <- c("parents", "homologs")
   
   probs <- cbind(probs, new.col)
-  probs <- probs[,-4]
+  probs <- probs[,-5]
   probs <- as.data.frame(probs)
   
   probs$ind <- ind.names[probs$ind]
