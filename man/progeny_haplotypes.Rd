@@ -19,7 +19,7 @@ if FALSE (default) the genotype probability is plotted.}
 }
 \value{
 a data.frame information: individual (ind) and group (grp) ID, position in centimorgan (pos), 
-group (grp), genotypes probabilities (prob), progeny homologs (homologs), and the alleles (alleles) 
+group (grp), genotypes probabilities (prob), parent (homologs), and the parents homologs (homologs) 
 in that homolog and position.
 }
 \description{

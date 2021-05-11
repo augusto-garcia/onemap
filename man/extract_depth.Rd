@@ -7,7 +7,7 @@
 extract_depth(
   vcfR.object = NULL,
   onemap.object = NULL,
-  vcf.par = c("GQ", "AD", "DPR, PL"),
+  vcf.par = c("GQ", "AD", "DPR, PL", "GL"),
   parent1 = "P1",
   parent2 = "P2",
   f1 = "F1",
