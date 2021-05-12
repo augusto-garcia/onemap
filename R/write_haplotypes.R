@@ -224,6 +224,10 @@ progeny_haplotypes <- function(...,
 
 ##' Plots progeny haplotypes
 ##' 
+##' Figure is generated with the haplotypes for each selected individual. As a representation, the recombination breakpoints are here considered 
+##' to be in the mean point of the distance between two markers.  It is important to highlight that it did not reflects the exact breakpoint position, 
+##' specially if the genetic map have low resolution. 
+##' 
 ##' @param x object of class onemap_progeny_haplotypes
 ##' @param col Color of parentes' homologous.
 ##' @param position "split" or "stack"; if "split" (default) the alleles' are plotted separately. if "stack" the parents' alleles are plotted together.
@@ -430,8 +434,8 @@ vcf2progeny_haplotypes <- function(vcfR.object,
 }
 
 
-#' Count the number of break points considering the most likely genotypes estimated by the HMM.
-#' By now, only available for outcrossing and f2 intercross. Genotypes with same probability for two genotypes are removed.
+#' Generate graphic with the number of break points for each individual considering the most likely genotypes estimated by the HMM.
+#' Genotypes with same probability for two genotypes are removed. By now, only available for outcrossing and f2 intercross. 
 #' 
 #' @param x object of class onemap_progeny_haplotypes
 #' 

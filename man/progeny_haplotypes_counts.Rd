@@ -2,8 +2,8 @@
 % Please edit documentation in R/write_haplotypes.R
 \name{progeny_haplotypes_counts}
 \alias{progeny_haplotypes_counts}
-\title{Count the number of break points considering the most likely genotypes estimated by the HMM.
-By now, only available for outcrossing and f2 intercross. Genotypes with same probability for two genotypes are removed.}
+\title{Generate graphic with the number of break points for each individual considering the most likely genotypes estimated by the HMM.
+Genotypes with same probability for two genotypes are removed. By now, only available for outcrossing and f2 intercross.}
 \usage{
 progeny_haplotypes_counts(x)
 }
@@ -11,6 +11,6 @@ progeny_haplotypes_counts(x)
 \item{x}{object of class onemap_progeny_haplotypes}
 }
 \description{
-Count the number of break points considering the most likely genotypes estimated by the HMM.
-By now, only available for outcrossing and f2 intercross. Genotypes with same probability for two genotypes are removed.
+Generate graphic with the number of break points for each individual considering the most likely genotypes estimated by the HMM.
+Genotypes with same probability for two genotypes are removed. By now, only available for outcrossing and f2 intercross.
 }

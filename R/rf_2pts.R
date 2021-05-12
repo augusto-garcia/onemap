@@ -36,6 +36,9 @@
 ##' to \code{0.50}).
 ##' @param verbose logical. If \code{TRUE}, current progress is shown; if
 ##' \code{FALSE}, no output is produced.
+##' @param rm_mks logical. If \code{TRUE} the algorithm will remove the markers for which it found numerical 
+##' problems to calculates the recombination fraction. The numerical problems can happens because of excess of 
+##' missing data or segregation deviation.
 ##' @return An object of class \code{rf_2pts}, which is a list containing the
 ##' following components:  \item{n.mar}{total number of markers.} \item{LOD}{minimum LOD Score to declare
 ##' linkage.} \item{max.rf}{maximum recombination fraction to declare linkage.}
@@ -57,7 +60,7 @@
 ##'
 ##'   print(twopts,c("M1","M2")) # detailed results for markers 1 and 2
 ##'@export
-rf_2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE) {
+rf_2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE, rm_mks = FALSE) {
   ## checking for correct object
   if(!is(input.obj, c("onemap", "outcross", "f2", "backcross", "riself", "risib")))
     stop(deparse(substitute(input.obj))," is not an object of class 'onemap'.")
@@ -68,39 +71,43 @@ rf_2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE) {
   else if(is(input.obj, "f2"))
     r<-est_rf_out(geno = input.obj$geno, seg_type = input.obj$segr.type.num, nind = input.obj$n.ind, verbose = verbose)
   else if(is(input.obj,"backcross"))
-    r<- onemap:::est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=0, verbose = verbose)
+    r<- est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=0, verbose = verbose)
   else if(is(input.obj,"riself"))
     r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=1, verbose = verbose)
   else if(is(input.obj, "risib"))
     r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=2, verbose = verbose)
   
   # The recombination matrix should not have NA or NaN
+  
   if(any(is.na(unlist(r)))) {
-    warning("Recombination fraction for ", length(mks_rm), " markers could not be estimated. They were removed from analysis. 
-            Check if these markers have at least one genotype information or if they have segregation pattern deviation. 
+    warning("We could not estimate all recombination fraction. Check if these markers have at least one genotype information or if they have segregation pattern deviation. We suggest filter_missing function to avoid excess of missing data, test_segregation and rm_mks argument.")
+    if(rm_mks){
+      if(is.list(r)){
+        mks_rm <- unlist(sapply(r, function(x) rownames(which(is.na(x), arr.ind = T))))
+      } else {
+        which(apply(r, 2, function(x) all(is.na(x))))
+        mks_rm <- unique(rownames(which(is.na(r),arr.ind = T)))
+      }
+      
+      if(length(mks_rm) == input.obj$n.mar){
+        stop("Check if all markers have at least one genotype information or if they have segregation pattern deviation. 
             We suggest filter_missing function to avoid excess of missing data and test_segregation.")
-    if(is.list(r)){
-      mks_rm <- unlist(sapply(r, function(x) rownames(which(is.na(x), arr.ind = T))))
-    } else {
-      which(apply(r, 2, function(x) all(is.na(x))))
-      mks_rm <- unique(rownames(which(is.na(r),arr.ind = T)))
+      }
+      
+      warning("Recombination fraction for ", length(mks_rm), " markers could not be estimated. They were removed from analysis. Check if these markers have at least one genotype information or if they have segregation pattern deviation. We suggest filter_missing function to avoid excess of missing data and test_segregation.")
+      
+      mks_rm_num <- which(colnames(input.obj$geno) %in% mks_rm)
+      mks_num <- which(!colnames(input.obj$geno) %in% mks_rm)
+      input.obj$geno <- input.obj$geno[,-mks_rm_num]
+      input.obj$segr.type.num <- input.obj$segr.type.num[-mks_rm_num]
+      input.obj$segr.type <- input.obj$segr.type[-mks_rm_num]
+      input.obj$CHROM <- input.obj$CHROM[-mks_rm_num]
+      input.obj$POS <-  input.obj$POS[-mks_rm_num]
+      input.obj$n.mar <- length(input.obj$segr.type)
+      input.obj$error <- input.obj$error[mks_num + rep(c(0:(input.obj$n.ind-1))*input.obj$n.mar, each=length(mks_num)),]
+      
+      r<- rf_2pts(input.obj, LOD=LOD, max.rf=max.rf, verbose = verbose)
     }
-    
-    if(length(mks_rm) == input.obj$n.mar){
-      stop("Check if all markers have at least one genotype information or if they have segregation pattern deviation. 
-            We suggest filter_missing function to avoid excess of missing data and test_segregation.")
-    }
-    mks_rm_num <- which(colnames(input.obj$geno) %in% mks_rm)
-    mks_num <- which(!colnames(input.obj$geno) %in% mks_rm)
-    input.obj$geno <- input.obj$geno[,-mks_rm_num]
-    input.obj$segr.type.num <- input.obj$segr.type.num[-mks_rm_num]
-    input.obj$segr.type <- input.obj$segr.type[-mks_rm_num]
-    input.obj$CHROM <- input.obj$CHROM[-mks_rm_num]
-    input.obj$POS <-  input.obj$POS[-mks_rm_num]
-    input.obj$n.mar <- length(input.obj$segr.type)
-    input.obj$error <- input.obj$error[mks_num + rep(c(0:(input.obj$n.ind-1))*input.obj$n.mar, each=length(mks_num)),]
-    
-    r<- rf_2pts(input.obj, LOD=LOD, max.rf=max.rf, verbose = verbose)
   }
   
   structure(list(data.name= input.obj, n.mar=input.obj$n.mar, LOD=LOD, max.rf=max.rf,

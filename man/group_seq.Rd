@@ -11,7 +11,7 @@ group_seq(
   repeated = FALSE,
   LOD = NULL,
   max.rf = NULL,
-  min_mks = 10
+  min_mks = NULL
 )
 }
 \arguments{
