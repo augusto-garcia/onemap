@@ -106,7 +106,8 @@ rf_2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE, rm_mks = FALS
       input.obj$n.mar <- length(input.obj$segr.type)
       input.obj$error <- input.obj$error[mks_num + rep(c(0:(input.obj$n.ind-1))*input.obj$n.mar, each=length(mks_num)),]
       
-      r<- rf_2pts(input.obj, LOD=LOD, max.rf=max.rf, verbose = verbose)
+      twopts <- rf_2pts(input.obj, LOD=LOD, max.rf=max.rf, verbose = verbose)
+      return(twopts)
     }
   }
   
