@@ -2,11 +2,11 @@
 #' 
 #' Uses vcfR package and onemap object to generates list of vectors with
 #' reference alelle count and total counts for each marker and genotypes 
-#' included in onemap object
+#' included in onemap object (only available for biallelic sites)
 #' 
 #' @param vcfR.object object output from vcfR package
 #' @param onemap.object onemap object output from read_onemap, read_mapmaker or onemap_read_vcf function
-#' @param vcf.par vcf format field that contain alelle counts informations, the implemented are: AD, DPR, GQ, PL. 
+#' @param vcf.par vcf format field that contain alelle counts informations, the implemented are: AD, DPR, GQ, PL, GL. 
 #' AD and DPR return a list with allele depth information. GQ returns a matrix with error probability for each genotype. 
 #' PL return a data.frame with genotypes probabilities for every genotype. 
 #' @param parent1 parent 1 identification in vcfR object
@@ -171,10 +171,15 @@ extract_depth <- function(vcfR.object=NULL,
     return(error_matrix)
   } else if (vcf.par == "PL" | vcf.par == "GL") {
     idx <- which(IND %in% c(parent1, parent2, f1))
-    probs <- par_matrix %>% .[,-1] %>% .[,-idx] %>% strsplit(., ",") %>% 
-      do.call(rbind, .) %>% apply(., 2,as.numeric) %>% 
-      apply(., 2, function(x) 10^(-x)/10) 
-    
+    if(vcf.par == "PL"){
+      probs <- par_matrix %>% .[,-1] %>% .[,-idx] %>% strsplit(., ",") %>% 
+        do.call(rbind, .) %>% apply(., 2,as.numeric) %>% 
+        apply(., 2, function(x) 10^(-x)/10) 
+    } else {
+      probs <- par_matrix %>% .[,-1] %>% .[,-idx] %>% strsplit(., ",") %>% 
+        do.call(rbind, .) %>% apply(., 2,as.numeric) %>% 
+        apply(., 2, function(x) 10^(x)) 
+    }
     sums <- apply(probs, 1, sum)
     comb <- expand.grid(MKS, IND[-idx])
     
@@ -182,7 +187,7 @@ extract_depth <- function(vcfR.object=NULL,
     probs <- probs/sums 
     rownames(probs) <- paste0(comb$Var1, "_", comb$Var2)
     return(probs)
-  }
+  } 
   
   if(vcf.par!="GQ" | vcf.par!="PL"){
     if(vcf.par=="DPR"){

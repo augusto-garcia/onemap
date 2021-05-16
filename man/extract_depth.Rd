@@ -20,7 +20,7 @@ extract_depth(
 
 \item{onemap.object}{onemap object output from read_onemap, read_mapmaker or onemap_read_vcf function}
 
-\item{vcf.par}{vcf format field that contain alelle counts informations, the implemented are: AD, DPR, GQ, PL. 
+\item{vcf.par}{vcf format field that contain alelle counts informations, the implemented are: AD, DPR, GQ, PL, GL. 
 AD and DPR return a list with allele depth information. GQ returns a matrix with error probability for each genotype. 
 PL return a data.frame with genotypes probabilities for every genotype.}
 
@@ -48,7 +48,7 @@ total alelle counts.}\item{n.mks}{total number of markers.}
 \description{
 Uses vcfR package and onemap object to generates list of vectors with
 reference alelle count and total counts for each marker and genotypes 
-included in onemap object
+included in onemap object (only available for biallelic sites)
 }
 \author{
 Cristiane Taniguti, \email{chtaniguti@usp.br}
