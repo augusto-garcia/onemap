@@ -76,10 +76,10 @@ parents_haplotypes <- function(..., group_names=NULL){
         for (i in 1:length(input$seq.num))
           parents[i,] <- return_geno(input$data.name$segr.type[input$seq.num[i]],link.phases[i])
         out_dat_temp <- data.frame(group= group_names[z], mk.number = marnumbers, mk.names = marnames, dist = as.numeric(distances), 
-                                   A1_1 = parents[,1],
-                                   A1_2 = parents[,2],
-                                   A2_1 = parents[,3],
-                                   A2_2 = parents[,4])
+                                   P1_1 = parents[,1],
+                                   P1_2 = parents[,2],
+                                   P2_1 = parents[,3],
+                                   P2_2 = parents[,4])
         out_dat <- rbind(out_dat, out_dat_temp)
       }
       ## whithout diplotypes for other classes
@@ -283,157 +283,6 @@ plot.onemap_progeny_haplotypes <- function(x,
   return(p)
 }
 
-
-#' Convert phased vcf to onemap_progeny_haplotypes object. Turns possible to use
-#' the plot.onemap_progeny_haplotypes (By now only for outcrossing population).
-#' 
-#' @param vcfR.object vcfR object
-#' @param ind.id vector of characters with progeny individuals to be evaluated
-#' @param group_names string with chromosomes or group names to be evaluated
-#' @param parent1 character with parent 1 ID
-#' @param parent2 character with parent 2 ID
-#' @param crosstype character defining crosstype (outcross, f2 intercross, f2 backcross, ril sib, ril self)
-#' 
-#' @export
-vcf2progeny_haplotypes <- function(vcfR.object, 
-                                   ind.id=NULL, 
-                                   group_names = NULL, 
-                                   parent1, 
-                                   parent2,
-                                   crosstype){
-  if(is.null(ind.id)){
-    stop("You should define one individual.")
-  } 
-  n.mk <- dim(vcfR.object@gt)[1]
-  n.ind <- dim(vcfR.object@gt)[2]-1
-  INDS <- dimnames(vcfR.object@gt)[[2]][-1]
-  
-  if(length(which(INDS %in% ind.id)) != length(ind.id)){
-    stop("At least one of the individuals in ind.id was not found in vcfR object.")
-  }
-  
-  MKS <- vcfR.object@fix[,3]
-  if (any(MKS == "." | is.na(MKS))) MKS <- paste0(vcfR.object@fix[,1],"_", vcfR.object@fix[,2])
-  
-  # Geno matrix
-  GT_matrix <- matrix(rep(NA,n.ind*n.mk), ncol=n.ind, nrow=n.mk)
-  GT <- which(strsplit(vcfR.object@gt[1,1], split=":")[[1]]=="GT")
-  
-  for(i in 2:(n.ind+1))
-    GT_matrix[,i-1] <- unlist(lapply(strsplit(vcfR.object@gt[,i], split=":"), "[[", GT))
-  
-  CHROM <- vcfR.object@fix[,1]
-  
-  if(is.null(group_names)) group_names <- CHROM[1]
-  
-  if(length(which(unique(CHROM) %in% group_names)) != length(group_names)){
-    stop("At least one of the groups in group_names was not found in vcfR object.")
-  }
-  
-  progeny_haplotypes_obj_chr <- data.frame()
-  for(chr in 1:length(group_names)){ ### Need optimization
-    CHROM.now <- which(CHROM %in% group_names[chr])
-    POS <- as.numeric(vcfR.object@fix[,2])[CHROM.now]
-    
-    colnames(GT_matrix) <- INDS
-    rownames(GT_matrix) <- MKS
-    
-    A1.idx <- grep(parent1, INDS)
-    A2.idx <- grep(parent2, INDS)
-    
-    A1_1 <- sapply(strsplit(GT_matrix[CHROM.now,A1.idx], "[|]"), "[",1)
-    A1_2 <- sapply(strsplit(GT_matrix[CHROM.now,A1.idx], "[|]"), "[",2)
-    A2_1 <- sapply(strsplit(GT_matrix[CHROM.now,A2.idx], "[|]"), "[",1)
-    A2_2 <- sapply(strsplit(GT_matrix[CHROM.now,A2.idx], "[|]"), "[",2)
-    
-    progeny_haplotypes_obj_ind <- data.frame()
-    for(ind in 1:length(ind.id)){
-      ind.idx <- grep(ind.id[ind], INDS)
-      ind.number <- grep(ind.id[ind], INDS[-c(A1.idx, A2.idx)])
-      ind_1 <- sapply(strsplit(GT_matrix[CHROM.now,ind.idx], "[|]"), "[",1)
-      ind_2 <- sapply(strsplit(GT_matrix[CHROM.now,ind.idx], "[|]"), "[",2)
-      
-      p.names <- c("A1", "A2", "A1", "A2")
-      Hs <-  rep(list(rep(NA, length(ind_1))),2)
-      progeny_haplotypes_obj <- data.frame()
-      for(w in 1:2){
-        ref.frags<-rep(1, length(ind_1))
-        comp <- list(cbind(A1_1, A1_2, A2_1,A2_2,H1=ind_1, H2=ind_2))
-        idx.cum <- 1
-        while(any(is.na(Hs[[w]]))){
-          # count how many equal characters are consecutive
-          frags <- rep(list(list(0,0,0,0)),length(comp))
-          for(z in 1:length(comp)){
-            for(j in 1:4){
-              if(is.vector(comp[[z]]))
-                comp[[z]] <- t(as.matrix(comp[[z]]))
-              idx.comp <- comp[[z]][,j] == comp[[z]][,4+w]
-              frags[[z]][[j]] <- sequence(rle(as.character(idx.comp))$length)
-            }
-          }
-          # Find the higher fragment in ind1
-          new.zs <- list()
-          inter.cum <-max(ref.frags)
-          for(z in 1:length(frags)){
-            max.ind1 <- unlist(lapply(frags[[z]], max))
-            # I could't adapt to inbred because it found two possible match
-            idx.ind1 <- which.max(max.ind1)
-            which.max.ind1 <- which.max(frags[[z]][[idx.ind1]])
-            frag <- (which.max.ind1 - max.ind1[idx.ind1]+1):which.max.ind1 
-            Hs[[w]][ref.frags==idx.cum][frag] <- p.names[idx.ind1]
-            # The fragment should be removed and the split the remaining in two
-            ref.frags.new <- ref.frags
-            if(frag[1] == 1)
-              frag1 <- NULL else  frag1 <- comp[[z]][1:(frag[1]-1),]
-            if(frag[length(frag)] == dim(comp[[z]])[1])
-              frag2 <- NULL else  frag2 <- comp[[z]][(frag[length(frag)]+1):dim(comp[[z]])[1],]
-            if(!is.null(frag1)){
-              new.zs <- c(new.zs,list(frag1))
-              inter.cum <- inter.cum + 1
-              ref.frags.new[ref.frags==idx.cum][1:(frag[1]-1)] <- inter.cum
-            }
-            
-            if(!is.null(frag2)){
-              new.zs <- c(new.zs,list(frag2))
-              inter.cum <- inter.cum + 1
-              ref.frags.new[ref.frags==idx.cum][(frag[length(frag)]+1):length(ref.frags.new[ref.frags==idx.cum])] <- inter.cum
-            }
-            ref.frags <- ref.frags.new
-            idx.cum <- idx.cum + 1
-          }
-          comp <- new.zs
-        }
-        
-        num.mk <- length(CHROM.now)
-        df.H <- data.frame(ind = rep(ind.id[ind], 2*num.mk),
-                           grp = rep(CHROM[CHROM.now], 2),
-                           pos = rep(POS, 2),
-                           prob = rep(0, 2*num.mk),
-                           parents = rep(c("P1", "P2")[w], num.mk),
-                           homologs = rep(rep(c("H1","H2"),each =num.mk)))
-        
-        for(i in 1:length(Hs[[w]])){
-          df.H$prob[which(df.H$pos == POS[i] & df.H$alleles == Hs[[w]][i])] <- 1
-        }
-        # bind homologs
-        progeny_haplotypes_obj <- rbind(progeny_haplotypes_obj, df.H)
-      }
-      # bind individuals
-      progeny_haplotypes_obj_ind <- rbind(progeny_haplotypes_obj_ind, progeny_haplotypes_obj)
-    }
-    # bind chromosomes
-    progeny_haplotypes_obj_chr <- rbind(progeny_haplotypes_obj_chr,progeny_haplotypes_obj_ind)
-  }
-  
-  crosstype <- switch(crosstype, "outcross" = "outcross", "f2 intercross"="f2",
-                      "f2 backcross"="backcross", "ril sib"="rils", "ril self"="rils")
-  
-  flag <- "most.likely"
-  class(progeny_haplotypes_obj_chr) <- c("onemap_progeny_haplotypes", crosstype, "data.frame", flag)
-  return(progeny_haplotypes_obj_chr)
-}
-
-
 #' Generate graphic with the number of break points for each individual considering the most likely genotypes estimated by the HMM.
 #' Genotypes with same probability for two genotypes are removed. By now, only available for outcrossing and f2 intercross. 
 #' 
@@ -458,7 +307,7 @@ progeny_haplotypes_counts <- function(x){
   x <- x[order(x$ind, x$grp, x$prob, x$parents,x$pos),]
   
   x <- x %>% group_by(ind, grp, parents) %>%
-    mutate(seq = sequence(rle(as.character(alleles))$length) == 1) %>%
+    mutate(seq = sequence(rle(as.character(homologs))$length) == 1) %>%
     summarise(counts = sum(seq) -1) %>% ungroup()
   
   class(x) <- c("onemap_progeny_haplotypes_counts", cross, "data.frame")
@@ -487,13 +336,20 @@ globalVariables(c("counts", "colorRampPalette", "alleles"))
 ##' 
 ##' @export
 plot.onemap_progeny_haplotypes_counts <- function(x, 
-                                                  by_homolog = FALSE, # Do not use TRUE yet
+                                                  by_homolog = FALSE, 
                                                   n.graphics =NULL, 
                                                   ncol=NULL, ...){
   if(!is(x, "onemap_progeny_haplotypes_counts")) stop("Input need is not of class onemap_progeny_haplotyes_counts")
+  
   p <- list()
+  n.ind <- length(unique(x$ind))
+  nb.cols <- n.ind
+  mycolors <- colorRampPalette(brewer.pal(12, "Paired"))(nb.cols)
+  set.seed(20)
+  mycolors <- sample(mycolors)
+  
   if(by_homolog){ 
-    if(is.null(n.graphics) & is.null(ncol)){
+      if(is.null(n.graphics) & is.null(ncol)){
       n.ind <- dim(x)[1]/2
       if(n.ind/25 <= 1) {
         n.graphics = 1
@@ -528,7 +384,7 @@ plot.onemap_progeny_haplotypes_counts <- function(x,
     x <- x %>% ungroup %>% group_by(ind, grp) %>%
       summarise(counts = sum(counts))
     
-    n.ind <- length(unique(x$ind))
+
     if(is.null(n.graphics) & is.null(ncol)){
       if(n.ind/25 <= 1) {
         n.graphics = 1
@@ -554,10 +410,6 @@ plot.onemap_progeny_haplotypes_counts <- function(x,
       summarise(total = sum(counts))
     
     y_lim_counts <- max(temp$total)
-    nb.cols <- n.ind
-    mycolors <- colorRampPalette(brewer.pal(12, "Paired"))(nb.cols)
-    set.seed(20)
-    mycolors <- sample(mycolors)
     p <- x %>% ungroup() %>%  mutate(div.n.graphics = div.n.graphics) %>%
       split(., .$div.n.graphics) %>%
       lapply(., function(x) ggplot(x, aes(x=ind, y=counts, fill=grp)) +
