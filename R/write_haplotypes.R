@@ -167,8 +167,8 @@ progeny_haplotypes <- function(...,
     probs <- probs %>%
       mutate(P1_H1 = V1 + V2,
              P1_H2 = V3 + V4,
-             P2_H1 = V2 + V4,
-             P2_H2 = V1 + V3) 
+             P2_H1 = V1 + V3,
+             P2_H2 = V2 + V4) 
     
     if(is(input.map[[1]]$data.name, "outcross")){
       cross <- "outcross"
@@ -297,10 +297,11 @@ progeny_haplotypes_counts <- function(x){
   cross <- class(x)[2]
   
   # Some genotypes receveis prob of 0.5, here we need to make a decision about them
+  # Here we keep the genotype of the marker before it
   doubt <- x[which(x$prob == 0.5),]
   if(dim(doubt)[1] > 0){
-    nondupli <- which(!duplicated(paste0(doubt$ind, doubt$grp, doubt$pos)))
-    x[which(x$prob == 0.5),][nondupli,]$prob <- 1
+    repl <- x[which(x$prob == 0.5)-1,"prob"]
+    x[which(x$prob == 0.5),"prob"] <- repl
   }
   
   x <- x[which(x$prob == 1),]

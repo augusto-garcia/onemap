@@ -131,7 +131,10 @@ RcppExport SEXP est_hmm_out(SEXP geno_R, SEXP error_R, SEXP type_R, SEXP phase_R
             }
           }
         }
-        /* Store genotypes probabilities*/
+      }
+      
+      /* Store genotypes probabilities*/
+      for(j=0; j<n_mar; j++) {
         long double w = 0.0;
         for(v=0; v<n_gen; v++){
           w += alpha(v,j) * beta(v,j);
@@ -141,6 +144,7 @@ RcppExport SEXP est_hmm_out(SEXP geno_R, SEXP error_R, SEXP type_R, SEXP phase_R
         }
       }
     } // loop over individuals
+    
     // rescale
     for(j=0; j<n_mar-1; j++) {
       rf(j) /= (double)n_ind;
@@ -197,69 +201,69 @@ RcppExport SEXP est_hmm_out(SEXP geno_R, SEXP error_R, SEXP type_R, SEXP phase_R
 double step_out(int gen1, int gen2, int phase, double rf)
 {
   if(phase==1){/*CC*/
-  switch(gen1) {
-  case 1:
-    switch(gen2) {
-    case 1: return((1.0-rf)*(1.0-rf));
-    case 2: return((1.0-rf)*rf);
-    case 3: return((1.0-rf)*rf);
-    case 4: return(rf*rf);
-    }
-  case 2:
-    switch(gen2) {
-    case 1: return((1.0-rf)*rf);
-    case 2: return((1.0-rf)*(1.0-rf));
-    case 3: return(rf*rf);
-    case 4: return((1.0-rf)*rf);
-    }
-  case 3:
-    switch(gen2) {
-    case 1: return((1.0-rf)*rf);
-    case 2: return(rf*rf);
-    case 3: return((1.0-rf)*(1.0-rf));
-    case 4: return((1.0-rf)*rf);
-    }
-  case 4:
-    switch(gen2) {
-    case 1: return(rf*rf);
-    case 2: return((1.0-rf)*rf);
-    case 3: return((1.0-rf)*rf);
-    case 4: return((1.0-rf)*(1.0-rf));
-    }
-  }
+      switch(gen1) {
+      case 1:
+        switch(gen2) {
+        case 1: return((1.0-rf)*(1.0-rf));
+        case 2: return((1.0-rf)*rf);
+        case 3: return((1.0-rf)*rf);
+        case 4: return(rf*rf);
+        }
+      case 2:
+        switch(gen2) {
+        case 1: return((1.0-rf)*rf);
+        case 2: return((1.0-rf)*(1.0-rf));
+        case 3: return(rf*rf);
+        case 4: return((1.0-rf)*rf);
+        }
+      case 3:
+        switch(gen2) {
+        case 1: return((1.0-rf)*rf);
+        case 2: return(rf*rf);
+        case 3: return((1.0-rf)*(1.0-rf));
+        case 4: return((1.0-rf)*rf);
+        }
+      case 4:
+        switch(gen2) {
+        case 1: return(rf*rf);
+        case 2: return((1.0-rf)*rf);
+        case 3: return((1.0-rf)*rf);
+        case 4: return((1.0-rf)*(1.0-rf));
+        }
+      }
     return(log(-1.0)); /* shouldn't get here */
   }
   else if(phase==2){/*CR*/
-  switch(gen1) {
-  case 1:
-    switch(gen2) {
-    case 1: return((1.0-rf)*rf);
-    case 2: return((1.0-rf)*(1.0-rf));
-    case 3: return(rf*rf);
-    case 4: return((1.0-rf)*rf);
-    }
-  case 2:
-    switch(gen2) {
-    case 1: return((1.0-rf)*(1.0-rf));
-    case 2: return((1.0-rf)*rf);
-    case 3: return((1.0-rf)*rf);
-    case 4: return(rf*rf);
-    }
-  case 3:
-    switch(gen2) {
-    case 1: return(rf*rf);
-    case 2: return((1.0-rf)*rf);
-    case 3: return((1.0-rf)*rf);
-    case 4: return((1.0-rf)*(1.0-rf));
-    }
-  case 4:
-    switch(gen2) {
-    case 1: return((1.0-rf)*rf);
-    case 2: return(rf*rf);
-    case 3: return((1.0-rf)*(1.0-rf));
-    case 4: return((1.0-rf)*rf);
-    }
-  }
+      switch(gen1) {
+      case 1:
+        switch(gen2) {
+        case 1: return((1.0-rf)*rf);
+        case 2: return((1.0-rf)*(1.0-rf));
+        case 3: return(rf*rf);
+        case 4: return((1.0-rf)*rf);
+        }
+      case 2:
+        switch(gen2) {
+        case 1: return((1.0-rf)*(1.0-rf));
+        case 2: return((1.0-rf)*rf);
+        case 3: return((1.0-rf)*rf);
+        case 4: return(rf*rf);
+        }
+      case 3:
+        switch(gen2) {
+        case 1: return(rf*rf);
+        case 2: return((1.0-rf)*rf);
+        case 3: return((1.0-rf)*rf);
+        case 4: return((1.0-rf)*(1.0-rf));
+        }
+      case 4:
+        switch(gen2) {
+        case 1: return((1.0-rf)*rf);
+        case 2: return(rf*rf);
+        case 3: return((1.0-rf)*(1.0-rf));
+        case 4: return((1.0-rf)*rf);
+        }
+      }
     return(log(-1.0)); /* shouldn't get here */
   }
   else if(phase==3){
