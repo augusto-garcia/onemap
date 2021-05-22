@@ -21,7 +21,7 @@ onemap_read_vcfR(
 \code{"ri self"} for recombinant inbred lines by self-mating; or
 \code{"ri sib"} for recombinant inbred lines by sib-mating.}
 
-\item{parent1}{\code{string} specifying sample ID of the first parent.}
+\item{parent1}{\code{string} specifying sample ID of the first parent. If f2 backcross population, define here the ID of the backcrossed parent.}
 
 \item{parent2}{\code{string} specifying sample ID of the second parent.}
 

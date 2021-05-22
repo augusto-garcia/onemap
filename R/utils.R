@@ -313,4 +313,62 @@ rm_dupli_mks <- function(onemap.obj){
   return(onemap.obj)
 }
 
+#' Data sanity check 
+#' 
+#' Based on MAPpoly check_data_sanity function by Marcelo Mollinari
+#' 
+#' @param x an object of class \code{onemap}
+#' 
+#' @return if consistent, returns 0. If not consistent, returns a 
+#'         vector with a number of tests, where \code{TRUE} indicates
+#'         a failed test.
+#'         
+#' @examples 
+#' 
+#' check_data(onemap_example_bc)
+#' check_data(onemap_example_out)
+#' check_data(onemap_example_rilself)
+#' 
+#' 
+#' @author Cristiane Taniguti, \email{chtaniguti@usp.br}
+#' 
+#' @export
+check_data <- function(x){
+  test <- logical(24L)
+  names(test) <- 1:24
+  
+  test[1] <- any(is.na(x$geno))    
+  test[2] <- any(is.na(x$error))
+  test[3] <- !all(dim(x$geno) == c(x$n.ind, x$n.mar))
+  test[4] <- !dim(x$error)[1] == prod(dim(x$geno))
+  test[5] <- if(!is.null(x$CHROM)) length(x$CHROM) != x$n.mar else FALSE
+  test[6] <- if(!is.null(x$POS)) length(x$POS) != x$n.mar else FALSE
+  test[7] <- if(is(x, "f2")) {
+    !all(unique(x$segr.type) %in% c("A.H.B", "D.B", "C.A"))
+  } else if(is(x, "outcross")){
+    !all(unique(x$segr.type) %in% c("A.1", "A.2", "A.3", "A.4", "B1.5", 
+                                    "B2.6", "B3.7", "C.8", "D1.9", "D1.10", 
+                                    "D1.11", "D1.12", "D1.13", "D2.14", 
+                                    "D2.15", "D2.16", "D2.17", "D2.18"))
+  } else if(is(x, "backcross")){
+    !all(unique(x$segr.type) %in% c("A.H"))
+  } else if(is(x, "riself") | is(x, "risib")){
+    !all(unique(x$segr.type) %in% c("A.B"))
+  }
+  
+  test[8] <- if(is(x, "f2")) {
+    !all(unique(x$segr.type.num) %in% c(4,6,7))
+  } else if(is(x, "outcross")){
+    !all(unique(x$segr.type.num) %in% 1:7)
+  } else if(is(x, "backcross")){
+    !all(unique(x$segr.type.num) %in% 8)
+  } else if(is(x, "riself") | is(x, "risib")){
+    !all(unique(x$segr.type.num) %in% 9)
+  }
+  
+  if(any(test))
+    return(test)
+  else 
+    return(0)
+}
 

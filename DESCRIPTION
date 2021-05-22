@@ -1,7 +1,7 @@
 Package: onemap
 Title: Construction of Genetic Maps in Experimental Crosses: Full-Sib,
         RILs, F2 and Backcrosses
-Version: 2.3.0
+Version: 2.4.0
 Description: Analysis of molecular marker data from model (backcrosses,
     F2 and recombinant inbred lines) and non-model systems (i. e.
     outcrossing species). For the later, it allows statistical
@@ -40,10 +40,12 @@ Imports: ggplot2 (>= 2.2.1),
         htmlwidgets,
         ggpubr,
         RColorBrewer
-Suggests: qtl (>= 1.36-6), 
-          knitr (>= 1.10), 
-          rmarkdown, 
-          vcfR (>= 1.6.0),
+Suggests: 
+    qtl (>= 1.36-6),
+    knitr (>= 1.10),
+    rmarkdown,
+    vcfR (>= 1.6.0),
+    testthat
 VignetteBuilder: knitr
 Encoding: UTF-8
 License: GPL-3

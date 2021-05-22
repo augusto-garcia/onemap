@@ -38,7 +38,7 @@
 ##' \code{"f2 intercross"} for an F2 intercross progeny; \code{"f2 backcross"};
 ##' \code{"ri self"} for recombinant inbred lines by self-mating; or
 ##' \code{"ri sib"} for recombinant inbred lines by sib-mating.
-##' @param parent1 \code{string} specifying sample ID of the first parent.
+##' @param parent1 \code{string} specifying sample ID of the first parent. If f2 backcross population, define here the ID of the backcrossed parent.
 ##' @param parent2 \code{string} specifying sample ID of the second parent.
 ##' @param f1 \code{string} if you are working with f2 intercross or backcross populations you may have f1 parents in you vcf, specify its ID here
 ##' @param only_biallelic if TRUE (default) only biallelic markers are considered, if FALSE multiallelic markers are included.
