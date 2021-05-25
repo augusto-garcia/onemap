@@ -1,7 +1,7 @@
 context("Reading input files")
+library(vcfR)
 
 test_that("reading files",{
-  library(vcfR)
   expect_values_equal <- function(segr.type1.4, 
                                   segr.type.num1.4, n.phe, pheno1.3, dim.geno, table.geno, error1.4){
     

@@ -32,8 +32,8 @@ test_that("number of bins",{
 
 test_that("number of missing data",{
   check_missing <- function(example_data, n.mar){
-    data(example_data)
-    onemap_mis <- filter_missing(get(example_data), 0.5)
+    eval(bquote(data(.(example_data))))
+    onemap_mis <- eval(bquote(filter_missing(get(.(example_data)), 0.5)))
     eval(bquote(expect_equal(check_data(onemap_mis), 0)))
     eval(bquote(expect_equal(onemap_mis$n.mar, .(n.mar))))
   }
@@ -45,8 +45,8 @@ test_that("number of missing data",{
 
 test_that("number of repeated ID markers",{
   check_dupli <- function(example_data, n.mar){
-    data(example_data)
-    onemap_dupli <- rm_dupli_mks(get(example_data))
+    eval(bquote(data(.(example_data))))
+    onemap_dupli <- eval(bquote(rm_dupli_mks(get(.(example_data)))))
     eval(bquote(expect_equal(check_data(onemap_dupli), 0)))
     eval(bquote(expect_equal(onemap_dupli$n.mar, .(n.mar))))
   }

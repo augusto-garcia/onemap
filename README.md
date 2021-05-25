@@ -4,7 +4,7 @@
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/onemap)](https://cran.r-project.org/package=onemap)
 [![CRAN_monthly_downloads](https://cranlogs.r-pkg.org/badges/onemap)](https://cranlogs.r-pkg.org/badges/onemap)
 
-# OneMap <img src="https://user-images.githubusercontent.com/7572527/119237022-0b19a400-bb11-11eb-9d45-228a59f22a1a.png" align="right" width="160"/>
+# OneMap <img src="https://user-images.githubusercontent.com/7572527/119237022-0b19a400-bb11-11eb-9d45-228a59f22a1a.png" align="right" width="200"/>
 
 `OneMap` is a software for constructing genetic maps in experimental
 crosses: full-sib, RILs, F2 and backcrosses. It was developed by
