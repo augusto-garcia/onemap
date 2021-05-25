@@ -24,7 +24,7 @@ See more about input file format at vignettes.
 \dontrun{
 data(onemap_example_out)
 
-write_onemap_raw(onemap_example_out, file.name = "onemap_example_out.raw", cross="outcross")
+write_onemap_raw(onemap_example_out, file.name = "onemap_example_out.raw")
 }
 }
 \seealso{

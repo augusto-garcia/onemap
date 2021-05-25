@@ -639,7 +639,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
 ##' \dontrun{
 ##' data(onemap_example_out)
 ##' 
-##' write_onemap_raw(onemap_example_out, file.name = "onemap_example_out.raw", cross="outcross")
+##' write_onemap_raw(onemap_example_out, file.name = "onemap_example_out.raw")
 ##' }
 ##'@export                  
 write_onemap_raw <- function(onemap.obj=NULL, 
@@ -733,12 +733,12 @@ write_onemap_raw <- function(onemap.obj=NULL,
     geno.mat[,idx][which(geno.mat[,idx]== 3)] <- "b"
     
     idx <- which(onemap.obj$segr.type == "D.B")
-    geno.mat[,idx][which(geno.mat[,idx]== 3)] <- "b"
-    geno.mat[,idx][which(geno.mat[,idx]== 4)] <- "d"
+    geno.mat[,idx][which(geno.mat[,idx]== 2)] <- "b"
+    geno.mat[,idx][which(geno.mat[,idx]== 1)] <- "d"
     
     idx <- which(onemap.obj$segr.type == "C.A")
-    geno.mat[,idx][which(geno.mat[,idx]== 1)] <- "a"
-    geno.mat[,idx][which(geno.mat[,idx]== 5)] <- "c"
+    geno.mat[,idx][which(geno.mat[,idx]== 2)] <- "a"
+    geno.mat[,idx][which(geno.mat[,idx]== 1)] <- "c"
   }
   if(is(onemap.obj, c("riself", "risib"))){
     
