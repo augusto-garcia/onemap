@@ -325,9 +325,8 @@ rm_dupli_mks <- function(onemap.obj){
 #'         
 #' @examples 
 #' 
+#' data(onemap_example_bc)
 #' check_data(onemap_example_bc)
-#' check_data(onemap_example_out)
-#' check_data(onemap_example_rilself)
 #' 
 #' 
 #' @author Cristiane Taniguti, \email{chtaniguti@usp.br}

@@ -19,9 +19,8 @@ Based on MAPpoly check_data_sanity function by Marcelo Mollinari
 }
 \examples{
 
+data(onemap_example_bc)
 check_data(onemap_example_bc)
-check_data(onemap_example_out)
-check_data(onemap_example_rilself)
 
 
 }

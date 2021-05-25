@@ -75,8 +75,8 @@ test_that("reading files",{
                       table.geno = c(597, 3229,2974),
                       error1.4 = c(0.00001, rep(0.99999,3)))
   
-  vcf <- vcfR::read.vcfR(system.file("extdata/vcf_example_bc.vcf", package = "onemap"))
-  data <- onemap_read_vcfR(vcf, cross = "f2 backcross", parent1 = "P1", parent2 = "P2")
+  vcfR.obj <- vcfR::read.vcfR(system.file("extdata/vcf_example_bc.vcf", package = "onemap"))
+  data <- onemap_read_vcfR(vcfR.obj, cross = "f2 backcross", parent1 = "P1", parent2 = "P2")
   expect_equal(check_data(data), 0)
   expect_values_equal(segr.type1.4 = rep("A.H",4),
                       segr.type.num1.4 = rep(8,4),
@@ -86,8 +86,8 @@ test_that("reading files",{
                       table.geno = c(462, 1569,1519),
                       error1.4 = rep(10^(-5),4))
   
-  vcf <- vcfR::read.vcfR(system.file("extdata/vcf_example_f2.vcf", package = "onemap"))
-  data <- onemap_read_vcfR(vcf, cross = "f2 intercross", parent1 = "P1", parent2 = "P2", f1 = "F1")
+  vcfR.obj <- vcfR::read.vcfR(system.file("extdata/vcf_example_f2.vcf", package = "onemap"))
+  data <- onemap_read_vcfR(vcfR.obj, cross = "f2 intercross", parent1 = "P1", parent2 = "P2", f1 = "F1")
   expect_equal(check_data(data), 0)
   expect_values_equal(segr.type1.4 = rep("A.H.B",4),
                       segr.type.num1.4 = rep(4,4),
@@ -97,7 +97,7 @@ test_that("reading files",{
                       table.geno = c(676, 962,1937, 1225),
                       error1.4 = c(rep(0.00001,2),1, 0.99999))
   
-  data <- onemap_read_vcfR(vcf, cross = "f2 intercross", parent1 = "P2", parent2 = "P1", f1 = "F1")
+  data <- onemap_read_vcfR(vcfR.obj, cross = "f2 intercross", parent1 = "P2", parent2 = "P1", f1 = "F1")
   expect_equal(check_data(data), 0)
   expect_values_equal(segr.type1.4 = rep("A.H.B",4),
                       segr.type.num1.4 = rep(4,4),
@@ -107,30 +107,29 @@ test_that("reading files",{
                       table.geno = c(676, 1225,1937, 962),
                       error1.4 = c(rep(0.00001,2),1, 3.333333e-06))
   
-  vcf <- vcfR::read.vcfR(system.file("extdata/vcf_example_out.vcf", package = "onemap"))
-  data <- onemap_read_vcfR(vcf, cross = "outcross", parent1 = "P1", parent2 = "P2")
+  vcfR.obj <- vcfR::read.vcfR(system.file("extdata/vcf_example_out.vcf", package = "onemap"))
+  data <- onemap_read_vcfR(vcfR.object = vcfR.obj, cross = "outcross", parent1 = "P1", parent2 = "P2")
   expect_equal(check_data(data), 0)
   expect_values_equal(segr.type1.4 = rep("B3.7",4),
                       segr.type.num1.4 = rep(4,4),
                       n.phe = 0,
                       pheno1.3 = NULL,
                       dim.geno =  c(92,24), 
-                      table.geno = c(17, 761,1029, 401),
+                      table.geno = c(16, 762,1029, 401),
                       error1.4 = c(rep(0.99999,4)))
   
-  vcf <- vcfR::read.vcfR(system.file("extdata/vcf_example_out.vcf", package = "onemap"))
-  data <- onemap_read_vcfR(vcf, cross = "outcross", parent1 = "P2", parent2 = "P1")
+  data <- onemap_read_vcfR(vcfR.obj, cross = "outcross", parent1 = "P2", parent2 = "P1")
   expect_equal(check_data(data), 0)
   expect_values_equal(segr.type1.4 = rep("B3.7",4),
                       segr.type.num1.4 = rep(4,4),
                       n.phe = 0,
                       pheno1.3 = NULL,
                       dim.geno =  c(92,24),
-                      table.geno = c(17, 761,1029, 401),
+                      table.geno = c(16, 762,1029, 401),
                       error1.4 = c(rep(0.99999,4)))
   
-  vcf <- vcfR::read.vcfR(system.file("extdata/vcf_example_riself.vcf", package = "onemap"))
-  data <- onemap_read_vcfR(vcf, cross = "ri self", parent1 = "P1", parent2 = "P2")
+  vcfR.obj <- vcfR::read.vcfR(system.file("extdata/vcf_example_riself.vcf", package = "onemap"))
+  data <- onemap_read_vcfR(vcfR.obj, cross = "ri self", parent1 = "P1", parent2 = "P2")
   expect_equal(check_data(data), 0)
   expect_values_equal(segr.type1.4 = rep("A.B",4),
                       segr.type.num1.4 = rep(9,4),
