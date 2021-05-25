@@ -313,7 +313,7 @@ rm_dupli_mks <- function(onemap.obj){
   return(onemap.obj)
 }
 
-#' Data sanity check 
+#' Onemap object sanity check 
 #' 
 #' Based on MAPpoly check_data_sanity function by Marcelo Mollinari
 #' 
@@ -363,6 +363,46 @@ check_data <- function(x){
     !all(unique(x$segr.type.num) %in% 8)
   } else if(is(x, "riself") | is(x, "risib")){
     !all(unique(x$segr.type.num) %in% 9)
+  }
+  
+  if(any(test))
+    return(test)
+  else 
+    return(0)
+}
+
+#' Twopts object sanity check 
+#' 
+#' Based on MAPpoly check_data_sanity function by Marcelo Mollinari
+#' 
+#' @param x an object of class \code{onemap}
+#' 
+#' @return if consistent, returns 0. If not consistent, returns a 
+#'         vector with a number of tests, where \code{TRUE} indicates
+#'         a failed test.
+#'         
+#' @examples 
+#' 
+#' data(onemap_example_bc)
+#' check_twopts(onemap_example_bc)
+#' 
+#' 
+#' @author Cristiane Taniguti, \email{chtaniguti@usp.br}
+#' 
+#' @export
+check_twopts <- function(x){
+  test <- logical(4L)
+  names(test) <- 1:4
+  
+  test[1] <- if(check_data(x$data.name) == 0) FALSE else TRUE
+  if(is(x$data.name, "outcross") | is(x$data.name, "f2")){
+    test[2] <- !is(x$analysis, "list")
+    test[3] <- all(dim(x$analysis[[1]]) != rep(x$data.name$n.mar,2))
+    test[4] <- any(sapply(x$analysis, function(x) any(is.na(x))))
+  } else {
+    test[2] <- !is(x$analysis, "matrix")
+    test[3] <- all(dim(x$analysis) != rep(x$data.name$n.mar,2))
+    test[4] <- any(is.na(x$analysis))
   }
   
   if(any(test))
