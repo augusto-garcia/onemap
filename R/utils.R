@@ -384,7 +384,8 @@ check_data <- function(x){
 #' @examples 
 #' 
 #' data(onemap_example_bc)
-#' check_twopts(onemap_example_bc)
+#' twopts <- rf_2pts(onemap_example_bc)
+#' check_twopts(twopts)
 #' 
 #' 
 #' @author Cristiane Taniguti, \email{chtaniguti@usp.br}

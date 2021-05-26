@@ -1,3 +1,5 @@
+globalVariables(c("gt.onemap.alt.ref", "gt.vcf.alt.ref", "parents"))
+
 #' Extract allele counts of progeny and parents of vcf file
 #' 
 #' Uses vcfR package and onemap object to generates list of vectors with
@@ -27,7 +29,6 @@
 #' @import dplyr
 #' @author Cristiane Taniguti, \email{chtaniguti@@usp.br} 
 #' @export
-
 extract_depth <- function(vcfR.object=NULL,
                           onemap.object= NULL,
                           vcf.par = c("GQ","AD", "DPR, PL", "GL"),
