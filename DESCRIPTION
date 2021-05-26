@@ -45,7 +45,8 @@ Suggests:
     knitr (>= 1.10),
     rmarkdown,
     vcfR (>= 1.6.0),
-    testthat
+    testthat,
+    stringr
 VignetteBuilder: knitr
 Encoding: UTF-8
 License: GPL-3

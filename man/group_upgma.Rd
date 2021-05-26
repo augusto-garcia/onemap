@@ -54,7 +54,7 @@ written by Marcelo Mollinari.
 data("vcf_example_out")
 twopts <- rf_2pts(vcf_example_out)
 input.seq <- make_seq(twopts, "all")
-lgs <- group_upgma(input.seq, expected.groups = 3, comp.mat=T)
+lgs <- group_upgma(input.seq, expected.groups = 3, comp.mat=TRUE, inter = FALSE)
 plot(lgs)
    
 }
