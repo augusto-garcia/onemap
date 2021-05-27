@@ -2,8 +2,8 @@ context("Filters function")
 
 test_that("number of distorted markers",{
   check_dist <- function(example_data, table.h0){
-    data(example_data)
-    segre <- test_segregation(get(example_data))
+    eval(bquote(data(.(example_data))))
+    segre <- eval(bquote(test_segregation(get(.(example_data)))))
     segre_tab <- print(segre)
     eval(bquote(expect_equal(as.vector(table(segre_tab$H0)), .(table.h0))))
     expect_equal(length(select_segreg(segre, distorted = T, numbers = T)), sum(segre_tab$`p-value` < 0.05/length(segre_tab$Marker)))

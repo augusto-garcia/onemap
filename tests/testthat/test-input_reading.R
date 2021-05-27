@@ -116,7 +116,7 @@ test_that("reading files",{
                       n.phe = 0,
                       pheno1.3 = NULL,
                       dim.geno =  c(92,24), 
-                      table.geno = c(17, 761,1029, 401),
+                      table.geno = c(16, 762,1029, 401),
                       error1.4 = c(rep(0.99999,4)))
   
   data <- onemap_read_vcfR(vcfR.obj, cross = "outcross", parent1 = "P2", parent2 = "P1")
@@ -126,7 +126,7 @@ test_that("reading files",{
                       n.phe = 0,
                       pheno1.3 = NULL,
                       dim.geno =  c(92,24),
-                      table.geno = c(17, 761,1029, 401),
+                      table.geno = c(16, 762,1029, 401),
                       error1.4 = c(rep(0.99999,4)))
   
   vcfR.obj <- read.vcfR(system.file("extdata/vcf_example_riself.vcf", package = "onemap"))
