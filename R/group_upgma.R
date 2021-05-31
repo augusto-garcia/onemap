@@ -165,7 +165,7 @@ group_upgma <- function(input.seq, expected.groups = NULL,
                  seq.vs.grouped.snp = seq.vs.grouped.snp, 
                  LOD = input.seq$LOD, 
                  max.rf = input.seq$max.rf,
-                 twopt <- input.seq$twopt),
+                 twopt = input.seq$twopt),
             class = "group.upgma")
 }
 
