@@ -94,6 +94,15 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
   ## checking for correct object
   if(!(is(input.seq, "sequence")))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+  ## Checking phase_cores
+  if(is(input.seq$data.name, c("riself", "risib", "backcross")) & phase_cores != 1){
+    warning("For RILs and backcross populations, we do not need to estimate phase. Therefore, the parallelization is not possible with our approach.")
+    phase_cores <- 1
+  }
+  ## Checking version
+  if(!any(names(input.seq$data.name) %in% "error")){
+    input.seq$data.name <- create_probs(input.seq$data.name, global_error = 10^(-5))
+  }
   
   ##Gathering sequence information
   seq.num<-input.seq$seq.num

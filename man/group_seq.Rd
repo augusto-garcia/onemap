@@ -10,7 +10,8 @@ group_seq(
   unlink.mks = "all",
   repeated = FALSE,
   LOD = NULL,
-  max.rf = NULL
+  max.rf = NULL,
+  min_mks = NULL
 )
 }
 \arguments{
@@ -34,6 +35,9 @@ they are removed of the output sequences.}
 
 \item{max.rf}{a real number (usually smaller than 0.5) used as
 maximum recombination fraction to declare linkage.}
+
+\item{min_mks}{integer defining the minimum number of markers that a provided 
+sequence (seqs or CHROM) should have to be considered a group.}
 }
 \value{
 Returns an object of class \code{group_seq}, which is a list

@@ -79,8 +79,18 @@ combine_onemap <- function(...) {
         if(!is(onemap.objs[[i]], "onemap"))
             stop("All objects must be of class 'onemap'.")
     }
+    
+    n.mar.all <- sapply(onemap.objs, "[[",3)
+    idx <- which(n.mar.all == 0)
+    if(length(idx) > 0){
+        warning(paste("Object", idx, "has no markers.\n"))
+        onemap.objs <- onemap.objs[-idx]
+        n.objs <- length(onemap.objs)
+    }
+    
     if (n.objs == 1) {
-        stop("Nothing to merge.")
+        warning("Nothing to merge.")
+        return(onemap.objs[[1]])
     }
     
     ## Check if all objects are of the same cross type
@@ -116,8 +126,7 @@ combine_onemap <- function(...) {
             if(onemap.objs[[i]]$n.ind != n.ind)
                 stop("Sample IDs are missing in at least one dataset. All objects must contain the same number of individuals and in the same order.")
         }
-    }
-    else {
+    }   else {
         n.ind <- length(sampleIDs)
     }
     
@@ -135,8 +144,7 @@ combine_onemap <- function(...) {
     POS <- rep(NA, n.mar)
     if (n.phe) {
         pheno <- matrix(NA, nrow = n.ind, ncol = n.phe)
-    }
-    else {
+    }    else {
         pheno <- NULL
     }
     
@@ -186,10 +194,6 @@ combine_onemap <- function(...) {
     }
     
     rownames(error) <- rownames.error
-    if (anyDuplicated(colnames(geno))) {
-        warning("Duplicate marker names found. Please check.")
-    }
-    
     if (all(is.na(CHROM))) {
         CHROM <- NULL
     }
@@ -199,11 +203,14 @@ combine_onemap <- function(...) {
     
     ## Return "onemap" object
     input <- "combined"
-    structure(list(geno = geno, n.ind = n.ind, n.mar = n.mar,
+    onemap.obj <- structure(list(geno = geno, n.ind = n.ind, n.mar = n.mar,
                    segr.type = segr.type, segr.type.num = segr.type.num,
                    n.phe = n.phe, pheno = pheno, CHROM = CHROM, POS = POS,
-                   error=error, input = input),
+                   input = input, error=error),
               class = c("onemap", crosstype))
+    
+    onemap.obj <- rm_dupli_mks(onemap.obj)
+    return(onemap.obj)
 }
 
 #' Split onemap data sets
@@ -232,7 +239,6 @@ split_onemap <- function(onemap.obj=NULL, mks=NULL){
     }
     
     new.obj <- onemap.obj
-    
     new.obj$geno <- onemap.obj$geno[,idx.mks]
     new.obj$n.mar <- length(idx.mks)
     new.obj$segr.type <- onemap.obj$segr.type[idx.mks]
@@ -240,8 +246,6 @@ split_onemap <- function(onemap.obj=NULL, mks=NULL){
     new.obj$CHROM <- onemap.obj$CHROM[idx.mks]
     new.obj$POS <- onemap.obj$POS[idx.mks]
     new.obj$error <- onemap.obj$error[idx.mks + rep(c(0:(onemap.obj$n.ind-1))*onemap.obj$n.mar, each=length(idx.mks)),]
-    #    rownames(new.obj$error) <- rownames(onemap.obj$error[idx.mks + rep(c(0:(onemap.obj$n.ind-1))*onemap.obj$n.mar, each=length(idx.mks)),])
-
     return(new.obj)
 }
 

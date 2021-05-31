@@ -55,10 +55,6 @@ create_data_bins <- function(input.obj, bins)
   names(dat.temp)<-nm
   wrk<-match(names(bins$bins), colnames(input.obj$geno))
   dat.temp$geno<-input.obj$geno[,wrk]
-  if(!is(input.obj,"outcross")){
-    dat.temp$geno.mmk<-list(geno=dat.temp$geno, type=gsub("\\..*","",class(input.obj)[2]))
-    dat.temp$geno.mmk$geno[dat.temp$geno.mmk$geno==0]<-NA
-  }
   dat.temp$n.ind<-nrow(dat.temp$geno)
   dat.temp$n.mar<-ncol(dat.temp$geno)
   dat.temp$segr.type<-input.obj$segr.type[wrk]

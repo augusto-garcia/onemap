@@ -12,10 +12,26 @@
 
 <meta name="author" content="Statistical Genetics Lab   Department of Genetics   Luiz de Queiroz College of Agriculture   University of São Paulo" />
 
-<meta name="date" content="2020-07-02" />
+<meta name="date" content="2021-02-16" />
 
 <title>Overview</title>
 
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
 
 
 
@@ -215,13 +231,13 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Overview</h1>
 <h4 class="author"><a href="http://statgen.esalq.usp.br">Statistical Genetics Lab</a> <br /> Department of Genetics <br /> Luiz de Queiroz College of Agriculture <br /> University of São Paulo</h4>
-<h4 class="date">2020-07-02</h4>
+<h4 class="date">2021-02-16</h4>
 
 
 
 <p><em>OneMap</em> is an environment for constructing linkage maps in several experimental crosses, including outcrossing (full-sib families derived from two non-homozygous parents), RILs, F<span class="math inline">\(_2\)</span> and backcrosses.</p>
-<p>It is implemented as a package to be used under the freely distributed R software, which is a language and environment for statistical computing (<a href="https://www.r-project.org/">www.r-project.org</a>). It is designed to be fully integrated with R/qtl package (Broman and Sen, 2009) and Windows QTL Cartographer (Wang et al., 2010) in order to do QTL mapping for RILs, F<span class="math inline">\(_2\)</span> and backcrosses. New functions for doing QTL mapping in outcrossing species (e. g. using models from Gazaffi et al. 2014) are under development and will be included in a near future.</p>
-<p>Wu et al. (2002a) proposed a methodology to construct genetic maps in outcrossing species, which allows the analysis of a mixed set of different marker types containing various segregation patterns. It also allows the simultaneous estimation of linkage and linkage phases between markers. Combined with ideas from Wu et al. (2002b) for doing multipoint analysis based on hidden Markov models (HMMs), it provides an excellent framework for genetic mapping in outcrossing species, in a similar way as for inbred-based populations, commonly analyzed by packages such as MAPMAKER/EXP (Lander et al., 1987).</p>
+<p>It is implemented as a package to be used under the freely distributed R software, which is a language and environment for statistical computing (<a href="https://www.r-project.org/">www.r-project.org</a>). It is designed to be fully integrated with R/qtl package (Broman and Sen, 2009) and Windows QTL Cartographer (Wang et al., 2010) in order to do QTL mapping for RILs, F<span class="math inline">\(_2\)</span> and backcrosses. New functions for doing QTL mapping in outcrossing species (e. g. using models from Gazaffi et al. 2014) are under development and will be included in a near future.</p>
+<p>Wu et al. (2002a) proposed a methodology to construct genetic maps in outcrossing species, which allows the analysis of a mixed set of different marker types containing various segregation patterns. It also allows the simultaneous estimation of linkage and linkage phases between markers. Combined with ideas from Wu et al. (2002b) for doing multipoint analysis based on hidden Markov models (HMMs), it provides an excellent framework for genetic mapping in outcrossing species, in a similar way as for inbred-based populations, commonly analyzed by packages such as MAPMAKER/EXP (Lander et al., 1987).</p>
 <p>This method was implemented in <em>OneMap</em> and was tested through extensive simulations. It was also successfully applied by author(s) of the packages and their collaborators in the construction of genetic maps of sugarcane (Garcia et al., 2006; Oliveira et al., 2007; Palhares et al. 2013), <em>Passiflora</em> (Oliveira et al., 2008; Pereira et al., 2013), rubber tree (Souza et al., 2013) and <em>Acca sellowiana</em> (Quezada et al., 2014). Actually, the analysis of these data sets motivated the implementation of the first release of <em>OneMap</em> (Margarido et al., 2007) and all its subsequent updates.</p>
 <p>In version 2.0-0, we included several major modifications to take advantage of the fact that some segregation patterns that occur in outcrossing populations can also occur in populations derived from inbred lines (i.e. RILs, F<span class="math inline">\(_2\)</span> and backcrosses). For example, a marker that segregates in a 1:2:1 fashion in the outcrossing context can be viewed as a co-dominant marker in F<span class="math inline">\(_2\)</span> populations. The main difference is that, for the latter, there is no need to estimate linkage phases.</p>
 <p>Using these ideas, we adapted <em>OneMap</em> to also construct genetic maps for RILs, F<span class="math inline">\(_2\)</span> and backcross populations, all incorporating the advantages of the HMMs. Moreover, we also implemented three new ordering algorithms. Version 1.0-0 had Rapid Chain Delineation - RCD (Doerge, 1996) and TRY (Lander et al., 1987); starting in version 2.0-0, the new ones available are Seriation - SER (Buetow and Chakravarti, 1987), recombination counting and ordering - RECORD (Van Os et al., 2005) and unidirectional growth - UG (Tan and Fu, 2006). They can be used for all experimental crosses included in <em>OneMap</em>, and can be chosen to give the best result for any situation faced by the user (Mollinari et al., 2009).</p>

@@ -9,12 +9,12 @@ globalVariables(c("read.table", "rnbinom", "rbinom"))
 #' 
 #' @param inputfile file .dat output from PedigreeSim software
 #' @param map.file file .map input in PedigreeSim software
-#' @param chrom.file file.chrom input in PedigreeSIm software
+#' @param chrom.file file.chrom input in PedigreeSim software
 #' @param out.file path to vcf output file
 #' @param mean.depth mean of the negative binomial distribution to generate depth counts
 #' @param disper.par dispersion parameter for negative binomial distribution
 #' @param mean.phred Sequencing error parameter
-#' @param chr.mb Chromossome size in mega base.
+#' @param chr.mb Chromosome size in mega base.
 #' @param method Choose negative binomial ("neg.binom"), poisson ("poisson") distributions or updog ("updog") model to simulate counts values
 #' @param miss.perc Percentage of missing data
 #' @param pos vector with the position of each marker. Use "cm" if you want to use mapfile position information.
@@ -73,7 +73,7 @@ pedsim2vcf <- function(inputfile=NULL,
     stop("You must define the PedigreeSim output files genotypes, map.file and chrom.file\n")
   
   data <- read.table(paste(inputfile), stringsAsFactors = FALSE, header = TRUE)
-
+  
   # Infos
   rownames(data) <- data[,1]
   data <- data[,-1]
@@ -174,11 +174,11 @@ pedsim2vcf <- function(inputfile=NULL,
       
       for(i in 1:dim(up_matrix)[1]){
         ref_matrix[i,] <- rflexdog(sizevec = size_matrix[i,],
-                                          geno=up_matrix[i,],
-                                          ploidy = 2,
-                                          seq=10^(-mean.phred/10),
-                                          bias=bias,
-                                          od = od)
+                                   geno=up_matrix[i,],
+                                   ploidy = 2,
+                                   seq=10^(-mean.phred/10),
+                                   bias=bias,
+                                   od = od)
       }
       
       alt_matrix <- size_matrix-ref_matrix
@@ -345,7 +345,7 @@ pedsim2vcf <- function(inputfile=NULL,
   }
   alt <- rep(NA, length(ref))
   ## ALT
-  done <- vector() # vector to store markers already avaliated
+  done <- vector() # vector to store markers already evaluated
   guide <- 1:dim(check_matrix)[1]
   for(j in c(3,2,1)){
     if(length(done) != 0){
@@ -391,6 +391,8 @@ pedsim2vcf <- function(inputfile=NULL,
                              "QUAL"=qual, "FILTER"=filter,"INFO"=info,"FORMAT"=format,vcf_format, stringsAsFactors = FALSE)
   
   vcf_vector <- apply(vcf_file_mks, 1, function(x) paste(x, collapse = "\t"))
+  # Remove empty space before position
+  vcf_vector <- gsub(pattern = " ", replacement = "",x = vcf_vector)
   
   header1 <- paste0(colnames(vcf_file_mks), collapse = "\t")
   header <- paste0("##fileformat=VCFv4.1", "\n", "##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">", '\n',

@@ -74,8 +74,16 @@ install_github("augusto-garcia/onemap")
 `OneMap` requires several dependencies that you may not have in your system. To overcome the need of installing all of them, you can use the `OneMap` image in docker hub. Install docker (see more about [here](https://docs.docker.com/get-started/)) and use:
 
 ```bash
-docker pull cristaniguti/onemap_git:v2.1.1008
+docker pull cristaniguti/onemap_git:latest
 ```
+
+The `OneMap` image already has the RStudio from rocker image, you can run it in your favorite browser running the following command:
+
+```bash
+docker run -p 8787:8787 -v $(pwd):/home/rstudio/ -e DISABLE_AUTH=true cristaniguti/onemap_git
+```
+
+This will make the container available in port 8787 (choose other if you prefer). The `-v` argument include directories of your computer, in this case the current directory (pwd) to the container. You can use `-v` several times to include several directories. After, you just need to go to your favorite browser and search for <your_localhost>:8787 (example 127.0.0.1:8787). That is it! Everything you need is there.
 
 # Tutorials
 
@@ -83,11 +91,11 @@ You can read _OneMap_ tutorials going to the vignettes of the
 installed package, or clicking below. Please, start with the overview,
 that will guide you through other chapters.
 
-1. [Overview](https://augusto-garcia.github.io/onemap/vignettes_highres/Overview.html)
+1. [Overview](https://statgen-esalq.github.io/tutorials/onemap/Overview.html)
 
-2. [Introduction to R](https://augusto-garcia.github.io/onemap/vignettes_highres/Introduction_R.html)
+2. [Introduction to R](https://statgen-esalq.github.io/tutorials/onemap/Introduction_R.html)
 
-3. [How to build a linkage map for inbred-bases populations (F2, RIL and BC)](http://augusto-garcia.github.io/onemap/vignettes_highres/Inbred_Based_Populations.html)
+3. [How to build a linkage map for inbred-bases populations (F2, RIL and BC)](https://statgen-esalq.github.io/tutorials/onemap/Inbred_Based_Populations.html)
 
-4. [How to build a linkage map for outcrossing populations](http://augusto-garcia.github.io/onemap/vignettes_highres/Outcrossing_Populations.html)
+4. [How to build a linkage map for outcrossing populations](https://statgen-esalq.github.io/tutorials/onemap/Outcrossing_Populations.html)
 

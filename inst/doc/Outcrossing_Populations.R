@@ -561,6 +561,18 @@ CHR2_frame <- make_seq(CHR2_ord, "force")
 CHR2_final <- CHR2_frame
 
 ## ---- results='hide'----------------------------------------------------------
+CHR2_frame <- mds_onemap(CHR_mks$sequences$CHR2)
+# or
+CHR2_ord <- order_seq(CHR_mks$sequences$CHR2)
+CHR2_frame <- make_seq(CHR2_ord, "force")
+
+## ---- eval=FALSE--------------------------------------------------------------
+#  rf_graph_table(CHR2_frame) # graphic not shown
+
+## -----------------------------------------------------------------------------
+CHR2_final <- CHR2_frame
+
+## ---- results='hide'----------------------------------------------------------
 CHR3_frame <- mds_onemap(CHR_mks$sequences$CHR3)
 # or
 CHR3_ord <- order_seq(CHR_mks$sequences$CHR3)
@@ -933,6 +945,35 @@ parents_haplotypes(CHR2_final,CHR3_final, group_names=c("CHR2","CHR3"))
 plot(progeny_haplot, position = "stack")
 
 plot(progeny_haplot, position = "split")
+
+## -----------------------------------------------------------------------------
+pedsim2vcf(inputfile = system.file("extdata/sim_cod_out_genotypes.dat", package = "onemap"),
+           map.file = system.file("extdata/mapfile_out.txt", package = "onemap"), 
+           chrom.file = system.file("extdata/sim_out.chrom", package = "onemap"), 
+           out.file = "simu_out_phased.vcf",
+           miss.perc = 0, 
+           counts = FALSE, 
+           chr.mb = 10,
+           pos="cM",
+           chr=NULL,
+           phase = TRUE)
+
+## -----------------------------------------------------------------------------
+vcfR.object <- read.vcfR("simu_out_phased.vcf")
+
+progeny_dat <- vcf2progeny_haplotypes(vcfR.object = vcfR.object, ind.id = c("F1_004", "F1_005"), group_names = "Chr1", parent1 = "P1", parent2 = "P2", crosstype = "outcross")
+plot(progeny_dat)
+
+## -----------------------------------------------------------------------------
+onemap_test <- onemap_read_vcfR(vcfR.object = vcfR.object, cross = "outcross", parent1 = "P1", parent2 = "P2", only_biallelic = FALSE)
+
+onemap_test # Just to remember of which dataset we are talking about
+
+twopts <- rf_2pts(onemap_test)
+seq1 <- make_seq(twopts, "all")
+map_test <- map(seq1)
+progeny_est <- progeny_haplotypes(map_test, ind = c(4,5), most_likely = FALSE)
+plot(progeny_est)
 
 ## -----------------------------------------------------------------------------
 sessionInfo()

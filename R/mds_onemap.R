@@ -123,7 +123,8 @@ mds_onemap <- function(input.seq,
   
   pdf(mds.graph.file)
   mds_map <- estimate.map(out.file, p = p, n=n, ispc = ispc, 
-                                  displaytext = displaytext)
+                          displaytext = displaytext, 
+                          weightfn = weightfn, mapfn = mapfn)
   dev.off()
   ord_mds <- match(as.character(mds_map$locimap[,2]), colnames(input.seq$data.name$geno)) 
   seq_mds <- make_seq(input.seq$twopt, ord_mds)

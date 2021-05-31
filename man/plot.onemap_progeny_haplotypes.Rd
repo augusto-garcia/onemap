@@ -19,7 +19,7 @@
 
 \item{col}{Color of parentes' homologous.}
 
-\item{position}{"split" or "stack"; if "split" (default) the parents' homologous are plotted separately. if "stack" the parents' homologous are plotted together.}
+\item{position}{"split" or "stack"; if "split" (default) the alleles' are plotted separately. if "stack" the parents' alleles are plotted together.}
 
 \item{show_markers}{logical; if  \code{TRUE}, the markers (default) are plotted.}
 
@@ -30,7 +30,9 @@
 \item{...}{currently ignored}
 }
 \description{
-Plots progeny haplotypes
+Figure is generated with the haplotypes for each selected individual. As a representation, the recombination breakpoints are here considered 
+to be in the mean point of the distance between two markers.  It is important to highlight that it did not reflects the exact breakpoint position, 
+specially if the genetic map have low resolution.
 }
 \author{
 Getulio Caixeta Ferreira, \email{getulio.caifer@gmail.com}

@@ -183,20 +183,19 @@ Finally, after each marker type, comes the genotype data for the
 segregating population. Missing
 data are indicated with the character `-` (minus sign) and an empty space separates the information for each individual. Positions and phenotype information, if present, follows genotypic data with a similar structure. Details are found in the help of function `read_onemap`.
 
-Here is an example of such file for 10 individuals and 5 markers (the three zeros in the second line indicate that there is no chromosome information, physical position information or phenotypic data, respectively). It
+Here is an example of such file for 10 individuals, 5 markers (the two zeros in the second line indicate that there is no chromosome information, physical position information), and two phenotypic data, respectively). It
 is very similar to a MAPMAKER/EXP file, but has additional information
 about the cross type.
 
 ```
 data type f2 intercross
-10 5 1 0 1
+10 5 0 0 2
 I1 I2 I3 I4 I5 I6 I7 I8 I9 I10
 *M1 A.H.B  ab a - ab b a ab - ab b
 *M2 A.H.B  a - ab ab - b a - a ab
 *M3 C.A    c a a c c - a c a c
 *M4 A.H.B  ab b - ab a b ab b - a
 *M5 D.B    b b d - b d b b b d
-*CHROM 1 1 1 2 2 2 3 3 3 3
 *fen1 10.3 11.2 11.1 - 9.8 8.9 11.0 10.7 - 10.1
 *fen2 42 49 - 45 51 42 28 32 38 40
 ```

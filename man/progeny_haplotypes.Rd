@@ -9,7 +9,7 @@ progeny_haplotypes(..., ind = 1, group_names = NULL, most_likely = FALSE)
 \arguments{
 \item{...}{Map(s) or list(s) of maps. Object(s) of class sequence.}
 
-\item{ind}{vector with individual index to be evaluated}
+\item{ind}{vector with individual index to be evaluated or "all" to include all individuals}
 
 \item{group_names}{Names of the groups.}
 
@@ -19,8 +19,8 @@ if FALSE (default) the genotype probability is plotted.}
 }
 \value{
 a data.frame information: individual (ind) and group (grp) ID, position in centimorgan (pos), 
-position adjusted for build graphic (pos2), f1 homologs (f1), progeny homologs (prog), 
-parents homologs (parents) IDs and genotypes probabilities (prob)
+group (grp), genotypes probabilities (prob), parent (homologs), and the parents homologs (homologs) 
+in that homolog and position.
 }
 \description{
 Generate data.frame with genotypes estimated by HMM and its probabilities
