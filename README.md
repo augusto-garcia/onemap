@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/Cristianetaniguti/onemap.svg?branch=master)](https://travis-ci.org/Cristianetaniguti/onemap) 
 [![Development](https://img.shields.io/badge/development-active-blue.svg)](https://img.shields.io/badge/development-active-blue.svg)
-[![codecov](https://codecov.io/github/Cristianetaniguti/onemap/branch/master/graphs/badge.svg)](https://codecov.io/github/Cristianetaniguti/onemap)
+[![codecov](https://codecov.io/github/Cristianetaniguti/onemap/branch/prepare_for_cran/graphs/badge.svg)](https://codecov.io/github/Cristianetaniguti/onemap)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/onemap)](https://cran.r-project.org/package=onemap)
 [![CRAN_monthly_downloads](https://cranlogs.r-pkg.org/badges/onemap)](https://cranlogs.r-pkg.org/badges/onemap)
 
