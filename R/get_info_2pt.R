@@ -86,7 +86,7 @@ get_vec_rf_in<- function(input.seq, LOD=FALSE, acum=TRUE) {
 #For a guiven sequence, this function gets the recombination
 #fraction/LOD matrix for outcrossing
  get_mat_rf_out<- function(input.seq, LOD=FALSE, max.rf=0.5, min.LOD=0) {
-     if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequnece'")
+     if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
      if(length(input.seq$seq.num) < 2) stop("The sequence must have at least 2 markers")
      n.mrk<-length(input.seq$seq.num)
      mrk.names <- colnames(input.seq$data.name$geno)[input.seq$seq.num]
@@ -120,7 +120,9 @@ get_vec_rf_in<- function(input.seq, LOD=FALSE, acum=TRUE) {
      else
      {
          for(i in 1:(n.mrk-1)) {
+             cat(i, "\n")
              for(j in (i+1):n.mrk) {
+                 cat(j ,"\n")
                  k<-sort(c(input.seq$seq.num[i], input.seq$seq.num[j]))
                  rfs<-sapply(input.seq$twopt$analysis, function(x,i,j) x[i,j], k[2], k[1]) 
                  LODs<-sapply(input.seq$twopt$analysis, function(x,i,j) x[i,j], k[1], k[2]) 

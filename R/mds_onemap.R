@@ -128,7 +128,7 @@ mds_onemap <- function(input.seq,
   dev.off()
   ord_mds <- match(as.character(mds_map$locimap[,2]), colnames(input.seq$data.name$geno)) 
   seq_mds <- make_seq(input.seq$twopt, ord_mds)
-  if(phase_cores == 1){
+  if(phase_cores == 1 | is(input.seq$data.name, c("backcross", "riself", "risib"))){
     mds_map <- map(seq_mds, rm_unlinked = rm_unlinked)
   } else{
     if(is.null(size) | is.null(overlap)){

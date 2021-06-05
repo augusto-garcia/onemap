@@ -224,7 +224,7 @@ ug<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
   complete<-partial
   ## end of UG algorithm
   cat("\norder obtained using UG algorithm:\n\n", input.seq$seq.num[avoid_reverse(complete)], "\n\ncalculating multipoint map using tol ", tol, ".\n\n")
-  if(phase_cores == 1){
+  if(phase_cores == 1 | is(input.seq$data.name, c("backcross", "riself", "risib"))){
     ug_map <- map(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(complete)],
                            twopt=input.seq$twopt), tol=tol, rm_unlinked = rm_unlinked)
   } else{

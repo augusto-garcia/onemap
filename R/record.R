@@ -207,7 +207,7 @@ record<-function(input.seq, times=10, LOD=0, max.rf=0.5, tol=10E-5,
   ## end of RECORD algorithm
   cat("\norder obtained using RECORD algorithm:\n\n", input.seq$seq.num[avoid_reverse(result.new)], "\n\ncalculating multipoint map using tol", tol, ".\n\n")
   
-  if(phase_cores == 1){
+  if(phase_cores == 1 | is(input.seq$data.name, c("backcross", "riself", "risib"))){
     record_map <- map(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(result.new)],
                                twopt=input.seq$twopt), 
                       tol=tol,

@@ -1,6 +1,6 @@
 context("test ordering algorithms")
 
-test_that("ordering test"){
+test_that("ordering test", {
   ordering_func <- function(example_data, which.group, ord.ser, ord.rcd, ord.rec, ord.ug, ord.mds, ord.order){
     eval(bquote(data(.(example_data))))
     twopt <- eval(bquote(rf_2pts(get(.(example_data)))))
@@ -26,8 +26,6 @@ test_that("ordering test"){
     eval(bquote(expect_equal(LG.order$seq.num[1:5], .(ord.order))))
   }
   
-  example_data <- "onemap_example_riself"
-  which.group <- 1
   ordering_func("onemap_example_out", 3,
                 c(7,22,13,8,18), 
                 c(7,22,13,8,18),
@@ -59,5 +57,51 @@ test_that("ordering test"){
                 c(8,1,17,16,11), 
                 c(8,1,17,11,16), 
                 c(8,1,17,11,16))
-}
+})
 
+test_that("ordering test parallel", {
+  ordering_func <- function(example_data, ord.rcd, ord.rec, ord.ug, ord.mds){
+    eval(bquote(data(.(example_data))))
+    onemap_mis <- eval(bquote(filter_missing(get(.(example_data)), 0.15)))
+    twopt <- rf_2pts(onemap_mis)
+    LG <- make_seq(twopt, 1:25)
+    batch_size <- pick_batch_sizes(LG,
+                                   size = 5,
+                                   overlap = 3,
+                                   around = 1)
+    set.seed(2020)
+    eval(bquote(expect_error(seriation(input.seq = LG, size = batch_size, phase_cores = 4, overlap = 3), "There are too many ties in the ordination process - please, consider using another ordering algorithm.")))
+    LG.rcd <- rcd(LG, size = batch_size, phase_cores = 4, overlap = 3)
+    eval(bquote(expect_equal(LG.rcd$seq.num[1:5], .(ord.rcd))))
+    LG.rec <- record(LG, size = batch_size, phase_cores = 4, overlap = 3)
+    eval(bquote(expect_equal(LG.rec$seq.num[1:5], .(ord.rec))))
+    LG.ug <- ug(LG, size = batch_size, phase_cores = 4, overlap = 3)
+    eval(bquote(expect_equal(LG.ug$seq.num[1:5], .(ord.ug))))
+    LG.mds <- mds_onemap(LG, size = batch_size, phase_cores = 4, overlap = 3)
+    eval(bquote(expect_equal(LG.mds$seq.num[1:5], .(ord.mds))))
+  }
+  
+  ordering_func("onemap_example_out", 
+                c(6,12,17,10,1), 
+                c(22,8,18,13,7),
+                c(25,15,5,11,6),
+                c(10,2,23,14,17))
+  
+  ordering_func("onemap_example_f2",
+                c(17,13,5,3,2), 
+                c(13,17,21,16,19),
+                c(7,9,24,10,6),
+                c(18,2,22,1,14))
+  
+  ordering_func("onemap_example_bc",
+                c(9,7,14,3,23),
+                c(4,6,19,17,5), 
+                c(9,7,14,3,12), 
+                c(4,6,8,20,14))
+  
+  ordering_func("onemap_example_riself",
+                c(7,1,19,10,15), 
+                c(7,1,19,15,10),
+                c(21,6,14,3,13),
+                c(7,17,11,16,25))
+})

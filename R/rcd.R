@@ -169,7 +169,7 @@ rcd <-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
   ## end of chain
   cat("\norder obtained using RCD algorithm:\n\n", input.seq$seq.num[avoid_reverse(order)], "\n\ncalculating multipoint map using tol = ", tol, ".\n\n")
   
-  if(phase_cores == 1){
+  if(phase_cores == 1 | is(input.seq$data.name, c("backcross", "riself", "risib"))){
     rcd.hmm <- map(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(order)],
                             twopt=input.seq$twopt), 
                    tol=tol,
