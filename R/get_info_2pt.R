@@ -120,9 +120,7 @@ get_vec_rf_in<- function(input.seq, LOD=FALSE, acum=TRUE) {
      else
      {
          for(i in 1:(n.mrk-1)) {
-             cat(i, "\n")
              for(j in (i+1):n.mrk) {
-                 cat(j ,"\n")
                  k<-sort(c(input.seq$seq.num[i], input.seq$seq.num[j]))
                  rfs<-sapply(input.seq$twopt$analysis, function(x,i,j) x[i,j], k[2], k[1]) 
                  LODs<-sapply(input.seq$twopt$analysis, function(x,i,j) x[i,j], k[1], k[2]) 
