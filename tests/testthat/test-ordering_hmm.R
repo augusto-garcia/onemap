@@ -1,6 +1,5 @@
 context("test ordering and HMM algorithms")
 
-which.group <- 1
 test_that("ordering and HMM test", {
   ordering_func <- function(example_data, which.group, 
                             ord.ser, size.ser, 

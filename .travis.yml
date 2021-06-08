@@ -14,7 +14,7 @@ services:
     
 before_install:
     - export DISPLAY=:99.0
-    - export RGL_USE_NULL=TRUE
+    - export RGL_USE_NULL=FALSE
     - tlmgr install index
 
 apt_packages:

@@ -154,7 +154,9 @@ RcppExport SEXP est_hmm_bc(SEXP geno_R, SEXP error_R, SEXP rf_R, SEXP verbose_R,
           }
         }
       }
-      /* Store genotypes probabilities*/
+    }
+    /* Store genotypes probabilities*/
+    for(j=0; j<n_mar; j++){
       long double w = 0.0;
       for(v=0; v<n_gen; v++){
         w += alpha(v,j) * beta(v,j);

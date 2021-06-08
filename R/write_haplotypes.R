@@ -200,7 +200,7 @@ progeny_haplotypes <- function(...,
                P2_H2 = V2)
     }
   }
-                             
+  
   probs$marker = colnames(input.map[[1]]$data.name$geno)[probs$marker]
   
   probs <- probs %>% 
@@ -251,8 +251,6 @@ plot.onemap_progeny_haplotypes <- function(x,
                                            show_markers = TRUE, 
                                            main = "Genotypes", ncol=4, ...){
   
-  colors <- ifelse(is(x,"outcross"), "for.split", "alleles")  
-  
   probs <- cbind(x, for.split= paste0(x$parents, "_", x$homologs))
   
   probs <- probs %>% group_by(ind, grp, for.split) %>%
@@ -263,8 +261,13 @@ plot.onemap_progeny_haplotypes <- function(x,
               # markers
               pos = c(pos[-nrow(.)], NA)))
   
-  p <- ggplot(probs, aes(x = pos, col=get(colors), alpha = prob)) + ggtitle(main) +
-    facet_wrap(~ ind + grp , ncol = ncol) +
+  if(is(x, "outcross")){
+    p <- ggplot(probs, aes(x = pos, col=for.split, alpha = prob)) + ggtitle(main) 
+  } else {
+    p <- ggplot(probs, aes(x = pos, col=homologs, alpha = prob)) + ggtitle(main) 
+  }
+  
+  p <- p +  facet_wrap(~ ind + grp , ncol = ncol) +
     scale_alpha_continuous(range = c(0,1)) +
     guides(fill = guide_legend(reverse = TRUE)) +
     labs(alpha = "Prob", col = "Allele", x = "position (cM)")
@@ -350,7 +353,7 @@ plot.onemap_progeny_haplotypes_counts <- function(x,
   mycolors <- sample(mycolors)
   
   if(by_homolog){ 
-      if(is.null(n.graphics) & is.null(ncol)){
+    if(is.null(n.graphics) & is.null(ncol)){
       n.ind <- dim(x)[1]/2
       if(n.ind/25 <= 1) {
         n.graphics = 1
@@ -385,7 +388,7 @@ plot.onemap_progeny_haplotypes_counts <- function(x,
     x <- x %>% ungroup %>% group_by(ind, grp) %>%
       summarise(counts = sum(counts))
     
-
+    
     if(is.null(n.graphics) & is.null(ncol)){
       if(n.ind/25 <= 1) {
         n.graphics = 1
