@@ -164,56 +164,66 @@ progeny_haplotypes <- function(...,
       probs[,5:8] <- t(apply(probs[,5:8], 1, function(x) as.numeric(x == max(x))/sum(x == max(x))))
     }
     
-    probs <- probs %>%
-      mutate(P1_H1 = V1 + V2,
-             P1_H2 = V3 + V4,
-             P2_H1 = V1 + V3,
-             P2_H2 = V2 + V4) 
-    
+    # When P1_H1 it means the allele in homolog 1 of the parent 1
+    # when H1_P1 is the parent 1 allele in the progeny homolog 1
     if(is(input.map[[1]]$data.name, "outcross")){
+      probs <- probs %>%
+        mutate(P1_H1 = V1 + V2,
+               P1_H2 = V3 + V4,
+               P2_H1 = V1 + V3,
+               P2_H2 = V2 + V4)  %>%
+        select(ind, marker, grp, pos, P1_H1, P1_H2, P2_H1, P2_H2) %>% 
+        gather(parents, prob, P1_H1, P1_H2, P2_H1, P2_H2) 
+      
+      new.col <- t(sapply(strsplit(probs$parents, "_"), "[", 1:2))
+      colnames(new.col) <- c("parents", "parents.homologs")
       cross <- "outcross"
     } else {
+      probs <- probs %>%
+        mutate(H1_P1 = V1 + V2,
+               H1_P2 = V3 + V4,
+               H2_P1 = V1 + V3,
+               H2_P2 = V2 + V4)  %>%
+        select(ind, marker, grp, pos, H1_P1, H1_P2, H2_P1, H2_P2) %>% 
+        gather(parents, prob, H1_P1, H1_P2, H2_P1, H2_P2) 
+      
+      new.col <- t(sapply(strsplit(probs$parents, "_"), "[", 1:2))
+      colnames(new.col) <- c("progeny.homologs", "parents")
       cross <- "f2"
     }
-    
   } else {
-    #probs <- probs1
     probs <- do.call(rbind,lapply(probs, function(x) do.call(rbind, x)))
     if(most_likely){
       probs[,5:6] <- t(apply(probs[,5:6], 1, function(x) as.numeric(x == max(x))/sum(x == max(x))))
     }
     
-    if (is(input.map[[1]]$data.name, c("backcross"))){
-      cross <- "backcross"
-      probs <- probs %>% 
-        mutate(P1_H1 = V1 + V2, # homozigote parent
-               P1_H2 = 0,
-               P2_H1 = V2, 
-               P2_H2 = V1) 
-      
-    } else if (is(input.map[[1]]$data.name, c("riself", "risib"))){
-      cross <- "rils"
-      probs <- probs %>%
-        mutate(P1_H1 = V1,
-               P1_H2 = V2,
-               P2_H1 = V1,
-               P2_H2 = V2)
+    if (is(input.map[[1]]$data.name, c("backcross")) | is(input.map[[1]]$data.name, c("riself", "risib"))){
+      if(is(input.map[[1]]$data.name, c("backcross"))){
+        cross <- "backcross"
+        probs <- probs %>% 
+          mutate(H1_P1 = V1 + V2, # homozygote parent
+                 H1_P2 = 0,
+                 H2_P1 = V2, 
+                 H2_P2 = V1) 
+      } else if (is(input.map[[1]]$data.name, c("riself", "risib"))){
+        cross <- "rils"
+        probs <- probs %>%
+          mutate(H1_P1 = V1,
+                 H1_P2 = V2,
+                 H2_P1 = V1,
+                 H2_P2 = V2)
+      }
+      probs <- probs %>%  select(ind, marker, grp, pos, H1_P1, H1_P2, H2_P1, H2_P2) %>% 
+        gather(parents, prob, H1_P1, H1_P2, H2_P1, H2_P2) 
+      new.col <- t(sapply(strsplit(probs$parents, "_"), "[", 1:2))
+      colnames(new.col) <- c("progeny.homologs", "parents")
     }
   }
   
-  probs$marker = colnames(input.map[[1]]$data.name$geno)[probs$marker]
-  
-  probs <- probs %>% 
-    select(ind, marker, grp, pos, P1_H1, P1_H2, P2_H1, P2_H2) %>% 
-    gather(parents, prob, P1_H1, P1_H2, P2_H1, P2_H2) 
-  
-  new.col <- t(sapply(strsplit(probs$parents, "_"), "[", 1:2))
-  colnames(new.col) <- c("parents", "homologs")
-  
   probs <- cbind(probs, new.col)
-  probs <- probs[,-5]
+  probs <- cbind(probs[,-5], allele = probs[,5])
   probs <- as.data.frame(probs)
-  
+  probs$marker = colnames(input.map[[1]]$data.name$geno)[probs$marker]
   probs$ind <- ind.names[probs$ind]
   
   if(most_likely) flag <- "most.likely" else flag <- "by.probs"
@@ -251,9 +261,15 @@ plot.onemap_progeny_haplotypes <- function(x,
                                            show_markers = TRUE, 
                                            main = "Genotypes", ncol=4, ...){
   
-  probs <- cbind(x, for.split= paste0(x$parents, "_", x$homologs))
+  if(is(x, "outcross")){
+    n <- c("H1" = "P1", "H2" = "P2")
+    progeny.homologs <- names(n)[match(x$parents, n)]
+    probs <- cbind(x, progeny.homologs)
+  } else {
+    probs <- x
+  }
   
-  probs <- probs %>% group_by(ind, grp, for.split) %>%
+  probs <- probs %>% group_by(ind, grp, allele) %>%
     do(rbind(.,.[nrow(.),])) %>%
     do(mutate(.,
               pos2 = c(0,pos[-1]-diff(pos)/2), # Because we don't know exactly where 
@@ -262,9 +278,9 @@ plot.onemap_progeny_haplotypes <- function(x,
               pos = c(pos[-nrow(.)], NA)))
   
   if(is(x, "outcross")){
-    p <- ggplot(probs, aes(x = pos, col=for.split, alpha = prob)) + ggtitle(main) 
+    p <- ggplot(probs, aes(x = pos, col=allele, alpha = prob)) + ggtitle(main) 
   } else {
-    p <- ggplot(probs, aes(x = pos, col=homologs, alpha = prob)) + ggtitle(main) 
+    p <- ggplot(probs, aes(x = pos, col=parents, alpha = prob)) + ggtitle(main) 
   }
   
   p <- p +  facet_wrap(~ ind + grp , ncol = ncol) +
@@ -276,12 +292,12 @@ plot.onemap_progeny_haplotypes <- function(x,
   else p <- p + scale_color_manual(values = rev(col))
   
   if(position == "stack"){
-    p <- p + geom_line(aes(x = pos2, y = parents), size = ifelse(show_markers, 4, 5)) + labs(y = "parents")
-    if(show_markers) p <- p + geom_point(aes(y = parents), size = 5, stroke = 2, na.rm = T, shape = "|")
+    p <- p + geom_line(aes(x = pos2, y = progeny.homologs), size = ifelse(show_markers, 4, 5)) + labs(y = "progeny homologs")
+    if(show_markers) p <- p + geom_point(aes(y = progeny.homologs), size = 5, stroke = 2, na.rm = T, shape = "|")
   } 
   if(position == "split"){
-    p <- p + geom_line(aes(x = pos2, y = for.split), size = ifelse(show_markers, 4, 5))
-    if(show_markers) p <- p + geom_point(aes(y = for.split), size = 5, stroke = 2, na.rm = T, shape = "|")
+    p <- p + geom_line(aes(x = pos2, y = allele), size = ifelse(show_markers, 4, 5))
+    if(show_markers) p <- p + geom_point(aes(y = allele), size = 5, stroke = 2, na.rm = T, shape = "|")
   } 
   return(p)
 }
