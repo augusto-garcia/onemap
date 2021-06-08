@@ -129,6 +129,7 @@ progeny_haplotypes <- function(...,
   ind.names <- unique(unlist(ind.names)) 
   if(length(unique(n.ind)) != 1) stop("At least one of the sequences have different number of individuals in dataset.")
   n.ind <- unique(n.ind)
+  if(is.null(ind.names)) ind.names <- 1:n.ind
   if(ind[1] == "all"){
     ind <- 1:n.ind
   } 
