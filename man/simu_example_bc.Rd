@@ -21,7 +21,7 @@ List of 11
  $ pheno        : NULL
  $ CHROM        : NULL
  $ POS          : NULL
- $ input        : chr "sim_bc.example.raw"
+ $ input        : chr "simu_example_bc.raw"
  $ error        : num [1:10800, 1:2] 1 1 1 1 1 ...
   ..- attr(*, "dimnames")=List of 2
   .. ..$ : chr [1:10800] "M001_BC_001" "M002_BC_001" "M003_BC_001" "M004_BC_001" ...
@@ -30,7 +30,7 @@ List of 11
 }
 
 \details{
-  A simulation of a backcross population of 200 individuals genotyped with 54 markers. Ten percent of the genotypes are   missing data. There are two groups, one (Chr01) with a total of 100 cM and the other (Chr10) with 150 cM. The markers are positioned equidistant from each other.  
+  A simulation of a backcross population of 200 individuals genotyped with 54 markers. There are no missing data. There are two groups, one (Chr01) with a total of 100 cM and the other (Chr10) with 150 cM. The markers are positioned equidistant from each other.
 }
 \examples{
 data(simu_example_bc)

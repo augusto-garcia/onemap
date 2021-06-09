@@ -314,8 +314,8 @@ progeny_haplotypes_counts <- function(x){
   if(!is(x, "onemap_progeny_haplotypes")) stop("Input need is not of class onemap_progeny_haplotyes")
   if(!is(x, "most.likely")) stop("The most likely genotypes must receive maximum probability (1)")
   cross <- class(x)[2]
-  
-  # Some genotypes receveis prob of 0.5, here we need to make a decision about them
+
+  # Some genotypes receives prob of 0.5, here we need to make a decision about them
   # Here we keep the genotype of the marker before it
   doubt <- x[which(x$prob == 0.5),]
   if(dim(doubt)[1] > 0){
@@ -326,12 +326,17 @@ progeny_haplotypes_counts <- function(x){
   x <- x[which(x$prob == 1),]
   x <- x[order(x$ind, x$grp, x$prob, x$parents,x$pos),]
   
-  x <- x %>% group_by(ind, grp, parents) %>%
-    mutate(seq = sequence(rle(as.character(homologs))$length) == 1) %>%
-    summarise(counts = sum(seq) -1) %>% ungroup()
-  
-  class(x) <- c("onemap_progeny_haplotypes_counts", cross, "data.frame")
-  return(x)
+  if(is(x, "outcross")){
+    counts <- x %>% group_by(ind, grp, parents) %>%
+      mutate(seq = sequence(rle(as.character(parents.homologs))$length) == 1) %>%
+      summarise(counts = sum(seq) -1) %>% ungroup()
+  } else {
+    counts <- x %>% group_by(ind, grp, progeny.homologs) %>%
+      mutate(seq = sequence(rle(as.character(parents))$length) == 1) %>%
+      summarise(counts = sum(seq) -1) %>% ungroup()
+  }
+  class(counts) <- c("onemap_progeny_haplotypes_counts", cross, "data.frame")
+  return(counts)
 }
 
 
@@ -360,7 +365,7 @@ plot.onemap_progeny_haplotypes_counts <- function(x,
                                                   n.graphics =NULL, 
                                                   ncol=NULL, ...){
   if(!is(x, "onemap_progeny_haplotypes_counts")) stop("Input need is not of class onemap_progeny_haplotyes_counts")
-  
+
   p <- list()
   n.ind <- length(unique(x$ind))
   nb.cols <- n.ind
