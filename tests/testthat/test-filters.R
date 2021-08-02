@@ -28,6 +28,7 @@ test_that("number of bins",{
   check_bins("vcf_example_out", 23)
   check_bins("vcf_example_bc", 25)
   check_bins("vcf_example_riself",25)
+  # Test add bins
 })
 
 test_that("number of missing data",{

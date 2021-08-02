@@ -50,7 +50,7 @@ test_that("ordering and HMM test", {
                 c(7,13,18,8,22), 94.87187, 
                 c(7,22,13,8,18), 46.32121394,
                 c(7,22,13,8,18), 46.32121394)
-                #c(18,8,13,7,22), 49.8)
+  #c(18,8,13,7,22), 49.8)
   
   ordering_func("onemap_example_f2", 1,
                 c(2,1,3,5,4), 50.3,
@@ -58,7 +58,7 @@ test_that("ordering and HMM test", {
                 c(2,1,3,5,4), 50.3,
                 c(2,1,3,5,4), 50.3,
                 c(2,1,3,5,4), 50.3)
-                #c(2,1,3,5,4), 50.3)
+  #c(2,1,3,5,4), 50.3)
   
   ordering_func("onemap_example_bc", 1,
                 c(15,1,2,18,22), 55.8,
@@ -66,7 +66,7 @@ test_that("ordering and HMM test", {
                 c(15,1,2,18,22), 55.8,
                 c(15,1,2,18,22), 55.8,
                 c(15,1,2,18,22), 55.8)
-                #c(15,1,2,18,22), 55.8)
+  #c(15,1,2,18,22), 55.8)
   
   ordering_func("onemap_example_riself", 1,
                 c(7,1,10,15,16), 40.61501,
@@ -74,7 +74,7 @@ test_that("ordering and HMM test", {
                 c(7,1,10,15,16), 40.61501,
                 c(7,1,16,15,10), 42.48526,
                 c(7,1,16,10,15), 42.48526)
-                #c(7,15,10,16,1), 42.5)
+  #c(7,15,10,16,1), 42.5)
 })
 
 test_that("ordering and HMM parallel", {
@@ -82,7 +82,7 @@ test_that("ordering and HMM parallel", {
                             ord.rcd, size.rcd, 
                             ord.rec, size.rec,
                             ord.ug, size.ug,
-                            ord.mds, size.mds){
+                            ord.mds, size.mds, n.mar){
     eval(bquote(data(.(example_data))))
     onemap_mis <- eval(bquote(filter_missing(get(.(example_data)), 0.15)))
     twopt <- rf_2pts(onemap_mis)
@@ -93,45 +93,84 @@ test_that("ordering and HMM parallel", {
                                    around = 1)
     set.seed(2020)
     eval(bquote(expect_error(seriation(input.seq = LG, size = batch_size, phase_cores = 4, overlap = 3), "There are too many ties in the ordination process - please, consider using another ordering algorithm.")))
-    LG.rcd <- rcd(LG, size = batch_size, phase_cores = 4, overlap = 3)
+    
+    if(Sys.info()['sysname'] == "Windows") {
+      LG.rcd <- rcd(LG)
+    } else {
+      LG.rcd <- rcd(LG, size = batch_size, phase_cores = 4, overlap = 3)
+    }
     eval(bquote(expect_equal(LG.rcd$seq.num[1:5], .(ord.rcd))))
     size <- cumsum(kosambi(LG.rcd$seq.rf))
     eval(bquote(expect_equal(size[length(size)], .(size.rcd), tolerance = 0.001)))
-    LG.rec <- record(LG, size = batch_size, phase_cores = 4, overlap = 3)
+    
+    if(Sys.info()['sysname'] == "Windows") {
+      LG.rec <- record(LG)
+    } else {
+      LG.rec <- record(LG, size = batch_size, phase_cores = 4, overlap = 3)
+    }
     eval(bquote(expect_equal(LG.rec$seq.num[1:5], .(ord.rec))))
     size <- cumsum(kosambi(LG.rec$seq.rf))
     eval(bquote(expect_equal(size[length(size)], .(size.rec), tolerance = 0.001)))
-    LG.ug <- ug(LG, size = batch_size, phase_cores = 4, overlap = 3)
+    
+    if(Sys.info()['sysname'] == "Windows") {
+      LG.ug <- ug(LG)
+    } else {
+      LG.ug <- ug(LG, size = batch_size, phase_cores = 4, overlap = 3)
+    }
     eval(bquote(expect_equal(LG.ug$seq.num[1:5], .(ord.ug))))
     size <- cumsum(kosambi(LG.ug$seq.rf))
     eval(bquote(expect_equal(size[length(size)], .(size.ug), tolerance = 0.001)))
-    LG.mds <- mds_onemap(LG, size = batch_size, phase_cores = 4, overlap = 3)
+    
+    set.seed(2020)
+    if(Sys.info()['sysname'] == "Windows") {
+      LG.mds <- mds_onemap(LG)
+    } else {
+      LG.mds <- mds_onemap(LG, size = batch_size, phase_cores = 4, overlap = 3)
+    }
     eval(bquote(expect_equal(LG.mds$seq.num[1:5], .(ord.mds))))
     size <- cumsum(kosambi(LG.mds$seq.rf))
     eval(bquote(expect_equal(size[length(size)], .(size.mds), tolerance = 0.001)))
+    
+    # Testing with only one core
+    LG.map <- map(make_seq(LG.mds$twopt, LG.mds$seq.num))
+    size <- cumsum(kosambi(LG.map$seq.rf))
+    eval(bquote(expect_equal(size[length(size)], .(size.mds), tolerance = 0.001)))
+    
+    LG.map.avoid <- map_avoid_unlinked(make_seq(LG.mds$twopt, LG.mds$seq.num))
+    size <- cumsum(kosambi(LG.map.avoid$seq.rf))
+    eval(bquote(expect_equal(size[length(size)], .(size.mds), tolerance = 0.001)))
+    
+    LG.map.save <- onemap:::map_save_ram(make_seq(LG.mds$twopt, LG.mds$seq.num))
+    size <- cumsum(kosambi(LG.map.save$seq.rf))
+    eval(bquote(expect_equal(size[length(size)], .(size.mds), tolerance = 0.001)))
+    
+    # Testing try_seq_by_seq
+    new_seq <- try_seq_by_seq(LG.map.save, make_seq(LG.map.save$twopt, 26:30)$seq.num)
+    eval(bquote(expect_equal(length(new_seq$seq.num), .(n.mar))))
   }
   
   ordering_func("onemap_example_out", 
                 c(6,12,17,10,1), 622.95326,
                 c(22,8,18,13,7), 516.82254,
                 c(25,15,5,11,6), 487.86333,
-                c(10,2,23,14,17), 927.20040)
+                c(10,2,23,14,17), 927.20040, 26)
   
   ordering_func("onemap_example_f2",
-                c(17,13,5,3,2), 383.32966,
+                c(17,13,5,3,2), 377 ,
                 c(13,17,21,16,19), 330.57134,
                 c(7,9,24,10,6), 632.506725,
-                c(18,2,22,1,14), 1331.10242)
+                c(18,2,22,1,14), 1273.54, 25)
   
+  ## parei aqui
   ordering_func("onemap_example_bc",
                 c(9,7,14,3,23), 512.690549,
                 c(4,6,19,17,5), 804.31139,
                 c(9,7,14,3,12), 774.573013,
-                c(4,6,8,20,14), 2701.98197)
+                c(4,6,8,20,14), 2701.98197, 26)
   
   ordering_func("onemap_example_riself",
                 c(7,1,19,10,15), 313.01,
                 c(7,1,19,15,10), 286.21189,
                 c(21,6,14,3,13), 979.791324,
-                c(7,17,11,16,25), 1106.8291)
+                c(7,17,11,16,25), 1106.8291, 26)
 })

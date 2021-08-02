@@ -55,13 +55,13 @@ map_avoid_unlinked <- function(input.seq,
                                size = NULL, 
                                overlap = NULL,
                                phase_cores = 1, 
-                               tol = 1e-05){
+                               tol = 10E-5){
   #TODO: error checks...
   map_df <- map_save_ram(input.seq, rm_unlinked = T, 
-                                  size = size, 
-                                  overlap = overlap, 
-                                  tol=tol, 
-                                  phase_cores = phase_cores)
+                         size = size, 
+                         overlap = overlap, 
+                         tol=tol, 
+                         phase_cores = phase_cores)
   
   while(is(map_df, "integer")){
     seq_true <- make_seq(input.seq$twopt, map_df)
@@ -75,7 +75,12 @@ map_avoid_unlinked <- function(input.seq,
   return(map_df)
 }
 
-# Split 2pts object by mks
+#' Split rf_2pts object by mks
+#' 
+#' @param twopts.obj object of class rf_2pts
+#' @param mks markers names (vector of characters) or number (vector of integers) to be removed and added to a new rf_2pts object
+#' 
+#' @export
 split_2pts <- function(twopts.obj, mks){
   split.dat <- split_onemap(onemap.obj = twopts.obj$data.name, mks)
   twopts.obj$data.name <- split.dat
@@ -114,8 +119,21 @@ split_2pts <- function(twopts.obj, mks){
   return(twopts.obj)
 }
 
-# perform map with backgroups onemap object and twopts only with sequence markers information
-# it save space in ram memory - very useful if dealing with many markers in total dataset
+#' Perform map using background objects with only selected markers. It saves ram memory during the procedure.
+#' It is useful if dealing with many markers in total data set.
+#' 
+#' @param input.seq object of class sequence
+#' @param size The center size around which an optimum is to be searched
+#' @param overlap The desired overlap between batches
+#' @param phase_cores The number of parallel processes to use when estimating
+#' the phase of a marker. (Should be no more than 4)
+#' @param tol tolerance for the C routine, i.e., the value used to evaluate
+#' convergence.
+##' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
+##' if \code{TRUE} one of the markers is removed and returns a vector with remaining 
+##' marker numbers (useful for mds_onemap and map_avoid_unlinked functions).
+##' @param verbose If \code{TRUE}, print tracing information.
+##' 
 map_save_ram <- function(input.seq,
                          tol=10E-5, 
                          verbose=FALSE, 
@@ -171,7 +189,6 @@ remove_inds <- function(onemap.obj, rm.ind){
   if(!is(onemap.obj, "onemap")) stop("Input must to be of onemap class \n")
   if(!(length(which(rownames(onemap.obj$geno) %in% rm.ind)) >0)) stop("We could not find any of these individuals in the dataset \n")
   
-  rm.ind <- c("II_3_08", "II_1_37", "I_4_62", "I_4_28", "I_4_21", "I_3_72", "I_3_70")
   new.onemap.obj <- onemap.obj
   new.onemap.obj$geno <- onemap.obj$geno[-which(rownames(onemap.obj$geno) %in% rm.ind),]
   new.onemap.obj$n.ind <- onemap.obj$n.ind - length(rm.ind)
@@ -188,6 +205,7 @@ remove_inds <- function(onemap.obj, rm.ind){
 #' 
 #' @export
 sort_by_pos <- function(onemap.obj){
+  if(!is(onemap.obj, "onemap")) stop("Input must to be of onemap class \n")
   
   idx <- order(onemap.obj$CHROM, onemap.obj$POS)
   
@@ -201,7 +219,16 @@ sort_by_pos <- function(onemap.obj){
   return(new.obj)
 }
 
-# Produce empty object to avoid code break
+#'  Produce empty object to avoid code break. Function for internal purpose.
+#'  
+#'  @param vcf object of class vcfR
+#'  @param P1 character with parent 1 ID
+#'  @param P2 character with parent 2 ID
+#'  @param cross type of cross. Must be one of: \code{"outcross"} for full-sibs;
+##' \code{"f2 intercross"} for an F2 intercross progeny; \code{"f2 backcross"};
+##' \code{"ri self"} for recombinant inbred lines by self-mating; or
+##' \code{"ri sib"} for recombinant inbred lines by sib-mating.
+##' 
 empty_onemap_obj <- function(vcf, P1, P2, cross){
   legacy_crosses <- setNames(c("outcross", "f2", "backcross", "riself", "risib"), 
                              c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"))
@@ -224,7 +251,20 @@ empty_onemap_obj <- function(vcf, P1, P2, cross){
 }
 
 
-try_seq_by_seq <- function(sequence, markers, cM.thr= 10, lod.thr=-10){
+#' It uses try_seq function repeatedly trying to positioned each marker in a vector of markers into a already ordered sequence.
+#' Each marker in the vector \code{"markers"} is kept in the sequence if the difference of LOD and total group size of the models 
+#' with and without the marker are below the thresholds \code{"lod.thr"} and \code{"cM.thr"}. 
+#' 
+#' @param sequence object of class sequence with ordered markers
+#' @param markers vector of integers defining the marker numbers to be inserted in the \code{sequence}
+#' @param cM.thr number defining the threshold for total map size increase when inserting a single marker
+#' @param lod.thr the difference of LODs between model before and after inserting the marker need to have 
+#' value higher than the value defined in this argument 
+#' 
+#' @export
+try_seq_by_seq <- function(sequence, markers, cM.thr=10, lod.thr=-10){
+  
+  if(!is(sequence, c("sequence"))) stop("Input object must be of class sequence")
   
   seq_now <- sequence
   for(i in 1:length(markers)){
@@ -245,7 +285,18 @@ try_seq_by_seq <- function(sequence, markers, cM.thr= 10, lod.thr=-10){
   return(seq_now)
 }
 
+#' Add the redundant markers removed by create_data_bins function
+#' 
+#' @param sequence object of class \code{sequence}
+#' @param onemap.obj object of class \code{onemap.obj} before redundant markers were removed
+#' @param bins object of class \code{onemap_bin}
+#' 
+#' @export
 add_redundants <- function(sequence, onemap.obj, bins){
+  
+  if(!is(sequence, c("sequence"))) stop("Input object must be of class sequence")
+  if(!is(onemap.obj, c("onemap"))) stop("Input object must be of class onemap")
+  if(!is(bins, c("onemap_bin"))) stop("Input object must be of class onemap_bin")
   
   idx <- match(colnames(sequence$data.name$geno)[sequence$seq.num], names(bins[[1]]))
   
@@ -271,8 +322,15 @@ add_redundants <- function(sequence, onemap.obj, bins){
   return(new_sequence)  
 }
 
-# Removing duplicated markers, kept the one with less missing data
+#'  Remove duplicated markers keeping the one with less missing data
+#'  
+#'  @param onemap.obj object of class \code{onemap}
+#'  
+#'  @export
 rm_dupli_mks <- function(onemap.obj){
+  
+  if(!is(onemap.obj, c("onemap"))) stop("Input object must be of class onemap")
+  
   MKS <- colnames(onemap.obj$geno)
   GT_matrix <- t(onemap.obj$geno)
   n.mk <- length(MKS)
@@ -386,7 +444,6 @@ check_data <- function(x){
 #' data(onemap_example_bc)
 #' twopts <- rf_2pts(onemap_example_bc)
 #' check_twopts(twopts)
-#' 
 #' 
 #' @author Cristiane Taniguti, \email{chtaniguti@usp.br}
 #' 
