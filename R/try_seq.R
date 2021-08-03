@@ -3,14 +3,13 @@
 ## Package: onemap                                                     ##
 ##                                                                     ##
 ## File: try_seq.R                                                     ##
-## Contains: try_seq, print.try, draw.try                              ##
+## Contains: try_seq, print.try, draw.try, try_seq_by_seq              ##
 ##                                                                     ##
-## Written by Marcelo Mollinari with minor changes by Cristiane        ##
-## Taniguti                                                            ##
+## Written by Marcelo Mollinari and Cristiane Taniguti                 ##
 ## copyright (c) 2009, Marcelo Mollinari                               ##
 ##                                                                     ##
 ## First version: 02/27/2009                                           ##
-## Last update: 08/09/2017                                             ##
+## Last update: 08/2021                                                ##
 ## Description of the function was modified by augusto.garcia@usp.br   ##
 ## on 2015/07/25
 ## License: GNU General Public License version 2 (June, 1991) or later ##
@@ -683,4 +682,36 @@ draw.try<-function(base.input, try.input, pos=NULL){
   title(main = "LOD (above diag.) and Recombination Fraction Matrix", cex.main=.9, line=15.4)
 }
 
-# end of file
+#' It uses try_seq function repeatedly trying to positioned each marker in a vector of markers into a already ordered sequence.
+#' Each marker in the vector \code{"markers"} is kept in the sequence if the difference of LOD and total group size of the models 
+#' with and without the marker are below the thresholds \code{"lod.thr"} and \code{"cM.thr"}. 
+#' 
+#' @param sequence object of class sequence with ordered markers
+#' @param markers vector of integers defining the marker numbers to be inserted in the \code{sequence}
+#' @param cM.thr number defining the threshold for total map size increase when inserting a single marker
+#' @param lod.thr the difference of LODs between model before and after inserting the marker need to have 
+#' value higher than the value defined in this argument 
+#' 
+#' @export
+try_seq_by_seq <- function(sequence, markers, cM.thr=10, lod.thr=-10){
+  
+  if(!is(sequence, c("sequence"))) stop("Input object must be of class sequence")
+  
+  seq_now <- sequence
+  for(i in 1:length(markers)){
+    try_edit <- try_seq(seq_now, markers[i])  
+    pos <- which(try_edit$LOD == 0)[1]
+    new_map <- make_seq(try_edit, pos)
+    size_new <- cumsum(kosambi(new_map$seq.rf))[length(new_map$seq.rf)]
+    size_old <- cumsum(kosambi(seq_now$seq.rf))[length(seq_now$seq.rf)]
+    lod_new <- new_map$seq.like
+    lod_old <- seq_now$seq.like
+    diff_size <- size_new - size_old
+    diff_lod <- lod_new - lod_old
+    if(diff_size < cM.thr & diff_lod > lod.thr){
+      seq_now <- new_map
+      cat("Marker", markers[i], "was included \n")
+    } 
+  }
+  return(seq_now)
+}

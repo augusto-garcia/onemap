@@ -28,7 +28,24 @@ test_that("number of bins",{
   check_bins("vcf_example_out", 23)
   check_bins("vcf_example_bc", 25)
   check_bins("vcf_example_riself",25)
+  
+  # Check add bins
+  
   # Test add bins
+  data("vcf_example_out")
+  bins <- find_bins(vcf_example_out)
+  
+  onemap_bins <- create_data_bins(vcf_example_out, bins)
+  twopts <- rf_2pts(onemap_bins)
+  
+  lgs <- group(make_seq(twopts, "all"))
+  lg1 <- make_seq(lgs,1)
+  map1 <- map(lg1)
+  
+  map_red <- add_redundants(sequence = map1, 
+                            onemap.obj = vcf_example_out, bins)
+  
+  expect_equal(length(map_red$seq.num) - length(map1$seq.num), 1) 
 })
 
 test_that("number of missing data",{

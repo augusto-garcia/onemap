@@ -3,10 +3,10 @@
 ## Package: onemap                                                     ##
 ##                                                                     ##
 ## File: map.R                                                         ##
-## Contains: map                                                       ##
+## Contains: map, map_save_ram, map_avoid_unlinked                     ##
 ##                                                                     ##
-## Written by Gabriel Rodrigues Alves Margarido and Marcelo Mollinari  ##
-## with minor changes by Cristiane Taniguti                            ##
+## Written by Gabriel Rodrigues Alves Margarido, Marcelo Mollinari and ##
+## Cristiane Taniguti                                                  ##
 ## copyright (c) 2009, Gabriel R A Margarido                           ##
 ##                                                                     ##
 ## First version: 02/27/2009                                           ##
@@ -287,4 +287,96 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
   }
 }
 
-## end of file
+#' Perform map using background objects with only selected markers. It saves ram memory during the procedure.
+#' It is useful if dealing with many markers in total data set.
+#' 
+#' @param input.seq object of class sequence
+#' @param size The center size around which an optimum is to be searched
+#' @param overlap The desired overlap between batches
+#' @param phase_cores The number of parallel processes to use when estimating
+#' the phase of a marker. (Should be no more than 4)
+#' @param tol tolerance for the C routine, i.e., the value used to evaluate
+#' convergence.
+##' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
+##' if \code{TRUE} one of the markers is removed and returns a vector with remaining 
+##' marker numbers (useful for mds_onemap and map_avoid_unlinked functions).
+##' @param verbose If \code{TRUE}, print tracing information.
+##' 
+map_save_ram <- function(input.seq,
+                         tol=10E-5, 
+                         verbose=FALSE, 
+                         rm_unlinked=FALSE, 
+                         phase_cores = 1, 
+                         size = NULL, 
+                         overlap = NULL){
+  
+  input.seq.tot <- input.seq
+  input.seq_ram <- input.seq
+  if(length(input.seq$seq.num) < input.seq.tot$data.name$n.mar){
+    split.twopts <- split_2pts(twopts.obj = input.seq$twopt, mks = input.seq$seq.num) 
+    input.seq_ram <- make_seq(split.twopts, "all")
+  }
+  if(phase_cores == 1){
+    return.map <- map(input.seq = input.seq_ram, tol = tol, 
+                      verbose = verbose, 
+                      rm_unlinked = rm_unlinked, 
+                      phase_cores = phase_cores)
+  } else {
+    if(is.null(size) | is.null(overlap)){
+      stop("If you want to parallelize the HMM in multiple cores (phase_cores != 1) 
+             you should also define `size` and `overlap` arguments. See ?map_avoid_unlinked and ?pick_batch_sizes")
+    } else {
+      return.map <- map_overlapping_batches(input.seq = input.seq_ram,
+                                            size = size, overlap = overlap, 
+                                            phase_cores = phase_cores, 
+                                            tol=tol, rm_unlinked = rm_unlinked)
+    }
+  }
+  if(length(input.seq_ram$seq.num) < input.seq.tot$data.name$n.mar){
+    if(!is(return.map, "integer")){ # When rm_unlinked == F
+      return.map$seq.num <- input.seq.tot$seq.num
+      return.map$data.name <- input.seq.tot$data.name
+      return.map$twopt <- input.seq.tot$twopt
+    } else {
+      remain <- colnames(input.seq_ram$data.name$geno)[return.map]
+      old <- colnames(input.seq.tot$data.name$geno)[input.seq.tot$seq.num]
+      return.map <- input.seq.tot$seq.num[old %in% remain] 
+    }
+  }
+  return(return.map)
+}
+
+#' Repeat HMM if map find unlinked maker
+#'
+#' @param input.seq object of class sequence
+#' @param size The center size around which an optimum is to be searched
+#' @param overlap The desired overlap between batches
+#' @param phase_cores The number of parallel processes to use when estimating
+#' the phase of a marker. (Should be no more than 4)
+#' @param tol tolerance for the C routine, i.e., the value used to evaluate
+#' convergence.
+#' 
+#' @export
+map_avoid_unlinked <- function(input.seq, 
+                               size = NULL, 
+                               overlap = NULL,
+                               phase_cores = 1, 
+                               tol = 10E-5){
+  #TODO: error checks...
+  map_df <- map_save_ram(input.seq, rm_unlinked = T, 
+                                  size = size, 
+                                  overlap = overlap, 
+                                  tol=tol, 
+                                  phase_cores = phase_cores)
+  
+  while(is(map_df, "integer")){
+    seq_true <- make_seq(input.seq$twopt, map_df)
+    map_df <- map_save_ram(input.seq = seq_true, 
+                           rm_unlinked = T, 
+                           tol=tol, 
+                           size = size, 
+                           overlap = overlap, 
+                           phase_cores = phase_cores)
+  }
+  return(map_df)
+}

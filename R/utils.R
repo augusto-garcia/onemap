@@ -40,41 +40,6 @@ seq_by_type <- function(sequence, mk_type){
   return(new.seq)
 }
 
-#' Repeat HMM if map find unlinked maker
-#'
-#' @param input.seq object of class sequence
-#' @param size The center size around which an optimum is to be searched
-#' @param overlap The desired overlap between batches
-#' @param phase_cores The number of parallel processes to use when estimating
-#' the phase of a marker. (Should be no more than 4)
-#' @param tol tolerance for the C routine, i.e., the value used to evaluate
-#' convergence.
-#' 
-#' @export
-map_avoid_unlinked <- function(input.seq, 
-                               size = NULL, 
-                               overlap = NULL,
-                               phase_cores = 1, 
-                               tol = 10E-5){
-  #TODO: error checks...
-  map_df <- map_save_ram(input.seq, rm_unlinked = T, 
-                         size = size, 
-                         overlap = overlap, 
-                         tol=tol, 
-                         phase_cores = phase_cores)
-  
-  while(is(map_df, "integer")){
-    seq_true <- make_seq(input.seq$twopt, map_df)
-    map_df <- map_save_ram(input.seq = seq_true, 
-                           rm_unlinked = T, 
-                           tol=tol, 
-                           size = size, 
-                           overlap = overlap, 
-                           phase_cores = phase_cores)
-  }
-  return(map_df)
-}
-
 #' Split rf_2pts object by mks
 #' 
 #' @param twopts.obj object of class rf_2pts
@@ -107,9 +72,9 @@ split_2pts <- function(twopts.obj, mks){
     for(i in 1:(length(mks)-1)) {
       for(j in (i+1):length(mks)) {
         k<-sort(c(mks[i], mks[j]))
-        r.temp<-twopts.obj$analysis[k[2], k[1]]
+        r.temp<-twopts.obj$analysis[k[1], k[2]]
         new.twopts[i,j]<-r.temp
-        LOD.temp<-twopts.obj$analysis[k[1], k[2]]
+        LOD.temp<-twopts.obj$analysis[k[2], k[1]]
         new.twopts[j,i]<-LOD.temp
       }
     }
@@ -119,64 +84,6 @@ split_2pts <- function(twopts.obj, mks){
   return(twopts.obj)
 }
 
-#' Perform map using background objects with only selected markers. It saves ram memory during the procedure.
-#' It is useful if dealing with many markers in total data set.
-#' 
-#' @param input.seq object of class sequence
-#' @param size The center size around which an optimum is to be searched
-#' @param overlap The desired overlap between batches
-#' @param phase_cores The number of parallel processes to use when estimating
-#' the phase of a marker. (Should be no more than 4)
-#' @param tol tolerance for the C routine, i.e., the value used to evaluate
-#' convergence.
-##' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
-##' if \code{TRUE} one of the markers is removed and returns a vector with remaining 
-##' marker numbers (useful for mds_onemap and map_avoid_unlinked functions).
-##' @param verbose If \code{TRUE}, print tracing information.
-##' 
-map_save_ram <- function(input.seq,
-                         tol=10E-5, 
-                         verbose=FALSE, 
-                         rm_unlinked=FALSE, 
-                         phase_cores = 1, 
-                         size = NULL, 
-                         overlap = NULL){
-  
-  input.seq.tot <- input.seq
-  input.seq_ram <- input.seq
-  if(length(input.seq$seq.num) < input.seq.tot$data.name$n.mar){
-    split.twopts <- split_2pts(twopts.obj = input.seq$twopt, mks = input.seq$seq.num) 
-    input.seq_ram <- make_seq(split.twopts, "all")
-  }
-  if(phase_cores == 1){
-    return.map <- map(input.seq_ram, tol = tol, 
-                      verbose = verbose, 
-                      rm_unlinked = rm_unlinked, 
-                      phase_cores = phase_cores)
-  } else {
-    if(is.null(size) | is.null(overlap)){
-      stop("If you want to parallelize the HMM in multiple cores (phase_cores != 1) 
-             you should also define `size` and `overlap` arguments. See ?map_avoid_unlinked and ?pick_batch_sizes")
-    } else {
-      return.map <- map_overlapping_batches(input.seq = input.seq_ram,
-                                            size = size, overlap = overlap, 
-                                            phase_cores = phase_cores, 
-                                            tol=tol, rm_unlinked = rm_unlinked)
-    }
-  }
-  if(length(input.seq_ram$seq.num) < input.seq.tot$data.name$n.mar){
-    if(!is(return.map, "integer")){ # When rm_unlinked == F
-      return.map$seq.num <- input.seq.tot$seq.num
-      return.map$data.name <- input.seq.tot$data.name
-      return.map$twopt <- input.seq.tot$twopt
-    } else {
-      remain <- colnames(input.seq_ram$data.name$geno)[return.map]
-      old <- colnames(input.seq.tot$data.name$geno)[input.seq.tot$seq.num]
-      return.map <- input.seq.tot$seq.num[old %in% remain] 
-    }
-  }
-  return(return.map)
-}
 
 
 #'Remove inviduals from the onemap object
@@ -248,78 +155,6 @@ empty_onemap_obj <- function(vcf, P1, P2, cross){
                                input = "vcfR.object"),
                           class=c("onemap",legacy_crosses[cross]))
   return(onemap.obj)
-}
-
-
-#' It uses try_seq function repeatedly trying to positioned each marker in a vector of markers into a already ordered sequence.
-#' Each marker in the vector \code{"markers"} is kept in the sequence if the difference of LOD and total group size of the models 
-#' with and without the marker are below the thresholds \code{"lod.thr"} and \code{"cM.thr"}. 
-#' 
-#' @param sequence object of class sequence with ordered markers
-#' @param markers vector of integers defining the marker numbers to be inserted in the \code{sequence}
-#' @param cM.thr number defining the threshold for total map size increase when inserting a single marker
-#' @param lod.thr the difference of LODs between model before and after inserting the marker need to have 
-#' value higher than the value defined in this argument 
-#' 
-#' @export
-try_seq_by_seq <- function(sequence, markers, cM.thr=10, lod.thr=-10){
-  
-  if(!is(sequence, c("sequence"))) stop("Input object must be of class sequence")
-  
-  seq_now <- sequence
-  for(i in 1:length(markers)){
-    try_edit <- try_seq(seq_now, markers[i])  
-    pos <- which(try_edit$LOD == 0)[1]
-    new_map <- make_seq(try_edit, pos)
-    size_new <- cumsum(kosambi(new_map$seq.rf))[length(new_map$seq.rf)]
-    size_old <- cumsum(kosambi(seq_now$seq.rf))[length(seq_now$seq.rf)]
-    lod_new <- new_map$seq.like
-    lod_old <- seq_now$seq.like
-    diff_size <- size_new - size_old
-    diff_lod <- lod_new - lod_old
-    if(diff_size < cM.thr & diff_lod > lod.thr){
-      seq_now <- new_map
-      cat("Marker", markers[i], "was included \n")
-    } 
-  }
-  return(seq_now)
-}
-
-#' Add the redundant markers removed by create_data_bins function
-#' 
-#' @param sequence object of class \code{sequence}
-#' @param onemap.obj object of class \code{onemap.obj} before redundant markers were removed
-#' @param bins object of class \code{onemap_bin}
-#' 
-#' @export
-add_redundants <- function(sequence, onemap.obj, bins){
-  
-  if(!is(sequence, c("sequence"))) stop("Input object must be of class sequence")
-  if(!is(onemap.obj, c("onemap"))) stop("Input object must be of class onemap")
-  if(!is(bins, c("onemap_bin"))) stop("Input object must be of class onemap_bin")
-  
-  idx <- match(colnames(sequence$data.name$geno)[sequence$seq.num], names(bins[[1]]))
-  
-  sizes <- sapply(bins[[1]][idx], function(x) dim(x)[1])
-  
-  mks <- sapply(bins[[1]][idx], rownames)
-  mks <- do.call(c, mks)
-  mks.num <- match(mks, colnames(onemap.obj$geno))
-  
-  new.seq.rf <- as.list(cumsum(c(0,sequence$seq.rf)))
-  
-  for(i in 1:length(new.seq.rf)){
-    new.seq.rf[[i]] <- rep(new.seq.rf[[i]], each = sizes[i])
-  }
-  
-  new.seq.rf <- do.call(c, new.seq.rf)
-  new.seq.rf <- diff(new.seq.rf)
-  new_sequence <- sequence
-  new_sequence$seq.num <- mks.num
-  new_sequence$seq.rf <- new.seq.rf
-  new_sequence$data.name <- onemap.obj
-  new_sequence$probs <- "with redundants"
-  return(new_sequence)  
 }
 
 #'  Remove duplicated markers keeping the one with less missing data

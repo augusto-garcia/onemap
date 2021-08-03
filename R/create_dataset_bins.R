@@ -3,14 +3,14 @@
 # Package: onemap                                                     #
 #                                                                     #
 # File: create_dataset_bins.R                                         #
-# Contains: select_data_bins                                          #
+# Contains: select_data_bins add_redundants                           #
 #                                                                     #
 # Written by Marcelo Mollinari with minor changes by Cristiane        #
 # Taniguti                                                            #
 # copyright (c) 2015, Marcelo Mollinari                               #
 #                                                                     #
 # First version: 09/2015                                              #
-# Last update: 07/05/2017                                             #
+# Last update: 08/2021                                                #
 # License: GNU General Public License version 3                       #
 #                                                                     #
 #######################################################################
@@ -68,6 +68,45 @@ create_data_bins <- function(input.obj, bins)
  return(dat.temp)
 }
 
-## end of file
+#' Add the redundant markers removed by create_data_bins function
+#' 
+#' @param sequence object of class \code{sequence}
+#' @param onemap.obj object of class \code{onemap.obj} before redundant markers were removed
+#' @param bins object of class \code{onemap_bin}
+#' 
+#' @export
+add_redundants <- function(sequence, onemap.obj, bins){
+  
+  if(!is(sequence, c("sequence"))) stop("Input object must be of class sequence")
+  if(!is(onemap.obj, c("onemap"))) stop("Input object must be of class onemap")
+  if(!is(bins, c("onemap_bin"))) stop("Input object must be of class onemap_bin")
+  
+  idx <- match(colnames(sequence$data.name$geno)[sequence$seq.num], names(bins[[1]]))
+  sizes <- sapply(bins[[1]][idx], function(x) dim(x)[1])
+  
+  mks <- sapply(bins[[1]][idx], rownames)
+  mks <- do.call(c, mks)
+  mks.num <- match(mks, colnames(onemap.obj$geno))
+  
+  new.seq.rf <- as.list(cumsum(c(0,sequence$seq.rf)))
+  
+  new.phases <- as.list(c(NA, sequence$seq.phases))
+  
+  for(i in 1:length(new.seq.rf)){
+    new.seq.rf[[i]] <- rep(new.seq.rf[[i]], each = sizes[i])
+    new.phases[[i]] <- rep(new.phases[[i]], each = sizes[i])
+  }
+  
+  new.seq.rf <- do.call(c, new.seq.rf)
+  new.phases <- do.call(c, new.phases)[-1]
+  new.seq.rf <- diff(new.seq.rf)
+  new_sequence <- sequence
+  new_sequence$seq.num <- mks.num
+  new_sequence$seq.phases <- new.phases
+  new_sequence$seq.rf <- new.seq.rf
+  new_sequence$data.name <- onemap.obj
+  new_sequence$probs <- "with redundants"
+  return(new_sequence)  
+}
 
 

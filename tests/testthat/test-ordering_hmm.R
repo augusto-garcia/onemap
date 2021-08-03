@@ -140,7 +140,7 @@ test_that("ordering and HMM parallel", {
     size <- cumsum(kosambi(LG.map.avoid$seq.rf))
     eval(bquote(expect_equal(size[length(size)], .(size.mds), tolerance = 0.001)))
     
-    LG.map.save <- onemap:::map_save_ram(make_seq(LG.mds$twopt, LG.mds$seq.num))
+    LG.map.save <- onemap:::map_save_ram(input.seq = make_seq(LG.mds$twopt, LG.mds$seq.num))
     size <- cumsum(kosambi(LG.map.save$seq.rf))
     eval(bquote(expect_equal(size[length(size)], .(size.mds), tolerance = 0.001)))
     
@@ -161,16 +161,15 @@ test_that("ordering and HMM parallel", {
                 c(7,9,24,10,6), 632.506725,
                 c(18,2,22,1,14), 1273.54, 25)
   
-  ## parei aqui
   ordering_func("onemap_example_bc",
                 c(9,7,14,3,23), 512.690549,
                 c(4,6,19,17,5), 804.31139,
                 c(9,7,14,3,12), 774.573013,
-                c(4,6,8,20,14), 2701.98197, 26)
+                c(4,6,8,20,14), 2701.98197, 25)
   
   ordering_func("onemap_example_riself",
                 c(7,1,19,10,15), 313.01,
                 c(7,1,19,15,10), 286.21189,
                 c(21,6,14,3,13), 979.791324,
-                c(7,17,11,16,25), 1106.8291, 26)
+                c(7,17,11,16,25), 1106.8291, 25)
 })
