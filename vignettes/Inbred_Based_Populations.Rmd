@@ -27,10 +27,10 @@ knitr::opts_chunk$set(collapse = TRUE,
 
 Starting in version 2.0-0, `OneMap` can also deal with inbred-based
 populations, that is, populations that have homozygous parental lines in
-the genealogy (F2s, backcrosses and RILs). As a consequence, linkage
-phases do not need to be estimated. Since version 2.3.0, phases are estimated for F2 populations to proper generate progeny haplotypes not only the recombination fraction.
+the genealogy (F2s, backcrosses, and RILs). As a consequence, linkage
+phases do not need to be estimated. Since version 2.3.0, phases are estimated for F2 populations to properly generate progeny haplotypes not only the recombination fraction.
 
-In this vignette we explain how to proceed the analysis in an F2
+In this vignette, we explain how to proceed with the analysis in an F2
 population. The same procedure can be used for backcrosses and RILs as
 well, and therefore users should not have any difficulty in analyzing
 their data. However, there are a number of differences from genetic
@@ -42,14 +42,14 @@ vignette
 You do not need to be an expert in R to build your linkage map, but
 some concepts are necessary and will help you through the process.
 
-There is a github `OneMap` version which is constantly improved, we strong
+There is a GitHub `OneMap` version which is constantly improved, we strongly
 recommend all users to try [this version](https://github.com/augusto-garcia/onemap). 
-In `augusto-garcia/onemap` github page you can find instructions to install the package 
-from github and also more fancy tutorials.
+In `augusto-garcia/onemap` GitHub page you can find instructions to install the package 
+from GitHub and also more fancy tutorials.
 
 # Creating the data file
 
-For F2s, backcrosses and RILs, two input formats are accepted. The user can choose between the standard `OneMap` file format or the same raw file used by
+For F2s, backcrosses, and RILs, two input formats are accepted. The user can choose between the standard `OneMap` file format or the same raw file used by
 `MAPMAKER/EXP` (Lander et al., 1987). Therefore, one should have no
 difficulty in using data sets already available for `MAPMAKER/EXP` when
 deciding to try `OneMap`.
@@ -84,7 +84,7 @@ where `xxxx` is one of the following data types:
 | `ri sib`        | RIL, produced by sib mating |
 
 The second line should contain the number of individuals in the
-progeny, the number of markers and the number of quantitative traits.
+progeny, the number of markers, and the number of quantitative traits.
 So, for example, a valid line would be
 
 ```
@@ -92,12 +92,12 @@ So, for example, a valid line would be
 ```
 
 for a data set with 10 individuals (yes, very small, but this is just
-an example), 5 markers and 2 traits evaluated.
+an example), 5 markers, and 2 traits evaluated.
 
 Then, the genotype information is included for each marker. The
 character `*` indicates the beginning of information of a marker,
 followed by the marker name. For instance, here is an example of such
-a file for an F2 population with 10 individuals, 5 markers and 2
+a file for an F2 population with 10 individuals, 5 markers, and 2
 quantitative traits:
 
 ```
@@ -131,7 +131,7 @@ details).
 
 The quantitative trait data should come after the genotypic data and
 has a similar format, except the trait values for each individual must
-be separated by at least one space, a tab or a line break. A dash (`-`)
+be separated by at least one space, a tab, or a line break. A dash (`-`)
 indicates missing data.
 
 This file must be saved in plain text format using a simple text
@@ -164,7 +164,7 @@ use the toolbar, of course.
 
 ## Creating OneMap data file
 
-The `OneMap` data file has few differences compared to MAPMAKER/EXP format. As MAPMAKER/EXP format, the input `OneMap` file is a text file, where the first line indicates the cross type and the second line provides information about the number of individuals and the number of markers, but, because the format also supports to keep physical markers locations informations, the followed numbers indicate the presence/absence (1/0) of chromosome and position informations and, after the presence/absence(1/0) of phenotypic data. 
+The `OneMap` data file has few differences compared to MAPMAKER/EXP format. As MAPMAKER/EXP format, the input `OneMap` file is a text file, where the first line indicates the cross-type and the second line provides information information about the number of individuals, the number of markers, and the number of quantitative traits. Here, the format also supports keeping physical markers location information. The followed numbers indicate the presence/absence (1/0) of chromosome and position information and the presence/absence(1/0) of phenotypic data.
 
 The third line contains sample IDs. Then, the genotype information is included separately for each marker. The
 character `*` indicates the beginning of information input for a new
@@ -181,7 +181,7 @@ marker, followed by the marker name. Next, there is a code indicating the marker
 
 Finally, after each marker type, comes the genotype data for the
 segregating population. Missing
-data are indicated with the character `-` (minus sign) and an empty space separates the information for each individual. Positions and phenotype information, if present, follows genotypic data with a similar structure. Details are found in the help of function `read_onemap`.
+data are indicated with the character `-` (minus sign) and an empty space separates the information for each individual. Positions and phenotype information, if present, follows genotypic data with a similar structure. Details are found with the help of function `read_onemap`.
 
 Here is an example of such file for 10 individuals, 5 markers (the two zeros in the second line indicate that there is no chromosome information, physical position information), and two phenotypic data, respectively). It
 is very similar to a MAPMAKER/EXP file, but has additional information
