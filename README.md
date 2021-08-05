@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/Cristianetaniguti/onemap.svg?branch=master)](https://travis-ci.org/Cristianetaniguti/onemap) 
+[![Build Status](https://travis-ci.com/Cristianetaniguti/onemap.svg?branch=master)](https://travis-ci.com/Cristianetaniguti/onemap) 
 [![Development](https://img.shields.io/badge/development-active-blue.svg)](https://img.shields.io/badge/development-active-blue.svg)
 [![codecov](https://codecov.io/github/Cristianetaniguti/onemap/branch/prepare_for_cran/graphs/badge.svg)](https://codecov.io/github/Cristianetaniguti/onemap)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/onemap)](https://cran.r-project.org/package=onemap)
