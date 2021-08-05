@@ -36,12 +36,6 @@ test_that("ordering and HMM test", {
     eval(bquote(expect_equal(LG.mds$seq.num[1:5], .(ord.mds))))
     size <- cumsum(kosambi(LG.mds$seq.rf))
     eval(bquote(expect_equal(size[length(size)], .(size.mds),tolerance = 0.001)))
-    # set.seed(2021)
-    # LG.order_seq <- order_seq(LG, n.init = 4, twopt.alg = "rec")
-    # LG.order <- make_seq(LG.order_seq, "force")
-    # eval(bquote(expect_equal(LG.order$seq.num[1:5], .(ord.order))))
-    # size <- cumsum(kosambi(LG.order$seq.rf))
-    # eval(bquote(expect_equal(size[length(size)], .(size.order), tolerance = 0.001)))
   }
   
   ordering_func("onemap_example_out", 3,
@@ -50,7 +44,6 @@ test_that("ordering and HMM test", {
                 c(7,13,18,8,22), 94.87187, 
                 c(7,22,13,8,18), 46.32121394,
                 c(7,22,13,8,18), 46.32121394)
-  #c(18,8,13,7,22), 49.8)
   
   ordering_func("onemap_example_f2", 1,
                 c(2,1,3,5,4), 50.3,
@@ -58,7 +51,6 @@ test_that("ordering and HMM test", {
                 c(2,1,3,5,4), 50.3,
                 c(2,1,3,5,4), 50.3,
                 c(2,1,3,5,4), 50.3)
-  #c(2,1,3,5,4), 50.3)
   
   ordering_func("onemap_example_bc", 1,
                 c(15,1,2,18,22), 55.8,
@@ -66,7 +58,6 @@ test_that("ordering and HMM test", {
                 c(15,1,2,18,22), 55.8,
                 c(15,1,2,18,22), 55.8,
                 c(15,1,2,18,22), 55.8)
-  #c(15,1,2,18,22), 55.8)
   
   ordering_func("onemap_example_riself", 1,
                 c(7,1,10,15,16), 40.61501,
@@ -74,7 +65,6 @@ test_that("ordering and HMM test", {
                 c(7,1,10,15,16), 40.61501,
                 c(7,1,16,15,10), 42.48526,
                 c(7,1,16,10,15), 42.48526)
-  #c(7,15,10,16,1), 42.5)
 })
 
 test_that("ordering and HMM parallel", {
@@ -94,39 +84,31 @@ test_that("ordering and HMM parallel", {
     set.seed(2020)
     eval(bquote(expect_error(seriation(input.seq = LG, size = batch_size, phase_cores = 4, overlap = 3), "There are too many ties in the ordination process - please, consider using another ordering algorithm.")))
     
-    if(Sys.info()['sysname'] == "Windows") {
-      LG.rcd <- rcd(LG)
-    } else {
-      LG.rcd <- rcd(LG, size = batch_size, phase_cores = 4, overlap = 3)
-    }
+    LG.rcd <- rcd(LG)
+    LG.rcd <- rcd(LG, size = batch_size, phase_cores = 4, overlap = 3)
+    
     eval(bquote(expect_equal(LG.rcd$seq.num[1:5], .(ord.rcd))))
     size <- cumsum(kosambi(LG.rcd$seq.rf))
     eval(bquote(expect_equal(size[length(size)], .(size.rcd), tolerance = 0.001)))
     
-    if(Sys.info()['sysname'] == "Windows") {
-      LG.rec <- record(LG)
-    } else {
-      LG.rec <- record(LG, size = batch_size, phase_cores = 4, overlap = 3)
-    }
+    LG.rec <- record(LG)
+    LG.rec <- record(LG, size = batch_size, phase_cores = 4, overlap = 3)
+    
     eval(bquote(expect_equal(LG.rec$seq.num[1:5], .(ord.rec))))
     size <- cumsum(kosambi(LG.rec$seq.rf))
     eval(bquote(expect_equal(size[length(size)], .(size.rec), tolerance = 0.001)))
     
-    if(Sys.info()['sysname'] == "Windows") {
-      LG.ug <- ug(LG)
-    } else {
-      LG.ug <- ug(LG, size = batch_size, phase_cores = 4, overlap = 3)
-    }
+    LG.ug <- ug(LG)
+    LG.ug <- ug(LG, size = batch_size, phase_cores = 4, overlap = 3)
+    
     eval(bquote(expect_equal(LG.ug$seq.num[1:5], .(ord.ug))))
     size <- cumsum(kosambi(LG.ug$seq.rf))
     eval(bquote(expect_equal(size[length(size)], .(size.ug), tolerance = 0.001)))
     
-    set.seed(2020)
-    if(Sys.info()['sysname'] == "Windows") {
-      LG.mds <- mds_onemap(LG)
-    } else {
-      LG.mds <- mds_onemap(LG, size = batch_size, phase_cores = 4, overlap = 3)
-    }
+    
+    LG.mds <- mds_onemap(LG)
+    LG.mds <- mds_onemap(LG, size = batch_size, phase_cores = 4, overlap = 3)
+    
     eval(bquote(expect_equal(LG.mds$seq.num[1:5], .(ord.mds))))
     size <- cumsum(kosambi(LG.mds$seq.rf))
     eval(bquote(expect_equal(size[length(size)], .(size.mds), tolerance = 0.001)))
@@ -156,10 +138,10 @@ test_that("ordering and HMM parallel", {
                 c(10,2,23,14,17), 927.20040, 26)
   
   ordering_func("onemap_example_f2",
-                c(17,13,5,3,2), 377 ,
+                c(17,13,5,3,2), 383,
                 c(13,17,21,16,19), 330.57134,
                 c(7,9,24,10,6), 632.506725,
-                c(18,2,22,1,14), 1273.54, 25)
+                c(18,2,22,1,14), 1331, 25)
   
   ordering_func("onemap_example_bc",
                 c(9,7,14,3,23), 512.690549,

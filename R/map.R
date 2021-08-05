@@ -146,17 +146,31 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
     list.init <- phases(make_seq(input.seq$twopt,seq.num[1:2],twopt=input.seq$twopt))
     phase.init[[1]] <- list.init$phase.init[[1]]
     Ph.Init <- comb_ger(phase.init)
-    phases <- mclapply(1:nrow(Ph.Init),
-                       mc.cores = min(nrow(Ph.Init),phase_cores),
-                       mc.allow.recursive = TRUE,
-                       function(j) {
-                         ## call to 'map' function with predefined linkage phase
-                         map(make_seq(input.seq$twopt,
-                                      seq.num[1:2],
-                                      phase=Ph.Init[j]), 
-                             tol=tol, 
-                             rm_unlinked = rm_unlinked)
-                       })
+    if(Sys.info()['sysname'] == "Windows" & phase_cores != 1) {
+      cl <- makeCluster(phase_cores)
+      clusterExport(cl=cl,c('map', 'make_seq'))
+      phases <- parLapply(cl, 1:nrow(Ph.Init), 
+                          function(j) {
+                            ## call to 'map' function with predefined linkage phase
+                            map(make_seq(input.seq$twopt,
+                                         seq.num[1:2],
+                                         phase=Ph.Init[j]), 
+                                tol=tol, 
+                                rm_unlinked = rm_unlinked)
+                          })
+    } else { # mclapply goes faster but doesn't work on windows
+      phases <- mclapply(1:nrow(Ph.Init),
+                         mc.cores = min(nrow(Ph.Init),phase_cores),
+                         mc.allow.recursive = TRUE,
+                         function(j) {
+                           ## call to 'map' function with predefined linkage phase
+                           map(make_seq(input.seq$twopt,
+                                        seq.num[1:2],
+                                        phase=Ph.Init[j]), 
+                               tol=tol, 
+                               rm_unlinked = rm_unlinked)
+                         })
+    }
     gc(verbose = F)
     if(!all(sapply(phases, function(x) is(x, "sequence")))){
       if (rm_unlinked) {
@@ -208,17 +222,31 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
         phase.init[[mrk]] <- list.init$phase.init[[1]]
         for(j in 1:(mrk-1)) phase.init[[j]] <- seq.phase[j]
         Ph.Init <- comb_ger(phase.init)
-        phases <- mclapply(1:nrow(Ph.Init),
-                           mc.cores = min(nrow(Ph.Init), phase_cores),
-                           mc.allow.recursive = TRUE,
-                           function(j) {
-                             ## call to 'map' function with predefined linkage phases
-                             map(make_seq(input.seq$twopt,
-                                          seq.num[1:(mrk+1)],
-                                          phase=Ph.Init[j,]), 
-                                 tol=tol, 
-                                 rm_unlinked = rm_unlinked)
-                           })
+        if(Sys.info()['sysname'] == "Windows" & phase_cores != 1) {
+          cl <- makeCluster(phase_cores)
+          clusterExport(cl=cl,c('map', 'make_seq'))
+          phases <- parLapply(cl, 1:nrow(Ph.Init), 
+                              function(j) {
+                                ## call to 'map' function with predefined linkage phases
+                                map(make_seq(input.seq$twopt,
+                                             seq.num[1:(mrk+1)],
+                                             phase=Ph.Init[j,]), 
+                                    tol=tol, 
+                                    rm_unlinked = rm_unlinked)
+                              })
+        } else { # mclapply goes faster but doesn't work on windows
+          phases <- mclapply(1:nrow(Ph.Init),
+                             mc.cores = min(nrow(Ph.Init), phase_cores),
+                             mc.allow.recursive = TRUE,
+                             function(j) {
+                               ## call to 'map' function with predefined linkage phases
+                               map(make_seq(input.seq$twopt,
+                                            seq.num[1:(mrk+1)],
+                                            phase=Ph.Init[j,]), 
+                                   tol=tol, 
+                                   rm_unlinked = rm_unlinked)
+                             })
+        }
         gc(verbose = F)
         if(!all(sapply(phases, function(x) is(x, "sequence")))){
           if(rm_unlinked){
@@ -280,7 +308,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
                                  rf.vec=rf.init,
                                  verbose=FALSE,
                                  tol=tol)
-
+    
     return(structure(list(seq.num=seq.num, seq.phases=seq.phases, seq.rf=final.map$rf,
                           seq.like=final.map$loglike, data.name=input.seq$data.name, 
                           probs = final.map$probs, twopt=input.seq$twopt), class = "sequence"))
@@ -364,10 +392,10 @@ map_avoid_unlinked <- function(input.seq,
                                tol = 10E-5){
   #TODO: error checks...
   map_df <- map_save_ram(input.seq, rm_unlinked = T, 
-                                  size = size, 
-                                  overlap = overlap, 
-                                  tol=tol, 
-                                  phase_cores = phase_cores)
+                         size = size, 
+                         overlap = overlap, 
+                         tol=tol, 
+                         phase_cores = phase_cores)
   
   while(is(map_df, "integer")){
     seq_true <- make_seq(input.seq$twopt, map_df)
