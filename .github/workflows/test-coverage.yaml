@@ -3,10 +3,12 @@ on:
     branches:
       - main
       - master
+      - update_checks
   pull_request:
     branches:
       - main
       - master
+      - update_checks
 
 name: test-coverage
 
