@@ -76,7 +76,6 @@
 #' Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage mapping of
 #' sex-specific differences. \emph{Genetical Research} 79: 85-96
 #'
-#'@import MDSMap
 #'@importFrom utils write.table
 #'@importFrom reshape2 melt
 #'
@@ -256,7 +255,7 @@ calc.maps.pc<-function(fname,spar=NULL,ndim=2,weightfn='lod2',mapfn='haldane'){
 #'
 #'@importFrom utils read.table
 #'@importFrom stats relevel
-#'@importFrom reshape cast
+#'@importFrom reshape2 cast
 #'@keywords internal
 calc.pair.rf.lod<-function(fname,weightfn='lod',...){
   if(!file.exists(fname)) {

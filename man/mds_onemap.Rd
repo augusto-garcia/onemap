@@ -17,8 +17,7 @@ mds_onemap(
   overlap = NULL,
   phase_cores = 1,
   tol = 1e-05,
-  hmm = TRUE,
-  plot = TRUE
+  hmm = TRUE
 )
 }
 \arguments{
