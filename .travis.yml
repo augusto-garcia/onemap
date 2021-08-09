@@ -25,3 +25,8 @@ apt_packages:
     - libfreetype6-dev  
     - libxml2-dev
     
+r_packages:
+ - covr
+ 
+after_success:
+  - Rscript -e 'library(covr); codecov()'
