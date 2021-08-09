@@ -1,9 +1,12 @@
+<!-- badges: start -->
 [![Build Status](https://travis-ci.com/Cristianetaniguti/onemap.svg?branch=master)](https://travis-ci.com/Cristianetaniguti/onemap) 
+[![R-CMD-check](https://github.com/Cristianetaniguti/onemap/workflows/R-CMD-check/badge.svg)](https://github.com/Cristianetaniguti/onemap/actions)
 [![Development](https://img.shields.io/badge/development-active-blue.svg)](https://img.shields.io/badge/development-active-blue.svg)
 [![codecov](https://codecov.io/github/Cristianetaniguti/onemap/branch/prepare_for_cran/graphs/badge.svg)](https://codecov.io/github/Cristianetaniguti/onemap)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/onemap)](https://cran.r-project.org/package=onemap)
 [![CRAN_monthly_downloads](https://cranlogs.r-pkg.org/badges/onemap)](https://cranlogs.r-pkg.org/badges/onemap)
-
+  <!-- badges: end -->
+  
 # OneMap <img src="https://user-images.githubusercontent.com/7572527/119237022-0b19a400-bb11-11eb-9d45-228a59f22a1a.png" align="right" width="200"/>
 
 `OneMap` is a software for constructing genetic maps in experimental

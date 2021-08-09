@@ -17,7 +17,6 @@ test_that("ordering and HMM parallel", {
   }
   
   test_haplo("simu_example_bc", 1, 126)
-  test_haplo("simu_example_out", 1, 349)
+  test_haplo("simu_example_out", 1, 347)
   test_haplo("simu_example_f2", 1, 216)
-  
 })
