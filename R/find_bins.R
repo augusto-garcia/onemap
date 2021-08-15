@@ -26,9 +26,6 @@
 ##' \code{FALSE}, missing data are not considered when allocating markers.
 ##' In the latter case, the marker with the lowest amount of missing data is
 ##' taken as the representative marker on that bin.
-##' @param ch not used in this OneMap version. Chromosome for which the
-##' analysis should be performed. If \code{NULL} the analisys is performed
-##' for all chromosomes.
 ##' @return An object of class \code{onemap_bin}, which is a list containing the
 ##' following components: \item{bins}{a list containing the bins. Each element of
 ##' the list is a table whose lines indicate the name of the marker, the bin in
@@ -41,12 +38,10 @@
 ##' @seealso \code{\link[onemap]{create_data_bins}}
 ##' @keywords bins dimension reduction
 ##' @examples
-##'  \dontrun{
-##'   load(url("https://github.com/mmollina/data/raw/master/fake_big_data_f2.RData"))
-##'   fake.big.data.f2
-##'   (bins<-find_bins(fake.big.data.f2, exact=FALSE))}
+##'   data("onemap_example_f2")
+##'   (bins<-find_bins(onemap_example_f2, exact=FALSE))
 ##'@export
-find_bins <- function(input.obj, exact=TRUE, ch=NULL)
+find_bins <- function(input.obj, exact=TRUE)
 {
     ## checking for correct object
     if(!is(input.obj,"onemap"))

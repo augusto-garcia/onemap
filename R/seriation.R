@@ -53,7 +53,8 @@
 ##' the phase of a marker. (Should be no more than 4)
 #' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
 #' if \code{TRUE} one of the markers is removed and ug is performed again.
-
+#' @param hmm logical defining if the HMM must be applied to estimate multipoint
+#' genetic distances
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}
@@ -101,7 +102,7 @@ seriation<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
                     rm_unlinked = TRUE,
                     size = NULL, 
                     overlap = NULL, 
-                    phase_cores = 1)
+                    phase_cores = 1, hmm=TRUE)
 {
   ## checking for correct object
   if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is
@@ -133,36 +134,41 @@ seriation<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
   }
   
   ## end of SERIATION algorithm
-  cat("\norder obtained using SERIATION algorithm:\n\n", input.seq$seq.num[complete], "\n\ncalculating multipoint map using tol = ", tol, ".\n\n")
-  
-  if(phase_cores == 1 | is(input.seq$data.name, c("backcross", "riself", "risib"))){
-    ser_map <- map(make_seq(input.seq$twopt,input.seq$seq.num[complete],
-                            twopt=input.seq$twopt), 
-                   tol=tol,
-                   rm_unlinked = rm_unlinked)
-  } else{
-    if(is.null(size) | is.null(overlap)){
-      stop("If you want to parallelize the HMM in multiple cores (phase_cores != 1) 
+  if(hmm){
+    cat("\norder obtained using SERIATION algorithm:\n\n", input.seq$seq.num[complete], "\n\ncalculating multipoint map using tol = ", tol, ".\n\n")
+    
+    if(phase_cores == 1 | is(input.seq$data.name, c("backcross", "riself", "risib"))){
+      ser_map <- map(make_seq(input.seq$twopt,input.seq$seq.num[complete],
+                              twopt=input.seq$twopt), 
+                     tol=tol,
+                     rm_unlinked = rm_unlinked)
+    } else{
+      if(is.null(size) | is.null(overlap)){
+        stop("If you want to parallelize the HMM in multiple cores (phase_cores != 1) 
              you must also define `size` and `overlap` arguments.")
-    } else {
-      ser_map <- map_overlapping_batches(make_seq(input.seq$twopt,input.seq$seq.num[complete],
-                                                  twopt=input.seq$twopt), 
-                                         tol=tol,
-                                         size = size, overlap = overlap, 
-                                         phase_cores = phase_cores,
-                                         rm_unlinked = rm_unlinked)
+      } else {
+        ser_map <- map_overlapping_batches(make_seq(input.seq$twopt,input.seq$seq.num[complete],
+                                                    twopt=input.seq$twopt), 
+                                           tol=tol,
+                                           size = size, overlap = overlap, 
+                                           phase_cores = phase_cores,
+                                           rm_unlinked = rm_unlinked)
+      }
     }
-  }
-  
-  if(!is.list(ser_map)) {
-    new.seq <- make_seq(input.seq$twopt, ser_map)
-    ser_map <- seriation(input.seq = new.seq, 
-                         LOD=LOD, 
-                         max.rf=max.rf, tol=tol, 
-                         rm_unlinked= rm_unlinked,
-                         size = size, 
-                         overlap = overlap, 
-                         phase_cores = phase_cores)
+    
+    if(!is.list(ser_map)) {
+      new.seq <- make_seq(input.seq$twopt, ser_map)
+      ser_map <- seriation(input.seq = new.seq, 
+                           LOD=LOD, 
+                           max.rf=max.rf, tol=tol, 
+                           rm_unlinked= rm_unlinked,
+                           size = size, 
+                           overlap = overlap, 
+                           phase_cores = phase_cores)
+    }
+  } else {
+    ser_map <- make_seq(input.seq$twopt,input.seq$seq.num[complete],
+                        twopt=input.seq$twopt)
   }
   return(ser_map)
 }

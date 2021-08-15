@@ -13,7 +13,8 @@ record(
   rm_unlinked = TRUE,
   size = NULL,
   overlap = NULL,
-  phase_cores = 1
+  phase_cores = 1,
+  hmm = TRUE
 )
 }
 \arguments{
@@ -39,6 +40,9 @@ if \code{TRUE} one of the markers is removed and record is performed again.}
 
 \item{phase_cores}{The number of parallel processes to use when estimating
 the phase of a marker. (Should be no more than 4)}
+
+\item{hmm}{logical defining if the HMM must be applied to estimate multipoint
+genetic distances}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the

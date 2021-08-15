@@ -2,18 +2,13 @@
 % Please edit documentation in R/utils.R
 \name{rm_dupli_mks}
 \alias{rm_dupli_mks}
-\title{Remove duplicated markers keeping the one with less missing data
- 
- @param onemap.obj object of class \code{onemap}
- 
- @export}
+\title{Remove duplicated markers keeping the one with less missing data}
 \usage{
 rm_dupli_mks(onemap.obj)
 }
+\arguments{
+\item{onemap.obj}{object of class \code{onemap}}
+}
 \description{
 Remove duplicated markers keeping the one with less missing data
- 
- @param onemap.obj object of class \code{onemap}
- 
- @export
 }

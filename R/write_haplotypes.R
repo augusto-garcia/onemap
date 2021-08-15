@@ -15,8 +15,8 @@
 ##                                                                     ##
 #######################################################################
 
-globalVariables(c("grp", "for.split", ".", "pos", "prob", "pos2", "homologs"))
-globalVariables(c("V1", "V2", "V3", "V4", "P1_H1", "P1_H2", "P2_H1", "P2_H2"))
+globalVariables(c("grp", "for.split", ".", "pos", "prob", "pos2", "allele","parents.homologs", "progeny.homologs"))
+globalVariables(c("V1", "V2", "V3", "V4", "H1_P1", "H1_P2", "H2_P1", "H2_P2"))
 
 
 #' Generates data.frame with parents estimated haplotypes 

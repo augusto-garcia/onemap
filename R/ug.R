@@ -44,6 +44,8 @@
 ##' @param overlap The desired overlap between batches
 ##' @param phase_cores The number of parallel processes to use when estimating
 ##' the phase of a marker. (Should be no more than 4)
+#' @param hmm logical defining if the HMM must be applied to estimate multipoint
+#' genetic distances
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}
@@ -90,7 +92,7 @@ ug<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
              rm_unlinked = TRUE,
              size = NULL, 
              overlap = NULL, 
-             phase_cores = 1)
+             phase_cores = 1, hmm=TRUE)
 {
   ## checking for correct object
   if(!is(input.seq,"sequence"))
@@ -223,35 +225,41 @@ ug<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
   }
   complete<-partial
   ## end of UG algorithm
-  cat("\norder obtained using UG algorithm:\n\n", input.seq$seq.num[avoid_reverse(complete)], "\n\ncalculating multipoint map using tol ", tol, ".\n\n")
-  if(phase_cores == 1 | is(input.seq$data.name, c("backcross", "riself", "risib"))){
-    ug_map <- map(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(complete)],
-                           twopt=input.seq$twopt), tol=tol, rm_unlinked = rm_unlinked)
-  } else{
-    if(is.null(size) | is.null(overlap)){
-      stop("If you want to parallelize the HMM in multiple cores (phase_cores != 1) 
+  if(hmm){
+    cat("\norder obtained using UG algorithm:\n\n", input.seq$seq.num[avoid_reverse(complete)], "\n\ncalculating multipoint map using tol ", tol, ".\n\n")
+    if(phase_cores == 1 | is(input.seq$data.name, c("backcross", "riself", "risib"))){
+      ug_map <- map(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(complete)],
+                             twopt=input.seq$twopt), tol=tol, rm_unlinked = rm_unlinked)
+    } else{
+      if(is.null(size) | is.null(overlap)){
+        stop("If you want to parallelize the HMM in multiple cores (phase_cores != 1) 
              you must also define `size` and `overlap` arguments.")
-    } else {
-      ug_map <- map_overlapping_batches(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(complete)],
-                                                 twopt=input.seq$twopt), 
-                                        tol=tol,
-                                        size = size, overlap = overlap, 
-                                        phase_cores = phase_cores,
-                                        rm_unlinked = rm_unlinked)
+      } else {
+        ug_map <- map_overlapping_batches(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(complete)],
+                                                   twopt=input.seq$twopt), 
+                                          tol=tol,
+                                          size = size, overlap = overlap, 
+                                          phase_cores = phase_cores,
+                                          rm_unlinked = rm_unlinked)
+      }
     }
+    
+    if(!is.list(ug_map)) {
+      new.seq <- make_seq(input.seq$twopt, ug_map)
+      ug_map <- ug(input.seq = new.seq, 
+                   LOD=LOD, 
+                   max.rf=max.rf, tol=tol, 
+                   rm_unlinked= rm_unlinked,
+                   size = size, 
+                   overlap = overlap, 
+                   phase_cores = phase_cores)
+    }
+    return(ug_map)
+  } else {
+    ug.seq <- make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(complete)],
+                       twopt=input.seq$twopt)
+    return(ug.seq) 
   }
-  
-  if(!is.list(ug_map)) {
-    new.seq <- make_seq(input.seq$twopt, ug_map)
-    ug_map <- ug(input.seq = new.seq, 
-                  LOD=LOD, 
-                  max.rf=max.rf, tol=tol, 
-                  rm_unlinked= rm_unlinked,
-                  size = size, 
-                  overlap = overlap, 
-                  phase_cores = phase_cores)
-  }
-  return(ug_map)
 }
 ## end of file
 

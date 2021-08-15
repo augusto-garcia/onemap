@@ -74,7 +74,7 @@ RcppExport SEXP est_hmm_bc(SEXP geno_R, SEXP error_R, SEXP rf_R, SEXP verbose_R,
   int n_ind = geno.ncol();
   int n_gen = 2;
   int it, i, v, v2, j, j2, flag=0, maxit=1000;
-  double error_prob = 0.00001, s=0.0; 
+  double s=0.0; 
   double loglik, curloglik; 
   NumericMatrix alpha(n_gen, n_mar);
   NumericMatrix beta(n_gen, n_mar);

@@ -40,9 +40,4 @@ test_that("two-points tests",{
   
   expect_twopts("onemap_example_riself",
                 c(0.00000000, 0.4974619, 0.5000000, 0.5000000), 5546.198)
-  
-  data("onemap_example_riself")
-  expect_message(rf_2pts(onemap_example_riself), "We could not estimate all recombination fraction. Check if these markers have at least one genotype information or if they have segregation pattern deviation. We suggest filter_missing function to avoid excess of missing data, test_segregation and rm_mks argument.")
-  expect_message(rf_2pts(onemap_example_riself, rm_mks = T), 
-                 "Recombination fraction for 2 markers could not be estimated. They were removed from analysis. Check if these markers have at least one genotype information or if they have segregation pattern deviation. We suggest filter_missing function to avoid excess of missing data and test_segregation.")  
-})
+  })

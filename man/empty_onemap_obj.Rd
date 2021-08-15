@@ -2,26 +2,22 @@
 % Please edit documentation in R/utils.R
 \name{empty_onemap_obj}
 \alias{empty_onemap_obj}
-\title{Produce empty object to avoid code break. Function for internal purpose.
- 
- @param vcf object of class vcfR
- @param P1 character with parent 1 ID
- @param P2 character with parent 2 ID
- @param cross type of cross. Must be one of: \code{"outcross"} for full-sibs;
-\code{"f2 intercross"} for an F2 intercross progeny; \code{"f2 backcross"};
-\code{"ri self"} for recombinant inbred lines by self-mating; or
-\code{"ri sib"} for recombinant inbred lines by sib-mating.}
+\title{Produce empty object to avoid code break. Function for internal purpose.}
 \usage{
 empty_onemap_obj(vcf, P1, P2, cross)
 }
-\description{
-Produce empty object to avoid code break. Function for internal purpose.
- 
- @param vcf object of class vcfR
- @param P1 character with parent 1 ID
- @param P2 character with parent 2 ID
- @param cross type of cross. Must be one of: \code{"outcross"} for full-sibs;
+\arguments{
+\item{vcf}{object of class vcfR}
+
+\item{P1}{character with parent 1 ID}
+
+\item{P2}{character with parent 2 ID}
+
+\item{cross}{type of cross. Must be one of: \code{"outcross"} for full-sibs;
 \code{"f2 intercross"} for an F2 intercross progeny; \code{"f2 backcross"};
 \code{"ri self"} for recombinant inbred lines by self-mating; or
-\code{"ri sib"} for recombinant inbred lines by sib-mating.
+\code{"ri sib"} for recombinant inbred lines by sib-mating.}
+}
+\description{
+Produce empty object to avoid code break. Function for internal purpose.
 }

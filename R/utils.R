@@ -126,16 +126,17 @@ sort_by_pos <- function(onemap.obj){
   return(new.obj)
 }
 
-#'  Produce empty object to avoid code break. Function for internal purpose.
+#' Produce empty object to avoid code break. Function for internal purpose.
 #'  
-#'  @param vcf object of class vcfR
-#'  @param P1 character with parent 1 ID
-#'  @param P2 character with parent 2 ID
-#'  @param cross type of cross. Must be one of: \code{"outcross"} for full-sibs;
-##' \code{"f2 intercross"} for an F2 intercross progeny; \code{"f2 backcross"};
-##' \code{"ri self"} for recombinant inbred lines by self-mating; or
-##' \code{"ri sib"} for recombinant inbred lines by sib-mating.
-##' 
+#' @param vcf object of class vcfR
+#' @param P1 character with parent 1 ID
+#' @param P2 character with parent 2 ID
+#' @param cross type of cross. Must be one of: \code{"outcross"} for full-sibs;
+#' \code{"f2 intercross"} for an F2 intercross progeny; \code{"f2 backcross"};
+#' \code{"ri self"} for recombinant inbred lines by self-mating; or
+#' \code{"ri sib"} for recombinant inbred lines by sib-mating.
+#' 
+#' @export
 empty_onemap_obj <- function(vcf, P1, P2, cross){
   legacy_crosses <- setNames(c("outcross", "f2", "backcross", "riself", "risib"), 
                              c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"))
@@ -157,11 +158,11 @@ empty_onemap_obj <- function(vcf, P1, P2, cross){
   return(onemap.obj)
 }
 
-#'  Remove duplicated markers keeping the one with less missing data
+#' Remove duplicated markers keeping the one with less missing data
 #'  
-#'  @param onemap.obj object of class \code{onemap}
+#' @param onemap.obj object of class \code{onemap}
 #'  
-#'  @export
+#' @export
 rm_dupli_mks <- function(onemap.obj){
   
   if(!is(onemap.obj, c("onemap"))) stop("Input object must be of class onemap")

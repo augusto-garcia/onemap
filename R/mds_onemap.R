@@ -40,6 +40,8 @@
 #' the phase of a marker. (Should be no more than 4)
 #' @param tol tolerance for the C routine, i.e., the value used to evaluate
 #' convergence.
+#' @param hmm logical defining if the HMM must be applied to estimate multipoint
+#' genetic distances
 #' 
 #' @return An object of class \code{sequence}, which is a list containing the
 #' following components: \item{seq.num}{a \code{vector} containing the
@@ -186,7 +188,7 @@ calc.maps.sphere<-function(fname,p=100,weightfn='lod2',mapfn='haldane'){
   M<-dmap(r,mapfn)
   nloci=length(confplotno)
   smacofsym<-smacofSym(M,ndim=2,weightmat=lod,itmax=100000)
-  smacofsphere<-smacofSphere(M,ndim=2,algorithm="dual",weightmat=lod,penalty=p,itmax=1000000,mod=10,verbose=FALSE)
+  smacofsphere<-smacofSphere(M,ndim=2,algorithm="dual",weightmat=lod,penalty=p,itmax=1000000,modulus=10,verbose=FALSE)
   mapsphere<-map.to.interval(smacofsphere,nloci)
   length<-mapsphere$chromlength[nloci]
   distmap<-outer(mapsphere$maporder,mapsphere$maporder,Vectorize(function(i,j)M[i,j]))

@@ -55,6 +55,8 @@
 ##' the phase of a marker. (Should be no more than 4)
 #' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
 #' if \code{TRUE} one of the markers is removed and rcd is performed again.
+#' @param hmm logical defining if the HMM must be applied to estimate multipoint
+#' genetic distances
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}
@@ -105,7 +107,7 @@ rcd <-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
                rm_unlinked= TRUE,
                size = NULL, 
                overlap = NULL, 
-               phase_cores = 1)
+               phase_cores = 1, hmm=TRUE)
 {
   ## checking for correct object
   if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is
@@ -167,6 +169,7 @@ rcd <-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
     }
   }
   ## end of chain
+  if(hmm){
   cat("\norder obtained using RCD algorithm:\n\n", input.seq$seq.num[avoid_reverse(order)], "\n\ncalculating multipoint map using tol = ", tol, ".\n\n")
   
   if(phase_cores == 1 | is(input.seq$data.name, c("backcross", "riself", "risib"))){
@@ -200,6 +203,11 @@ rcd <-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
   }
   
   return(rcd.hmm)
+  } else {
+    rcd.seq <- make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(order)],
+                        twopt=input.seq$twopt)
+    return(rcd.seq)
+  }
 }
 
 ## end of file

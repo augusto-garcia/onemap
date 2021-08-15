@@ -52,6 +52,9 @@ the phase of a marker. (Should be no more than 4)}
 
 \item{tol}{tolerance for the C routine, i.e., the value used to evaluate
 convergence.}
+
+\item{hmm}{logical defining if the HMM must be applied to estimate multipoint
+genetic distances}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the

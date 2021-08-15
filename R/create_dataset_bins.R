@@ -33,11 +33,9 @@
 #' @seealso \code{\link[onemap]{find_bins}}
 #' @keywords bins dimension reduction
 #' @examples
-#'  \dontrun{
-#'   load(url("https://github.com/mmollina/data/raw/master/fake_big_data_f2.RData"))
-#'   fake.big.data.f2
-#'   (bins <- find_bins(fake.big.data.f2, exact=FALSE))
-#'   (new.data <- create_data_bins(fake.big.data.f2, bins))}
+##'   data("onemap_example_f2")
+##'   (bins<-find_bins(onemap_example_f2, exact=FALSE))
+##'   onemap_bins <- create_data_bins(onemap_example_f2, bins)
 #'@export
 create_data_bins <- function(input.obj, bins)
 {

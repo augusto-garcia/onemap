@@ -1666,25 +1666,6 @@ ggsave(p, filename = "map.jpg")
 
 As you can see in above maps, heuristic ordering algorithm do not return an optimal order result, mainly if you don't have many individuals in your population. Because of the erroneous order, generated map size are not close to the simulated size (100 cM) and their heapmaps don't present the expected color pattern. Two of them get close to the color pattern, they are the ug and the MDS method. They present good  global ordering but not local. If you have a reference genome, you can use its position information to rearrange local ordering.
 
-<!-- 
-You can apprimorate that using ripple algorithm. BatchMap authors also parallelized the ripple and develop `ripple_ord` function which performs the best permutations of markers locally, with search limited to a window with size defined by `ws`:
-
-```{r, eval=FALSE}
-time <- system.time(mds_ripple <- ripple_ord(input.seq = map_mds_par, 
-                                             ws=5, 
-                                             tol=10E-4,
-                                             start = 1,
-                                             method = "one",
-                                             n = NULL,
-                                             pref = NULL,
-                                             no_reverse = TRUE,
-                                             phase_cores = 2, 
-                                             ripple_cores = 6, 
-                                             verbose = c("time")))
-
-```
---> 
-
 # Export estimated progeny haplotypes <span style="color:orange">(new!)</span>
 
 Function `progeny_haplotypes` generates a data.frame with progeny phased haplotypes estimated by `OneMap` HMM. For progeny, the HMM results in probabilities for each possible genotypes, than the generated data.frame contains all possible genotypes. If `most_likely = TRUE`  the most likely genotype receives 1 and the rest 0 (if there are two most likely both receive 0.5), if `most_likely = FALSE` genotypes probabilities will be according with the HMM results. You can choose which individual to be evaluated in `ind`. The data.frame is composed by the information: individual (ind) and group (grp) ID, position in centimorgan (pos), progeny homologs (homologs) and from each parent the allele came (parents).

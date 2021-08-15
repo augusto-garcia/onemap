@@ -50,7 +50,7 @@ Rcpp::NumericVector est_rf_C_C(std::vector<int> k_sub,
                                int n_ind)
 {
   Rcpp::NumericVector r(2);
-  int n0=0, n1=0, n2=0, n3=0, n4=0, n5=0;
+  int n0=0, n1=0, n2=0, n3=0, n4=0;
   double rold=0, rnew=0.01, l, l0;
   for(int k=0; k < n_ind; k++)
   {
@@ -159,7 +159,6 @@ Rcpp::NumericVector est_rf_C_D_51(std::vector<int> k_sub,
 {
   Rcpp::NumericVector r(2);
   int n0=0, n1=0, n3=0, n4=0, n5=0, n6=0, n8=0;
-  double r0, r1, r2;
   double rold=0, rnew=0.01, l, l0;
   for(int k=0; k < n_ind; k++)
   {
@@ -211,7 +210,7 @@ Rcpp::NumericVector est_rf_D_D_43(std::vector<int> k_sub,
                                   int n_ind)
 {
   Rcpp::NumericVector r(2);
-  int n0=0, n1=0, n2=0, n3=0, n4=0, n5=0, n6=0, n7=0, n8=0, n9=0, n10=0, n11=0, n12=0, n13=0;
+  int n0=0, n1=0,n5=0, n11=0, n12=0;
   double r0, r1, r2;
   double rold=0, rnew=0.01, l, l0;
   for(int k=0; k < n_ind; k++)
@@ -326,7 +325,7 @@ Rcpp::NumericVector est_rf_D_D_43_51(std::vector<int> k_sub,
                                      int n_ind)
 {
   Rcpp::NumericVector r(2);
-  int n0=0, n1=0, n2=0, n3=0, n4=0, n5=0, n6=0, n7=0, n8=0, n9=0, n10=0, n11=0, n12=0, n13=0;
+  int n0=0, n3=0, n4=0, n9=0, n13=0;
   double r0, r1, r2;
   double rold=0, rnew=0.01, l, l0;
   for(int k=0; k < n_ind; k++)

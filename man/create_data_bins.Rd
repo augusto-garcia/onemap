@@ -24,11 +24,9 @@ collapsed into bins and represented by the marker with the lower
 amount of missing data among those on the bin.
 }
 \examples{
- \dontrun{
-  load(url("https://github.com/mmollina/data/raw/master/fake_big_data_f2.RData"))
-  fake.big.data.f2
-  (bins <- find_bins(fake.big.data.f2, exact=FALSE))
-  (new.data <- create_data_bins(fake.big.data.f2, bins))}
+  data("onemap_example_f2")
+  (bins<-find_bins(onemap_example_f2, exact=FALSE))
+  onemap_bins <- create_data_bins(onemap_example_f2, bins)
 }
 \seealso{
 \code{\link[onemap]{find_bins}}
