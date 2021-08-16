@@ -22,7 +22,6 @@ globalVariables(c("gt.onemap", "gt.vcf"))
 #' @param vcfR.object an object of class \code{vcfR}.
 #' @param parent1 a character specifying the first parent ID
 #' @param parent2 a character specifying the second parent ID
-#' @param f1 if your cross type is f2, you must define the F1 individual
 #' @param vcf.par the vcf parameter that store the allele depth information. 
 #' @param recovering logical. If TRUE, all markers in vcf are considere, if FALSE only those in onemap.obj
 #' @param mks a vector of characters specifying the markers names to be considered or NULL to consider all markers
@@ -38,8 +37,6 @@ globalVariables(c("gt.onemap", "gt.vcf"))
 #' @seealso \code{\link[onemap]{onemap_read_vcfR}}
 #' @keywords depth alleles 
 #'
-#' @example 
-#'     
 #'
 #'@import tidyr ggplot2
 #'@export
@@ -47,7 +44,6 @@ create_depths_profile <- function(onemap.obj = NULL,
                                   vcfR.object = NULL, 
                                   parent1 = NULL,
                                   parent2 = NULL,
-                                  f1 = NULL,
                                   vcf.par = "AD",
                                   recovering=FALSE,
                                   mks = NULL,
@@ -58,9 +54,6 @@ create_depths_profile <- function(onemap.obj = NULL,
                                   y_lim = NULL,
                                   x_lim = NULL){
   
-  # Checks
-  # if(is(onemap.obj, c("f2 intercross", "f2 backcross")) & is.null(f1)) 
-  #   stop("You must define f1 argument for this cross type \n")
   
   # Exclude multiallelic markers
   if(is(onemap.obj, "outcross")){
