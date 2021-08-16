@@ -49,9 +49,6 @@ extract_depth <- function(vcfR.object=NULL,
   if(!is(onemap.object,"onemap"))
     stop("You must specify one onemap object.")
   
-  # if(deparse(substitute(vcfR.object)) != onemap.object$input)                                                  
-  #   stop("The onemap object declared is not compatible with the vcfR object")                                  
-  
   # Infos                                                                                                        
   ind <- rownames(onemap.object$geno)
   IND <- colnames(vcfR.object@gt)[-1]
@@ -68,11 +65,7 @@ extract_depth <- function(vcfR.object=NULL,
   if(all(is.na(MKS)))
     MKS <- chr.pos.vcf
   
-  if(is(onemap.object,"f2")){
-    parents <- which(IND == f1)
-  } else{
-    parents <- c(which(IND == parent1),which(IND == parent2))
-  }
+  parents <- c(which(IND == parent1),which(IND == parent2))
   
   if(recovering==FALSE){
     rm.mks <- which(!(chr.pos.vcf %in% chr.pos.onemap))
@@ -205,30 +198,17 @@ extract_depth <- function(vcfR.object=NULL,
     pref <- ref_matrix[,idx]
     psize <- size_matrix[,idx]
     
-    if(is(onemap.object,"f2")){
-      if(recovering==TRUE){
-        oalt <- alt_matrix[,-c(idx, which(IND==parent1), which(IND==parent2))]
-        oref <- ref_matrix[,-c(idx, which(IND==parent1), which(IND==parent2))]
-        osize <- size_matrix[,-c(idx, which(IND==parent1), which(IND==parent2))]
-        IND <- IND[-c(idx, which(IND==parent1), which(IND==parent2))]
-      } else {
-        oalt <- alt_matrix
-        oref <- ref_matrix
-        osize <- size_matrix
-        IND <- IND
-      }
+    if(recovering==TRUE){
+      IND <- IND[-c(idx)]
+      oalt <- alt_matrix[,-idx]
+      oref <- ref_matrix[,-idx]
+      osize <- size_matrix[,-idx]
     } else {
-      if(recovering==TRUE){
-        IND <- IND[-c(idx)]
-        oalt <- alt_matrix[,-idx]
-        oref <- ref_matrix[,-idx]
-        osize <- size_matrix[,-idx]
-      } else {
-        IND <- IND[-parents]
-        oalt <- alt_matrix[,-parents]
-        oref <- ref_matrix[,-parents]
-        osize <- size_matrix[,-parents]
-      }
+      IND <- IND[-parents]
+      oalt <- alt_matrix[,-parents]
+      oref <- ref_matrix[,-parents]
+      osize <- size_matrix[,-parents]
+      
     }
     
     n.ind <- dim(oref)[2]

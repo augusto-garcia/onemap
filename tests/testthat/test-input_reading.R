@@ -74,7 +74,7 @@ test_that("reading files",{
                       dim.geno =  c(100,68), 
                       table.geno = c(597, 3229,2974),
                       error1.4 = c(0.00001, rep(0.99999,3)))
-  
+
   vcfR.obj <- read.vcfR(system.file("extdata/vcf_example_bc.vcf", package = "onemap"))
   data <- onemap_read_vcfR(vcfR.obj, cross = "f2 backcross", parent1 = "P1", parent2 = "P2")
   expect_equal(check_data(data), 0)
@@ -86,49 +86,6 @@ test_that("reading files",{
                       table.geno = c(462, 1569,1519),
                       error1.4 = rep(10^(-5),4))
   
-  vcfR.obj <- read.vcfR(system.file("extdata/vcf_example_f2.vcf", package = "onemap"))
-  data <- onemap_read_vcfR(vcfR.obj, cross = "f2 intercross", parent1 = "P1", parent2 = "P2", f1 = "F1")
-  expect_equal(check_data(data), 0)
-  expect_values_equal(segr.type1.4 = rep("A.H.B",4),
-                      segr.type.num1.4 = rep(4,4),
-                      n.phe = 0,
-                      pheno1.3 = NULL,
-                      dim.geno =  c(192,25), 
-                      table.geno = c(676, 962,1937, 1225),
-                      error1.4 = c(rep(0.00001,2),1, 0.99999))
-  
-  data <- onemap_read_vcfR(vcfR.obj, cross = "f2 intercross", parent1 = "P2", parent2 = "P1", f1 = "F1")
-  expect_equal(check_data(data), 0)
-  expect_values_equal(segr.type1.4 = rep("A.H.B",4),
-                      segr.type.num1.4 = rep(4,4),
-                      n.phe = 0,
-                      pheno1.3 = NULL,
-                      dim.geno =  c(192,25), 
-                      table.geno = c(676, 1225,1937, 962),
-                      error1.4 = c(rep(0.00001,2),1, 3.333333e-06))
-  
-  # Causing travis error: 'memory not mapped'
-  # vcfR.obj <- read.vcfR(system.file("extdata/vcf_example_out.vcf", package = "onemap"))
-  # data <- onemap_read_vcfR(vcfR.object = vcfR.obj, cross = "outcross", parent1 = "P1", parent2 = "P2")
-  # expect_equal(check_data(data), 0)
-  # expect_values_equal(segr.type1.4 = rep("B3.7",4),
-  #                     segr.type.num1.4 = rep(4,4),
-  #                     n.phe = 0,
-  #                     pheno1.3 = NULL,
-  #                     dim.geno =  c(92,24),
-  #                     table.geno = c(16, 761,1030, 401),
-  #                     error1.4 = c(rep(0.99999,4)))
-  # 
-  # data <- onemap_read_vcfR(vcfR.obj, cross = "outcross", parent1 = "P2", parent2 = "P1")
-  # expect_equal(check_data(data), 0)
-  # expect_values_equal(segr.type1.4 = rep("B3.7",4),
-  #                     segr.type.num1.4 = rep(4,4),
-  #                     n.phe = 0,
-  #                     pheno1.3 = NULL,
-  #                     dim.geno =  c(92,24),
-  #                     table.geno = c(16, 761,1030, 401),
-  #                     error1.4 = c(rep(0.99999,4)))
-
   vcfR.obj <- read.vcfR(system.file("extdata/vcf_example_riself.vcf", package = "onemap"))
   data <- onemap_read_vcfR(vcfR.obj, cross = "ri self", parent1 = "P1", parent2 = "P2")
   expect_equal(check_data(data), 0)
@@ -140,6 +97,48 @@ test_that("reading files",{
                       table.geno = c(87, 1092,1121),
                       error1.4 = c(rep(10^(-5),4)))
   
+  # Test onemap_read_vcfR with simulated data
+  check_read_vcf <- function(df, cross, parent1, parent2, mk.types, genos){
+    eval(bquote(vcfR.obj <- read.vcfR(.(df))))
+    eval(bquote(data <- onemap_read_vcfR(vcfR.object = vcfR.obj, cross = .(cross), 
+                                         parent1 = .(parent1), parent2 = .(parent2), 
+                                         only_biallelic = F)))
+    expect_equal(check_data(data), 0)
+    eval(bquote(expect_equal(.(mk.types), as.numeric(table(data$segr.type)))))
+    segre <- test_segregation(data)
+    expect_equal(length(select_segreg(segre, distorted = T)) == 0, TRUE)
+    eval(bquote(expect_equal(.(genos), as.numeric(table(data$geno)))))
+  }
+
+  check_read_vcf(df= system.file("extdata/simu_cod_out.vcf.gz", package = "onemap"),
+                 parent1 = "P1",
+                 parent2 = "P2",
+                 cross = "outcross",
+                 mk.types = rep(8,7),
+                 genos = c(4381, 4853, 1173, 793))
+  
+  
+  check_read_vcf(df= system.file("extdata/simu_cod_out.vcf.gz", package = "onemap"),
+                 parent1 = "P2",
+                 parent2 = "P1",
+                 cross = "outcross",
+                 mk.types = rep(8,7),
+                 genos = c(4381, 4801 , 1225, 793))
+  
+  
+  check_read_vcf(df= system.file("extdata/simu_cod_f2.vcf.gz", package = "onemap"),
+                 parent1 = "P1",
+                 parent2 = "P2",
+                 cross = "f2 intercross",
+                 mk.types = 54,
+                 genos = c(2667, 5358, 2829))
+  
+  check_read_vcf(df= system.file("extdata/simu_cod_f2.vcf.gz", package = "onemap"),
+                 parent1 = "P2",
+                 parent2 = "P1",
+                 cross = "f2 intercross",
+                 mk.types = 54,
+                 genos = c(2829, 5358, 2667))
 })
 
 test_that("writting files", {

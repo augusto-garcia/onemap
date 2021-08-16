@@ -378,8 +378,9 @@ Function `create_depth_profile` generates dispersion graphics with x and y axis 
 Here is an example for a simulated dataset.
 
 ```{r, message=F,warning=F}
-vcf_simu_f2 <- read.vcfR(system.file("extdata/simu_cod_F2.vcf", package="onemap"))
-simu_f2_obj <- onemap_read_vcfR(vcfR.object = vcf_simu_f2, cross = "f2 intercross", parent1 = "P1", parent2 = "P2", f1 = "F1")
+vcf_simu_f2 <- read.vcfR(system.file("extdata/vcf_example_f2.vcf.gz", package="onemap"))
+simu_f2_obj <- onemap_read_vcfR(vcfR.object = vcf_simu_f2, cross = "f2 intercross", 
+                                parent1 = "P1", parent2 = "P2")
 
 create_depths_profile(onemap.obj = simu_f2_obj,
                       vcfR.object = vcf_simu_f2, 

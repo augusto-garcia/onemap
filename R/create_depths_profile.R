@@ -37,7 +37,10 @@ globalVariables(c("gt.onemap", "gt.vcf"))
 #' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
 #' @seealso \code{\link[onemap]{onemap_read_vcfR}}
 #' @keywords depth alleles 
-#'   
+#'
+#' @example 
+#'     
+#'
 #'@import tidyr ggplot2
 #'@export
 create_depths_profile <- function(onemap.obj = NULL, 
@@ -56,8 +59,8 @@ create_depths_profile <- function(onemap.obj = NULL,
                                   x_lim = NULL){
   
   # Checks
-  if(is(onemap.obj, c("f2 intercross", "f2 backcross")) & is.null(f1)) 
-    stop("You must define f1 argument for this cross type \n")
+  # if(is(onemap.obj, c("f2 intercross", "f2 backcross")) & is.null(f1)) 
+  #   stop("You must define f1 argument for this cross type \n")
   
   # Exclude multiallelic markers
   if(is(onemap.obj, "outcross")){
@@ -79,18 +82,18 @@ create_depths_profile <- function(onemap.obj = NULL,
   if(is.null(parent1) | is.null(parent2)) stop("Parents ID must be defined.")
   
   # do the checks
-  depths <- extract_depth(vcfR.object = vcfR.object, onemap.object = onemap.obj, vcf.par, parent1, parent2, f1= f1,recovering = recovering)
+  depths <- extract_depth(vcfR.object = vcfR.object, onemap.object = onemap.obj, vcf.par, parent1, parent2,recovering = recovering)
   
   # parents onemap genotypes
   ## Only for biallelic codominant markers
   p1 <- p2 <- vector()
+  # parents depth
+  alt <- depths$palt %>% data.frame(mks=depths$mks) %>% gather("ind", "alt", -"mks")
+  ref <- depths$pref %>% data.frame(mks=depths$mks) %>% gather("ind", "ref", -"mks")
+  parents <- merge(alt,ref)
+  parents$mks <- gsub("[|]", ".", parents$mks)
+  
   if(is(onemap.obj, "outcross")){
-    # parents depth
-    alt <- depths$palt %>% data.frame(mks=depths$mks) %>% gather("ind", "alt", -"mks")
-    ref <- depths$pref %>% data.frame(mks=depths$mks) %>% gather("ind", "ref", -"mks")
-    parents <- merge(alt,ref)
-    parents$mks <- gsub("[|]", ".", parents$mks)
-    
     p1[which(onemap.obj$segr.type == "D1.10")] <- 2
     p1[which(onemap.obj$segr.type == "D2.15")] <- 1
     p1[which(onemap.obj$segr.type == "B3.7")] <- 2
@@ -98,37 +101,18 @@ create_depths_profile <- function(onemap.obj = NULL,
     p2[which(onemap.obj$segr.type == "D1.10")] <- 1
     p2[which(onemap.obj$segr.type == "D2.15")] <- 2
     p2[which(onemap.obj$segr.type == "B3.7")] <- 2
-    id.parents <- c(parent1, parent2)
-    p.gt <- data.frame(mks=colnames(onemap.obj$geno), p1, p2)
-  } else if(is(onemap.obj,"f2")){
-    # parents depth
-    alt <- depths$palt %>% data.frame(mks=depths$mks)
-    alt <- cbind(alt, f1)
-    colnames(alt) <- c("alt", "mks", "ind")
-    ref <- depths$pref %>% data.frame(mks=depths$mks)
-    ref <- cbind(ref, f1)
-    colnames(ref) <- c("ref", "mks", "ind")
-    parents <- merge(alt,ref)
-    p1 <- 2
-    id.parents <- f1
-    p.gt <- data.frame(mks=colnames(onemap.obj$geno), p1)
-  } else {
-    alt <- depths$palt %>% data.frame(mks=depths$mks) %>% gather("ind", "alt", -"mks")
-    ref <- depths$pref %>% data.frame(mks=depths$mks) %>% gather("ind", "ref", -"mks")
-    parents <- merge(alt,ref)
     
-    if(is(onemap.obj,c("riself", "risib"))){
-      p1 <- 1
-      p2 <- 3
-    } else{
-      p1 <- 1
-      p2 <- 2
-    }
-    
-    id.parents <- c(parent1, parent2)
-    p.gt <- data.frame(mks=colnames(onemap.obj$geno), p1, p2)
+  } else  if(is(onemap.obj,c("riself", "risib", "f2"))){
+    p1 <- 1
+    p2 <- 3
+  } else{
+    p1 <- 1
+    p2 <- 2
   }
   
+  id.parents <- c(parent1, parent2)
+  p.gt <- data.frame(mks=colnames(onemap.obj$geno), p1, p2)
+
   colnames(p.gt) <- c("mks", id.parents)
   p.gt <- gather(p.gt, "ind", "gt.onemap", -"mks")
   parents <- merge(parents, p.gt)
@@ -211,7 +195,7 @@ create_depths_profile <- function(onemap.obj = NULL,
   }
   
   # B3.7 - can not take the alleles from parents, here we make by individual
-  idx <- data$gt.onemap %in% c(1,3) & (data$mk.type == "B3.7")
+  idx <- data$gt.onemap %in% c(1,3) & (data$mk.type == "B3.7" | data$mk.type == "A.H.B")
   data$gt.onemap.alt.ref[idx & data$alt > data$ref] <- "homozygous-alt"
   data$gt.onemap.alt.ref[idx & data$alt < data$ref] <- "homozygous-ref"
   data$gt.onemap.alt.ref[idx & data$alt == data$ref] <- "homozygous-alt == ref" # If counts are the same we can not recover the information
