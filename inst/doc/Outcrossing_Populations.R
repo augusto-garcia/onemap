@@ -66,19 +66,19 @@ vcf_example_out
 ## -----------------------------------------------------------------------------
 vcf_filtered <- filter_missing(vcf_example_out, threshold = 0.25)
 
-## ---- message=F,warning=F-----------------------------------------------------
-# For outcrossing population
-create_depths_profile(onemap.obj = vcf_example_out,
-                      vcfR.object = vcfR.object, 
-                      parent1 = "P1", 
-                      parent2 = "P2", 
-                      vcf.par = "AD", 
-                      recovering = FALSE, 
-                      mks = NULL, 
-                      inds = NULL, 
-                      GTfrom = "vcf", 
-                      alpha = 0.1,
-                      rds.file = "depths_out.rds")
+## ---- message=F,warning=F, eval=FALSE-----------------------------------------
+#  # For outcrossing population
+#  create_depths_profile(onemap.obj = vcf_example_out,
+#                        vcfR.object = vcfR.object,
+#                        parent1 = "P1",
+#                        parent2 = "P2",
+#                        vcf.par = "AD",
+#                        recovering = FALSE,
+#                        mks = NULL,
+#                        inds = NULL,
+#                        GTfrom = "vcf",
+#                        alpha = 0.1,
+#                        rds.file = "depths_out.rds")
 
 ## -----------------------------------------------------------------------------
 comb_example <- combine_onemap(onemap_example_out, vcf_example_out)

@@ -78,22 +78,22 @@ plot(vcf_example_f2)
 plot_by_segreg_type(onemap_example_f2)
 plot_by_segreg_type(vcf_example_f2)
 
-## ---- message=F,warning=F-----------------------------------------------------
-vcf_simu_f2 <- read.vcfR(system.file("extdata/vcf_example_f2.vcf.gz", package="onemap"))
-simu_f2_obj <- onemap_read_vcfR(vcfR.object = vcf_simu_f2, cross = "f2 intercross", 
-                                parent1 = "P1", parent2 = "P2")
-
-create_depths_profile(onemap.obj = simu_f2_obj,
-                      vcfR.object = vcf_simu_f2, 
-                      parent1 = "P1", 
-                      parent2 = "P2", 
-                      vcf.par = "AD", 
-                      recovering = FALSE, 
-                      mks = NULL, 
-                      inds = NULL, 
-                      GTfrom = "vcf", 
-                      alpha = 0.1,
-                      rds.file = "depths_f2.rds")
+## ---- message=F,warning=F, eval=FALSE-----------------------------------------
+#  vcf_simu_f2 <- read.vcfR(system.file("extdata/vcf_example_f2.vcf.gz", package="onemap"))
+#  simu_f2_obj <- onemap_read_vcfR(vcfR.object = vcf_simu_f2, cross = "f2 intercross",
+#                                  parent1 = "P1", parent2 = "P2")
+#  
+#  create_depths_profile(onemap.obj = simu_f2_obj,
+#                        vcfR.object = vcf_simu_f2,
+#                        parent1 = "P1",
+#                        parent2 = "P2",
+#                        vcf.par = "AD",
+#                        recovering = FALSE,
+#                        mks = NULL,
+#                        inds = NULL,
+#                        GTfrom = "vcf",
+#                        alpha = 0.1,
+#                        rds.file = "depths_f2.rds")
 
 ## -----------------------------------------------------------------------------
 comb_example <- combine_onemap(onemap_example_f2, vcf_example_f2)

@@ -281,7 +281,7 @@ Function `create_depth_profile` generates dispersion graphics with x and y-axis 
 Here is an example for the `vcf_example_out` dataset.
 
 
-```{r, message=F,warning=F}
+```{r, message=F,warning=F, eval=FALSE}
 # For outcrossing population
 create_depths_profile(onemap.obj = vcf_example_out,
                       vcfR.object = vcfR.object, 
