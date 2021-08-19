@@ -119,6 +119,12 @@
 * Vignettes update
 * Documentation update
 
+# onemap 2.7.0
 
+* Updated vignettes
+* Github workflow
+* New function for grouping: group_upgma
+* Include hmm=FALSE option for ordering algorithms
+* Include parLapply function for running parallel HMM in Windows systems
 
 

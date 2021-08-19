@@ -4,13 +4,7 @@
 \alias{group_upgma}
 \title{Assign markers to linkage groups}
 \usage{
-group_upgma(
-  input.seq,
-  expected.groups = NULL,
-  inter = TRUE,
-  comp.mat = FALSE,
-  verbose = TRUE
-)
+group_upgma(input.seq, expected.groups = NULL, inter = TRUE, comp.mat = FALSE)
 }
 \arguments{
 \item{input.seq}{an object of class \code{mappoly.rf.matrix}}
@@ -24,9 +18,6 @@ expected groups before continue}
 \item{comp.mat}{if \code{TRUE}, shows a comparison between the reference
 based and the linkage based grouping, if the sequence information is
 available (default = FALSE)}
-
-\item{verbose}{logical. If \code{TRUE} (default), current progress is shown;
-if \code{FALSE}, no output is produced}
 }
 \value{
 Returns an object of class \code{group}, which is a list

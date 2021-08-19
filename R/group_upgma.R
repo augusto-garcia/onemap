@@ -16,9 +16,6 @@
 #'     based and the linkage based grouping, if the sequence information is
 #'     available (default = FALSE)
 #'
-#' @param verbose logical. If \code{TRUE} (default), current progress is shown;
-#'     if \code{FALSE}, no output is produced
-#'
 #' @return Returns an object of class \code{group}, which is a list
 #'     containing the following components:
 #'     \item{data.name}{the referred dataset name}
@@ -58,7 +55,7 @@
 #' 
 #' @export 
 group_upgma <- function(input.seq, expected.groups = NULL,
-                        inter = TRUE, comp.mat = FALSE, verbose = TRUE)
+                        inter = TRUE, comp.mat = FALSE)
 {
   ## checking for correct objects
   if(!any(is(input.seq,"sequence")))
@@ -81,7 +78,7 @@ group_upgma <- function(input.seq, expected.groups = NULL,
                     return(m)
                   }, input.seq$seq.num
     )
-    mat<-t(get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
+    mat<-t(onemap:::get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
   } else {
     #if(input.seq$seq.rf[1] == -1 || is.null(input.seq$seq.like))
     #stop("You must estimate parameters before running 'rf_graph_table' ")
@@ -109,7 +106,7 @@ group_upgma <- function(input.seq, expected.groups = NULL,
     dend.snp <- as.dendrogram(hc.snp)
     while(substr(ANSWER, 1, 1) != "y" && substr(ANSWER, 1, 1) != "yes" && substr(ANSWER, 1, 1) != "Y" && ANSWER !="")
     {
-      dend1 <- dendextend::color_branches(dend.snp, k = expected.groups)
+      dend1 <- color_branches(dend.snp, k = expected.groups)
       plot(dend1, leaflab = "none")
       if(is.null(expected.groups))
         expected.group <- as.numeric(readline("Enter the number of expected groups: "))
@@ -126,7 +123,8 @@ group_upgma <- function(input.seq, expected.groups = NULL,
       if(substr(ANSWER, 1, 1) != "y" && substr(ANSWER, 1, 1) != "yes" && substr(ANSWER, 1, 1) != "Y" && ANSWER !="")
         expected.groups <- as.numeric(ANSWER)
     }
-  }
+  } 
+
   if(is.null(expected.groups))
     stop("Inform the 'expected.groups' or use 'inter = TRUE'")
   
@@ -192,7 +190,7 @@ print.group.upgma <- function(x, detailed = TRUE, ...) {
 #' @export
 plot.group.upgma <- function(x, ...) {
   dend <- as.dendrogram(x$hc.snp)
-  dend1 <- dendextend::color_branches(dend, k = x$expected.groups)
+  dend1 <- color_branches(dend, k = x$expected.groups)
   plot(dend1, leaflab = "none")
   z<-rect.hclust(x$hc.snp, k = x$expected.groups, border = "red")
   xy<-sapply(z, length)
