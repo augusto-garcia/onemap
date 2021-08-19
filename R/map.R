@@ -148,7 +148,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
     Ph.Init <- comb_ger(phase.init)
     if(Sys.info()['sysname'] == "Windows" & phase_cores != 1) {
       cl <- makeCluster(phase_cores)
-      clusterExport(cl=cl,c('map', 'make_seq'))
+      clusterExport(cl=cl, varlist=c('map', 'make_seq'))
       phases <- parLapply(cl, 1:nrow(Ph.Init), 
                           function(j) {
                             ## call to 'map' function with predefined linkage phase
@@ -158,6 +158,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
                                 tol=tol, 
                                 rm_unlinked = rm_unlinked)
                           })
+      stopCluster(cl)
     } else { # mclapply goes faster but doesn't work on windows
       phases <- mclapply(1:nrow(Ph.Init),
                          mc.cores = min(nrow(Ph.Init),phase_cores),
@@ -234,6 +235,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
                                     tol=tol, 
                                     rm_unlinked = rm_unlinked)
                               })
+          stopCluster(cl)
         } else { # mclapply goes faster but doesn't work on windows
           phases <- mclapply(1:nrow(Ph.Init),
                              mc.cores = min(nrow(Ph.Init), phase_cores),

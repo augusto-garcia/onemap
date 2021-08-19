@@ -1,5 +1,5 @@
-\name{LG3_comp.RData}
-\alias{LG3_comp.RData}
+\name{LG3_comp}
+\alias{LG3_comp}
 \docType{data}
 \title{
 Dataset needed for build Outcrossing vignette. It is the result from compare function exemplified there.
@@ -7,7 +7,7 @@ Dataset needed for build Outcrossing vignette. It is the result from compare fun
 \description{
 Dataset needed for build Outcrossing vignette. It is the result from compare function exemplified there.
 }
-\usage{data("LG3_comp.RData")}
+\usage{data("LG3_comp")}
 \format{
   List of 7
  $ best.ord      : int [1:51, 1:7] 43 43 22 22 7 7 7 7 7 7 ...
@@ -85,7 +85,6 @@ Dataset needed for build Outcrossing vignette. It is the result from compare fun
   .. .. .. ..$ : chr [1:52] "M1" "M2" "M3" "M4" ...
   ..- attr(*, "class")= chr [1:2] "rf_2pts" "outcross"
  - attr(*, "class")= chr "compare"
-  }
 }
 \details{
 Outcrossing vignette uses it to save time to build itself.

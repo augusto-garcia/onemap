@@ -42,7 +42,7 @@ plot(onemap_example_out, all = FALSE)
 
 ## -----------------------------------------------------------------------------
 library(vcfR)
-vcfR.object <- read.vcfR(system.file("extdata/vcf_example_out.vcf", package = "onemap"))
+vcfR.object <- read.vcfR(system.file("extdata/vcf_example_out.vcf.gz", package = "onemap"))
 
 ## ---- eval=FALSE--------------------------------------------------------------
 #  vcf_example_out <- onemap_read_vcfR(vcfR.object = vcfR.object,

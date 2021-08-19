@@ -289,13 +289,13 @@ If you are working with biallelic markers, as SNPs and indels (only codominant m
 
 With the `onemap_read_vcfR` you can convert the object from `vcfR` package directly to `onemap`. The `onemap_read_vcfR` function keeps chromosome and position information for each marker at the end of raw file.
 
-We will use the same example file `vcf_example_f2.vcf` to show how it works.
+We will use the same example file `vcf_example_f2.vcf.gz` to show how it works.
 
 First, we convert the `VCF` file to `vcfR` object:
 
 ```{r}
 library(vcfR)
-vcfR.object <- read.vcfR(system.file("extdata/vcf_example_f2.vcf", package = "onemap"))
+vcfR.object <- read.vcfR(system.file("extdata/vcf_example_f2.vcf.gz", package = "onemap"))
 ```
 
 As described in the `vcfR` package vignette, memory use is a important consideration when using `vcfR`. Depending of your dataset, the object created can be very large and occupy a lot of memory.

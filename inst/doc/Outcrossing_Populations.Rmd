@@ -213,13 +213,13 @@ You can import information from `VCF` to `OneMap` using `onemap_read_vcfR` funct
 
 With the `onemap_read_vcfR` you can convert the object from `vcfR` package directly to `onemap`. The `onemap_read_vcfR` function keeps chromosome and position information for each marker in the onemap object generated.
 
-We will use the example file `vcf_example_out.vcf` to show how it works, which contains markers from the same population of `onemap_example_out.raw`.
+We will use the example file `vcf_example_out.vcf.gz` to show how it works, which contains markers from the same population of `onemap_example_out.raw`.
 
 First, we convert the `VCF` file to `vcfR` object:
 
 ```{r}
 library(vcfR)
-vcfR.object <- read.vcfR(system.file("extdata/vcf_example_out.vcf", package = "onemap"))
+vcfR.object <- read.vcfR(system.file("extdata/vcf_example_out.vcf.gz", package = "onemap"))
 ```
 
 As described in the `vcfR` package vignette, RAM memory use is an important consideration when using `vcfR`. Depending of your dataset, the object created can be huge and occupy a lot of memory.

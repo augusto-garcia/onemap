@@ -48,7 +48,7 @@ onemap_example_f2
 
 ## -----------------------------------------------------------------------------
 library(vcfR)
-vcfR.object <- read.vcfR(system.file("extdata/vcf_example_f2.vcf", package = "onemap"))
+vcfR.object <- read.vcfR(system.file("extdata/vcf_example_f2.vcf.gz", package = "onemap"))
 
 ## ---- eval=FALSE--------------------------------------------------------------
 #  vcf_example_f2 <- onemap_read_vcfR(vcfR.object = vcfR.object,
