@@ -78,7 +78,7 @@ group_upgma <- function(input.seq, expected.groups = NULL,
                     return(m)
                   }, input.seq$seq.num
     )
-    mat<-t(onemap:::get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
+    mat<-t(get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
   } else {
     #if(input.seq$seq.rf[1] == -1 || is.null(input.seq$seq.like))
     #stop("You must estimate parameters before running 'rf_graph_table' ")

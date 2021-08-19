@@ -119,12 +119,34 @@
 * Vignettes update
 * Documentation update
 
+# onemap 2.3.0
+
+* Remove functions to perform simulations
+* Remove updog and PedigreeSim dependency
+* Edit haplotypes graphics
+
+# onemap 2.4.0
+
+* Add testthat tests
+* Bug fix in functions
+
+# onemap 2.5.0
+
+* Add group_upgma function
+
+# onemap 2.6.0
+
+* HMM parallelization also available for Windows systems
+* Add simulated data for tests purpose
+
+# onemap 2.6.5
+
+* Removing MDSMap from dependencies
+
 # onemap 2.7.0
 
 * Updated vignettes
 * Github workflow
-* New function for grouping: group_upgma
 * Include hmm=FALSE option for ordering algorithms
-* Include parLapply function for running parallel HMM in Windows systems
 
 
