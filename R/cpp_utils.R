@@ -181,6 +181,7 @@ est_map_hmm_bc<-function(geno, error, rf.vec=NULL, verbose=TRUE, tol=1e-6)
 ##'
 ##' @useDynLib onemap
 ##' @import Rcpp
+##' 
 ##' @export
 ##' 
 est_map_hmm_out<-function(geno, error, type,  phase, rf.vec=NULL, verbose=TRUE, tol=1e-6)
