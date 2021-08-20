@@ -129,7 +129,8 @@ seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
       })
     } else {
       cl <- makeCluster(phase_cores, type = parallelization.type)
-      clusterExport(cl=cl, varlist=c('map', 'make_seq','get_vec_rf_out', 'get_mat_rf_out'))
+      clusterExport(cl=cl, varlist=c('map', 'make_seq','get_vec_rf_out', 
+                                     'get_mat_rf_out', 'est_map_hmm_out'))
       phases <- parLapply(cl, 1:nrow(Ph.Init),
                           function(j) {
                             ## call to 'map' function with predefined linkage phases

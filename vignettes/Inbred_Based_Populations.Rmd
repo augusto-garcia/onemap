@@ -54,7 +54,7 @@ For F2s, backcrosses, and RILs, two input formats are accepted. The user can cho
 difficulty in using data sets already available for `MAPMAKER/EXP` when
 deciding to try `OneMap`.
 
-Both types of raw file can contain phenotypic information, but this will not be used during
+Both types of raw files can contain phenotypic information, but this will not be used during
 map construction, that requires only genotypic information (made
 available by molecular markers).
 
@@ -158,7 +158,7 @@ To save your project anytime, type:
 save.image("C:/.../yourfile.RData")
 ```
 
-if you are using Windows; otherwise, adapt the code. Notice that you
+if you are using Windows, otherwise, adapt the code. Notice that you
 need to specify where to save and the name of the file. You can also
 use the toolbar, of course.
 
@@ -168,7 +168,7 @@ The `OneMap` data file has few differences compared to MAPMAKER/EXP format. As M
 
 The third line contains sample IDs. Then, the genotype information is included separately for each marker. The
 character `*` indicates the beginning of information input for a new
-marker, followed by the marker name. Next, there is a code indicating the marker type according with:
+marker, followed by the marker name. Next, there is a code indicating the marker type according to with:
 
 | Code      | Type                          |
 |-----------|-------------------------------|
@@ -185,7 +185,7 @@ data are indicated with the character `-` (minus sign) and an empty space separa
 
 Here is an example of such file for 10 individuals, 5 markers (the two zeros in the second line indicate that there is no chromosome information, physical position information), and two phenotypic data, respectively). It
 is very similar to a MAPMAKER/EXP file, but has additional information
-about the cross type.
+about the cross_type.
 
 ```
 data type f2 intercross
@@ -234,13 +234,13 @@ mapmaker_example_f2 <- read_mapmaker(file= system.file("extdata/mapmaker_example
 For this example, we will use a simulated data set from an F2
 population which is distributed along with `OneMap`. Because this
 particular data set is distributed along with the package, you can
-load it typing
+load it by typing:
 
 ```{r, load_data}
 data("mapmaker_example_f2")
 ``` 
 
-To see what this data set is about, type
+To see what this data set is about, type:
 
 ```{r}
 mapmaker_example_f2
@@ -262,7 +262,7 @@ onemap_example_f2 <- read_onemap(dir="C:/workingdirectory",
                                  inputfile = "your_data_file.raw")
 ``` 
 
-In this example, an object named `onemap_example_f2.raw` was created. The data set containing the same markers and individual of the `mapmaker_example_f2.raw` file. Would be a good idea to open this two files in a text editor and compare them to better understand the differences between the two kinds of input files. We can read the `onemap_example_f2.raw` using:
+In this example, an object named `onemap_example_f2.raw` was created. The data set containing the same markers and individuals of the `mapmaker_example_f2.raw` file. Would be a good idea to open these two files in a text editor and compare them to better understand the differences between the two kinds of input files. We can read the `onemap_example_f2.raw` using:
 
 ```{r, eval=FALSE}
 onemap_example_f2 <- read_onemap(inputfile= system.file("extdata/onemap_example_f2.raw", 
@@ -275,21 +275,21 @@ Or, because this particular data are available together with `OneMap` package:
 data("onemap_example_f2")
 ```
 
-To see what this data set is about, type
+To see what this data set is about, type:
 
 ```{r}
 onemap_example_f2
 ```
 
-As you can see, the mean difference in the output object is that `read_onemap` function keeps chromosome and position informations. Because the objects `mapmaker_example_f2` and `onemap_example_f2` are practically the same, from now we will use only `onemap_example_f2`.
+As you can see, the mean difference in the output object is that the `read_onemap` function keeps chromosome and position information. Because the objects `mapmaker_example_f2` and `onemap_example_f2` are practically the same, from now we will use only `onemap_example_f2`.
 
 ## Importing data from `VCF` file
 
 If you are working with biallelic markers, as SNPs and indels (only codominant markers A.H.B), in VCF (Variant Call Format) files, you can import information from `VCF` to `OneMap` using `onemap_read_vcfR` function.
 
-With the `onemap_read_vcfR` you can convert the object from `vcfR` package directly to `onemap`. The `onemap_read_vcfR` function keeps chromosome and position information for each marker at the end of raw file.
+With the `onemap_read_vcfR` you can convert the object from `vcfR` package directly to `onemap`. The `onemap_read_vcfR` function keeps chromosome and position information for each marker at the end of the raw file.
 
-We will use the same example file `vcf_example_f2.vcf.gz` to show how it works.
+We will use the same example file `vcf_example_f2.vcf` to show how it works.
 
 First, we convert the `VCF` file to `vcfR` object:
 
@@ -300,7 +300,7 @@ vcfR.object <- read.vcfR(system.file("extdata/vcf_example_f2.vcf.gz", package = 
 
 As described in the `vcfR` package vignette, memory use is a important consideration when using `vcfR`. Depending of your dataset, the object created can be very large and occupy a lot of memory.
 
-After, you can use `onemap_read_vcfR` function to convert this object to `onemap` object. The parameters used is the `vcfR.object` we just created, the identification of each parent (here you must define only one sample for each parent) and the cross type.
+After, you can use `onemap_read_vcfR` function to convert this object to `onemap` object. The parameters used is the `vcfR.object` we just created, the identification of each parent (here you must define only one sample for each parent) and the cross-type.
 
 ```{r, eval=FALSE}
 vcf_example_f2 <- onemap_read_vcfR(vcfR.object = vcfR.object,
@@ -309,9 +309,9 @@ vcf_example_f2 <- onemap_read_vcfR(vcfR.object = vcfR.object,
                                    cross = "f2 intercross")
 ```
 
-Depending of your dataset, this function can take some time to run. 
+Depending on your dataset, this function can take some time to run. 
 
-After the conversion, we can save the `vcfR.object` as a `.RData` and to remove it from the workspace, once it can occupy a lot of memory and turn the other process too slow. 
+After the conversion, we can save the `vcfR.object` as a `.RData` and remove it from the workspace, once it can occupy a lot of memory and turn the other process too slow. 
 
 ```{r, eval=FALSE}
 save(vcfR.object, file = "vcfR.object.RData") 
@@ -373,9 +373,9 @@ ones and the `vcf_example_f2`has only codominant markers.
 
 ## Graphical view of genotypes and allele depths <span style="color:orange">(new!)</span>
 
-Function `create_depth_profile` generates dispersion graphics with x and y axis representing, respectively, the reference and alternative allele depths. The function is only available for biallelic markers in VCF files with allele counts information. Each dot represent a genotype for `mks` markers and `inds` individuals. If both arguments receives `NULL`, all markers and individuals are considered. Dots are colored according with the genotypes present in `OneMap` object (`GTfrom = onemap`) or in VCF file (`GTfrom = vcf`). A rds file is generated with the data in the graphic (`rds.file`). The `alpha` argument control the transparency of color of each dot. Control this parameter is a good idea when having big amount of markers and individuals. The `x_lim` and `y_lim` control the axis scale limits, by default,  it uses the maximum value of the counts.
+Function `create_depth_profile` generates dispersion graphics with x and y axis representing, respectively, the reference and alternative allele depths. The function is only available for biallelic markers in VCF files with allele counts information. Each dot represents a genotype for `mks` markers and `inds` individuals. If both arguments receive `NULL`, all markers and individuals are considered. Dots are colored according to the genotypes present in `OneMap` object (`GTfrom = onemap`) or in the VCF file (`GTfrom = vcf`). An rds file is generated with the data in the graphic (`rds.file`). The `alpha` argument controls the transparency of the color of each dot. Control this parameter is a good idea when having a big amount of markers and individuals. The `x_lim` and `y_lim` control the axis scale limits, by default,  it uses the maximum value of the counts.
 
-Here is an example for a simulated dataset.
+Here is an example of the simulated dataset.
 
 ```{r, message=F,warning=F, eval=FALSE}
 vcf_simu_f2 <- read.vcfR(system.file("extdata/vcf_example_f2.vcf.gz", package="onemap"))
@@ -394,8 +394,7 @@ create_depths_profile(onemap.obj = simu_f2_obj,
                       alpha = 0.1,
                       rds.file = "depths_f2.rds")
 ```
-
-Selecting genotypes from `vcf` (GTfrom = "vcf") the colors are separated by VCF genotypes: `0/0` homozygote for the reference allele, `0/1` heterozygote and `1/1` homozygote for the alternative allele. Depending of your VCF, you can also have phased genotypes, which are presented by pipe (|) instead of bar (/).
+Selecting genotypes from `vcf` (GTfrom = "vcf") the colors are separated by VCF genotypes: `0/0` homozygote for the reference allele, `0/1` heterozygote, and `1/1` homozygote for the alternative allele. Depending on your VCF, you can also have phased genotypes, which are presented by pipe (|) instead of the bar (/).
 
 # Combining `OneMap` objects
 
@@ -406,7 +405,7 @@ In our example, we have two `onemap` objects:
 * first: `onemap_example_f2` (equivalent to `mapmaker_example_f2`) with 66 markers and 200 individuals
 * second: `vcf_example_f2` with 25 biallelic markers and 192 individuals.
 
-The `combine_function` recognizes the correspondent individuals by the ID, thus, it is important define exactly same IDs to respective individuals in both `raw` files. Compared with the first file, the second file do not have markers informations for 8 individuals. The `combine_onemap` will complete those informations with NA.
+The `combine_function` recognizes the correspondent individuals by the ID, thus, it is important to define exactly the same IDs to respective individuals in both `raw` files. Compared with the first file, the second file does not have markers information for 8 individuals. The `combine_onemap` will complete that information with NA.
 
 In our examples, we have only genotypic information, but the function can also merge the phenotypic information if it exists.
 
@@ -417,7 +416,7 @@ comb_example
 
 The function arguments are the names of the `OneMap` objects you want to combine.
 
-Plotting markers genotypes from the outputted `OneMap` object, we can see that there are more missing data `-` (black vertical lines) for some individuals, because they were missing in the second file.
+Plotting markers genotypes from the outputted `OneMap` object, we can see that there are more missing data `-` (black vertical lines) for some individuals because they were missing in the second file.
 
 ```{r}
 plot(comb_example)
@@ -425,18 +424,18 @@ plot(comb_example)
 
 # Find redundant markers
 
-It is possible that there are redundant markers in your dataset, specially when dealing with too many markers. Redundant markers have the same genotypic informations that others markers, usually because didn't happen recombination events between each other. They will not increase informations to the map, but will increase computational effort during the map building. Therefore, it is a good practice to remove them to build the map and, once the map is already builded, they can be added again.
+It is possible that there are redundant markers in your dataset, especially when dealing with too many markers. Redundant markers have the same genotypic information that others markers, usually because didn't happen recombination events between each other. They will not increase information on the map but will increase computational effort during the map building. Therefore, it is a good practice to remove them to build the map and, once the map is already built, they can be added again.
 
-First, we use the function `find_bins` to group the markers into bins according with their genotypic informations. In other words, markers with the same genotypic informations will be at the same bin.
+First, we use the function `find_bins` to group the markers into bins according to their genotypic information. In other words, markers with the same genotypic information will be in the same bin.
 
 ```{r}
 bins <- find_bins(comb_example, exact = FALSE)
 bins
 ```
 
-The first argument is the `OneMap` object and the `exact` argument specify if only markers with exact same informations will be at the same bin. Using `FALSE` at this second argument, missing data will not be considered and the marker with the lowest amount of missing data will be the representative marker on the bin.
+The first argument is the `OneMap` object and the `exact` argument specifies if only markers with exact same information will be at the same bin. Using `FALSE` at this second argument, missing data will not be considered and the marker with the lowest amount of missing data will be the representative marker on the bin.
 
-Our example dataset have only two redundant marker. We can create a new `OneMap` object without them, using the `create_data_bins` function. This function keeps only the most representative marker of each bin from `bins` object.
+Our example dataset has only two redundant markers. We can create a new `OneMap` object without them, using the `create_data_bins` function. This function keeps only the most representative marker of each bin from the `bins` object.
 
 ```{r}
 bins_example <- create_data_bins(comb_example, bins)
@@ -447,7 +446,7 @@ The arguments for `create_data_bins` function are the `OneMap` object and the ob
 
 # Exporting .raw file from `OneMap` object
 
-The functions `onemap_read_vcfR` generates new `OneMap` objects without use a input `.raw` file. Also, the function `combine_onemap` manipulates the information of the original `.raw` file and creates a new data set. In both cases, you do not have a input file `.raw` that contains the same information of your current onemap object If you want to create a new input file with the data set you are working after using this functions, you can use the function `write_onemap_raw`.  
+The functions `onemap_read_vcfR` generates new `OneMap` objects without use a input `.raw` file. Also, the function `combine_onemap` manipulates the information of the original `.raw` file and creates a new data set. In both cases, you do not have an input file `.raw` that contains the same information as your current onemap object If you want to create a new input file with the data set you are working on after using these functions, you can use the function `write_onemap_raw`.  
 
 ```{r, eval=FALSE}
 write_onemap_raw(bins_example, file.name = "new_dataset.raw", cross="f2 intercross")
@@ -487,7 +486,7 @@ print(f2_test)
 
 This shows the results of the Chi-square test for the expected
 Mendelian segregation pattern of each marker locus. This depends of
-course on marker type, because codominant markers can show heterozygous
+course on the marker type, because codominant markers can show heterozygous
 genotypes. The appropriate null hypothesis is selected by the
 function. The proportion of individuals genotyped is also shown.
 
@@ -534,11 +533,11 @@ To get a list of distorted ones (none in this example):
 select_segreg(f2_test, distorted = TRUE)
 ```
 
-It is not recommended, but you can define a different threshold value changing the `threshold` argument of the function `select_segreg`. 
+It is not recommended, but you can define a different threshold value by changing the `threshold` argument of the function `select_segreg`. 
 
-For the next steps will be useful to know the numbers of each markers with segregation distortion, so then you can keep those out of your map building analysis. These numbers refer to the lines where markers are located on the data file.
+For the next steps will be useful to know the numbers of each marker with segregation distortion, so then you can keep those out of your map building analysis. These numbers refer to the lines where markers are located on the data file.
 
-To access the corresponding number for of this markers you can change the `numbers` argument:
+To access the corresponding number for of these markers you can change the `numbers` argument:
 
 ```{r}
 no_dist <- select_segreg(f2_test, distorted = FALSE, numbers = TRUE) #to show the markers numbers without segregation distortion
@@ -591,7 +590,7 @@ If you want to see the results for a single pair of markers, say `M12` and
 print(twopts_f2, c("M12", "M42"))
 ``` 
 
-Since version 2.3.0, we estimate phases for F2 populations too, them here you can see the recombination fractions and LOD values for each possible phase. For RILs and backcross you will obtain only one value.
+Since version 2.3.0, we estimate phases for F2 populations too, so here you can see the recombination fractions and LOD values for each possible phase. For RILs and backcross, you will obtain only one value.
 
 This was possible because `OneMap` has a version of the `print` function
 that can be applied to objects of class `rf_2pts`:
@@ -611,17 +610,17 @@ print(twopts_f2)
 
 In this example we follow two different strategies:
 
-* Using only recombinations informations.
+* Using only recombinations information.
 
-* Using the recombinations and also the reference genome informations, once our example have `CHROM` and `POS` informations for some of the markers.
+* Using the recombinations and also the reference genome information, once our example has `CHROM` and `POS` information for some of the markers.
 
-First, we will apply the strategy using only recombinations informations. In a second part of this tutorial we show a way to use also reference genome informations. 
+First, we will apply the strategy using only recombinations information. In the second part of this tutorial, we show a way to use also reference genome information. 
 
 ## Using only recombinations informations
 
 ### Assigning markers to linkage groups
 
-To assign markers to linkage groups, first use the function `make_seq`
+To assign markers to linkage groups, first, use the function `make_seq`
 to create a (un-ordered) sequence with all markers:
 
 ```{r, subset_all}
@@ -644,11 +643,10 @@ and `M7`, use:
 ```{r, subset_3mks}
 mrk_subset <- make_seq(twopts_f2, c(1, 3, 7))
 ``` 
-
-In this case, it was easy because marker names and order in the
-objects (indicated in vector `c(1, 3, 7)`) are closed related, that is,
-you can easily know the position of markers in the object once you
-know their names. However, this is not true for real data sets, where
+In this case, it was easy because marker names and order in the 
+objects (indicated in vector `c(1, 3, 7)`) are closely related, that is, 
+you can easily know the position of markers in the object once you 
+know their names. However, this is not true for real data sets, where 
 markers do not have simple names such as `M1` or `M2`.
 
 A good example is to use the vector of markers without segregation
@@ -710,8 +708,9 @@ class(LGs_upgma)
 
 ### Ordering markers within linkage groups
 
-After assignin markers to linkage groups, the next step is to
+After assigning markers to linkage groups, the next step is to 
 order the markers within each group.
+
 
 First, let us choose the mapping function used to display the genetic
 map. We can choose between Kosambi or Haldane mapping functions. To
@@ -727,7 +726,7 @@ To use Kosambi's function:
 set_map_fun(type = "kosambi")
 ```
 
-If none is setted, kosambi function is applied.
+If none is set, kosambi function is applied.
 
 #### Linkage group 1
 
@@ -755,7 +754,7 @@ that no parameters have been estimated so far (the function says
 _Parameters not estimated_). This refers to the fact that so far we
 only attributed markers to linkage groups, but we did not perform any
 analysis for them as a **group** - only as pairs. (Does it seem
-complicated? Do not worry, you will understand details in a moment).
+complicated? Do not worry, you will understand the details in a moment).
 
 Notice the class of object `LG1_f2`:
 
@@ -774,7 +773,17 @@ LG1_rec_f2 <- record(LG1_f2, hmm = FALSE)
 LG1_ug_f2 <- ug(LG1_f2, hmm = FALSE)
 ``` 
 
-Argument `hmm` defines if the function should run the HMM chain multipoint approach to estimate the genetic distances given the marker order provided by the two-points ordering algorithm. We set here argument `hmm=FALSE` because we just want to obtain the marker ordering. We are not yet estimating the genetic distances. We suggest to use `hmm=TRUE` only when you already decided which order is the best because the HMM chain is the most computational intensive step in the map building (mainly if F2 intercross population). You can use `rf_graph_table` to check the ordering quality (see details below) and make editions in the marker order using `drop_marker`. After, you can use `map` or `map_avoid_unlinked` functions to estimate the genetic distances (check session [Map estimation for an arbitrary order](#Map-estimation-for-an-arbitrary-order)).
+Argument `hmm` defines if the function should run the HMM chain multipoint 
+approach to estimate the genetic distances given the marker order provided 
+by the two-points ordering algorithm. We set here argument `hmm=FALSE` because 
+we just want to obtain the marker ordering. We are not yet estimating the genetic
+distances. We suggest to use `hmm=TRUE` only when you already decided which order
+is the best because the HMM chain is the most computational intensive step in the
+map building (mainly if F2 intercross population). You can use `rf_graph_table` 
+to check the ordering quality (see details below) and make editions in the 
+marker order using `drop_marker`. After, you can use `map` or `map_avoid_unlinked` 
+functions to estimate the genetic distances (check session [Map estimation 
+for an arbitrary order](#Map-estimation-for-an-arbitrary-order)).
 
 The algorithms provided different
 results (results not printed in this vignette). For an evaluation and
@@ -811,7 +820,11 @@ It is possible to plot the recombination fraction matrix and LOD
 Scores based on a color scale using the function `rf_graph_table`.
 This matrix can be useful to make some diagnostics about the map.
 
-Ordered markers are presented in both axis. Hotter the colors lower the recombination fraction between  markers related in each cell. Good map orders have hot colors in the diagonal and it is gradually turns to blue at the superior left and inferior right corners. This pattern means that markers that have low recombination fractions are really positioned closely in the map.
+Ordered markers are presented on both axes. Hotter the colors lower the recombination 
+fraction between markers related to each cell. Good map orders have hot colors in the 
+diagonal and it gradually turns to blue at the superior left and inferior right corners. 
+This pattern means that markers that have low recombination fractions are really positioned 
+closely on the map.
 
 Let's see the maps we have until now:
 
@@ -828,18 +841,18 @@ color scale varies from red (small distances and big LODs) to dark blue. You can
 add/remove graphic main and axis title (`main` and `lab.xy`), and shows marker numbers,
 instead of names in the axis (`mrk.axis`).
 
-We can see that any of the algorithms gave a optimal ordering, there are a many red cells out of the diagonal, the color pattern is broke in all graphics, but we need to do an effort to find which one of the algorithms gave the best result. Then, we continue the analysis doing hand manipulations.
+We can see that any of the algorithms gave an optimal ordering, there are many red cells out of the diagonal, the color pattern is broke in all graphics, but we need to do an effort to find which one of the algorithms gave the best result. Then, we continue the analysis by doing hand manipulations.
 
-Here, `ug` and `record` approaches are the ones that gave results more close to the expected pattern. We can also see that probably there are more than one group, because of the big gaps. Let's see the order generated by `ug` algorithm with more details using interactive mode of `rf_graph_table` function:
+Here, `ug` and `record` approaches are the ones that gave results more close to the expected pattern. We can also see that probably there is more than one group, because of the big gaps. Let's see the map generated by the `ug` algorithm with more details using the interactive mode of the `rf_graph_table` function:
 
 ```{r, eval=FALSE}
 rf_graph_table(LG1_ug_f2, inter = TRUE, html.file = "test.html")
 ```
 
-An interactive version of the graphic will pop up (not shown here) in your internet browser end generated a html file in your work directory.
+An interactive version of the graphic will pop up (not shown here) in your internet browser end generated an HTML file in your work directory.
 Hover the mouse cursor over the cell corresponding to two markers, you can see some useful information about them.
 
-Markers from `89` to `11` seems to form a separated group  (we will call this group LG1). Markers from `23` to `55` will be our LG2. Markers from `39` to `50` show strong evidence that constitute other separated group, including markers (LG3).  
+Markers from `89` to `11` seem to form a separated group  (we will call this group LG1). Markers from `23` to `55` will be our LG2. Markers from `39` to `50` show strong evidence that constitutes another separated group, including markers (LG3).  
 
 Let's separate them and order again using the same method:
 
@@ -876,7 +889,7 @@ LG3_ug_f2 <- ug(LG3, hmm = F)
 rf_graph_table(LG3_ug_f2)
 ```
 
-Besides the groups now is better separated, the order is still not the best we can do. With less markers in each group, we can apply a multipoint strategy to better order those markers, starting with group 1.
+Besides the groups now is better separated, the order is still not the best we can do. With fewer markers in each group, we can apply a multipoint strategy to better order those markers, starting with group 1.
 
 ## Linkage group 1
 
@@ -888,11 +901,11 @@ the multipoint likelihood of all possible orders between markers
 more markers it will take a couple of hours until you see the results
 (depending of course on the computational resources available).
 
-All our groups have more than 7 markers, so using function `compare` is
+All our groups have more than 7 markers, so using the function `compare` is
 infeasible. Thus we will apply a heuristic that shows reliable
 results. First, we will choose a moderate number of markers, say 6, to
 create a framework using the function `compare`, and then we will
-position the remaining markers into this framework using function
+position the remaining markers into this framework using the function
 `try_seq`. The way we choose these initial markers in inbred-based populations
 is somewhat different from what we did for outcrossing populations,
 where there is a mixture of segregation patterns (see the vignette for
@@ -900,16 +913,18 @@ details).
 
 In our scenario, we recommend two methods:
 
-1. Randomly choose a number of markers and calculate the multipoint
-likelihood of all possible orders (using the function `compare`).
-If the LOD Score of the second best order is greater than a given
-threshold, say, 3, then take the best order to proceed with the
-next step. If not, repeat the procedure.
-2. Use some two-point based algorithm to construct a map; then, take
-equally spaced markers from this map. Then, create a framework of
-ordered markers using the function `compare`. Next, try to map the
-remaining markers, one at a time, beginning with co-dominant ones
-(most informative ones), then add the dominant ones.
+
+ 1. Randomly choose a number of markers and calculate the multipoint 
+ likelihood of all possible orders (using the function `compare`). 
+ If the LOD Score of the second-best order is greater than a given 
+ threshold, say, 3, then take the best order to proceed with the 
+ next step. If not, repeat the procedure.
+
+ 2. Use some two-point based algorithm to construct a map; then, take 
+ equally spaced markers from this map. Then, create a framework of 
+ ordered markers using the function `compare`. Next, try to map the 
+ remaining markers, one at a time, beginning with co-dominant ones 
+ (most informative ones), then add the dominant ones.
 
 You can do this procedure manually, in a similar way as done for
 outcrossing species (see the vignette for details). However, this
@@ -930,7 +945,7 @@ data(LG1_f2_ord)
 The first argument is an object of class `sequence` (LG1_ug2_f2). `n.init
 = 5` means that five markers will be used in the `compare` step. The
 argument `subset.search = "twopt"` indicates that these five markers
-should be chosen by using a two point method, which will be Rapid
+should be chosen by using a two-point method, which will be Rapid
 Chain Delineation, as indicated by the argument `twopt.alg = "rcd"`.
 `THRES = 3` indicates that the `try_seq` step will only add markers to
 the sequence which can be mapped with LOD Score greater than 3.
@@ -941,14 +956,14 @@ Check the order obtained by this procedure:
 LG1_f2_ord
 ``` 
 
-Note that markers `5`, `66` and `2` could not be safely mapped to a single
+Note that markers `5`, `66`, and `2` could not be safely mapped to a single
 position (`LOD Score > THRES` in absolute value). The output displays
 the `safe` order and the most likely positions for markers not mapped,
 where `***` indicates the most likely position, and `*` corresponds to
 other plausible positions. (If you are familiar with MAPMAKER/EXP, you
 will recognize the representation).
 
-To get the `safe` order, use
+To get the `safe` order, use:
 
 ```{r, safe, results="hide"}
 LG1_f2_safe <- make_seq(LG1_f2_ord, "safe")
@@ -961,7 +976,7 @@ mapped to a single position), use:
 (LG1_f2_all <- make_seq(LG1_f2_ord, "force"))
 ```
 
-which places markers `5`, `66` and `2` into their most likely positions.
+which places markers `5`, `66`, and `2` into their most likely positions.
 
 Although some old publications presented maps with only `safe` orders,
 we see no reason not to use option `force`, and recommend it for
@@ -969,7 +984,7 @@ users. In next, steps we can make modifications in the map based in more informa
 
 The `order_seq` function can perform two rounds of the `try_seq` step,
 first using `THRES` and then `THRES - 1` as the threshold. This
-generally results in safe orders with more markers mapped, but takes
+generally results in safe orders with more markers mapped but takes
 longer to run. To do this, type (it will take some time to run):
 
 ```{r, touchdown}
@@ -1011,7 +1026,7 @@ In this example, the first two windows showed alternative orders with LOD smalle
 
 ## Linkage group 2
 
-Here we will use multipoint approach to re-order the LG2. The approach is the automatic usage of the `try` algorithm:
+Here we will use the multipoint approach to re-order the LG2. The approach is the automatic usage of the `try` algorithm:
 
 ```{r, results='hide'}
 LG2_f2_ord <- order_seq(input.seq = LG2_ug_f2, n.init = 5,
@@ -1031,13 +1046,13 @@ Get the order with all markers:
 rf_graph_table(LG2_f2_final)
 ``` 
 
-Our heatmap is already very good with automatic approach, but I may want to see what happen if I remove a marker and try to reposition it. To remove a marker use function `drop_marker`:
+Our heatmap is already very good with an automatic approach, but I may want to see what happens if I remove a marker and try to reposition it. To remove a marker use function `drop_marker`:
 
 ```{r}
 LG2_edit <- drop_marker(LG2_f2_final, 23) # removing marker 23
 ```
 
-After, you need to reestimate the parameters using the same previous order. For that, use `map` function:
+After, you need to reestimate the parameters using the same previous order. For that, use the `map` function:
 
 ```{r, eval=FALSE}
 LG2_edit_map <- map(LG2_edit) 
@@ -1049,7 +1064,7 @@ LG2_edit_map <- map(LG2_edit)
 Error in as_mapper(.f, ...) : argument ".f" is missing, with no default
 ```
 
-It's because the `map` function has a very common name and you can have in your environment other function with the same name. In the case of the presented error, R is using `map` function from `purrr` package instead of `OneMap`, to solve this, simple specify that you want `OneMap` function with `::` command from `stringr` package:
+It's because the `map` function has a very common name and you can have in your environment other functions with the same name. In the case of the presented error, R is using the `map` function from `purrr` package instead of `OneMap`, to solve this, simply specify that you want the `OneMap` function with `::` command from `stringr` package:
 
 ```{r}
 library(stringr)
@@ -1180,11 +1195,11 @@ LG3_f2_final <- LG3_edit_map
 rf_graph_table(LG3_f2_final)
 ```
 
-## Using the recombinations and the reference genome informations
+## Using the recombinations and the reference genome information
 
-In our example, we have reference genome chromosome and position informations for some of the markers, here we will exemplify one method of using this informations to help build the genetic map.
+In our example, we have reference genome chromosome and position information for some of the markers, here we will exemplify one method of using this information to help build the genetic map.
 
-With the `CHROM` informations in the input file, you can identify markers belonging to some chromosome using the function `make_seq` with the `rf_2pts` object. For example, assign the string `"1"` for the second argument to get chromosome 1 makers. The output sequence will be automatically ordered by `POS` informations.
+With the `CHROM` information in the input file, you can identify markers belonging to some chromosome using the function `make_seq` with the `rf_2pts` object. For example, assign the string `"1"` for the second argument to get chromosome 1 makers. The output sequence will be automatically ordered by `POS` information.
 
 ```{r}
 CHR1 <- make_seq(twopts_f2, "1")
@@ -1193,9 +1208,9 @@ CHR2 <- make_seq(twopts_f2, "2")
 CHR3 <- make_seq(twopts_f2, "3")
 ```
 
-### Adding markers with no reference genome informations
+### Adding markers with no reference genome information
 
-According to `CHROM` informations we have three defined linkage groups, now we can try to group the markers without chromosome informations to them using recombination informations. For this, we can use the function `group_seq`:
+According to `CHROM` information we have three defined linkage groups, now we can try to group the markers without chromosome information to them using recombination information. For this, we can use the function `group_seq`:
 
 ```{r}
 CHR_mks <- group_seq(input.2pts = twopts_f2, seqs = "CHROM", unlink.mks = mark_all_f2,
