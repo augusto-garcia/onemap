@@ -1553,6 +1553,8 @@ After that, the map needs to be re-estimated.
 
 As already mentioned, `OneMap` uses HMM multipoint approach to estimate genetic distances, a very robust method, but it can take time to run if you have many markers. In 2017, Schiffthaler et al. release an `OneMap` fork with modifications in CRAN and in GitHub with the possibility of parallelizing the HMM chain dividing markers in batches and use different cores for each phase. Their approach speeds up our HMM and keeps the genetic distance estimation quality. It allows us to divide the job in a maximum of four cores according to the four possible phases for outcrossing mapping populations. We add this parallelized approach to the functions: `map`, `mds_onemap`, `seriation`, `rcd`, `record` and `ug`. For better efficiency, batches must be composed of 50 markers or more; therefore, this approach is only recommended for linkage groups with many markers.
 
+The parallelization is here available for all types of operational systems, however we suggest to set argument `parallelization.type` to `FORK` if you are not using Windows system. It will improve the procedure speed.
+
 Here we will show an example of how to use the BatchMap approach in some functions that requires HMM. For this, we simulated a group with 294 markers (we don't want this vignette takes too much time to run, but usually maps with markers from high-throughput technologies result in larger groups). Before start, you can see the time spent on each approach (see also [Session Info](#Session-Info)) in this example:
 
 ```{r, echo=FALSE, eval=FALSE}

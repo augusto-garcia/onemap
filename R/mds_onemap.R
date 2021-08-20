@@ -38,6 +38,8 @@
 #' @param overlap The desired overlap between batches
 #' @param phase_cores The number of parallel processes to use when estimating
 #' the phase of a marker. (Should be no more than 4)
+##' @param parallelization.type one of the supported cluster types. This should 
+#' be either PSOCK (default) or FORK.
 #' @param tol tolerance for the C routine, i.e., the value used to evaluate
 #' convergence.
 #' @param hmm logical defining if the HMM must be applied to estimate multipoint
@@ -94,7 +96,7 @@ mds_onemap <- function(input.seq,
                        overlap = NULL,
                        phase_cores = 1, 
                        tol = 1e-05,
-                       hmm=TRUE){
+                       hmm=TRUE, parallelization.type = "PSOCK"){
   
   ## checking for correct object
   if(!is(input.seq, "sequence"))
@@ -143,7 +145,7 @@ mds_onemap <- function(input.seq,
   seq_mds <- make_seq(input.seq$twopt, ord_mds)
   if(hmm){
     if(phase_cores == 1 | is(input.seq$data.name, c("backcross", "riself", "risib"))){
-      mds_map <- map(seq_mds, rm_unlinked = rm_unlinked)
+      mds_map <- map(seq_mds, rm_unlinked = rm_unlinked, parallelization.type= parallelization.type)
     } else{
       if(is.null(size) | is.null(overlap)){
         stop("If you want to parallelize the HMM in multiple cores (phase_cores != 1) 
@@ -152,7 +154,8 @@ mds_onemap <- function(input.seq,
         mds_map <- map_overlapping_batches(input.seq = seq_mds,
                                            size = size, overlap = overlap, 
                                            phase_cores = phase_cores, 
-                                           tol=tol, rm_unlinked = rm_unlinked)
+                                           tol=tol, rm_unlinked = rm_unlinked,
+                                           parallelization.type= parallelization.type)
       }
     }
     
@@ -167,7 +170,7 @@ mds_onemap <- function(input.seq,
                             size = size, 
                             overlap = overlap,
                             phase_cores = phase_cores, 
-                            tol = tol)
+                            tol = tol, parallelization.type= parallelization.type)
     }
     return(mds_map)
   } else {

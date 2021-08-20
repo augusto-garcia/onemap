@@ -12,7 +12,8 @@ map_save_ram(
   rm_unlinked = FALSE,
   phase_cores = 1,
   size = NULL,
-  overlap = NULL
+  overlap = NULL,
+  parallelization.type = "PSOCK"
 )
 }
 \arguments{
@@ -33,6 +34,9 @@ the phase of a marker. (Should be no more than 4)}
 \item{size}{The center size around which an optimum is to be searched}
 
 \item{overlap}{The desired overlap between batches}
+
+\item{parallelization.type}{one of the supported cluster types. This should 
+be either PSOCK (default) or FORK.}
 }
 \description{
 Perform map using background objects with only selected markers. It saves ram memory during the procedure.

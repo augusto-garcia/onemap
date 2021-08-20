@@ -149,4 +149,6 @@
 * Github workflow
 * Include hmm=FALSE option for ordering algorithms
 
+# onemap 2.7.1000
 
+* Add parallelization.type argument to user choose between PSOCK and FORK

@@ -9,7 +9,8 @@ map_avoid_unlinked(
   size = NULL,
   overlap = NULL,
   phase_cores = 1,
-  tol = 1e-04
+  tol = 1e-04,
+  parallelization.type = "PSOCK"
 )
 }
 \arguments{
@@ -24,6 +25,9 @@ the phase of a marker. (Should be no more than 4)}
 
 \item{tol}{tolerance for the C routine, i.e., the value used to evaluate
 convergence.}
+
+\item{parallelization.type}{one of the supported cluster types. This should 
+be either PSOCK (default) or FORK.}
 }
 \description{
 Repeat HMM if map find unlinked maker

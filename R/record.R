@@ -43,6 +43,8 @@
 ##' @param overlap The desired overlap between batches
 ##' @param phase_cores The number of parallel processes to use when estimating
 ##' the phase of a marker. (Should be no more than 4)
+##' @param parallelization.type one of the supported cluster types. This should 
+#' be either PSOCK (default) or FORK.
 ##' @param tol tolerance for the C routine, i.e., the value used to evaluate
 ##' convergence.
 #' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
@@ -96,7 +98,7 @@ record<-function(input.seq, times=10, LOD=0, max.rf=0.5, tol=10E-5,
                  rm_unlinked = TRUE,
                  size = NULL, 
                  overlap = NULL, 
-                 phase_cores = 1, hmm = TRUE){
+                 phase_cores = 1, hmm = TRUE, parallelization.type = "PSOCK"){
   ## checking for correct object
   if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is
     not an object of class 'sequence'")
@@ -215,7 +217,7 @@ record<-function(input.seq, times=10, LOD=0, max.rf=0.5, tol=10E-5,
       record_map <- map(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(result.new)],
                                  twopt=input.seq$twopt), 
                         tol=tol,
-                        rm_unlinked = rm_unlinked)
+                        rm_unlinked = rm_unlinked, parallelization.type = parallelization.type)
       
     } else{
       if(is.null(size) | is.null(overlap)){
@@ -227,7 +229,7 @@ record<-function(input.seq, times=10, LOD=0, max.rf=0.5, tol=10E-5,
                                               tol=tol,
                                               size = size, overlap = overlap, 
                                               phase_cores = phase_cores,
-                                              rm_unlinked = rm_unlinked)
+                                              rm_unlinked = rm_unlinked, parallelization.type = parallelization.type)
       }
     }
     
@@ -239,7 +241,8 @@ record<-function(input.seq, times=10, LOD=0, max.rf=0.5, tol=10E-5,
                            rm_unlinked= rm_unlinked,
                            size = size, 
                            overlap = overlap, 
-                           phase_cores = phase_cores)
+                           phase_cores = phase_cores,
+                           parallelization.type = parallelization.type)
     }
     return(record_map)
   } else {

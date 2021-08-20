@@ -39,6 +39,8 @@
 ##' if \code{TRUE} one of the markers is removed and returns a vector with remaining 
 ##' marker numbers (useful for mds_onemap and map_avoid_unlinked functions).
 ##' @param phase_cores number of computer cores to be used in analysis
+##' @param parallelization.type one of the supported cluster types. This should 
+#' be either PSOCK (default) or FORK.
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}
@@ -89,7 +91,9 @@
 ##'@import parallel
 ##'
 ##'@export
-map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cores = 1)
+map <- function(input.seq,tol=10E-5, verbose=FALSE, 
+                rm_unlinked=FALSE, phase_cores = 1, 
+                parallelization.type = "PSOCK")
 {
   ## checking for correct object
   if(!(is(input.seq, "sequence")))
@@ -146,9 +150,17 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
     list.init <- phases(make_seq(input.seq$twopt,seq.num[1:2],twopt=input.seq$twopt))
     phase.init[[1]] <- list.init$phase.init[[1]]
     Ph.Init <- comb_ger(phase.init)
-    if(Sys.info()['sysname'] == "Windows" & phase_cores != 1) {
-      cl <- makeCluster(phase_cores)
-      clusterExport(cl=cl, varlist=c('map', 'make_seq'))
+    if(phase_cores == 1) {
+      phases <-  lapply(1:nrow(Ph.Init), function(j) {
+        map(make_seq(input.seq$twopt,
+                     seq.num[1:2],
+                     phase=Ph.Init[j]), 
+            tol=tol, 
+            rm_unlinked = rm_unlinked)
+      })
+    } else {
+      cl <- makeCluster(phase_cores, type = parallelization.type)
+      clusterExport(cl=cl, varlist=c('map', 'make_seq','get_vec_rf_out'))
       phases <- parLapply(cl, 1:nrow(Ph.Init), 
                           function(j) {
                             ## call to 'map' function with predefined linkage phase
@@ -156,23 +168,12 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
                                          seq.num[1:2],
                                          phase=Ph.Init[j]), 
                                 tol=tol, 
-                                rm_unlinked = rm_unlinked)
+                                rm_unlinked = rm_unlinked,
+                                parallelization.type = parallelization.type)
                           })
       stopCluster(cl)
-    } else { # mclapply goes faster but doesn't work on windows
-      phases <- mclapply(1:nrow(Ph.Init),
-                         mc.cores = min(nrow(Ph.Init),phase_cores),
-                         mc.allow.recursive = TRUE,
-                         function(j) {
-                           ## call to 'map' function with predefined linkage phase
-                           map(make_seq(input.seq$twopt,
-                                        seq.num[1:2],
-                                        phase=Ph.Init[j]), 
-                               tol=tol, 
-                               rm_unlinked = rm_unlinked)
-                         })
+      gc(verbose = F)
     }
-    gc(verbose = F)
     if(!all(sapply(phases, function(x) is(x, "sequence")))){
       if (rm_unlinked) {
         warning(cat("The linkage between markers", 
@@ -180,7 +181,6 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
                     "did not reached the OneMap default criteria. They are probably segregating independently. Marker", 
                     seq.num[2], "will be removed. Use argument rm_unlinked = TRUE if you are ordering markers or function map_avoid_unlinked to remove these markers automatically.\n"))
         return(seq.num[-2])
-        browser()
       }
       else {
         stop(paste("The linkage between markers", 
@@ -202,7 +202,6 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
                     "did not reached the OneMap default criteria. They are probably segregating independently. Marker", 
                     seq.num[2], "will be removed. Use function map_avoid_unlinked to remove these markers automatically.\n"))
         return(seq.num[-(2)])
-        browser()
       }
       else {
         stop(paste("The linkage between markers", 
@@ -223,9 +222,17 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
         phase.init[[mrk]] <- list.init$phase.init[[1]]
         for(j in 1:(mrk-1)) phase.init[[j]] <- seq.phase[j]
         Ph.Init <- comb_ger(phase.init)
-        if(Sys.info()['sysname'] == "Windows" & phase_cores != 1) {
-          cl <- makeCluster(phase_cores)
-          clusterExport(cl=cl,c('map', 'make_seq'))
+        if(phase_cores == 1) {
+          phases <-  lapply(1:nrow(Ph.Init), function(j) {
+            map(make_seq(input.seq$twopt,
+                         seq.num[1:(mrk+1)],
+                         phase=Ph.Init[j,]), 
+                tol=tol, 
+                rm_unlinked = rm_unlinked)
+          })
+        } else {
+          cl <- makeCluster(phase_cores, type = parallelization.type)
+          clusterExport(cl=cl,c('map', 'make_seq','get_vec_rf_out'))
           phases <- parLapply(cl, 1:nrow(Ph.Init), 
                               function(j) {
                                 ## call to 'map' function with predefined linkage phases
@@ -233,30 +240,18 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
                                              seq.num[1:(mrk+1)],
                                              phase=Ph.Init[j,]), 
                                     tol=tol, 
-                                    rm_unlinked = rm_unlinked)
+                                    rm_unlinked = rm_unlinked,
+                                    parallelization.type = parallelization.type)
                               })
           stopCluster(cl)
-        } else { # mclapply goes faster but doesn't work on windows
-          phases <- mclapply(1:nrow(Ph.Init),
-                             mc.cores = min(nrow(Ph.Init), phase_cores),
-                             mc.allow.recursive = TRUE,
-                             function(j) {
-                               ## call to 'map' function with predefined linkage phases
-                               map(make_seq(input.seq$twopt,
-                                            seq.num[1:(mrk+1)],
-                                            phase=Ph.Init[j,]), 
-                                   tol=tol, 
-                                   rm_unlinked = rm_unlinked)
-                             })
+          gc(verbose = F)
         }
-        gc(verbose = F)
         if(!all(sapply(phases, function(x) is(x, "sequence")))){
           if(rm_unlinked){
             warning(cat("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], 
                         "did not reached the OneMap default criteria. They are probably segregating independently. Marker", seq.num[mrk+1], "will be removed. 
                         Use function map_avoid_unlinked to remove these markers automatically.\n"))
             return(seq.num[-(mrk+1)])
-            browser()
           } else{
             stop(paste("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], 
                        "did not reached the OneMap default criteria. They are probably segregating independently. 
@@ -275,7 +270,6 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
                         "did not reached the OneMap default criteria. They are probably segregating independently. Marker", seq.num[mrk+1], "will be removed. 
                         Use function map_avoid_unlinked to remove these markers automatically.\n"))
             return(seq.num[-(mrk+1)])
-            browser()
           } else{
             stop(paste("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], 
                        "did not reached the OneMap default criteria. They are probably segregating independently.
@@ -290,7 +284,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
                  seq.num,
                  phase=seq.phase), 
         tol=tol, 
-        rm_unlinked = rm_unlinked)
+        rm_unlinked = rm_unlinked,  parallelization.type = parallelization.type)
   }
   else {
     ## if the linkage phases are provided but the recombination fractions have
@@ -325,6 +319,8 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE, rm_unlinked=FALSE, phase_cor
 #' @param overlap The desired overlap between batches
 #' @param phase_cores The number of parallel processes to use when estimating
 #' the phase of a marker. (Should be no more than 4)
+##' @param parallelization.type one of the supported cluster types. This should 
+#' be either PSOCK (default) or FORK.
 #' @param tol tolerance for the C routine, i.e., the value used to evaluate
 #' convergence.
 ##' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
@@ -338,7 +334,8 @@ map_save_ram <- function(input.seq,
                          rm_unlinked=FALSE, 
                          phase_cores = 1, 
                          size = NULL, 
-                         overlap = NULL){
+                         overlap = NULL,
+                         parallelization.type = "PSOCK"){
   
   input.seq.tot <- input.seq
   input.seq_ram <- input.seq
@@ -350,7 +347,8 @@ map_save_ram <- function(input.seq,
     return.map <- map(input.seq = input.seq_ram, tol = tol, 
                       verbose = verbose, 
                       rm_unlinked = rm_unlinked, 
-                      phase_cores = phase_cores)
+                      phase_cores = phase_cores,
+                      parallelization.type = parallelization.type)
   } else {
     if(is.null(size) | is.null(overlap)){
       stop("If you want to parallelize the HMM in multiple cores (phase_cores != 1) 
@@ -359,7 +357,8 @@ map_save_ram <- function(input.seq,
       return.map <- map_overlapping_batches(input.seq = input.seq_ram,
                                             size = size, overlap = overlap, 
                                             phase_cores = phase_cores, 
-                                            tol=tol, rm_unlinked = rm_unlinked)
+                                            tol=tol, rm_unlinked = rm_unlinked,
+                                            parallelization.type = parallelization.type)
     }
   }
   if(length(input.seq_ram$seq.num) < input.seq.tot$data.name$n.mar){
@@ -383,6 +382,8 @@ map_save_ram <- function(input.seq,
 #' @param overlap The desired overlap between batches
 #' @param phase_cores The number of parallel processes to use when estimating
 #' the phase of a marker. (Should be no more than 4)
+##' @param parallelization.type one of the supported cluster types. This should 
+#' be either PSOCK (default) or FORK.
 #' @param tol tolerance for the C routine, i.e., the value used to evaluate
 #' convergence.
 #' 
@@ -391,13 +392,15 @@ map_avoid_unlinked <- function(input.seq,
                                size = NULL, 
                                overlap = NULL,
                                phase_cores = 1, 
-                               tol = 10E-5){
+                               tol = 10E-5,
+                               parallelization.type = "PSOCK"){
   #TODO: error checks...
   map_df <- map_save_ram(input.seq, rm_unlinked = T, 
                          size = size, 
                          overlap = overlap, 
                          tol=tol, 
-                         phase_cores = phase_cores)
+                         phase_cores = phase_cores,
+                         parallelization.type = parallelization.type)
   
   while(is(map_df, "integer")){
     seq_true <- make_seq(input.seq$twopt, map_df)
@@ -406,7 +409,8 @@ map_avoid_unlinked <- function(input.seq,
                            tol=tol, 
                            size = size, 
                            overlap = overlap, 
-                           phase_cores = phase_cores)
+                           phase_cores = phase_cores,
+                           parallelization.type = parallelization.type)
   }
   return(map_df)
 }

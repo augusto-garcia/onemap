@@ -13,7 +13,8 @@ rcd(
   size = NULL,
   overlap = NULL,
   phase_cores = 1,
-  hmm = TRUE
+  hmm = TRUE,
+  parallelization.type = "PSOCK"
 )
 }
 \arguments{
@@ -40,6 +41,9 @@ the phase of a marker. (Should be no more than 4)}
 
 \item{hmm}{logical defining if the HMM must be applied to estimate multipoint
 genetic distances}
+
+\item{parallelization.type}{one of the supported cluster types. This should 
+be either PSOCK (default) or FORK.}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the

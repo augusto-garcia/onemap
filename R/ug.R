@@ -44,6 +44,8 @@
 ##' @param overlap The desired overlap between batches
 ##' @param phase_cores The number of parallel processes to use when estimating
 ##' the phase of a marker. (Should be no more than 4)
+##' @param parallelization.type one of the supported cluster types. This should 
+#' be either PSOCK (default) or FORK.
 #' @param hmm logical defining if the HMM must be applied to estimate multipoint
 #' genetic distances
 ##' @return An object of class \code{sequence}, which is a list containing the
@@ -92,7 +94,7 @@ ug<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
              rm_unlinked = TRUE,
              size = NULL, 
              overlap = NULL, 
-             phase_cores = 1, hmm=TRUE)
+             phase_cores = 1, hmm=TRUE, parallelization.type = "PSOCK")
 {
   ## checking for correct object
   if(!is(input.seq,"sequence"))
@@ -200,7 +202,8 @@ ug<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
   
   ## If there are three markers, do not go to the second step
   if(n.mrk==3)
-    return(map(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(partial)],twopt=input.seq$twopt), tol=10E-5))
+    return(map(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(partial)],twopt=input.seq$twopt), 
+               tol=10E-5, parallelization.type= parallelization.type))
   
   for (k in 2:(n.mrk-2)){
     ##step 2
@@ -229,7 +232,8 @@ ug<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
     cat("\norder obtained using UG algorithm:\n\n", input.seq$seq.num[avoid_reverse(complete)], "\n\ncalculating multipoint map using tol ", tol, ".\n\n")
     if(phase_cores == 1 | is(input.seq$data.name, c("backcross", "riself", "risib"))){
       ug_map <- map(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(complete)],
-                             twopt=input.seq$twopt), tol=tol, rm_unlinked = rm_unlinked)
+                             twopt=input.seq$twopt), tol=tol, rm_unlinked = rm_unlinked, 
+                    parallelization.type= parallelization.type)
     } else{
       if(is.null(size) | is.null(overlap)){
         stop("If you want to parallelize the HMM in multiple cores (phase_cores != 1) 
@@ -240,7 +244,7 @@ ug<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
                                           tol=tol,
                                           size = size, overlap = overlap, 
                                           phase_cores = phase_cores,
-                                          rm_unlinked = rm_unlinked)
+                                          rm_unlinked = rm_unlinked, parallelization.type= parallelization.type)
       }
     }
     
@@ -252,7 +256,7 @@ ug<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
                    rm_unlinked= rm_unlinked,
                    size = size, 
                    overlap = overlap, 
-                   phase_cores = phase_cores)
+                   phase_cores = phase_cores, parallelization.type= parallelization.type)
     }
     return(ug_map)
   } else {

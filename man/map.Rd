@@ -9,7 +9,8 @@ map(
   tol = 1e-04,
   verbose = FALSE,
   rm_unlinked = FALSE,
-  phase_cores = 1
+  phase_cores = 1,
+  parallelization.type = "PSOCK"
 )
 }
 \arguments{
@@ -25,6 +26,9 @@ if \code{TRUE} one of the markers is removed and returns a vector with remaining
 marker numbers (useful for mds_onemap and map_avoid_unlinked functions).}
 
 \item{phase_cores}{number of computer cores to be used in analysis}
+
+\item{parallelization.type}{one of the supported cluster types. This should 
+be either PSOCK (default) or FORK.}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the

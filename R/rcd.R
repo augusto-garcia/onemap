@@ -53,6 +53,8 @@
 ##' @param overlap The desired overlap between batches
 ##' @param phase_cores The number of parallel processes to use when estimating
 ##' the phase of a marker. (Should be no more than 4)
+##' @param parallelization.type one of the supported cluster types. This should 
+#' be either PSOCK (default) or FORK.
 #' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
 #' if \code{TRUE} one of the markers is removed and rcd is performed again.
 #' @param hmm logical defining if the HMM must be applied to estimate multipoint
@@ -107,7 +109,7 @@ rcd <-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
                rm_unlinked= TRUE,
                size = NULL, 
                overlap = NULL, 
-               phase_cores = 1, hmm=TRUE)
+               phase_cores = 1, hmm=TRUE, parallelization.type = "PSOCK")
 {
   ## checking for correct object
   if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is
@@ -176,7 +178,7 @@ rcd <-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
     rcd.hmm <- map(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(order)],
                             twopt=input.seq$twopt), 
                    tol=tol,
-                   rm_unlinked = rm_unlinked)
+                   rm_unlinked = rm_unlinked, parallelization.type = parallelization.type)
   } else{
     if(is.null(size) | is.null(overlap)){
       stop("If you want to parallelize the HMM in multiple cores (phase_cores != 1) 
@@ -187,7 +189,8 @@ rcd <-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
                                          tol=tol,
                                          size = size, overlap = overlap, 
                                          phase_cores = phase_cores,
-                                         rm_unlinked = rm_unlinked)
+                                         rm_unlinked = rm_unlinked,
+                                         parallelization.type = parallelization.type)
     }
   }
   
@@ -199,7 +202,7 @@ rcd <-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
                    rm_unlinked= rm_unlinked,
                    size = size, 
                    overlap = overlap, 
-                   phase_cores = phase_cores)
+                   phase_cores = phase_cores, parallelization.type = parallelization.type)
   }
   
   return(rcd.hmm)
