@@ -41,6 +41,10 @@
 using namespace Rcpp;
 using namespace std;
 
+//' 
+//' @export
+//' 
+// [[Rcpp::export]]
 RcppExport SEXP est_hmm_out(SEXP geno_R, SEXP error_R, SEXP type_R, SEXP phase_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R){
   Rcpp::NumericMatrix geno = Rcpp::as<Rcpp::NumericMatrix>(geno_R);
   Rcpp::NumericMatrix error = Rcpp::as<Rcpp::NumericMatrix>(error_R);
