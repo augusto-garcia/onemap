@@ -9,7 +9,6 @@ create_depths_profile(
   vcfR.object = NULL,
   parent1 = NULL,
   parent2 = NULL,
-  f1 = NULL,
   vcf.par = "AD",
   recovering = FALSE,
   mks = NULL,
@@ -29,8 +28,6 @@ create_depths_profile(
 \item{parent1}{a character specifying the first parent ID}
 
 \item{parent2}{a character specifying the second parent ID}
-
-\item{f1}{if your cross type is f2, you must define the F1 individual}
 
 \item{vcf.par}{the vcf parameter that store the allele depth information.}
 

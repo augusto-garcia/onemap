@@ -13,7 +13,8 @@ select_segreg(x, distorted = FALSE, numbers = FALSE, threshold = NULL)
 
 \item{numbers}{a TRUE/FALSE variable to show the numbers or the names of the markers}
 
-\item{threshold}{a number between 0 and 1 to specify the threshold to be considered in the test. If NULL, it uses the threshold defined by bonferroni correction with alpha = 0.05}
+\item{threshold}{a number between 0 and 1 to specify the threshold (alpha) to be considered in the test. 
+If NULL, it uses the threshold alpha = 0.05. Bonferroni correction is applied for multiple test correction.}
 }
 \value{
 a vector with marker names or numbers, according to the option for "distorted" and "numbers"

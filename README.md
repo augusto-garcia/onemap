@@ -1,16 +1,22 @@
-[![Build Status](https://travis-ci.org/augusto-garcia/onemap.svg?branch=master)](https://travis-ci.org/augusto-garcia/onemap) [![Development](https://img.shields.io/badge/development-active-blue.svg)](https://img.shields.io/badge/development-active-blue.svg)
-
-<!-- [![Build Status](https://travis-ci.org/mmollina/onemap.svg?branch=master)](https://travis-ci.org/cristianetaniguti/onemap) -->
-
-# OneMap
+<!-- badges: start -->
+[![Build Status](https://travis-ci.com/Cristianetaniguti/onemap.svg?branch=master)](https://travis-ci.com/Cristianetaniguti/onemap) 
+[![R-CMD-check](https://github.com/Cristianetaniguti/onemap/workflows/R-CMD-check/badge.svg)](https://github.com/Cristianetaniguti/onemap/actions)
+[![Development](https://img.shields.io/badge/development-active-blue.svg)](https://img.shields.io/badge/development-active-blue.svg)
+[![codecov](https://codecov.io/github/Cristianetaniguti/onemap/branch/prepare_for_cran/graphs/badge.svg)](https://codecov.io/github/Cristianetaniguti/onemap)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/onemap)](https://cran.r-project.org/package=onemap)
+[![CRAN_monthly_downloads](https://cranlogs.r-pkg.org/badges/onemap)](https://cranlogs.r-pkg.org/badges/onemap)
+  <!-- badges: end -->
+  
+# OneMap <img src="https://user-images.githubusercontent.com/7572527/119237022-0b19a400-bb11-11eb-9d45-228a59f22a1a.png" align="right" width="200"/>
 
 `OneMap` is a software for constructing genetic maps in experimental
 crosses: full-sib, RILs, F2 and backcrosses. It was developed by
-Gabriel R A Margarido, Marcelo Mollinari and A Augusto F Garcia. Later on, Rodrigo R Amadeu and Cristiane H Taniguti joined the project.
+Gabriel R A Margarido, Marcelo Mollinari and A Augusto F Garcia. Later on, 
+Rodrigo R Amadeu, Cristiane H Taniguti and Getulio C. Ferreira joined the project.
 
 It has been available on CRAN for several years
 (https://cran.r-project.org/package=onemap). Its last version was
-updated on 2017-10-18. CRAN has OneMap's stable version, which is
+updated on 2020-02-17. CRAN has OneMap's stable version, which is
 recommended for most users.
 
 This github page has its version under development. New functions will

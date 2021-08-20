@@ -98,10 +98,10 @@ pick_batch_sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
 ##' This algorithm implements the overlapping batch maps for high density
 ##' marker sets. The mapping problem is reduced to a number of subsets (batches)
 ##' which carry information forward in order to more accurately estimate
-##' recombination fractions and phasing. It is a adaptated version of
+##' recombination fractions and phasing. It is a adapted version of
 ##' map.overlapping.batches function of BatchMap package. The main differences are
 ##' that this onemap version do not have the option to reorder the markers 
-##' according to ripple algothm and, if the it finds markers that do not reach the linkage
+##' according to ripple algorithm and, if the it finds markers that do not reach the linkage
 ##' criterias, the algorithm remove the problematic marker and repeat the analysis.
 ##' Than, the output map can have few markers compared with the input.seq.
 ##'
@@ -118,6 +118,8 @@ pick_batch_sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
 ##' if \code{TRUE} one of the markers is removed and map is performed again.
 ##' @param tol tolerance for the C routine, i.e., the value used to evaluate
 ##' convergence.
+##' @param parallelization.type one of the supported cluster types. This should 
+#' be either PSOCK (default) or FORK.
 ##' @param max.gap the marker will be removed if it have gaps higher than this defined threshold in both sides
 ##' 
 ##' @return An object of class \code{sequence}, which is a list containing the
@@ -132,14 +134,14 @@ pick_batch_sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
 ##' \item{data.name}{name of the object of class \code{outcross} with the raw
 ##' data.} \item{twopt}{name of the object of class \code{rf.2pts} with the
 ##' 2-point analyses.} 
-##' @author Cristiane Taniguti, \email{chtaniguti@usp.br}
 ##' @seealso \code{\link[onemap]{pick_batch_sizes}}, \code{\link[onemap]{map}}
 ##'
 ##' @keywords utilities
 ##' @export
 map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
                                     phase_cores = 1, verbose = F, 
-                                    seeds = NULL, tol=10E-5, rm_unlinked = T, max.gap=F)
+                                    seeds = NULL, tol=10E-5, rm_unlinked = T, 
+                                    max.gap=F, parallelization.type = "PSOCK")
 {
   #TODO: error checks...
   #Create initial set of batches
@@ -158,27 +160,26 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
     LG <- map(input.seq = make_seq(input.seq$twopt, batches[[1]]), 
               phase_cores = phase_cores, 
               rm_unlinked = rm_unlinked, 
-              tol=tol)
+              tol=tol, parallelization.type = parallelization.type)
     if(is(LG,"integer")){
       rmed.mks <- batches[[1]][which(!batches[[1]] %in% LG)]
       warning(cat("Markers", rmed.mks,"did not reached the OneMap default criteria. They are probably segregating independently 
                   and new vector of marker numbers was generated without them. Use function map_avoid_unlinked to remove these markers automatically.\n"))
       new.seq <- input.seq$seq.num[-which(input.seq$seq.num == rmed.mks)]
       return(new.seq)
-      browser()
     }
   } else {
     LG <- seeded_map(input.seq = make_seq(input.seq$twopt, batches[[1]],
                                           twopt = input.seq$twopt), 
                      phase_cores = phase_cores,
-                     verbose = verbose, seeds = seeds, tol=tol)
+                     verbose = verbose, seeds = seeds, tol=tol,
+                     parallelization.type = parallelization.type)
     if(is(LG,"integer")){
       rmed.mks <- batches[[1]][which(!batches[[1]] %in% LG)]
       warning(cat("Markers", rmed.mks,"did not reached the OneMap default criteria. They are probably segregating independently 
                   and new vector of marker numbers was generated without them. Use function map_avoid_unlinked to remove these markers automatically.\n"))
       new.seq <- input.seq$seq.num[-which(input.seq$seq.num == rmed.mks)]
       return(new.seq)
-      browser()
     }
   }
   
@@ -203,14 +204,13 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
                                           twopt = input.seq$twopt),
                      verbose = verbose,
                      seeds = seeds, rm_unlinked = rm_unlinked,
-                     tol=tol)
+                     tol=tol, parallelization.type = parallelization.type)
     if(is(LG,"integer")){
       rmed.mks <- batches[[1]][which(!batches[[1]] %in% LG)]
       warning(cat("Markers", rmed.mks,"did not reached the OneMap default criteria. They are probably segregating independently 
                   and new vector of marker numbers was generated without them. Use function map_avoid_unlinked to remove these markers automatically.\n"))
       new.seq <- input.seq$seq.num[-which(input.seq$seq.num == rmed.mks)]
       return(new.seq)
-      browser()
     }
     LGs[[i]] <- LG
   }
@@ -244,7 +244,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
   #Create final sequence and run
   #final.rf is currently only used for debugging purposes
   s <- make_seq(input.seq$twopt, final.seq, final.phase, input.seq$twopt)
-  mp <- map(input.seq = s, rm_unlinked = rm_unlinked, tol=tol)
+  mp <- map(input.seq = s, rm_unlinked = rm_unlinked, tol=tol, parallelization.type = parallelization.type)
   
   if(max.gap){ # the marker will be removed if it have gaps higher than the threshold in both sides
     idx <- which(get(get(".map.fun", envir=.onemapEnv))(mp$seq.rf) > max.gap)
@@ -271,7 +271,8 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
       mp <- map_overlapping_batches(input.seq = new.seq,
                                     size = size, overlap = overlap,
                                     phase_cores = phase_cores, verbose = verbose , 
-                                    seeds = seeds, tol=tol, rm_unlinked = rm_unlinked, max.gap=max.gap)
+                                    seeds = seeds, tol=tol, rm_unlinked = rm_unlinked, max.gap=max.gap,
+                                    parallelization.type = parallelization.type)
     }
   }
   return(mp)

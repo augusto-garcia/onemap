@@ -18,75 +18,9 @@ library(onemap)
 ## ---- eval=FALSE--------------------------------------------------------------
 #  save.image("C:/.../yourfile.RData")
 
-## ---- eval= FALSE, message=F,warning=F----------------------------------------
-#  # For f2 intercross population
-#  run_pedsim(chromosome = c("Chr1", "Chr10"), n.marker = c(24,15),
-#             tot.size.cm = c(100,150), centromere = c(50, 75),
-#             n.ind = 200, mk.types = c("A.H.B", "C.A", "D.B"),
-#             n.types = c(10,14,15), pop = "F2", path.pedsim = "~/onemap/",
-#             name.mapfile = "mapfile.txt", name.founderfile="founderfile.gen",
-#             name.chromfile="sim.chrom", name.parfile="sim.par",
-#             name.out="sim_F2")
-
-## ---- eval=FALSE, message=F,warning=F-----------------------------------------
-#  # For f2 intercross population
-#  pedsim2raw(cross="f2 intercross", genofile = "sim_F2_genotypes.dat",
-#             parent1 = "P1", parent2 = "P2", f1 = "F1",
-#             out.file = "sim_F2.example.raw", miss.perc = 10)
-
-## ---- eval=FALSE, message=F,warning=F-----------------------------------------
-#  # Dominant markers are not supported, then, we simulate other dataset with only codominant markers
-#  run_pedsim(chromosome = c("Chr1", "Chr10"), n.marker = c(15,15),
-#             tot.size.cm = c(100,150), centromere = c(50, 75),
-#             n.ind = 200, mk.types = c("A.H.B"),
-#             n.types = c(30), pop = "F2", path.pedsim = "~/onemap/",
-#             name.mapfile = "mapfile_f2.txt", name.founderfile="founderfile.gen",
-#             name.chromfile="sim_f2.chrom", name.parfile="sim.par",
-#             name.out="sim_cod_F2")
-
-## ---- eval=FALSE, message=F,warning=F-----------------------------------------
-#  # For outcrossing population
-#  pedsim2vcf(inputfile = "sim_cod_F2_genotypes.dat",
-#             map.file = "mapfile_f2.txt",
-#             chrom.file = "sim_f2.chrom",
-#             out.file = "simu_cod_F2.vcf",
-#             miss.perc = 0,
-#             counts = TRUE,
-#             mean.depth = 100,
-#             p.mean.depth = 100,
-#             chr.mb = 10,
-#             method = "updog",
-#             mean.phred = 20,
-#             bias=1,
-#             od=0.00001,
-#             pos=NULL,
-#             chr=NULL,
-#             phase = FALSE,
-#             disper.par=2)
-
-## ---- message=F,warning=F, echo=FALSE-----------------------------------------
-# For outcrossing population
-pedsim2vcf(inputfile = system.file("extdata/sim_cod_F2_genotypes.dat", package = "onemap"),
-           map.file = system.file("extdata/mapfile_f2.txt", package = "onemap"), 
-           chrom.file = system.file("extdata/sim_f2.chrom", package = "onemap"), 
-           out.file = "simu_cod_F2.vcf",
-           miss.perc = 0, 
-           counts = TRUE, 
-           mean.depth = 100, 
-           p.mean.depth = 100, 
-           chr.mb = 10, 
-           method = "updog", 
-           mean.phred = 20,
-           bias=1, 
-           od=0.00001,
-           pos=NULL,
-           chr=NULL,
-           phase = FALSE,
-           disper.par=2)
-
 ## ---- eval=FALSE--------------------------------------------------------------
 #  mapmaker_example_f2 <- read_mapmaker(dir="C:/workingdirectory",
-#                                  file="your_data_file.raw")
+#                                       file="your_data_file.raw")
 
 ## ---- eval=FALSE--------------------------------------------------------------
 #  mapmaker_example_f2 <- read_mapmaker(file= system.file("extdata/mapmaker_example_f2.raw",
@@ -100,11 +34,11 @@ mapmaker_example_f2
 
 ## ---- eval=FALSE--------------------------------------------------------------
 #  onemap_example_f2 <- read_onemap(dir="C:/workingdirectory",
-#                                  inputfile = "your_data_file.raw")
+#                                   inputfile = "your_data_file.raw")
 
 ## ---- eval=FALSE--------------------------------------------------------------
 #  onemap_example_f2 <- read_onemap(inputfile= system.file("extdata/onemap_example_f2.raw",
-#                                                         package = "onemap"))
+#                                                          package = "onemap"))
 
 ## -----------------------------------------------------------------------------
 data("onemap_example_f2")
@@ -114,7 +48,7 @@ onemap_example_f2
 
 ## -----------------------------------------------------------------------------
 library(vcfR)
-vcfR.object <- read.vcfR(system.file("extdata/vcf_example_f2.vcf", package = "onemap"))
+vcfR.object <- read.vcfR(system.file("extdata/vcf_example_f2.vcf.gz", package = "onemap"))
 
 ## ---- eval=FALSE--------------------------------------------------------------
 #  vcf_example_f2 <- onemap_read_vcfR(vcfR.object = vcfR.object,
@@ -144,22 +78,22 @@ plot(vcf_example_f2)
 plot_by_segreg_type(onemap_example_f2)
 plot_by_segreg_type(vcf_example_f2)
 
-## ---- message=F,warning=F-----------------------------------------------------
-vcf_simu_f2 <- read.vcfR(system.file("extdata/simu_cod_F2.vcf", package="onemap"))
-simu_f2_obj <- onemap_read_vcfR(vcfR.object = vcf_simu_f2, cross = "f2 intercross", parent1 = "P1", parent2 = "P2", f1 = "F1")
-
-create_depths_profile(onemap.obj = simu_f2_obj,
-                      vcfR.object = vcf_simu_f2, 
-                      parent1 = "P1", 
-                      parent2 = "P2", 
-                      f1 = "F1",
-                      vcf.par = "AD", 
-                      recovering = FALSE, 
-                      mks = NULL, 
-                      inds = NULL, 
-                      GTfrom = "vcf", 
-                      alpha = 0.1,
-                      rds.file = "depths_f2.rds")
+## ---- message=F,warning=F, eval=FALSE-----------------------------------------
+#  vcf_simu_f2 <- read.vcfR(system.file("extdata/vcf_example_f2.vcf.gz", package="onemap"))
+#  simu_f2_obj <- onemap_read_vcfR(vcfR.object = vcf_simu_f2, cross = "f2 intercross",
+#                                  parent1 = "P1", parent2 = "P2")
+#  
+#  create_depths_profile(onemap.obj = simu_f2_obj,
+#                        vcfR.object = vcf_simu_f2,
+#                        parent1 = "P1",
+#                        parent2 = "P2",
+#                        vcf.par = "AD",
+#                        recovering = FALSE,
+#                        mks = NULL,
+#                        inds = NULL,
+#                        GTfrom = "vcf",
+#                        alpha = 0.1,
+#                        rds.file = "depths_f2.rds")
 
 ## -----------------------------------------------------------------------------
 comb_example <- combine_onemap(onemap_example_f2, vcf_example_f2)
@@ -245,8 +179,13 @@ LGs_f2
 ## ---- group2------------------------------------------------------------------
 (LGs_f2 <- group(mark_all_f2, LOD = LOD_sug, max.rf = 0.5))
 
+## -----------------------------------------------------------------------------
+LGs_upgma <- group_upgma(mark_all_f2, expected.groups = 5, inter = F)
+plot(LGs_upgma)
+
 ## ---- class_group-------------------------------------------------------------
 class(LGs_f2)
+class(LGs_upgma)
 
 ## ---- haldane, eval=FALSE-----------------------------------------------------
 #  set_map_fun(type = "haldane")
@@ -264,15 +203,15 @@ LG1_f2
 class(LG1_f2)
 
 ## ---- results="hide"----------------------------------------------------------
-LG1_rcd_f2 <- rcd(LG1_f2)
-LG1_rec_f2 <- record(LG1_f2)
-LG1_ug_f2 <- ug(LG1_f2)
+LG1_rcd_f2 <- rcd(LG1_f2, hmm = FALSE)
+LG1_rec_f2 <- record(LG1_f2, hmm = FALSE)
+LG1_ug_f2 <- ug(LG1_f2, hmm = FALSE)
 
 ## ---- eval=FALSE--------------------------------------------------------------
-#  LG1_ser_f2 <- seriation(LG1_f2) # Will return an error (can not be used in this case)
+#  LG1_ser_f2 <- seriation(LG1_f2, hmm = F) # Will return an error (can not be used in this case)
 
 ## -----------------------------------------------------------------------------
-LG1_mds_f2 <- mds_onemap(input.seq = LG1_f2, rm_unlinked = TRUE)
+LG1_mds_f2 <- mds_onemap(input.seq = LG1_f2, hmm = F)
 
 ## -----------------------------------------------------------------------------
 rf_graph_table(LG1_rcd_f2)
@@ -299,27 +238,30 @@ mksLG3 <- LG1_ug_f2$seq.num[pos39:length(LG1_ug_f2$seq.num)] # use the position 
 
 # Ordering again LG1
 LG1 <- make_seq(twopts_f2, mksLG1)
-LG1_ug2_f2 <- ug(LG1)
+LG1_ug2_f2 <- ug(LG1, hmm = F)
 
 rf_graph_table(LG1_ug2_f2) # Now it is better
 
 # Ordering LG2
 LG2 <- make_seq(twopts_f2, mksLG2)
-LG2_ug_f2 <- ug(LG2)
+LG2_ug_f2 <- ug(LG2, hmm = F)
 
 rf_graph_table(LG2_ug_f2)
 
 # Ordering LG3
 LG3 <- make_seq(twopts_f2, mksLG3)
-LG3_ug_f2 <- ug(LG3)
+LG3_ug_f2 <- ug(LG3, hmm = F)
 
 rf_graph_table(LG3_ug_f2)
 
-## ---- order_seq---------------------------------------------------------------
-LG1_f2_ord <- order_seq(input.seq = LG1_ug2_f2, n.init = 5,
-                        subset.search = "twopt",
-                        twopt.alg = "rcd", THRES = 3)
-                        
+## ---- order_seq, eval=FALSE---------------------------------------------------
+#  LG1_f2_ord <- order_seq(input.seq = LG1_ug2_f2, n.init = 5,
+#                          subset.search = "twopt",
+#                          twopt.alg = "rcd", THRES = 3)
+#  
+
+## ---- echo=FALSE--------------------------------------------------------------
+data(LG1_f2_ord)
 
 ## ---- show_order_seq----------------------------------------------------------
 LG1_f2_ord
@@ -447,11 +389,11 @@ CHR3 <- make_seq(twopts_f2, "3")
 
 ## -----------------------------------------------------------------------------
 CHR_mks <- group_seq(input.2pts = twopts_f2, seqs = "CHROM", unlink.mks = mark_all_f2,
-                      repeated = FALSE)
+                     repeated = FALSE)
 
 ## ---- eval=FALSE--------------------------------------------------------------
 #  CHR_mks <- group_seq(input.2pts = twopts_f2, seqs = list(CHR1=CHR1, CHR2=CHR2, CHR3=CHR3),
-#                        unlink.mks = mark_all_f2, repeated = FALSE)
+#                       unlink.mks = mark_all_f2, repeated = FALSE)
 
 ## -----------------------------------------------------------------------------
 CHR_mks
@@ -584,11 +526,11 @@ draw_map2(LG1_f2_final, col.group = "#58A4B0", col.mark = "#335C81", output = "m
 #  b <- rf_graph_table(rcd_map_par, mrk.axis = "none")
 #  
 #  p <- ggarrange(a,b , common.legend = TRUE,
-#            labels = c("rcd", "rcd + parallel"),
-#            vjust = 0.2,
-#            hjust= -1.4,
-#            font.label = list(size = 10),
-#            ncol=2, nrow=1)
+#                 labels = c("rcd", "rcd + parallel"),
+#                 vjust = 0.2,
+#                 hjust= -1.4,
+#                 font.label = list(size = 10),
+#                 ncol=2, nrow=1)
 #  
 #  ggsave(p, filename = "rcd.jpg")
 
@@ -619,11 +561,11 @@ draw_map2(LG1_f2_final, col.group = "#58A4B0", col.mark = "#335C81", output = "m
 #  b <- rf_graph_table(record_map_par, mrk.axis = "none")
 #  
 #  p <- ggarrange(a,b , common.legend = TRUE,
-#            labels = c("record", "record + parallel"),
-#            vjust = 0.2,
-#            hjust= -0.8,
-#            font.label = list(size = 10),
-#            ncol=2, nrow=1)
+#                 labels = c("record", "record + parallel"),
+#                 vjust = 0.2,
+#                 hjust= -0.8,
+#                 font.label = list(size = 10),
+#                 ncol=2, nrow=1)
 #  
 #  ggsave(p, filename = "record.jpg")
 
@@ -655,11 +597,11 @@ draw_map2(LG1_f2_final, col.group = "#58A4B0", col.mark = "#335C81", output = "m
 #  b <- rf_graph_table(ug_map_par, mrk.axis = "none")
 #  
 #  p <- ggarrange(a,b , common.legend = TRUE,
-#            labels = c("ug", "ug + parallel"),
-#            vjust = 0.2,
-#            hjust= -1.6,
-#            font.label = list(size = 10),
-#            ncol=2, nrow=1)
+#                 labels = c("ug", "ug + parallel"),
+#                 vjust = 0.2,
+#                 hjust= -1.6,
+#                 font.label = list(size = 10),
+#                 ncol=2, nrow=1)
 #  
 #  ggsave(p, filename = "ug.jpg")
 
@@ -691,11 +633,11 @@ draw_map2(LG1_f2_final, col.group = "#58A4B0", col.mark = "#335C81", output = "m
 #  b <- rf_graph_table(map_mds_par, mrk.axis = "none")
 #  
 #  p <- ggarrange(a,b , common.legend = TRUE,
-#            labels = c("mds", "mds + parallel"),
-#            vjust = 0.2,
-#            hjust= -1,
-#            font.label = list(size = 10),
-#            ncol=2, nrow=1)
+#                 labels = c("mds", "mds + parallel"),
+#                 vjust = 0.2,
+#                 hjust= -1,
+#                 font.label = list(size = 10),
+#                 ncol=2, nrow=1)
 #  
 #  ggsave(p, filename = "mds.jpg")
 
@@ -734,27 +676,13 @@ draw_map2(LG1_f2_final, col.group = "#58A4B0", col.mark = "#335C81", output = "m
 #  b <- rf_graph_table(batch_map_par, mrk.axis = "none")
 #  
 #  p <- ggarrange(a,b , common.legend = TRUE,
-#            labels = c("map", "map + parallel"),
-#            vjust = 0.2,
-#            hjust= -1,
-#            font.label = list(size = 10),
-#            ncol=2, nrow=1)
+#                 labels = c("map", "map + parallel"),
+#                 vjust = 0.2,
+#                 hjust= -1,
+#                 font.label = list(size = 10),
+#                 ncol=2, nrow=1)
 #  
 #  ggsave(p, filename = "map.jpg")
-
-## ---- eval=FALSE--------------------------------------------------------------
-#  time <- system.time(mds_ripple <- ripple_ord(input.seq = map_mds_par,
-#                                               ws=5,
-#                                               tol=10E-4,
-#                                               start = 1,
-#                                               method = "one",
-#                                               n = NULL,
-#                                               pref = NULL,
-#                                               no_reverse = TRUE,
-#                                               phase_cores = 2,
-#                                               ripple_cores = 6,
-#                                               verbose = c("time")))
-#  
 
 ## -----------------------------------------------------------------------------
 (progeny_haplot <- progeny_haplotypes(LG2_f2_final, most_likely = TRUE, ind = 2, group_names = "LG2_final"))

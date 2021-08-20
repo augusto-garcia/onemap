@@ -14,7 +14,7 @@ services:
     
 before_install:
     - export DISPLAY=:99.0
-    - export RGL_USE_NULL=TRUE
+    - export RGL_USE_NULL=FALSE
     - tlmgr install index
 
 apt_packages:
@@ -24,3 +24,9 @@ apt_packages:
     - libftgl2 
     - libfreetype6-dev  
     - libxml2-dev
+    
+r_packages:
+ - covr
+ 
+after_success:
+  - Rscript -e 'library(covr); codecov()'

@@ -38,7 +38,7 @@
 ##' \code{"f2 intercross"} for an F2 intercross progeny; \code{"f2 backcross"};
 ##' \code{"ri self"} for recombinant inbred lines by self-mating; or
 ##' \code{"ri sib"} for recombinant inbred lines by sib-mating.
-##' @param parent1 \code{string} specifying sample ID of the first parent.
+##' @param parent1 \code{string} specifying sample ID of the first parent. If f2 backcross population, define here the ID of the backcrossed parent.
 ##' @param parent2 \code{string} specifying sample ID of the second parent.
 ##' @param f1 \code{string} if you are working with f2 intercross or backcross populations you may have f1 parents in you vcf, specify its ID here
 ##' @param only_biallelic if TRUE (default) only biallelic markers are considered, if FALSE multiallelic markers are included.
@@ -47,7 +47,7 @@
 ##' @examples
 ##' 
 ##' \dontrun{
-##' vcfR.object <- read.vcfR(system.file("extdata/vcf_example_out.vcf", package = "onemap"))
+##' vcfR.object <- read.vcfR(system.file("extdata/vcf_example_out.vcf.gz", package = "onemap"))
 ##' data <- onemap_read_vcfR(vcfR.object=vcfR.object,
 ##'                  cross="outcross",
 ##'                  parent1=c("P1"),
@@ -250,7 +250,6 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     P2_2 <- sapply(strsplit(GT_matrix[,P2], "/"), "[", 2)
     
     # Marker types
-    
     GT_parents <- cbind(P1_1, P1_2,P2_1, P2_2)
     idx <- which(P1_1 == "." | P2_1 == "." |  P1_2 == "." | P2_2 == ".")
     GT_parents[idx,] <- NA
@@ -334,23 +333,23 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 4
     
     idx <- which(mk.type=="B3.7")
-    cat <- paste0(P1_1[idx], "/", P2_1[idx])
-    cat.rev <- paste0(P2_1[idx], "/", P1_1[idx])
+    cat <- paste0(P1_1[idx], "/", P2_1[idx]) # 18
+    cat.rev <- paste0(P2_1[idx], "/", P1_1[idx]) # 18
     GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 1
-    cat <- paste0(P1_1[idx], "/", P2_2[idx])
-    cat.rev <- paste0(P2_2[idx], "/", P1_1[idx])
+    cat <- paste0(P1_1[idx], "/", P2_2[idx]) # 18
+    cat.rev <- paste0(P2_2[idx], "/", P1_1[idx]) # 18
     GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 2
-    cat <- paste0(P1_2[idx], "/", P2_2[idx])
-    cat.rev <- paste0(P2_2[idx], "/", P1_2[idx])
+    cat <- paste0(P1_2[idx], "/", P2_2[idx]) # 18
+    cat.rev <- paste0(P2_2[idx], "/", P1_2[idx]) # 18
     GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 3
     
     idx <- which(mk.type=="D1.10")
     idx.sub <- which(P1_1[idx] == P2_1[idx])
-    cat <- paste0(P1_1[idx][idx.sub], "/", P2_1[idx][idx.sub])
-    cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_1[idx][idx.sub])
+    cat <- paste0(P1_1[idx][idx.sub], "/", P2_1[idx][idx.sub]) # 6
+    cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_1[idx][idx.sub]) # 6
     GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 1
-    cat <- paste0(P1_2[idx][idx.sub], "/", P2_1[idx][idx.sub])
-    cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_2[idx][idx.sub])
+    cat <- paste0(P1_2[idx][idx.sub], "/", P2_1[idx][idx.sub]) # 6
+    cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_2[idx][idx.sub]) # 6 
     GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 2
     
     idx.sub <- which(P1_2[idx] == P2_1[idx])
@@ -639,7 +638,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
 ##' \dontrun{
 ##' data(onemap_example_out)
 ##' 
-##' write_onemap_raw(onemap_example_out, file.name = "onemap_example_out.raw", cross="outcross")
+##' write_onemap_raw(onemap_example_out, file.name = "onemap_example_out.raw")
 ##' }
 ##'@export                  
 write_onemap_raw <- function(onemap.obj=NULL, 
@@ -733,12 +732,12 @@ write_onemap_raw <- function(onemap.obj=NULL,
     geno.mat[,idx][which(geno.mat[,idx]== 3)] <- "b"
     
     idx <- which(onemap.obj$segr.type == "D.B")
-    geno.mat[,idx][which(geno.mat[,idx]== 3)] <- "b"
-    geno.mat[,idx][which(geno.mat[,idx]== 4)] <- "d"
+    geno.mat[,idx][which(geno.mat[,idx]== 2)] <- "b"
+    geno.mat[,idx][which(geno.mat[,idx]== 1)] <- "d"
     
     idx <- which(onemap.obj$segr.type == "C.A")
-    geno.mat[,idx][which(geno.mat[,idx]== 1)] <- "a"
-    geno.mat[,idx][which(geno.mat[,idx]== 5)] <- "c"
+    geno.mat[,idx][which(geno.mat[,idx]== 2)] <- "a"
+    geno.mat[,idx][which(geno.mat[,idx]== 1)] <- "c"
   }
   if(is(onemap.obj, c("riself", "risib"))){
     

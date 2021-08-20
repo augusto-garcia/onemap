@@ -21,7 +21,7 @@ onemap_read_vcfR(
 \code{"ri self"} for recombinant inbred lines by self-mating; or
 \code{"ri sib"} for recombinant inbred lines by sib-mating.}
 
-\item{parent1}{\code{string} specifying sample ID of the first parent.}
+\item{parent1}{\code{string} specifying sample ID of the first parent. If f2 backcross population, define here the ID of the backcrossed parent.}
 
 \item{parent2}{\code{string} specifying sample ID of the second parent.}
 
@@ -51,7 +51,7 @@ Reference sequence ID and position for each variant site are also stored.
 \examples{
 
 \dontrun{
-vcfR.object <- read.vcfR(system.file("extdata/vcf_example_out.vcf", package = "onemap"))
+vcfR.object <- read.vcfR(system.file("extdata/vcf_example_out.vcf.gz", package = "onemap"))
 data <- onemap_read_vcfR(vcfR.object=vcfR.object,
                  cross="outcross",
                  parent1=c("P1"),
