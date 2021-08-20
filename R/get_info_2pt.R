@@ -85,6 +85,8 @@ get_vec_rf_in<- function(input.seq, LOD=FALSE, acum=TRUE) {
 
 #For a guiven sequence, this function gets the recombination
 #fraction/LOD matrix for outcrossing
+#' @export
+#' 
  get_mat_rf_out<- function(input.seq, LOD=FALSE, max.rf=0.5, min.LOD=0) {
      if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
      if(length(input.seq$seq.num) < 2) stop("The sequence must have at least 2 markers")
@@ -145,6 +147,7 @@ get_vec_rf_in<- function(input.seq, LOD=FALSE, acum=TRUE) {
 #For a guiven sequence, this function gets the recombination
 #fraction/LOD matrix for outcrossing
 #' @export
+#' 
 get_vec_rf_out<- function(input.seq, LOD=FALSE, max.rf=0.5, min.LOD=0, acum=TRUE)
 {
     if(!is(input.seq,"sequence"))
