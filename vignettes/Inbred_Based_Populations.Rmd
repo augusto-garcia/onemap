@@ -169,7 +169,7 @@ The `OneMap` data file has few differences compared to MAPMAKER/EXP format. As M
 
 The third line contains sample IDs. Then, the genotype information is included separately for each marker. The
 character `*` indicates the beginning of information input for a new
-marker, followed by the marker name. Next, there is a code indicating the marker type according to with:
+marker, followed by the marker name. Next, there is a code indicating the marker type according to:
 
 | Code      | Type                          |
 |-----------|-------------------------------|
