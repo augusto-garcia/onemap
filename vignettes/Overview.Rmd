@@ -31,18 +31,18 @@ from two non-homozygous parents), RILs, F$_2$, and backcrosses.
 It is implemented as a package to be used under the freely distributed
 R software, which is a language and environment for statistical
 computing ([www.r-project.org](https://www.r-project.org/)). It is designed to
-be fully integrated with R/qtl package (Broman and Sen, 2009) and
+be fully integrated with the R/qtl package (Broman and Sen, 2009) and
 Windows QTL Cartographer (Wang et al., 2010) in order to do QTL
 mapping for RILs, F$_2$, and backcrosses. New functions for doing QTL
 mapping in outcrossing species (e. g. using models from Gazaffi et al.
-2014) are under development and will be included in a near future.
+2014) are under development and will be included in the near future.
 
 Wu et al. (2002a) proposed a methodology to construct genetic maps in
 outcrossing species, which allows the analysis of a mixed set of
 different marker types containing various segregation patterns. It
 also allows the simultaneous estimation of linkage and linkage phases
 between markers. Combined with ideas from Wu et al. (2002b) for doing
-multipoint analysis based on hidden Markov models (HMMs), it provides
+multipoint analysis based on hidden Markov models (HMMs), provides
 an excellent framework for genetic mapping in outcrossing species, in
 a similar way as for inbred-based populations, commonly analyzed by
 packages such as MAPMAKER/EXP (Lander et al., 1987).
@@ -95,7 +95,7 @@ maps for outcrossing (non-inbred) populations, as well as F$_2$
 populations (which can also be applied to backcrosses and RILs).
 
 All sections may be read independently. So, you can just move to the
-part you are interested. Good luck, and let us know if you have
+part you are interested in. Good luck, and let us know if you have
 suggestions to improve the package!
 
 # How to Cite
