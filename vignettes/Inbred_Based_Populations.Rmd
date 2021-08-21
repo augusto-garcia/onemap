@@ -696,7 +696,7 @@ plot(LGs_upgma)
 
 You can define the expected number of groups in the `expected.groups` argument and check how the markers are split in the plotted dendrogram. Using argument `inter=TRUE` you can change interactively the number of groups defined by the red squares in the graphic. 
 
-If you have reference genome information for some of your markers, you can separate the groups using it and the `group_seq` function (further information in [`Using the recombinations and the reference genome information`](#using-the-recombinations-and-the-reference-genome-informations)) to add the markers without reference genome information. We can also confirm the separation of linkage groups in the ordering procedure.
+If you have reference genome information for some of your markers, you can separate the groups using it and the `group_seq` function (further information in [`Using the recombinations and the reference genome information`](#using-the-recombinations-and-the-reference-genome-information)) to add the markers without reference genome information. We can also confirm the separation of linkage groups in the ordering procedure.
 
 Notice the class of object `LGs_f2` and `LGs_upgma`:
 
@@ -791,7 +791,7 @@ In this particular case, seriation will return an expected error:
 LG1_ser_f2 <- seriation(LG1_f2, hmm = F) # Will return an error (can not be used in this case)
 ```
 
-Another method that has been demonstrated to be very efficient in ordering markers uses the multidimensional scaling (MDS) approach. `OneMap` has the `mds_onemap` function that makes an interface with the MDSMap package to apply this approach to order markers. This is particularly useful if you are dealing with many markers (up to 20). The method also provides diagnostics graphics and parameters to find outliers to help users to filter the dataset.  You can find more informations in `MDSMap` [vignette](https://cran.r-project.org/web/packages/MDSMap/vignettes/MDSMap.pdf). Our `mds_onemap` does not present all possibilities of analysis that the MDSMap package presents. See help page `?mds_onemap` to check which ones we implemented.
+Another method that has been demonstrated to be very efficient in ordering markers uses the multidimensional scaling (MDS) approach. `OneMap` has the `mds_onemap` function that makes an interface with the MDSMap package to apply this approach to order markers. This is particularly useful if you are dealing with many markers (up to 20). The method also provides diagnostics graphics and parameters to find outliers to help users to filter the dataset.  You can find more information in `MDSMap` [vignette](https://cran.r-project.org/web/packages/MDSMap/vignettes/MDSMap.pdf). Our `mds_onemap` does not present all possibilities of analysis that the MDSMap package presents. See help page `?mds_onemap` to check which ones we implemented.
 
 ```{r}
 LG1_mds_f2 <- mds_onemap(input.seq = LG1_f2, hmm = F)
@@ -1694,7 +1694,7 @@ As you
 can see in the above maps, heuristic ordering algorithms do not return an optimal order result, mainly if you don't have many individuals in your population. Because of the erroneous order, generated map sizes are not close to the simulated size (100 cM) and their heatmaps don't present the expected color pattern. Two of them get close to the color pattern, they are the ug and the MDS method. They present good global ordering but not local. If you have a reference genome, you can use its position information to rearrange local ordering.
 # Export estimated progeny haplotypes <span style="color:orange">(new!)</span>
 
-Function `progeny_haplotypes` generates a data.frame with progeny phased haplotypes estimated by `OneMap` HMM. For progeny, the HMM results in probabilities for each possible genotype, then the generated data.frame contains all possible genotypes. If `most_likely = TRUE`  the most likely genotype receives 1 and the rest 0 (if there are two most likely both receive 0.5), if `most_likely = FALSE` genotypes probabilities will be according with the HMM results. You can choose which individual to be evaluated in `ind`. The data.frame is composed of the information: individual (ind) and group (grp) ID, position in centimorgan (pos), progeny homologs (homologs), and from each parent the allele came (parents).
+Function `progeny_haplotypes` generates a data.frame with progeny phased haplotypes estimated by `OneMap` HMM. For progeny, the HMM results in probabilities for each possible genotype, then the generated data.frame contains all possible genotypes. If `most_likely = TRUE`  the most likely genotype receives 1 and the rest 0 (if there are two most likely both receive 0.5), if `most_likely = FALSE` genotypes probabilities will be according to the HMM results. You can choose which individual to be evaluated in `ind`. The data.frame is composed of the information: individual (ind) and group (grp) ID, position in centimorgan (pos), progeny homologs (homologs), and from each parent the allele came (parents).
 
 ```{r}
 (progeny_haplot <- progeny_haplotypes(LG2_f2_final, most_likely = TRUE, ind = 2, group_names = "LG2_final"))
