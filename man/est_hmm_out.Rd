@@ -2,10 +2,10 @@
 % Please edit documentation in R/RcppExports.R
 \name{est_hmm_out}
 \alias{est_hmm_out}
-\title{Run HMM chain}
+\title{Run HMM chains}
 \usage{
 est_hmm_out(geno_R, error_R, type_R, phase_R, rf_R, verbose_R, tol_R)
 }
 \description{
-Run HMM chain
+Run HMM chains
 }

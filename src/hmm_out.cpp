@@ -41,7 +41,7 @@
 using namespace Rcpp;
 using namespace std;
 
-//' Run HMM chain
+//' Run HMM chains
 //' 
 //' @export
 //' 
