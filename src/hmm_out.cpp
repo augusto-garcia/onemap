@@ -43,6 +43,14 @@ using namespace std;
 
 //' Run HMM chains
 //' 
+//' @param geno_R genotypes
+//' @param error_R genotypes probabilities
+//' @param type_R marker types
+//' @param phase_R phase estimated by 2-pts
+//' @param rf_R recombination fraction
+//' @param verbose_R logical to display or not the procedure
+//' @param tol_R EM algorithm tolerance
+//' 
 //' @export
 //' 
 // [[Rcpp::export]]

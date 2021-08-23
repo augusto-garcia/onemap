@@ -3,6 +3,14 @@
 
 #' Run HMM chains
 #' 
+#' @param geno_R genotypes
+#' @param error_R genotypes probabilities
+#' @param type_R marker types
+#' @param phase_R phase estimated by 2-pts
+#' @param rf_R recombination fraction
+#' @param verbose_R logical to display or not the procedure
+#' @param tol_R EM algorithm tolerance
+#' 
 #' @export
 #' 
 est_hmm_out <- function(geno_R, error_R, type_R, phase_R, rf_R, verbose_R, tol_R) {
