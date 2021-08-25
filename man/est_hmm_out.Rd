@@ -6,6 +6,21 @@
 \usage{
 est_hmm_out(geno_R, error_R, type_R, phase_R, rf_R, verbose_R, tol_R)
 }
+\arguments{
+\item{geno_R}{genotypes}
+
+\item{error_R}{genotypes probabilities}
+
+\item{type_R}{marker types}
+
+\item{phase_R}{phase estimated by 2-pts}
+
+\item{rf_R}{recombination fraction}
+
+\item{verbose_R}{logical to display or not the procedure}
+
+\item{tol_R}{EM algorithm tolerance}
+}
 \description{
 Run HMM chains
 }

@@ -49,7 +49,6 @@ genotypes cannot be determined are discarded.
 Reference sequence ID and position for each variant site are also stored.
 }
 \examples{
-
 \dontrun{
 vcfR.object <- read.vcfR(system.file("extdata/vcf_example_out.vcf.gz", package = "onemap"))
 data <- onemap_read_vcfR(vcfR.object=vcfR.object,

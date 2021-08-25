@@ -40,7 +40,8 @@ Imports: ggplot2 (>= 2.2.1),
         htmlwidgets,
         ggpubr,
         RColorBrewer,
-        dendextend
+        dendextend,
+        rebus
 Suggests: 
     qtl (>= 1.36-6),
     knitr (>= 1.10),
