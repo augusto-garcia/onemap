@@ -12,7 +12,7 @@
 `OneMap` is a software for constructing genetic maps in experimental
 crosses: full-sib, RILs, F2, and backcrosses. It was developed by
 Gabriel R A Margarido, Marcelo Mollinari and A Augusto F Garcia. Later on, 
-Rodrigo R Amadeu, Cristiane H Taniguti and Getulio C. Ferreira joined the project.
+Rodrigo R Amadeu, Cristiane H Taniguti, and Getulio C. Ferreira joined the project.
 
 It has been available on CRAN for several years
 (https://cran.r-project.org/package=onemap). Its last version was
