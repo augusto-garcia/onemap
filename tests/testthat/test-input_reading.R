@@ -74,8 +74,8 @@ test_that("reading files",{
                       table.geno = c(597, 3229,2974),
                       error1.4 = c(0.00001, rep(0.99999,3)))
 
-  data <- onemap_read_vcfR(system.file("extdata/vcf_example_bc.vcf.gz", package = "onemap"), 
-                           cross = "f2 backcross", parent1 = "P1", parent2 = "P2")
+  data <- onemap_read_vcfR(vcf = system.file("extdata/vcf_example_bc.vcf.gz", package = "onemap"), 
+                           cross = "f2 backcross", parent1 = "P1", parent2 = "P2", output_info_rds = "test.rds")
   expect_equal(check_data(data), 0)
   expect_values_equal(segr.type1.4 = rep("A.H",4),
                       segr.type.num1.4 = rep(8,4),

@@ -42,7 +42,9 @@
 ##' @param parent2 \code{string} specifying sample ID of the second parent.
 ##' @param f1 \code{string} if you are working with f2 intercross or backcross populations you may have f1 parents in you vcf, specify its ID here
 ##' @param only_biallelic if TRUE (default) only biallelic markers are considered, if FALSE multiallelic markers are included.
+##' @param output_info_file define a name for the file with alleles information.
 ##' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
+##' 
 ##' @seealso \code{read_onemap} for a description of the output object of class onemap.
 ##' 
 ##' 
@@ -51,8 +53,7 @@
 ##' 
 ##' @examples
 ##' \dontrun{
-##' vcfR.object <- read.vcfR(system.file("extdata/vcf_example_out.vcf.gz", package = "onemap"))
-##' data <- onemap_read_vcfR(vcfR.object=vcfR.object,
+##' data <- onemap_read_vcfR(vcf=system.file("extdata/vcf_example_out.vcf.gz", package = "onemap"),
 ##'                  cross="outcross",
 ##'                  parent1=c("P1"),
 ##'                  parent2=c("P2"))
@@ -64,7 +65,8 @@ onemap_read_vcfR <- function(vcf=NULL,
                              parent1 =NULL,
                              parent2 =NULL,
                              f1=NULL,
-                             only_biallelic = TRUE){
+                             only_biallelic = TRUE,
+                             output_info_rds = NULL){
   
   if (is.null(vcf)) {
     stop("You must specify one vcf file.")
@@ -73,12 +75,14 @@ onemap_read_vcfR <- function(vcf=NULL,
     stop("You must specify samples as parents 1 and 2.")
   }
   
-  vcfR.obj <- read.vcfR(vcf)
+  vcfR.obj <- read.vcfR(vcf, verbose = F)
   n.mk <- dim(vcfR.obj@gt)[1]
   n.ind <- dim(vcfR.obj@gt)[2]-1
   INDS <- dimnames(vcfR.obj@gt)[[2]][-1]
   CHROM <- vcfR.obj@fix[,1]
   POS <- as.numeric(vcfR.obj@fix[,2])
+  REF <- vcfR.obj@fix[,4]
+  ALT <- vcfR.obj@fix[,5]
   
   if(is.vector(vcfR.obj@gt)){
     jump <- 1
@@ -141,13 +145,17 @@ onemap_read_vcfR <- function(vcf=NULL,
   
   # keep only biallelic
   if(only_biallelic | cross != "outcross"){
-    rx <- number_range(2, max.alleles)
-    rm_multi <- which(apply(GT_matrix, 1, function(x) any(grepl(rx, x))))
-    if(length(rm_multi) > 0){
-      GT_matrix <- GT_matrix[-rm_multi,]
-      CHROM <- CHROM[-rm_multi]
-      POS <- POS[-rm_multi]
-      MKS <- MKS[-rm_multi]
+    if(max.alleles > 1){
+      rx <- number_range(2, max.alleles)
+      rm_multi <- which(apply(GT_matrix, 1, function(x) any(grepl(rx, x))))
+      if(length(rm_multi) > 0){
+        GT_matrix <- GT_matrix[-rm_multi,]
+        CHROM <- CHROM[-rm_multi]
+        POS <- POS[-rm_multi]
+        MKS <- MKS[-rm_multi]
+        REF <- REF[-rm_multi]
+        ALT <- ALT[-rm_multi]
+      }
     }
   }
   n.mk <- nrow(GT_matrix)
@@ -210,6 +218,8 @@ onemap_read_vcfR <- function(vcf=NULL,
       n.mk <- n.mk - length(rm_mk)
       CHROM <-CHROM[-rm_mk]
       POS <- POS[-rm_mk]
+      REF <- REF[-rm_multi]
+      ALT <- ALT[-rm_multi]
       mk.type <- mk.type[-rm_mk]
       mk.type.num <- mk.type.num[-rm_mk]
     } 
@@ -331,6 +341,8 @@ onemap_read_vcfR <- function(vcf=NULL,
       n.mk <- n.mk - length(rm_mk)
       CHROM <- CHROM[-rm_mk]
       POS <- POS[-rm_mk]
+      REF <- REF[-rm_multi]
+      ALT <- ALT[-rm_multi]
       mk.type <- mk.type[-rm_mk]
       mk.type.num <- mk.type.num[-rm_mk]
     } 
@@ -388,6 +400,8 @@ onemap_read_vcfR <- function(vcf=NULL,
       n.mk <- n.mk - length(rm_mk)
       CHROM <- CHROM[-rm_mk]
       POS <- POS[-rm_mk]
+      REF <- REF[-rm_multi]
+      ALT <- ALT[-rm_multi]
       mk.type <- mk.type[-rm_mk]
       mk.type.num <- mk.type.num[-rm_mk]
     } 
@@ -446,6 +460,8 @@ onemap_read_vcfR <- function(vcf=NULL,
       n.mk <- n.mk - length(rm_mk)
       CHROM <- CHROM[-rm_mk]
       POS <- POS[-rm_mk]
+      REF <- REF[-rm_multi]
+      ALT <- ALT[-rm_multi]
       mk.type <- mk.type[-rm_mk]
       mk.type.num <- mk.type.num[-rm_mk]
     }
@@ -524,6 +540,16 @@ onemap_read_vcfR <- function(vcf=NULL,
   
   onemap.obj  <- rm_dupli_mks(onemap.obj)
   new.onemap.obj <- create_probs(onemap.obj, global_error = 10^-5)
+  
+  if(!is.null(output_info_rds)){
+    info <- data.frame(CHROM = onemap.obj$CHROM, 
+                       POS = onemap.obj$POS, 
+                       ID = colnames(onemap.obj$geno), 
+                       REF = REF, 
+                       ALT = ALT)
+    saveRDS(info, file = output_info_rds)
+  }
+  
   return(new.onemap.obj)
 }
 

@@ -76,7 +76,7 @@ create_depths_profile <- function(onemap.obj = NULL,
   
   if(is.null(parent1) | is.null(parent2)) stop("Parents ID must be defined.")
   
-  vcfR.object <- read.vcfR(vcf)
+  vcfR.object <- read.vcfR(vcf, verbose = F)
   
   # do the checks
   depths <- extract_depth(vcfR.object = vcfR.object, onemap.object = onemap.obj, vcf.par, parent1, parent2,recovering = recovering)
