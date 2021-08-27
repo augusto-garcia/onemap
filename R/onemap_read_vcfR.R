@@ -218,8 +218,8 @@ onemap_read_vcfR <- function(vcf=NULL,
       n.mk <- n.mk - length(rm_mk)
       CHROM <-CHROM[-rm_mk]
       POS <- POS[-rm_mk]
-      REF <- REF[-rm_multi]
-      ALT <- ALT[-rm_multi]
+      REF <- REF[-rm_mk]
+      ALT <- ALT[-rm_mk]
       mk.type <- mk.type[-rm_mk]
       mk.type.num <- mk.type.num[-rm_mk]
     } 
@@ -341,8 +341,8 @@ onemap_read_vcfR <- function(vcf=NULL,
       n.mk <- n.mk - length(rm_mk)
       CHROM <- CHROM[-rm_mk]
       POS <- POS[-rm_mk]
-      REF <- REF[-rm_multi]
-      ALT <- ALT[-rm_multi]
+      REF <- REF[-rm_mk]
+      ALT <- ALT[-rm_mk]
       mk.type <- mk.type[-rm_mk]
       mk.type.num <- mk.type.num[-rm_mk]
     } 
@@ -400,8 +400,8 @@ onemap_read_vcfR <- function(vcf=NULL,
       n.mk <- n.mk - length(rm_mk)
       CHROM <- CHROM[-rm_mk]
       POS <- POS[-rm_mk]
-      REF <- REF[-rm_multi]
-      ALT <- ALT[-rm_multi]
+      REF <- REF[-rm_mk]
+      ALT <- ALT[-rm_mk]
       mk.type <- mk.type[-rm_mk]
       mk.type.num <- mk.type.num[-rm_mk]
     } 
@@ -460,8 +460,8 @@ onemap_read_vcfR <- function(vcf=NULL,
       n.mk <- n.mk - length(rm_mk)
       CHROM <- CHROM[-rm_mk]
       POS <- POS[-rm_mk]
-      REF <- REF[-rm_multi]
-      ALT <- ALT[-rm_multi]
+      REF <- REF[-rm_mk]
+      ALT <- ALT[-rm_mk]
       mk.type <- mk.type[-rm_mk]
       mk.type.num <- mk.type.num[-rm_mk]
     }
