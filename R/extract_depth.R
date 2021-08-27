@@ -27,6 +27,7 @@ globalVariables(c("gt.onemap.alt.ref", "gt.vcf.alt.ref", "parents"))
 #' \item{mks}{markers identification.} \item{onemap.object}{same onemap.object inputed}
 #' 
 #' @import dplyr
+#' @importFrom vcfR extract.gt masplit
 #' @author Cristiane Taniguti, \email{chtaniguti@@usp.br} 
 #' @export
 extract_depth <- function(vcfR.object=NULL,
@@ -79,52 +80,8 @@ extract_depth <- function(vcfR.object=NULL,
     rm.ind <- NULL
   }
   
-  if(vcf.par == "PL" | vcf.par == "GL"){
-    n.par <- sapply(strsplit(vcfR.object@gt[,1], split=":"), function(x) which(x =="PL" | x =="GL"))
-    lengths <- sapply(strsplit(vcfR.object@gt[,1], split=":"), length)
-    n.par.diff <- unique(lengths) - unique(n.par)
-  }
-  if(vcf.par=="GQ")
-    n.par <- which(strsplit(vcfR.object@gt[1,1], split=":")[[1]]=="GQ")
-  if(vcf.par=="AD")
-    n.par <- which(strsplit(vcfR.object@gt[1,1], split=":")[[1]]=="AD")
-  if(vcf.par=="DPR")
-    n.par <-  which(strsplit(vcfR.object@gt[1,1], split=":")[[1]]=="DPR")
-  if(length(n.par)==0)
-    stop("There is no ", vcf.par, " field in the vcfR.object file. Error probabilities can't be generated")
+  par_matrix <- extract.gt(vcfR.object, element = vcf.par)
   
-  # Spliting fields                                                                                              
-  split.gt <- strsplit(vcfR.object@gt, split=":")
-  
-  # Checking format of missing data                                                                              
-  miss <- unlist(lapply(split.gt,  length))
-  miss.num <- which(miss < n.par)
-  
-  if(length(miss.num) >0){
-    if(vcf.par=="AD" | vcf.par=="DPR"){
-      vcfR.object@gt[miss.num] <- paste0(rep("0,0",n.par),":", collapse = "")
-      split.gt <- strsplit(vcfR.object@gt, split=":")
-    } else if (vcf.par == "PL" | vcf.par == "GL"){
-      vcfR.object@gt[miss.num] <- paste0(rep("0,0,0",n.par),":", collapse = "")
-    } else {
-      vcfR.object@gt[miss.num] <- paste0(rep("0",n.par),":", collapse = "")
-    }
-  }
-  # Extracting chosen parameter matrix
-  
-  if(vcf.par == "PL" | vcf.par == "GL"){
-    genos <- sapply(split.gt, function(x) {
-      for(i in 1:length(unique(lengths))){ 
-        if(length(x) == unique(lengths)[i]){
-          y <- x[unique(lengths)[i]-n.par.diff[i]]
-        }
-      }
-      return(y)
-    })
-    par_matrix <- matrix(genos, nrow = N.MKs, ncol = N.IND+1)
-  } else {
-    par_matrix <- matrix(unlist(lapply(split.gt,  "[", n.par)), nrow = N.MKs, ncol = N.IND+1)[,-1]
-  }
   # Replacing missing data with compatible format                                                                
   if(length(which(par_matrix == ".")) > 0 | length(which(is.na(par_matrix))) > 0 ){
     if(vcf.par=="GQ") {
@@ -152,25 +109,21 @@ extract_depth <- function(vcfR.object=NULL,
   n.mks <- N.MKs - length(rm.mks)
   # The probabilities must be calculated if AD or DPR parameters were chosen                                    
   if(vcf.par=="AD" | vcf.par=="DPR"){
-    ref_matrix <- matrix(as.numeric(unlist(lapply(strsplit(par_matrix, split = ","), "[[",1))), nrow = n.mks, ncol = n.ind)
-    alt_matrix <- matrix(as.numeric(unlist(lapply(strsplit(par_matrix, split = ","), "[[",2))), nrow = n.mks, ncol = n.ind)
-    colnames(alt_matrix) <- colnames(ref_matrix) <- IND
-    rownames(ref_matrix) <- rownames(alt_matrix) <- MKS
+    ref_matrix <- masplit(par_matrix, record=1, sort=0)
+    alt_matrix <- masplit(par_matrix, record=2, sort=0)
   } else if(vcf.par=="GQ"){
     error_matrix <- 10^(-apply(par_matrix,1,as.numeric)/10)
     idx <- which(IND %in% c(parent1, parent2, f1))
     error_matrix <- error_matrix[-idx,]
-    rownames(error_matrix) <- IND[-idx]
-    colnames(error_matrix) <- MKS
     return(error_matrix)
   } else if (vcf.par == "PL" | vcf.par == "GL") {
     idx <- which(IND %in% c(parent1, parent2, f1))
     if(vcf.par == "PL"){
-      probs <- par_matrix %>% .[,-1] %>% .[,-idx] %>% strsplit(., ",") %>% 
+      probs <- par_matrix  %>% .[,-idx] %>% strsplit(., ",") %>% 
         do.call(rbind, .) %>% apply(., 2,as.numeric) %>% 
         apply(., 2, function(x) 10^(-x)/10) 
     } else {
-      probs <- par_matrix %>% .[,-1] %>% .[,-idx] %>% strsplit(., ",") %>% 
+      probs <- par_matrix %>% .[,-idx] %>% strsplit(., ",") %>% 
         do.call(rbind, .) %>% apply(., 2,as.numeric) %>% 
         apply(., 2, function(x) 10^(x)) 
     }

@@ -14,9 +14,9 @@
 #######################################################################
 
 
-##' Convert vcfR object to onemap object
+##' Convert vcf file to onemap object
 ##'
-##' Converts data from a vcfR package to onemap initial object, while trying to identify 
+##' Converts data from a vcf file to onemap initial object, while identify 
 ##' the appropriate marker segregation patterns.
 ##'
 ##' Only biallelic SNPs and indels for diploid variant sites are considered.
@@ -33,7 +33,7 @@
 ##'
 ##' Reference sequence ID and position for each variant site are also stored.
 ##'
-##' @param vcfR.object object of class 'vcfR' from vcfR package.
+##' @param vcf string defining the path to VCF file;
 ##' @param cross type of cross. Must be one of: \code{"outcross"} for full-sibs;
 ##' \code{"f2 intercross"} for an F2 intercross progeny; \code{"f2 backcross"};
 ##' \code{"ri self"} for recombinant inbred lines by self-mating; or
@@ -47,6 +47,7 @@
 ##' 
 ##' 
 ##' @importFrom rebus number_range
+##' @importFrom vcfR read.vcfR extract.gt masplit
 ##' 
 ##' @examples
 ##' \dontrun{
@@ -58,59 +59,48 @@
 ##' }
 ##'                 
 ##'@export                  
-onemap_read_vcfR <- function(vcfR.object=NULL,
+onemap_read_vcfR <- function(vcf=NULL,
                              cross = c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"),
                              parent1 =NULL,
                              parent2 =NULL,
                              f1=NULL,
                              only_biallelic = TRUE){
   
-  if (is.null(vcfR.object)) {
-    stop("You must specify one vcfR object.")
+  if (is.null(vcf)) {
+    stop("You must specify one vcf file.")
   }
   if (is.null(parent1) || is.null(parent2)) {
     stop("You must specify samples as parents 1 and 2.")
   }
-  if(!is(vcfR.object,"vcfR")){
-    stop("You must specify one vcfR object.")
-  }
   
-  vcf <- vcfR.object
-  n.mk <- dim(vcf@gt)[1]
-  n.ind <- dim(vcf@gt)[2]-1
-  INDS <- dimnames(vcf@gt)[[2]][-1]
-  CHROM <- vcf@fix[,1]
-  POS <- as.numeric(vcf@fix[,2])
+  vcfR.obj <- read.vcfR(vcf)
+  n.mk <- dim(vcfR.obj@gt)[1]
+  n.ind <- dim(vcfR.obj@gt)[2]-1
+  INDS <- dimnames(vcfR.obj@gt)[[2]][-1]
+  CHROM <- vcfR.obj@fix[,1]
+  POS <- as.numeric(vcfR.obj@fix[,2])
   
-  # Checking marker segregation according with parents
-  P1 <- which(dimnames(vcf@gt)[[2]]==parent1) 
-  P2 <- which(dimnames(vcf@gt)[[2]]==parent2) 
-  
-  if(is.vector(vcf@gt)){
+  if(is.vector(vcfR.obj@gt)){
     jump <- 1
-  } else if(dim(vcf@gt)[1] == 0){
+  } else if(dim(vcfR.obj@gt)[1] == 0){
     jump <- 1
   } else jump <- 0
   
   if(jump == 1){
-    warning("Input vcfR object do not have markers. An empty object onemap will be generated.")
-    onemap.obj <- empty_onemap_obj(vcf, P1, P2, cross)
+    warning("Input vcfR.objR object do not have markers. An empty object onemap will be generated.")
+    onemap.obj <- empty_onemap_obj(vcfR.obj, P1, P2, cross)
     return(onemap.obj)
   }
   
   # Checking marker segregation according with parents
-  P1 <- which(dimnames(vcf@gt)[[2]]==parent1) -1 
-  P2 <- which(dimnames(vcf@gt)[[2]]==parent2) -1
+  P1 <- which(dimnames(vcfR.obj@gt)[[2]]==parent1) -1 
+  P2 <- which(dimnames(vcfR.obj@gt)[[2]]==parent2) -1
   
-  MKS <- vcf@fix[,3]
-  if (any(MKS == "." | is.na(MKS))) MKS <- paste0(vcf@fix[,1],"_", vcf@fix[,2])
+  MKS <- vcfR.obj@fix[,3]
+  if (any(MKS == "." | is.na(MKS))) MKS <- paste0(vcfR.obj@fix[,1],"_", vcfR.obj@fix[,2])
   
   # Geno matrix
-  GT_matrix <- matrix(rep(NA,n.ind*n.mk), ncol=n.ind, nrow=n.mk)
-  GT <- which(strsplit(vcf@gt[1,1], split=":")[[1]]=="GT")
-  
-  for(i in 2:(n.ind+1))
-    GT_matrix[,i-1] <- unlist(lapply(strsplit(vcf@gt[,i], split=":"), "[[", GT))
+  GT_matrix <- extract.gt(vcfR.obj)
   
   if(length(P1)==0 | length(P2)==0) stop("One or both parents names could not be found in your data")
   
@@ -222,7 +212,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     if(jump == 1){
       warning("Input vcfR object do not have markers. An empty object onemap will be generated.")
       
-      onemap.obj <- empty_onemap_obj(vcf, P1, P2, cross)
+      onemap.obj <- empty_onemap_obj(vcfR.obj, P1, P2, cross)
       return(onemap.obj)
     }
     GT_matrix <- as.matrix(GT_matrix)
@@ -343,7 +333,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     if(jump == 1){
       warning("Input vcfR object do not have markers. An empty object onemap will be generated.")
       
-      onemap.obj <- empty_onemap_obj(vcf, P1, P2, cross)
+      onemap.obj <- empty_onemap_obj(vcfR.obj, P1, P2, cross)
       return(onemap.obj)
     }
     
@@ -400,7 +390,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     if(jump == 1){
       warning("Input vcfR object do not have markers. An empty object onemap will be generated.")
       
-      onemap.obj <- empty_onemap_obj(vcf, P1, P2, cross)
+      onemap.obj <- empty_onemap_obj(vcfR.obj, P1, P2, cross)
       return(onemap.obj)
     }
     
@@ -458,7 +448,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     if(jump == 1){
       warning("Input vcfR object do not have markers. An empty object onemap will be generated.")
       
-      onemap.obj <- empty_onemap_obj(vcf, P1, P2, cross)
+      onemap.obj <- empty_onemap_obj(vcfR.obj, P1, P2, cross)
       return(onemap.obj)
     }
     
@@ -487,9 +477,9 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
   } else jump <- 0
   
   if(jump == 1){
-    warning("Input vcfR object do not have markers. An empty object onemap will be generated.")
+    warning("Input vcfR.objR object do not have markers. An empty object onemap will be generated.")
     
-    onemap.obj <- empty_onemap_obj(vcf, P1, P2, cross)
+    onemap.obj <- empty_onemap_obj(vcfR.obj, P1, P2, cross)
     return(onemap.obj)
   }
   
@@ -499,7 +489,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
     if(!is(GT_matrix, "matrix")) GT_matrix <- t(as.matrix(GT_matrix)) # If there is only one marker
     colnames(GT_matrix)  <-  INDS[-c(P1,P2)] 
   } else{
-    F1 <- which(dimnames(vcf@gt)[[2]]==f1) - 1
+    F1 <- which(dimnames(vcfR.obj@gt)[[2]]==f1) - 1
     GT_matrix <- apply(GT_matrix[,-c(P1,P2,F1), drop=F],2,as.numeric)
     if(!is(GT_matrix, "matrix")) GT_matrix <- t(as.matrix(GT_matrix))
     colnames(GT_matrix)  <-  INDS[-c(P1,P2,F1)] 
@@ -518,7 +508,7 @@ onemap_read_vcfR <- function(vcfR.object=NULL,
                                pheno = NULL,
                                CHROM = CHROM,
                                POS = POS,
-                               input = "vcfR.object"),
+                               input = "vcf"),
                           class=c("onemap",legacy_crosses[cross]))
   
   onemap.obj  <- rm_dupli_mks(onemap.obj)

@@ -287,23 +287,16 @@ As you can see, the mean difference in the output object is that the `read_onema
 
 If you are working with biallelic markers, as SNPs and indels (only codominant markers A.H.B), in VCF (Variant Call Format) files, you can import information from `VCF` to `OneMap` using `onemap_read_vcfR` function.
 
-With the `onemap_read_vcfR` you can convert the object from `vcfR` package directly to `onemap`. The `onemap_read_vcfR` function keeps chromosome and position information for each marker at the end of the raw file.
+With the `onemap_read_vcfR` you can convert VCF file directly to `onemap`. The `onemap_read_vcfR` function keeps chromosome and position information for each marker at the end of the raw file.
 
 We will use the same example file `vcf_example_f2.vcf` to show how it works.
 
-First, we convert the `VCF` file to `vcfR` object:
+Here we use the the `vcfR` package internally to help this conversion. The `vcfR` authors mentioned in their [tutorials](https://knausb.github.io/vcfR_documentation/index.html) that RAM memory use is an important consideration when using the package. Depending of your dataset, the object created can be huge and occupy a lot of memory.
 
-```{r}
-library(vcfR)
-vcfR.object <- read.vcfR(system.file("extdata/vcf_example_f2.vcf.gz", package = "onemap"))
-```
-
-As described in the `vcfR` package vignette, memory use is a important consideration when using `vcfR`. Depending of your dataset, the object created can be very large and occupy a lot of memory.
-
-After, you can use `onemap_read_vcfR` function to convert this object to `onemap` object. The parameters used is the `vcfR.object` we just created, the identification of each parent (here you must define only one sample for each parent) and the cross-type.
+You can use `onemap_read_vcfR` function to convert the VCF file to  `onemap` object. The parameters used are the `vcf` with the VCF file path, the identification of each parent (here, you must define only one sample for each parent) and the cross type.
 
 ```{r, eval=FALSE}
-vcf_example_f2 <- onemap_read_vcfR(vcfR.object = vcfR.object,
+vcf_example_f2 <- onemap_read_vcfR(vcf = system.file("extdata/vcf_example_f2.vcf.gz", package = "onemap"),
                                    parent1 = "P1", 
                                    parent2 = "P2", 
                                    cross = "f2 intercross")
@@ -311,14 +304,7 @@ vcf_example_f2 <- onemap_read_vcfR(vcfR.object = vcfR.object,
 
 Depending on your dataset, this function can take some time to run. 
 
-After the conversion, we can save the `vcfR.object` as a `.RData` and remove it from the workspace, once it can occupy a lot of memory and turn the other process too slow. 
-
-```{r, eval=FALSE}
-save(vcfR.object, file = "vcfR.object.RData") 
-#rm(vcfR.object)
-```
-
-From version 2.0.6 to 2.1.1005, `OneMap` had the `vcf2raw` function to convert `vcf` to `.raw`. Now, this function is defunct, but it can be replaced by a combination of `onemap_read_vcfR` and `write_onemap_raw` functions. See [Exporting .raw file from onemap object](#exporting-.raw-file-from-onemap-object) session to further information about `write_onemap_raw`.
+**NOTE**: From version 2.0.6 to 2.1.1005, `OneMap` had the `vcf2raw` function to convert `vcf` to `.raw`. Now, this function is defunct, but it can be replaced by a combination of `onemap_read_vcfR` and `write_onemap_raw` functions. See [Exporting .raw file from onemap object](#exporting-.raw-file-from-onemap-object) session to further information about `write_onemap_raw`.
 
 # Visualization of raw data
 
@@ -378,12 +364,12 @@ Function `create_depth_profile` generates dispersion graphics with x and y axis 
 Here is an example of the simulated dataset.
 
 ```{r, message=F,warning=F, eval=FALSE}
-vcf_simu_f2 <- read.vcfR(system.file("extdata/vcf_example_f2.vcf.gz", package="onemap"))
-simu_f2_obj <- onemap_read_vcfR(vcfR.object = vcf_simu_f2, cross = "f2 intercross", 
+simu_f2_obj <- onemap_read_vcfR(vcf = system.file("extdata/vcf_example_f2.vcf.gz", package="onemap"), 
+                                cross = "f2 intercross", 
                                 parent1 = "P1", parent2 = "P2")
 
 create_depths_profile(onemap.obj = simu_f2_obj,
-                      vcfR.object = vcf_simu_f2, 
+                      vcfR.object =  system.file("extdata/vcf_example_f2.vcf.gz", package="onemap"), 
                       parent1 = "P1", 
                       parent2 = "P2", 
                       vcf.par = "AD", 

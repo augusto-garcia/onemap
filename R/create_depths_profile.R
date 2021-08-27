@@ -19,7 +19,7 @@ globalVariables(c("gt.onemap", "gt.vcf"))
 #'
 #'
 #' @param onemap.obj an object of class \code{onemap}.
-#' @param vcfR.object an object of class \code{vcfR}.
+#' @param vcf path to VCF file.
 #' @param parent1 a character specifying the first parent ID
 #' @param parent2 a character specifying the second parent ID
 #' @param vcf.par the vcf parameter that store the allele depth information. 
@@ -39,9 +39,11 @@ globalVariables(c("gt.onemap", "gt.vcf"))
 #'
 #'
 #'@import tidyr ggplot2
+#'@importFrom vcfR read.vcfR
+#'
 #'@export
 create_depths_profile <- function(onemap.obj = NULL, 
-                                  vcfR.object = NULL, 
+                                  vcf = NULL, 
                                   parent1 = NULL,
                                   parent2 = NULL,
                                   vcf.par = "AD",
@@ -73,6 +75,8 @@ create_depths_profile <- function(onemap.obj = NULL,
   } 
   
   if(is.null(parent1) | is.null(parent2)) stop("Parents ID must be defined.")
+  
+  vcfR.object <- read.vcfR(vcf)
   
   # do the checks
   depths <- extract_depth(vcfR.object = vcfR.object, onemap.object = onemap.obj, vcf.par, parent1, parent2,recovering = recovering)

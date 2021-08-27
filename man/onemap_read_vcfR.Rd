@@ -2,10 +2,10 @@
 % Please edit documentation in R/onemap_read_vcfR.R
 \name{onemap_read_vcfR}
 \alias{onemap_read_vcfR}
-\title{Convert vcfR object to onemap object}
+\title{Convert vcf file to onemap object}
 \usage{
 onemap_read_vcfR(
-  vcfR.object = NULL,
+  vcf = NULL,
   cross = c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"),
   parent1 = NULL,
   parent2 = NULL,
@@ -14,7 +14,7 @@ onemap_read_vcfR(
 )
 }
 \arguments{
-\item{vcfR.object}{object of class 'vcfR' from vcfR package.}
+\item{vcf}{string defining the path to VCF file;}
 
 \item{cross}{type of cross. Must be one of: \code{"outcross"} for full-sibs;
 \code{"f2 intercross"} for an F2 intercross progeny; \code{"f2 backcross"};
@@ -30,7 +30,7 @@ onemap_read_vcfR(
 \item{only_biallelic}{if TRUE (default) only biallelic markers are considered, if FALSE multiallelic markers are included.}
 }
 \description{
-Converts data from a vcfR package to onemap initial object, while trying to identify 
+Converts data from a vcf file to onemap initial object, while identify 
 the appropriate marker segregation patterns.
 }
 \details{

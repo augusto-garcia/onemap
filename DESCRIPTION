@@ -41,7 +41,8 @@ Imports: ggplot2 (>= 2.2.1),
         ggpubr,
         RColorBrewer,
         dendextend,
-        rebus
+        rebus,
+        vcfR
 Suggests: 
     qtl (>= 1.36-6),
     knitr (>= 1.10),
