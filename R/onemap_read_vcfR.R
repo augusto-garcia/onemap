@@ -97,7 +97,18 @@ onemap_read_vcfR <- function(vcf=NULL,
   P2 <- which(dimnames(vcfR.obj@gt)[[2]]==parent2) -1
   
   MKS <- vcfR.obj@fix[,3]
-  if (any(MKS == "." | is.na(MKS))) MKS <- paste0(vcfR.obj@fix[,1],"_", vcfR.obj@fix[,2])
+  if (any(MKS == "." | is.na(MKS))) {
+    MKS <- paste0(vcfR.obj@fix[,1],"_", vcfR.obj@fix[,2])
+    # Add tag if is duplicated positions (split form of mnps)
+    for(i in 2:length(MKS)) {
+      if(MKS[i] == MKS[i-1]) {
+        z <- z + 1
+        MKS[i] <- paste0(MKS[i], "_",z)
+      } else {
+        z <- 0
+      }
+    }
+  }
   
   # Geno matrix
   GT_matrix <- extract.gt(vcfR.obj)
