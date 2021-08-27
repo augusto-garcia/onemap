@@ -101,7 +101,7 @@ onemap_read_vcfR <- function(vcf=NULL,
     MKS <- paste0(vcfR.obj@fix[,1],"_", vcfR.obj@fix[,2])
     # Add tag if is duplicated positions (split form of mnps)
     for(i in 2:length(MKS)) {
-      if(MKS[i] == MKS[i-1]) {
+      if(MKS[i] == paste0(strsplit(MKS[i-1], "_")[[1]][1:2], collapse = "_")) {
         z <- z + 1
         MKS[i] <- paste0(MKS[i], "_",z)
       } else {
