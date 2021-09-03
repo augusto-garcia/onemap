@@ -47,7 +47,6 @@
 ##' 
 ##' @seealso \code{read_onemap} for a description of the output object of class onemap.
 ##' 
-##' 
 ##' @importFrom rebus number_range
 ##' @importFrom vcfR read.vcfR extract.gt masplit
 ##' 
@@ -121,6 +120,7 @@ onemap_read_vcfR <- function(vcf=NULL,
   
   # This function do not consider phased genotypes
   GT_matrix[grep("[.]", GT_matrix)] <- "./."
+  GT_matrix[is.na(GT_matrix)] <- "./."
   GT_names <- names(table(GT_matrix))
   
   phased <- any(grepl("[|]", GT_names))
@@ -315,10 +315,12 @@ onemap_read_vcfR <- function(vcf=NULL,
     
     GT_matrix[grepl("/", GT_matrix)] <- 0
     GT_matrix[grepl("[.]", GT_matrix)] <- 0
+    GT_parents <- cbind(P1_1, P1_2, P2_1, P2_2)
   } else if(cross== "f2 intercross"){
     # Marker type
     mk.type[which(GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "1/1")] <- "A.H.B.1"
     mk.type[which(GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "0/0")] <- "A.H.B.2"
+    GT_parents <- GT_matrix[,c(P1,P2)]
     
     # Informs to user why markers are being removed
     idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./.")
@@ -345,6 +347,7 @@ onemap_read_vcfR <- function(vcf=NULL,
       ALT <- ALT[-rm_mk]
       mk.type <- mk.type[-rm_mk]
       mk.type.num <- mk.type.num[-rm_mk]
+      GT_parents <- GT_parents[-rm_mk,]
     } 
     
     if(is.vector(GT_matrix)){
@@ -378,6 +381,7 @@ onemap_read_vcfR <- function(vcf=NULL,
   } else if(cross=="f2 backcross"){
     mk.type[which(GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "1/1")] <- "A.H.1"
     mk.type[which(GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "0/0")] <- "A.H.2"
+    GT_parents <- GT_matrix[,c(P1,P2)]
     
     # Informs to user why markers are being removed
     idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./.")
@@ -404,6 +408,7 @@ onemap_read_vcfR <- function(vcf=NULL,
       ALT <- ALT[-rm_mk]
       mk.type <- mk.type[-rm_mk]
       mk.type.num <- mk.type.num[-rm_mk]
+      GT_parents <- GT_parents[-rm_mk,]
     } 
     
     if(is.vector(GT_matrix)){
@@ -438,6 +443,7 @@ onemap_read_vcfR <- function(vcf=NULL,
     # Marker type
     mk.type[which(GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "1/1")] <- "A.B.1"
     mk.type[which(GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "0/0")] <- "A.B.2"
+    GT_parents <- GT_matrix[,c(P1,P2)]
     
     # Informs to user why markers are being removed
     idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./.")
@@ -464,6 +470,7 @@ onemap_read_vcfR <- function(vcf=NULL,
       ALT <- ALT[-rm_mk]
       mk.type <- mk.type[-rm_mk]
       mk.type.num <- mk.type.num[-rm_mk]
+      GT_parents <- GT_parents[-rm_mk,]
     }
     
     if(is.vector(GT_matrix)){
@@ -546,7 +553,8 @@ onemap_read_vcfR <- function(vcf=NULL,
                        POS = onemap.obj$POS, 
                        ID = colnames(onemap.obj$geno), 
                        REF = REF, 
-                       ALT = ALT)
+                       ALT = ALT,
+                       GT_parents)
     saveRDS(info, file = output_info_rds)
   }
   
