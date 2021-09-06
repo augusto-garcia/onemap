@@ -78,8 +78,7 @@ rf_2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE, rm_mks = FALS
     r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=2, verbose = verbose)
   
   # The recombination matrix should not have NA or NaN
-  
-  if(any(is.na(unlist(r)))) {
+  if(anyNA(r, recursive = T)) {
     if(rm_mks){
       if(is.list(r)){
         mks_rm <- unlist(sapply(r, function(x) rownames(which(is.na(x), arr.ind = T))))

@@ -40,12 +40,8 @@ plot(onemap_example_out)
 ## -----------------------------------------------------------------------------
 plot(onemap_example_out, all = FALSE)
 
-## -----------------------------------------------------------------------------
-library(vcfR)
-vcfR.object <- read.vcfR(system.file("extdata/vcf_example_out.vcf.gz", package = "onemap"))
-
 ## ---- eval=FALSE--------------------------------------------------------------
-#  vcf_example_out <- onemap_read_vcfR(vcfR.object = vcfR.object,
+#  vcf_example_out <- onemap_read_vcfR(vcf = system.file("extdata/vcf_example_out.vcf.gz", package = "onemap"),
 #                                      parent1 = "P1",
 #                                      parent2 = "P2",
 #                                      cross = "outcross")
@@ -56,10 +52,6 @@ data(vcf_example_out)
 ## -----------------------------------------------------------------------------
 vcf_example_out
 
-## ---- eval=FALSE--------------------------------------------------------------
-#  save(vcfR.object, file = "vcfR.object.RData")
-#  # rm(vcfR.object)
-
 ## -----------------------------------------------------------------------------
 vcf_example_out
 
@@ -69,7 +61,7 @@ vcf_filtered <- filter_missing(vcf_example_out, threshold = 0.25)
 ## ---- message=F,warning=F, eval=FALSE-----------------------------------------
 #  # For outcrossing population
 #  create_depths_profile(onemap.obj = vcf_example_out,
-#                        vcfR.object = vcfR.object,
+#                        vcf = system.file("extdata/vcf_example_out.vcf.gz", package = "onemap"),
 #                        parent1 = "P1",
 #                        parent2 = "P2",
 #                        vcf.par = "AD",

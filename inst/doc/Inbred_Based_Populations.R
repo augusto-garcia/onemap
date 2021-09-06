@@ -46,19 +46,11 @@ data("onemap_example_f2")
 ## -----------------------------------------------------------------------------
 onemap_example_f2
 
-## -----------------------------------------------------------------------------
-library(vcfR)
-vcfR.object <- read.vcfR(system.file("extdata/vcf_example_f2.vcf.gz", package = "onemap"))
-
 ## ---- eval=FALSE--------------------------------------------------------------
-#  vcf_example_f2 <- onemap_read_vcfR(vcfR.object = vcfR.object,
+#  vcf_example_f2 <- onemap_read_vcfR(vcf = system.file("extdata/vcf_example_f2.vcf.gz", package = "onemap"),
 #                                     parent1 = "P1",
 #                                     parent2 = "P2",
 #                                     cross = "f2 intercross")
-
-## ---- eval=FALSE--------------------------------------------------------------
-#  save(vcfR.object, file = "vcfR.object.RData")
-#  #rm(vcfR.object)
 
 ## ---- echo=FALSE--------------------------------------------------------------
 data(vcf_example_f2)
@@ -79,12 +71,12 @@ plot_by_segreg_type(onemap_example_f2)
 plot_by_segreg_type(vcf_example_f2)
 
 ## ---- message=F,warning=F, eval=FALSE-----------------------------------------
-#  vcf_simu_f2 <- read.vcfR(system.file("extdata/vcf_example_f2.vcf.gz", package="onemap"))
-#  simu_f2_obj <- onemap_read_vcfR(vcfR.object = vcf_simu_f2, cross = "f2 intercross",
+#  simu_f2_obj <- onemap_read_vcfR(vcf = system.file("extdata/vcf_example_f2.vcf.gz", package="onemap"),
+#                                  cross = "f2 intercross",
 #                                  parent1 = "P1", parent2 = "P2")
 #  
 #  create_depths_profile(onemap.obj = simu_f2_obj,
-#                        vcfR.object = vcf_simu_f2,
+#                        vcfR.object =  system.file("extdata/vcf_example_f2.vcf.gz", package="onemap"),
 #                        parent1 = "P1",
 #                        parent2 = "P2",
 #                        vcf.par = "AD",
