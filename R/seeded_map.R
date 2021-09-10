@@ -130,7 +130,6 @@ seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
     } else {
       cl <- makeCluster(phase_cores, type = parallelization.type)
       clusterEvalQ(cl, c(library(onemap)))
-      clusterExport(cl=cl, varlist=c('map'))
       phases <- parLapply(cl, 1:nrow(Ph.Init),
                           function(j) {
                             ## call to 'map' function with predefined linkage phases
