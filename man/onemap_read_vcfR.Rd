@@ -6,6 +6,7 @@
 \usage{
 onemap_read_vcfR(
   vcf = NULL,
+  vcfR.object = NULL,
   cross = c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"),
   parent1 = NULL,
   parent2 = NULL,
@@ -16,6 +17,8 @@ onemap_read_vcfR(
 }
 \arguments{
 \item{vcf}{string defining the path to VCF file;}
+
+\item{vcfR.object}{object of class vcfR;}
 
 \item{cross}{type of cross. Must be one of: \code{"outcross"} for full-sibs;
 \code{"f2 intercross"} for an F2 intercross progeny; \code{"f2 backcross"};
@@ -30,7 +33,7 @@ onemap_read_vcfR(
 
 \item{only_biallelic}{if TRUE (default) only biallelic markers are considered, if FALSE multiallelic markers are included.}
 
-\item{output_info_file}{define a name for the file with alleles information.}
+\item{output_info_rds}{define a name for the file with alleles information.}
 }
 \description{
 Converts data from a vcf file to onemap initial object, while identify 

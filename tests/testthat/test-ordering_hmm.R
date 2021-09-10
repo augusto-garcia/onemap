@@ -90,7 +90,7 @@ test_that("ordering and HMM parallel", {
     size <- cumsum(kosambi(LG.map.avoid$seq.rf))
     eval(bquote(expect_equal(size[length(size)], .(right.size), tolerance = tol.size)))
     
-    LG.map.save <- map_save_ram(input.seq = make_seq(LG.mds$twopt, LG.mds$seq.num))
+    LG.map.save <- onemap:::map_save_ram(input.seq = make_seq(LG.mds$twopt, LG.mds$seq.num))
     size <- cumsum(kosambi(LG.map.save$seq.rf))
     eval(bquote(expect_equal(size[length(size)], .(right.size), tolerance = tol.size)))
     

@@ -34,6 +34,7 @@
 ##' Reference sequence ID and position for each variant site are also stored.
 ##'
 ##' @param vcf string defining the path to VCF file;
+##' @param vcfR.object object of class vcfR;
 ##' @param cross type of cross. Must be one of: \code{"outcross"} for full-sibs;
 ##' \code{"f2 intercross"} for an F2 intercross progeny; \code{"f2 backcross"};
 ##' \code{"ri self"} for recombinant inbred lines by self-mating; or
@@ -42,7 +43,7 @@
 ##' @param parent2 \code{string} specifying sample ID of the second parent.
 ##' @param f1 \code{string} if you are working with f2 intercross or backcross populations you may have f1 parents in you vcf, specify its ID here
 ##' @param only_biallelic if TRUE (default) only biallelic markers are considered, if FALSE multiallelic markers are included.
-##' @param output_info_file define a name for the file with alleles information.
+##' @param output_info_rds define a name for the file with alleles information.
 ##' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
 ##' 
 ##' @seealso \code{read_onemap} for a description of the output object of class onemap.
@@ -60,6 +61,7 @@
 ##'                 
 ##'@export                  
 onemap_read_vcfR <- function(vcf=NULL,
+                             vcfR.object = NULL,
                              cross = c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"),
                              parent1 =NULL,
                              parent2 =NULL,
@@ -67,14 +69,17 @@ onemap_read_vcfR <- function(vcf=NULL,
                              only_biallelic = TRUE,
                              output_info_rds = NULL){
   
-  if (is.null(vcf)) {
+  if (is.null(vcf) & is.null(vcfR.object)) {
     stop("You must specify one vcf file.")
   }
   if (is.null(parent1) || is.null(parent2)) {
     stop("You must specify samples as parents 1 and 2.")
   }
   
-  vcfR.obj <- read.vcfR(vcf, verbose = F)
+  if(is.null(vcfR.object)){
+    vcfR.obj <- read.vcfR(vcf, verbose = F)
+  } else vcfR.obj <- vcfR.object
+  
   n.mk <- dim(vcfR.obj@gt)[1]
   n.ind <- dim(vcfR.obj@gt)[2]-1
   INDS <- dimnames(vcfR.obj@gt)[[2]][-1]

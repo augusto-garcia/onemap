@@ -42,12 +42,10 @@ Imports: ggplot2 (>= 2.2.1),
         RColorBrewer,
         dendextend,
         rebus,
-        vcfR
+        vcfR (>= 1.6.0)
 Suggests: 
-    qtl (>= 1.36-6),
     knitr (>= 1.10),
     rmarkdown,
-    vcfR (>= 1.6.0),
     testthat,
     stringr
 VignetteBuilder: knitr
