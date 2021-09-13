@@ -160,11 +160,10 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE,
       })
     } else {
       cl <- makeCluster(phase_cores, type = parallelization.type)
-      clusterEvalQ(cl, c(library(onemap)))
       phases <- parLapply(cl, 1:nrow(Ph.Init), 
                           function(j) {
                             ## call to 'map' function with predefined linkage phase
-                            map(make_seq(input.seq$twopt,
+                            onemap::map(make_seq(input.seq$twopt,
                                          seq.num[1:2],
                                          phase=Ph.Init[j]), 
                                 tol=tol, 
@@ -232,11 +231,10 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE,
           })
         } else {
           cl <- makeCluster(phase_cores, type = parallelization.type)
-          clusterEvalQ(cl, c(library(onemap)))
           phases <- parLapply(cl, 1:nrow(Ph.Init), 
                               function(j) {
                                 ## call to 'map' function with predefined linkage phases
-                                map(make_seq(input.seq$twopt,
+                                onemap::map(make_seq(input.seq$twopt,
                                              seq.num[1:(mrk+1)],
                                              phase=Ph.Init[j,]), 
                                     tol=tol, 
