@@ -54,33 +54,28 @@ test_that("ordering and HMM parallel", {
                                    around = 1)
 
     if(!is(onemap_mis, "outcross")){
-      LG.ser <- seriation(LG, size = batch_size, phase_cores = 2, overlap = 3)
+      LG.ser <- seriation(LG, size = batch_size, phase_cores = 1, overlap = 3)
       eval(bquote(expect_equal(LG.ser$seq.num, .(right.order), tolerance = tol.order)))
       size <- cumsum(kosambi(LG.ser$seq.rf))
       eval(bquote(expect_equal(size[length(size)], .(right.size), tolerance = tol.size)))
     }
-    LG.rcd <- rcd(LG, size = batch_size, phase_cores = 2, overlap = 3)
+    LG.rcd <- rcd(LG, size = batch_size, phase_cores = 1, overlap = 3)
     eval(bquote(expect_equal(LG.rcd$seq.num, .(right.order), tolerance = tol.order)))
     size <- cumsum(kosambi(LG.rcd$seq.rf))
     eval(bquote(expect_equal(size[length(size)], .(right.size), tolerance = tol.size)))
-    LG.rec <- record(LG, size = batch_size, phase_cores = 2, overlap = 3)
+    LG.rec <- record(LG, size = batch_size, phase_cores = 1, overlap = 3)
     eval(bquote(expect_equal(LG.rec$seq.num, .(right.order), tolerance = tol.order)))
     size <- cumsum(kosambi(LG.rec$seq.rf))
     eval(bquote(expect_equal(size[length(size)], .(right.size), tolerance = tol.size)))
-    LG.ug <- ug(LG, size = batch_size, phase_cores = 2, overlap = 3)
+    LG.ug <- ug(LG, size = batch_size, phase_cores = 1, overlap = 3)
     eval(bquote(expect_equal(LG.ug$seq.num, .(right.order), tolerance = tol.order)))
     size <- cumsum(kosambi(LG.ug$seq.rf))
     eval(bquote(expect_equal(size[length(size)], .(right.size), tolerance = tol.size)))
-    LG.mds <- mds_onemap(LG, size = batch_size, phase_cores = 2, overlap = 3)
+    LG.mds <- mds_onemap(LG, size = batch_size, phase_cores = 1, overlap = 3)
     eval(bquote(expect_equal(LG.mds$seq.num, .(right.order), tolerance = tol.order))) # mds makes local rearrangements
     size <- cumsum(kosambi(LG.mds$seq.rf))
     eval(bquote(expect_equal(size[length(size)], .(right.size),tolerance = tol.size)))
-    LG.order <- order_seq(LG)
-    LG.order <- make_seq(LG.order, "force")
-    eval(bquote(expect_equal(LG.order$seq.num, .(right.order), tolerance = tol.order))) # mds makes local rearrangements
-    size <- cumsum(kosambi(LG.mds$seq.rf))
-    eval(bquote(expect_equal(size[length(size)], .(right.size),tolerance = tol.size)))
-    
+
     # Testing with only one core
     LG.map <- map(make_seq(LG.mds$twopt, LG.mds$seq.num))
     size <- cumsum(kosambi(LG.map$seq.rf))
