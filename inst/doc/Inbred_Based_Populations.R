@@ -74,7 +74,6 @@ plot_by_segreg_type(vcf_example_f2)
 #  simu_f2_obj <- onemap_read_vcfR(vcf = system.file("extdata/vcf_example_f2.vcf.gz", package="onemap"),
 #                                  cross = "f2 intercross",
 #                                  parent1 = "P1", parent2 = "P2")
-#  
 #  create_depths_profile(onemap.obj = simu_f2_obj,
 #                        vcfR.object =  system.file("extdata/vcf_example_f2.vcf.gz", package="onemap"),
 #                        parent1 = "P1",
@@ -447,10 +446,11 @@ draw_map2(LG1_f2_final, col.group = "#58A4B0", col.mark = "#335C81", output = "m
 #  colnames(time_spent) <- c("Without parallelization (h)", "With parallelization (h)" )
 #  knitr::kable(time_spent)
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ---- eval=FALSE, echo=FALSE--------------------------------------------------
+#  # Simulation using onemapUTILS
 #  run_pedsim(chromosome = "Chr1", n.marker = 300, tot.size.cm = 100, centromere = 50,
 #             n.ind = 200, mk.types = c("A.H.B", "C.A", "D.B"),
-#             n.types = rep(100,3), pop = "F2", path.pedsim = "./",
+#             n.types = rep(100,3), pop = "F2",
 #             name.mapfile = "mapfile.txt", name.founderfile="founderfile.gen",
 #             name.chromfile="sim.chrom", name.parfile="sim.par",
 #             name.out="simParall_f2")
@@ -464,6 +464,10 @@ draw_map2(LG1_f2_final, col.group = "#58A4B0", col.mark = "#335C81", output = "m
 #  # Import to R environment as onemap object
 #  
 #  simParallel <- read_onemap("simParall_f2.raw")
+#  plot(simParallel)
+
+## ---- eval=FALSE--------------------------------------------------------------
+#  simParallel <- read_onemap(system.file("extdata/simParall_f2.raw", package = "onemap"))
 #  plot(simParallel)
 
 ## ---- eval=FALSE--------------------------------------------------------------

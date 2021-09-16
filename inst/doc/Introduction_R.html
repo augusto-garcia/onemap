@@ -12,7 +12,7 @@
 
 <meta name="author" content="Statistical Genetics Lab   Department of Genetics   Luiz de Queiroz College of Agriculture   University of São Paulo" />
 
-<meta name="date" content="2021-09-14" />
+<meta name="date" content="2021-09-16" />
 
 <title>Introduction to R</title>
 
@@ -141,27 +141,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <h1 class="title toc-ignore">Introduction to R</h1>
 <h4 class="author"><a href="http://statgen.esalq.usp.br">Statistical Genetics Lab</a> <br /> Department of Genetics <br /> Luiz de Queiroz College of Agriculture <br /> University of São Paulo</h4>
-<h4 class="date">2021-09-14</h4>
+<h4 class="date">2021-09-16</h4>
 
 
 
 <p>R is a language and environment for statistical computing and graphics. To download R, please visit the <a href="https://cran.r-project.org">Comprehensive R Archive Network</a>. You do not need to be an expert on it to be able to build your linkage map using <em>OneMap</em>.</p>
 <p>Although we prefer and recommend the Linux version, in this tutorial it is assumed that the user is running Windows. Users of R under Linux or Mac OS should have no difficulty following this tutorial.</p>
-<p>We would like to recommend that new users, instead of using plain R, use it through the fantastic software <a href="https://www.rstudio.com/">RStudio</a>. With this package, there is no noticeable difference between operating systems.</p>
-<p>As advertised on the website, <em>RStudio is an integrated development environment (IDE) for R. It includes a console, syntax-highlighting editor that supports direct code execution, as well as tools for plotting, history, debugging and workspace management</em>. In other words, it offers a number of facilities for your convenience that will make your life easier, specially if you have never used R before.</p>
+<p>We would like to recommend those new users, instead of using plain R, use it through the fantastic software <a href="https://www.rstudio.com/">RStudio</a>. With this package, there is no noticeable difference between operating systems.</p>
+<p>As advertised on the website, <em>RStudio is an integrated development environment (IDE) for R. It includes a console, syntax-highlighting editor that supports direct code execution, as well as tools for plotting, history, debugging, and workspace management</em>. In other words, it offers a number of facilities for your convenience that will make your life easier, especially if you have never used R before.</p>
 <p>So, go ahead and download and install R and RStudio. The window on the left is where you type the R commands you want.</p>
 <div id="getting-started" class="section level1">
 <h1>Getting started</h1>
 <p>In the left window, you can see a <em>greater than</em> sign (``&gt;’’), which means that R is waiting for a command. We call this a <em>prompt</em>.</p>
-<p>Let us start with a simple example adding two numbers. Type <code>2 + 3</code> at the prompt then type the <em>Enter</em> key. You will see the result directly on the screen.</p>
+<p>Let us start with a simple example of adding two numbers. Type <code>2 + 3</code> at the prompt then type the <em>Enter</em> key. You will see the result directly on the screen.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="sc">+</span> <span class="dv">3</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 5</span></span></code></pre></div>
 <p>You can store this result into a variable for future use, applying the assignment operator _ &lt;- _ (<em>less than</em> sign and _ minus_ altogether):</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">3</span></span></code></pre></div>
-<p>The result of the calculation was stored into the variable <em>x</em>. You can access this result typing <em>x</em> at the prompt:</p>
+<p>The result of the calculation was stored into the variable <em>x</em>. You can access this result by typing <em>x</em> at the prompt:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>x</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 5</span></span></code></pre></div>
-<p>You can also use the variable <em>x</em> into other calculations. For example:</p>
+<p>You can also use the variable <em>x</em> in other calculations. For example:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>x <span class="sc">+</span> <span class="dv">4</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 9</span></span></code></pre></div>
 <p>So, play a little just to start understanding what is going on.</p>
@@ -175,7 +175,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>In the previous example, we provided only one argument (<span class="math inline">\(6.7\)</span>) to the function. Sometimes a function has more than one argument. For example, to obtain the logarithm of <span class="math inline">\(6.7\)</span> to base <span class="math inline">\(4\)</span>, you can use:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">log</span>(<span class="fl">6.7</span>, <span class="at">base =</span> <span class="dv">4</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1.372081</span></span></code></pre></div>
-<p>It is possible to calculate the natural logarithm of a set of numbers by defining a vector and using it as the first argument of the function <em>log</em>. To do so we use the function <em>c()</em>, that <em>combines</em> a set of values into a vector. Thus, to calculate the logarithm of the numbers 6.7, 3.2, 5.4, 8.1, 4.9, 9.7 and 2.5, one can use:</p>
+<p>It is possible to calculate the natural logarithm of a set of numbers by defining a vector and using it as the first argument of the function <em>log</em>. To do so we use the function <em>c()</em>, that <em>combines</em> a set of values into a vector. Thus, to calculate the logarithm of the numbers 6.7, 3.2, 5.4, 8.1, 4.9, 9.7, and 2.5, one can use:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">6.7</span>, <span class="fl">3.2</span>, <span class="fl">5.4</span>, <span class="fl">8.1</span>, <span class="fl">4.9</span>, <span class="fl">9.7</span>, <span class="fl">2.5</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">log</span>(y)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1.9021075 1.1631508 1.6863990 2.0918641 1.5892352 2.2721259 0.9162907</span></span></code></pre></div>
@@ -183,18 +183,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="getting-help" class="section level1">
 <h1>Getting help</h1>
-<p>Every R function has a help page which can be accessed using a question mark before the name of the function. For example, to get help on function <em>log</em>, you would type:</p>
+<p>Every R function has a help page that can be accessed using a question mark before the name of the function. For example, to get help on function <em>log</em>, you would type:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>?log</span></code></pre></div>
-<p>This command will open a help page in the default web browser of your system. The help page contains some important information about the function such its syntax, its arguments and some usage examples.</p>
+<p>This command will open a help page in the default web browser of your system. The help page contains some important information about the function such as its syntax, its arguments, and some usage examples.</p>
 <p>There are many other ways of getting help, of course. For example, from RStudio, click <em>Help</em> on the menu. For doing searches on the internet, it is better to first go to <a href="http://rseek.org/">http://rseek.org/</a>, since R is a very common letter to include in searches.</p>
 </div>
 <div id="packages" class="section level1">
 <h1>Packages</h1>
 <p>Although R has a huge amount of internal functions, for doing very specific computations (like constructing genetic linkage maps), it is necessary to add extra functionalities. These can be done by installing a <em>package</em> (that, loosely speaking, will include a number of new functions for helping you to achieve what you are trying to do). A package is a collection of related functions, help files and example data files that have been bundled together (Adler, 2010).</p>
-<p>For example, let us assume that you need to convert a set of recombination fractions into centimorgan distance using the Kosambi mapping function. One possible way to do this is by using basic R to write a function to calculate the distances. Another way is use the <em>OneMap</em> package. To install it you can type:</p>
+<p>For example, let us assume that you need to convert a set of recombination fractions into centimorgan distance using the Kosambi mapping function. One possible way to do this is by using basic R to write a function to calculate the distances. Another way is to use the <em>OneMap</em> package. To install it you can type:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setRepositories</span>(<span class="at">ind =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;onemap&quot;</span>)</span></code></pre></div>
-<p>You also can use the console menus on RStudio. On the bottom window to the right, select <strong>Packages</strong>, then <strong>Install</strong> and finally select <em>OneMap</em> (select CRAN as your repository). Yes, it is that easy!</p>
+<p>You also can use the console menus on RStudio. On the bottom window to the right, select <strong>Packages</strong>, then <strong>Install</strong>, and finally select <em>OneMap</em> (select CRAN as your repository). Yes, it is that easy!</p>
 <p>Returning to the console, you need to load <em>OneMap</em> by typing:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(onemap)</span></code></pre></div>
 <p>Some Linux users reported the error message below:</p>
@@ -211,7 +211,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="importing-and-exporting-data" class="section level1">
 <h1>Importing and exporting data</h1>
-<p>So far, we entered the variables in R by typing them directly into the console. However, in real situations we usually <strong>read these values from a file</strong> or a data bank (including files on the internet).</p>
+<p>So far, we have entered the variables in R by typing them directly into the console. However, in real situations, we usually <strong>read these values from a file</strong> or a data bank (including files on the internet).</p>
 <p>To learn this procedure, copy and paste the following table into a text editor (for example, <em>notepad</em>) and save it to a file called <em>test.txt</em> into any directory in your computer (such as <em>My Documents</em>).</p>
 <pre><code>    x       y
  2.13    4.50
@@ -250,7 +250,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(dat<span class="sc">$</span>y)</span>
 <span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
 <span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   1.980   9.137  15.465  18.481  28.468  37.390</span></span></code></pre></div>
-<p>The function <em>summary</em> provides some descriptive statistics about the variables in the dataset. If you want to export these information to a file you can use the function <em>write.table</em>:</p>
+<p>The function <em>summary</em> provides some descriptive statistics about the variables in the dataset. If you want to export this information to a file you can use the function <em>write.table</em>:</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(<span class="at">x =</span> <span class="fu">summary</span>(dat), <span class="at">file =</span> <span class="st">&quot;test_sum.txt&quot;</span>, <span class="at">quote =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p>The first argument is the output of the <em>summary</em> function. Note that is possible to use a function as an argument of another one. The second argument is the name of the file in which the summary will be written. Notice that this will happen in the <em>working directory</em>, previously set through RStudio menus. The third argument eliminates double quotes from the output file. After running the command, you can look for the file <em>test_sum.txt</em> in the working directory you defined before.</p>
 </div>
@@ -294,14 +294,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Residual standard error: 8.075 on 10 degrees of freedom</span></span>
 <span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Multiple R-squared:  0.6164, Adjusted R-squared:  0.5781 </span></span>
 <span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F-statistic: 16.07 on 1 and 10 DF,  p-value: 0.002482</span></span></code></pre></div>
-<p>In this case, function <em>summary</em> recognizes <em>ft_mod</em> as an object of class <em>lm</em> and applies a method which shows information about the fitted model, such as the distribution of the residuals, regression coefficients, t-tests, and the coefficient of determination (<span class="math inline">\(R^2\)</span>), etc.</p>
-<p>Thus, it is possible to use the same function on different classes of object to obtain different results. This concept is very important in <em>OneMap</em> and you must remember it to use the package. For example, in other vignettes, we will show that depending on the class of the dataset, which can be <em>outcross</em>, <em>f2</em>, <em>backcross</em>, <em>riself</em> and <em>risib</em>, a certain set of procedures will be applied. Not by coincidence, these classes correspond to all types of populations that can be analyzed. The advantage of this approach is that you do not need to change the function to do a specific analysis; it will recognize the object type and will adapt accordingly.</p>
+<p>In this case, function <em>summary</em> recognizes <em>ft_mod</em> as an object of class <em>lm</em> and applies a method that shows information about the fitted model, such as the distribution of the residuals, regression coefficients, t-tests, and the coefficient of determination (<span class="math inline">\(R^2\)</span>), etc.</p>
+<p>Thus, it is possible to use the same function on different classes of objects to obtain different results. This concept is very important in <em>OneMap</em> and you must remember it to use the package. For example, in other vignettes, we will show that depending on the class of the dataset, which can be <em>outcross</em>, <em>f2</em>, <em>backcross</em>, <em>riself</em> and <em>risib</em>, a certain set of procedures will be applied. Not by coincidence, these classes correspond to all types of populations that can be analyzed. The advantage of this approach is that you do not need to change the function to do a specific analysis; it will recognize the object type and will adapt accordingly.</p>
 </div>
 <div id="saving-your-work" class="section level1">
 <h1>Saving your work</h1>
 <p>Finally, you may need to save your work to come back to it in another working session. But before we explain how to do that, let us explain a few other concepts.</p>
 <p>You can save your <strong><em>R Script</em></strong>, which is the file that has all R instructions you typed so far. You can later load them and run all instructions again to get the same results. This is easy: just click <em>File</em>, <em>Save As</em>, and choose a directory and a name (usually with the extension .R, such as Example1.R, etc).</p>
-<p>A different thing is to save your <strong>R Session</strong>, with all objects you created so far (called <em>R Workspace</em>). This is not the same, because once you load the workspace, you will have all the objects already loaded, not requiring you to do everything again, i. e, running your script. This will help you to save a lot of time, since some of the analysis required to build linkage maps are time demanding.</p>
+<p>A different thing is to save your <strong>R Session</strong>, with all objects you created so far (called <em>R Workspace</em>). This is not the same, because once you load the workspace, you will have all the objects already loaded, not requiring you to do everything again, i. e, running your script. This will help you to save a lot of time since some of the analyses required to build linkage maps are time demanding.</p>
 <p>To do so, click <em>Session</em>, then <em>Save Workspace As</em> and choose a directory and name. In your next session, open RStudio and then go to <em>Session</em>, <em>Load Workspace</em>.</p>
 <p>Alternatively, you can do that using the R function <em>save.image</em>, For example, if you want to save your analysis in a file named <em>myworkspace.RData</em>, you should use:</p>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">save.image</span>(<span class="st">&quot;myworkspace.RData&quot;</span>)</span></code></pre></div>
