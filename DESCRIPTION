@@ -1,7 +1,7 @@
 Package: onemap
 Title: Construction of Genetic Maps in Experimental Crosses: Full-Sib,
         RILs, F2 and Backcrosses
-Version: 2.2.0
+Version: 2.8.0
 Description: Analysis of molecular marker data from model (backcrosses,
     F2 and recombinant inbred lines) and non-model systems (i. e.
     outcrossing species). For the later, it allows statistical
@@ -9,7 +9,7 @@ Description: Analysis of molecular marker data from model (backcrosses,
     phases (genetic map construction) according to Wu et al. (2002)
     <doi:10.1006/tpbi.2002.1577>. All analysis are based on multipoint 
     approaches using hidden Markov models.
-Date: 2020-02-14
+Date: 2021-08-19
 Authors@R: c(person("Gabriel", "Margarido", role = "aut", email =
         "gramarga@usp.br"), person("Marcelo", "Mollinari", role =
         "aut", email = "mmollina@usp.br"), person("Karl",
@@ -32,19 +32,22 @@ Imports: ggplot2 (>= 2.2.1),
         stats, 
         utils,
         grDevices,
-        MDSMap,
+        smacof,
+        princurve,
         parallel,
-        updog,
         dplyr,
         tidyr,
-        stringr,
         htmlwidgets,
         ggpubr,
-        RColorBrewer
-Suggests: qtl (>= 1.36-6), 
-          knitr (>= 1.10), 
-          rmarkdown, 
-          vcfR (>= 1.6.0),
+        RColorBrewer,
+        dendextend,
+        rebus,
+        vcfR (>= 1.6.0)
+Suggests: 
+    knitr (>= 1.10),
+    rmarkdown,
+    testthat,
+    stringr
 VignetteBuilder: knitr
 Encoding: UTF-8
 License: GPL-3
@@ -55,5 +58,5 @@ Repository: CRAN
 Packaged: 2019-09-22 22:25:43 UTC; cris
 NeedsCompilation: yes
 Date/Publication: 2019-09-22 22:48:07 UTC
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.1.9001
 biocViews:

@@ -2,35 +2,41 @@
 % Please edit documentation in R/onemap_read_vcfR.R
 \name{onemap_read_vcfR}
 \alias{onemap_read_vcfR}
-\title{Convert vcfR object to onemap object}
+\title{Convert vcf file to onemap object}
 \usage{
 onemap_read_vcfR(
+  vcf = NULL,
   vcfR.object = NULL,
   cross = c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"),
   parent1 = NULL,
   parent2 = NULL,
   f1 = NULL,
-  only_biallelic = TRUE
+  only_biallelic = TRUE,
+  output_info_rds = NULL
 )
 }
 \arguments{
-\item{vcfR.object}{object of class 'vcfR' from vcfR package.}
+\item{vcf}{string defining the path to VCF file;}
+
+\item{vcfR.object}{object of class vcfR;}
 
 \item{cross}{type of cross. Must be one of: \code{"outcross"} for full-sibs;
 \code{"f2 intercross"} for an F2 intercross progeny; \code{"f2 backcross"};
 \code{"ri self"} for recombinant inbred lines by self-mating; or
 \code{"ri sib"} for recombinant inbred lines by sib-mating.}
 
-\item{parent1}{\code{string} specifying sample ID of the first parent.}
+\item{parent1}{\code{string} specifying sample ID of the first parent. If f2 backcross population, define here the ID of the backcrossed parent.}
 
 \item{parent2}{\code{string} specifying sample ID of the second parent.}
 
 \item{f1}{\code{string} if you are working with f2 intercross or backcross populations you may have f1 parents in you vcf, specify its ID here}
 
 \item{only_biallelic}{if TRUE (default) only biallelic markers are considered, if FALSE multiallelic markers are included.}
+
+\item{output_info_rds}{define a name for the file with alleles information.}
 }
 \description{
-Converts data from a vcfR package to onemap initial object, while trying to identify 
+Converts data from a vcf file to onemap initial object, while identify 
 the appropriate marker segregation patterns.
 }
 \details{
@@ -49,10 +55,8 @@ genotypes cannot be determined are discarded.
 Reference sequence ID and position for each variant site are also stored.
 }
 \examples{
-
 \dontrun{
-vcfR.object <- read.vcfR(system.file("extdata/vcf_example_out.vcf", package = "onemap"))
-data <- onemap_read_vcfR(vcfR.object=vcfR.object,
+data <- onemap_read_vcfR(vcf=system.file("extdata/vcf_example_out.vcf.gz", package = "onemap"),
                  cross="outcross",
                  parent1=c("P1"),
                  parent2=c("P2"))

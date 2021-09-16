@@ -182,6 +182,8 @@ est_map_hmm_bc<-function(geno, error, rf.vec=NULL, verbose=TRUE, tol=1e-6)
 ##' @useDynLib onemap
 ##' @import Rcpp
 ##' 
+##' @export
+##' 
 est_map_hmm_out<-function(geno, error, type,  phase, rf.vec=NULL, verbose=TRUE, tol=1e-6)
 {
   if(is.null(rf.vec))
@@ -193,8 +195,7 @@ est_map_hmm_out<-function(geno, error, type,  phase, rf.vec=NULL, verbose=TRUE, 
            as.numeric(phase),
            as.numeric(rf.vec),
            as.numeric(verbose),
-           as.numeric(tol),
-           PACKAGE = "onemap")
+           as.numeric(tol), PACKAGE = "onemap")
   names(r)<-c("rf", "loglike", "probs")
   return(r)
 }

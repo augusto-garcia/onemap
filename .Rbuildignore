@@ -12,3 +12,4 @@ copying
 ^vignettes_highres
 Dockerfile
 
+^\.github$

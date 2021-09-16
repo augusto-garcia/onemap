@@ -26,29 +26,29 @@ knitr::opts_chunk$set(collapse = TRUE,
 
 _OneMap_ is an environment for constructing linkage maps in several
 experimental crosses, including outcrossing (full-sib families derived
-from two non-homozygous parents), RILs, F$_2$ and backcrosses.
+from two non-homozygous parents), RILs, F$_2$, and backcrosses.
 
 It is implemented as a package to be used under the freely distributed
 R software, which is a language and environment for statistical
 computing ([www.r-project.org](https://www.r-project.org/)). It is designed to
-be fully integrated with R/qtl package (Broman and Sen, 2009) and
+be fully integrated with the R/qtl package (Broman and Sen, 2009) and
 Windows QTL Cartographer (Wang et al., 2010) in order to do QTL
-mapping for RILs, F$_2$ and backcrosses. New functions for doing QTL
+mapping for RILs, F$_2$, and backcrosses. New functions for doing QTL
 mapping in outcrossing species (e. g. using models from Gazaffi et al.
-2014) are under development and will be included in a near future.
+2014) are under development and will be included in the near future.
 
 Wu et al. (2002a) proposed a methodology to construct genetic maps in
 outcrossing species, which allows the analysis of a mixed set of
 different marker types containing various segregation patterns. It
 also allows the simultaneous estimation of linkage and linkage phases
 between markers. Combined with ideas from Wu et al. (2002b) for doing
-multipoint analysis based on hidden Markov models (HMMs), it provides
+multipoint analysis based on hidden Markov models (HMMs), provides
 an excellent framework for genetic mapping in outcrossing species, in
 a similar way as for inbred-based populations, commonly analyzed by
 packages such as MAPMAKER/EXP (Lander et al., 1987).
 
 This method was implemented in _OneMap_ and was tested through
-extensive simulations. It was also successfully applied by author(s)
+extensive simulations. It was also successfully applied by the author(s)
 of the packages and their collaborators in the construction of genetic
 maps of sugarcane (Garcia et al., 2006; Oliveira et al., 2007;
 Palhares et al. 2013), _Passiflora_ (Oliveira et al., 2008; Pereira et
@@ -60,14 +60,14 @@ motivated the implementation of the first release of _OneMap_
 In version 2.0-0, we included several major modifications to take
 advantage of the fact that some segregation patterns that occur in
 outcrossing populations can also occur in populations derived from
-inbred lines (i.e. RILs, F$_2$ and backcrosses). For example, a marker
+inbred lines (i.e. RILs, F$_2$, and backcrosses). For example, a marker
 that segregates in a 1:2:1 fashion in the outcrossing context can be
 viewed as a co-dominant marker in F$_2$ populations. The main
 difference is that, for the latter, there is no need to estimate
 linkage phases.
 
 Using these ideas, we adapted _OneMap_ to also construct genetic maps
-for RILs, F$_2$ and backcross populations, all incorporating the
+for RILs, F$_2$, and backcross populations, all incorporating the
 advantages of the HMMs. Moreover, we also implemented three new
 ordering algorithms. Version 1.0-0 had Rapid Chain Delineation - RCD
 (Doerge, 1996) and TRY (Lander et al., 1987); starting in version
@@ -78,13 +78,13 @@ They can be used for all experimental crosses included in _OneMap_,
 and can be chosen to give the best result for any situation faced by
 the user (Mollinari et al., 2009).
 
-_OneMap_ is available as source code for Windows, Linux and Mac OS. It
+_OneMap_ is available as source code for Windows, Linux, and Mac OS. It
 is released under the GNU General Public License, is open-source and
 the code can be changed freely. It comes with no warranty.
 
 No advanced knowledge in R is required to use _OneMap_. Several
 researchers around the world had contacted us to provide feedback and
-suggestions. If you do not know R, we wrote a short vignette with and
+suggestions. If you do not know R, we wrote a short vignette with an
 introduction to R, where we address the basic knowledge required to
 start using _OneMap_. People with some knowledge of R may just skip
 this part.
@@ -95,7 +95,7 @@ maps for outcrossing (non-inbred) populations, as well as F$_2$
 populations (which can also be applied to backcrosses and RILs).
 
 All sections may be read independently. So, you can just move to the
-part you are interested. Good luck, and let us know if you have
+part you are interested in. Good luck, and let us know if you have
 suggestions to improve the package!
 
 # How to Cite

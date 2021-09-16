@@ -286,7 +286,7 @@ read_mapmaker<-function (file=NULL, dir=NULL)
         if(sum(!is.na(unique(as.vector(geno)))) > 2)
             stop("check data: there are more than 2 classes for backcross")
         segr.type[]<-"A.H"
-        segr.type.num<-rep(NA,ncol(geno))
+        segr.type.num<-rep(8,ncol(geno))
         geno[is.na(geno)]<-0
         geno[geno==3]<-1 #coding for raw data entered as H and B
     }
@@ -297,7 +297,7 @@ read_mapmaker<-function (file=NULL, dir=NULL)
         if(sum(!is.na(unique(as.vector(geno)))) > 2)
             stop("check data: there are more than 2 classes for ", type)
         segr.type[]<-"A.B"
-        segr.type.num<-rep(NA,ncol(geno))
+        segr.type.num<-rep(9,ncol(geno))
         geno[is.na(geno)]<-0
         #geno[geno==3]<-2 #coding as backcross
     }

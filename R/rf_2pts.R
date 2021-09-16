@@ -78,9 +78,7 @@ rf_2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE, rm_mks = FALS
     r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=2, verbose = verbose)
   
   # The recombination matrix should not have NA or NaN
-  
-  if(any(is.na(unlist(r)))) {
-    warning("We could not estimate all recombination fraction. Check if these markers have at least one genotype information or if they have segregation pattern deviation. We suggest filter_missing function to avoid excess of missing data, test_segregation and rm_mks argument.")
+  if(anyNA(r, recursive = T)) {
     if(rm_mks){
       if(is.list(r)){
         mks_rm <- unlist(sapply(r, function(x) rownames(which(is.na(x), arr.ind = T))))
@@ -94,7 +92,7 @@ rf_2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE, rm_mks = FALS
             We suggest filter_missing function to avoid excess of missing data and test_segregation.")
       }
       
-      warning("Recombination fraction for ", length(mks_rm), " markers could not be estimated. They were removed from analysis. Check if these markers have at least one genotype information or if they have segregation pattern deviation. We suggest filter_missing function to avoid excess of missing data and test_segregation.")
+      message("Recombination fraction for ", length(mks_rm), " markers could not be estimated. They were removed from analysis. Check if these markers have at least one genotype information or if they have segregation pattern deviation. We suggest filter_missing function to avoid excess of missing data and test_segregation.")
       
       mks_rm_num <- which(colnames(input.obj$geno) %in% mks_rm)
       mks_num <- which(!colnames(input.obj$geno) %in% mks_rm)
@@ -108,7 +106,8 @@ rf_2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE, rm_mks = FALS
       
       twopts <- rf_2pts(input.obj, LOD=LOD, max.rf=max.rf, verbose = verbose)
       return(twopts)
-    }
+    } else 
+      message("We could not estimate all recombination fraction. Check if these markers have at least one genotype information or if they have segregation pattern deviation. We suggest filter_missing function to avoid excess of missing data, test_segregation and rm_mks argument.")
   }
   
   structure(list(data.name= input.obj, n.mar=input.obj$n.mar, LOD=LOD, max.rf=max.rf,

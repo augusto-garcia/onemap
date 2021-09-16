@@ -1,3 +1,5 @@
+globalVariables(c("gt.onemap.alt.ref", "gt.vcf.alt.ref", "parents"))
+
 #' Extract allele counts of progeny and parents of vcf file
 #' 
 #' Uses vcfR package and onemap object to generates list of vectors with
@@ -25,9 +27,9 @@
 #' \item{mks}{markers identification.} \item{onemap.object}{same onemap.object inputed}
 #' 
 #' @import dplyr
+#' @importFrom vcfR extract.gt masplit
 #' @author Cristiane Taniguti, \email{chtaniguti@@usp.br} 
 #' @export
-
 extract_depth <- function(vcfR.object=NULL,
                           onemap.object= NULL,
                           vcf.par = c("GQ","AD", "DPR, PL", "GL"),
@@ -48,9 +50,6 @@ extract_depth <- function(vcfR.object=NULL,
   if(!is(onemap.object,"onemap"))
     stop("You must specify one onemap object.")
   
-  # if(deparse(substitute(vcfR.object)) != onemap.object$input)                                                  
-  #   stop("The onemap object declared is not compatible with the vcfR object")                                  
-  
   # Infos                                                                                                        
   ind <- rownames(onemap.object$geno)
   IND <- colnames(vcfR.object@gt)[-1]
@@ -67,11 +66,7 @@ extract_depth <- function(vcfR.object=NULL,
   if(all(is.na(MKS)))
     MKS <- chr.pos.vcf
   
-  if(is(onemap.object,"f2")){
-    parents <- which(IND == f1)
-  } else{
-    parents <- c(which(IND == parent1),which(IND == parent2))
-  }
+  parents <- c(which(IND == parent1),which(IND == parent2))
   
   if(recovering==FALSE){
     rm.mks <- which(!(chr.pos.vcf %in% chr.pos.onemap))
@@ -85,52 +80,8 @@ extract_depth <- function(vcfR.object=NULL,
     rm.ind <- NULL
   }
   
-  if(vcf.par == "PL" | vcf.par == "GL"){
-    n.par <- sapply(strsplit(vcfR.object@gt[,1], split=":"), function(x) which(x =="PL" | x =="GL"))
-    lengths <- sapply(strsplit(vcfR.object@gt[,1], split=":"), length)
-    n.par.diff <- unique(lengths) - unique(n.par)
-  }
-  if(vcf.par=="GQ")
-    n.par <- which(strsplit(vcfR.object@gt[1,1], split=":")[[1]]=="GQ")
-  if(vcf.par=="AD")
-    n.par <- which(strsplit(vcfR.object@gt[1,1], split=":")[[1]]=="AD")
-  if(vcf.par=="DPR")
-    n.par <-  which(strsplit(vcfR.object@gt[1,1], split=":")[[1]]=="DPR")
-  if(length(n.par)==0)
-    stop("There is no ", vcf.par, " field in the vcfR.object file. Error probabilities can't be generated")
+  par_matrix <- extract.gt(vcfR.object, element = vcf.par)
   
-  # Spliting fields                                                                                              
-  split.gt <- strsplit(vcfR.object@gt, split=":")
-  
-  # Checking format of missing data                                                                              
-  miss <- unlist(lapply(split.gt,  length))
-  miss.num <- which(miss < n.par)
-  
-  if(length(miss.num) >0){
-    if(vcf.par=="AD" | vcf.par=="DPR"){
-      vcfR.object@gt[miss.num] <- paste0(rep("0,0",n.par),":", collapse = "")
-      split.gt <- strsplit(vcfR.object@gt, split=":")
-    } else if (vcf.par == "PL" | vcf.par == "GL"){
-      vcfR.object@gt[miss.num] <- paste0(rep("0,0,0",n.par),":", collapse = "")
-    } else {
-      vcfR.object@gt[miss.num] <- paste0(rep("0",n.par),":", collapse = "")
-    }
-  }
-  # Extracting chosen parameter matrix
-  
-  if(vcf.par == "PL" | vcf.par == "GL"){
-    genos <- sapply(split.gt, function(x) {
-      for(i in 1:length(unique(lengths))){ 
-        if(length(x) == unique(lengths)[i]){
-          y <- x[unique(lengths)[i]-n.par.diff[i]]
-        }
-      }
-      return(y)
-    })
-    par_matrix <- matrix(genos, nrow = N.MKs, ncol = N.IND+1)
-  } else {
-    par_matrix <- matrix(unlist(lapply(split.gt,  "[", n.par)), nrow = N.MKs, ncol = N.IND+1)[,-1]
-  }
   # Replacing missing data with compatible format                                                                
   if(length(which(par_matrix == ".")) > 0 | length(which(is.na(par_matrix))) > 0 ){
     if(vcf.par=="GQ") {
@@ -158,25 +109,21 @@ extract_depth <- function(vcfR.object=NULL,
   n.mks <- N.MKs - length(rm.mks)
   # The probabilities must be calculated if AD or DPR parameters were chosen                                    
   if(vcf.par=="AD" | vcf.par=="DPR"){
-    ref_matrix <- matrix(as.numeric(unlist(lapply(strsplit(par_matrix, split = ","), "[[",1))), nrow = n.mks, ncol = n.ind)
-    alt_matrix <- matrix(as.numeric(unlist(lapply(strsplit(par_matrix, split = ","), "[[",2))), nrow = n.mks, ncol = n.ind)
-    colnames(alt_matrix) <- colnames(ref_matrix) <- IND
-    rownames(ref_matrix) <- rownames(alt_matrix) <- MKS
+    ref_matrix <- masplit(par_matrix, record=1, sort=0)
+    alt_matrix <- masplit(par_matrix, record=2, sort=0)
   } else if(vcf.par=="GQ"){
     error_matrix <- 10^(-apply(par_matrix,1,as.numeric)/10)
     idx <- which(IND %in% c(parent1, parent2, f1))
     error_matrix <- error_matrix[-idx,]
-    rownames(error_matrix) <- IND[-idx]
-    colnames(error_matrix) <- MKS
     return(error_matrix)
   } else if (vcf.par == "PL" | vcf.par == "GL") {
     idx <- which(IND %in% c(parent1, parent2, f1))
     if(vcf.par == "PL"){
-      probs <- par_matrix %>% .[,-1] %>% .[,-idx] %>% strsplit(., ",") %>% 
+      probs <- par_matrix  %>% .[,-idx] %>% strsplit(., ",") %>% 
         do.call(rbind, .) %>% apply(., 2,as.numeric) %>% 
         apply(., 2, function(x) 10^(-x)/10) 
     } else {
-      probs <- par_matrix %>% .[,-1] %>% .[,-idx] %>% strsplit(., ",") %>% 
+      probs <- par_matrix %>% .[,-idx] %>% strsplit(., ",") %>% 
         do.call(rbind, .) %>% apply(., 2,as.numeric) %>% 
         apply(., 2, function(x) 10^(x)) 
     }
@@ -204,30 +151,17 @@ extract_depth <- function(vcfR.object=NULL,
     pref <- ref_matrix[,idx]
     psize <- size_matrix[,idx]
     
-    if(is(onemap.object,"f2")){
-      if(recovering==TRUE){
-        oalt <- alt_matrix[,-c(idx, which(IND==parent1), which(IND==parent2))]
-        oref <- ref_matrix[,-c(idx, which(IND==parent1), which(IND==parent2))]
-        osize <- size_matrix[,-c(idx, which(IND==parent1), which(IND==parent2))]
-        IND <- IND[-c(idx, which(IND==parent1), which(IND==parent2))]
-      } else {
-        oalt <- alt_matrix
-        oref <- ref_matrix
-        osize <- size_matrix
-        IND <- IND
-      }
+    if(recovering==TRUE){
+      IND <- IND[-c(idx)]
+      oalt <- alt_matrix[,-idx]
+      oref <- ref_matrix[,-idx]
+      osize <- size_matrix[,-idx]
     } else {
-      if(recovering==TRUE){
-        IND <- IND[-c(idx)]
-        oalt <- alt_matrix[,-idx]
-        oref <- ref_matrix[,-idx]
-        osize <- size_matrix[,-idx]
-      } else {
-        IND <- IND[-parents]
-        oalt <- alt_matrix[,-parents]
-        oref <- ref_matrix[,-parents]
-        osize <- size_matrix[,-parents]
-      }
+      IND <- IND[-parents]
+      oalt <- alt_matrix[,-parents]
+      oref <- ref_matrix[,-parents]
+      osize <- size_matrix[,-parents]
+      
     }
     
     n.ind <- dim(oref)[2]

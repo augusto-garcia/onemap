@@ -41,8 +41,8 @@ repulsion/repulsion for a sequence of five markers. If \code{input.obj} is
 of class \code{compare} or \code{try}, this argument indicates which
 combination of linkage phases should be chosen, for the particular order
 given by argument \code{arg}. In both cases, \code{NULL} (default) makes the
-best combination to be taken. If \code{input.obj} is of class, \code{group}
-or \code{order}, this argument has no effect.}
+best combination to be taken. If \code{input.obj} is of class, \code{group}, 
+\code{group.upgma} or \code{order}, this argument has no effect.}
 
 \item{data.name}{a \code{string} indicating the name of the object which
 contains the raw data. This does not have to be defined by the

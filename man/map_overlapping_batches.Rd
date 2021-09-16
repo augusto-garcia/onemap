@@ -13,7 +13,8 @@ map_overlapping_batches(
   seeds = NULL,
   tol = 1e-04,
   rm_unlinked = T,
-  max.gap = F
+  max.gap = F,
+  parallelization.type = "PSOCK"
 )
 }
 \arguments{
@@ -39,6 +40,9 @@ convergence.}
 if \code{TRUE} one of the markers is removed and map is performed again.}
 
 \item{max.gap}{the marker will be removed if it have gaps higher than this defined threshold in both sides}
+
+\item{parallelization.type}{one of the supported cluster types. This should 
+be either PSOCK (default) or FORK.}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the
@@ -61,17 +65,14 @@ Apply the batch mapping algorithm using overlapping windows.
 This algorithm implements the overlapping batch maps for high density
 marker sets. The mapping problem is reduced to a number of subsets (batches)
 which carry information forward in order to more accurately estimate
-recombination fractions and phasing. It is a adaptated version of
+recombination fractions and phasing. It is a adapted version of
 map.overlapping.batches function of BatchMap package. The main differences are
 that this onemap version do not have the option to reorder the markers 
-according to ripple algothm and, if the it finds markers that do not reach the linkage
+according to ripple algorithm and, if the it finds markers that do not reach the linkage
 criterias, the algorithm remove the problematic marker and repeat the analysis.
 Than, the output map can have few markers compared with the input.seq.
 }
 \seealso{
 \code{\link[onemap]{pick_batch_sizes}}, \code{\link[onemap]{map}}
-}
-\author{
-Cristiane Taniguti, \email{chtaniguti@usp.br}
 }
 \keyword{utilities}

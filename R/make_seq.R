@@ -55,8 +55,8 @@
 ##' of class \code{compare} or \code{try}, this argument indicates which
 ##' combination of linkage phases should be chosen, for the particular order
 ##' given by argument \code{arg}. In both cases, \code{NULL} (default) makes the
-##' best combination to be taken. If \code{input.obj} is of class, \code{group}
-##' or \code{order}, this argument has no effect.
+##' best combination to be taken. If \code{input.obj} is of class, \code{group}, 
+##' \code{group.upgma} or \code{order}, this argument has no effect.
 ##' @param data.name a \code{string} indicating the name of the object which
 ##' contains the raw data. This does not have to be defined by the
 ##' user: it is here for compatibility issues when calling \code{make_seq} from
@@ -112,8 +112,8 @@
 make_seq <-
   function(input.obj, arg = NULL, phase = NULL, data.name = NULL, twopt = NULL) {
     # checking for correct object
-    if(!(is(input.obj, c("onemap", "rf_2pts", "group", "compare", "try", "order"))))
-      stop(deparse(substitute(input.obj))," is not an object of class 'onemap', 'rf_2pts', 'group', 'compare', 'try' or 'order'")
+    if(!(is(input.obj, c("onemap", "rf_2pts", "group", "compare", "try", "order", "group.upgma"))))
+      stop(deparse(substitute(input.obj))," is not an object of class 'onemap', 'rf_2pts', 'group', 'group.upgma','compare', 'try' or 'order'")
     if(is(input.obj, "onemap")){
       if (length(arg) == 1 && is.character(arg)) {
         seq.num <- which(input.obj$CHROM == arg)
@@ -158,9 +158,9 @@ make_seq <-
       seq.rf <- -1
       seq.like <- NULL
       if(is.null(twopt)) twopt <- input.obj
-    } else if (is(input.obj, "group")){
+    } else if (is(input.obj, "group") | is(input.obj, "group.upgma")){
       if(length(arg) == 1 && is.numeric(arg) && arg <= input.obj$n.groups) seq.num <- input.obj$seq.num[which(input.obj$groups == arg)]
-      else stop("for this object of class 'group', \"arg\" must be an integer less than or equal to ",input.obj$n.groups)
+      else stop("for this object of class 'group' or 'group.upgma', \"arg\" must be an integer less than or equal to ",input.obj$n.groups)
       seq.phases <- -1
       seq.rf <- -1
       seq.like <- NULL
