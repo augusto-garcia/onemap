@@ -13,7 +13,8 @@ map_save_ram(
   phase_cores = 1,
   size = NULL,
   overlap = NULL,
-  parallelization.type = "PSOCK"
+  parallelization.type = "PSOCK",
+  max.gap = FALSE
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ the phase of a marker. (Should be no more than 4)}
 
 \item{parallelization.type}{one of the supported cluster types. This should 
 be either PSOCK (default) or FORK.}
+
+\item{max.gap}{the marker will be removed if it have gaps higher than this defined threshold in both sides}
 }
 \description{
 Perform map using background objects with only selected markers. It saves ram memory during the procedure.

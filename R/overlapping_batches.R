@@ -249,8 +249,6 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
   if(max.gap){ # the marker will be removed if it have gaps higher than the threshold in both sides
     idx <- which(get(get(".map.fun", envir=.onemapEnv))(mp$seq.rf) > max.gap)
     rm.seq <- vector()
-    cat(kosambi(mp$seq.rf), "\n")
-    cat(idx, "\n")
     for(i in 1:length(idx)){
       if(idx[i] == 1){
         rm.seq <- c(rm.seq, 1)

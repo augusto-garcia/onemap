@@ -15,37 +15,47 @@
 
 ##'Converts probabilities to onemap format
 ##'
-##'@param onemap.obj define
-##'@param global_error define
-##'@param genotypes_errors define
-##'@param genotypes_probs define
+##'@param input.obj object of class onemap or onemap sequence
+##'@param global_error single value to be considered as error probability in HMM emission function
+##'@param genotypes_errors matrix individuals x markers with error values for each marker
+##'@param genotypes_probs table containing the probability distribution for each combination of marker × individual. 
+##'Each line on this table represents the combination of one marker with one individual, and the respective probabilities.
+##'The table should contain four three columns (prob(AA), prob(AB) and prob(BB)) and individuals x markers rows.
 ##'
 ##'@importFrom reshape2 melt
 ##'
 ##'@export
-create_probs <- function(onemap.obj = NULL, 
+create_probs <- function(input.obj = NULL, 
                          global_error = NULL, 
                          genotypes_errors = NULL, 
                          genotypes_probs = NULL){
   
-  if(class(onemap.obj)[1]!="onemap"){
-    stop("onemap.obj should be of class onemap")
+  if(!(is(input.obj,"onemap") | is(input.obj,"sequence"))){
+    stop("input.obj should be of class onemap or sequence")
+  }
+  
+  if(is(input.obj, "sequence")) {
+    seq.obj <- input.obj
+    input.obj <- input.obj$data.name
+    flag <- TRUE
+  } else {
+    flag <- FALSE
   }
   
   # Empty object
-  if(onemap.obj$n.mar == 0){
+  if(input.obj$n.mar == 0){
     warning("It is a empty onemap object. Nothing will be done.")
-    return(onemap.obj)
+    return(input.obj)
   }
   
   if(all(is.null(c(global_error, genotypes_errors, genotypes_probs)))){
     global_error <- 10^-5
   }
   
-  crosstype <- class(onemap.obj)[2]
+  crosstype <- class(input.obj)[2]
   
-  probs <- melt(t(onemap.obj$geno))
-  probs$type <- rep(onemap.obj$segr.type.num, onemap.obj$n.ind)
+  probs <- melt(t(input.obj$geno))
+  probs$type <- rep(input.obj$segr.type.num, input.obj$n.ind)
   
   if(!is.null(global_error) | !is.null(genotypes_errors)){
     
@@ -53,19 +63,19 @@ create_probs <- function(onemap.obj = NULL,
       error <- rep(global_error, length(probs$value))
     } else {
       # checks
-      if(!all(colnames(onemap.obj$geno)%in%colnames(genotypes_errors))){
+      if(!all(colnames(input.obj$geno)%in%colnames(genotypes_errors))){
         stop("Not all markers in onemap object have corresponding genotype errors in matrix")
       }
       
-      if(!all(colnames(genotypes_errors)%in%colnames(onemap.obj$geno))){
+      if(!all(colnames(genotypes_errors)%in%colnames(input.obj$geno))){
         stop("There are more markers in errors matrix than in onemap object")
       }
       
-      if(!all(rownames(onemap.obj$geno)%in%rownames(genotypes_errors))){
+      if(!all(rownames(input.obj$geno)%in%rownames(genotypes_errors))){
         stop("Not all individuals in onemap object have corresponding genotype errors in matrix")
       }
       
-      if(!all(rownames(onemap.obj$geno)%in%rownames(genotypes_errors))){
+      if(!all(rownames(input.obj$geno)%in%rownames(genotypes_errors))){
         stop("There are more individuals in errors matrix than in onemap object")
       }
       
@@ -281,9 +291,15 @@ create_probs <- function(onemap.obj = NULL,
   
   rownames(prob) <- paste0(probs$Var1, "_", probs$Var2)
   
-  onemap.obj$error <- prob
+  input.obj$error <- prob
   
-  return(onemap.obj)
+  if(flag) {
+    seq.obj$data.name <- input.obj
+    seq.obj$twopt$data.name <- input.obj
+    input.obj <- seq.obj
+  }
+  
+  return(input.obj)
 }
 
 

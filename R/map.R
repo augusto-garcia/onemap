@@ -40,7 +40,13 @@
 ##' marker numbers (useful for mds_onemap and map_avoid_unlinked functions).
 ##' @param phase_cores number of computer cores to be used in analysis
 ##' @param parallelization.type one of the supported cluster types. This should 
-#' be either PSOCK (default) or FORK.
+##' be either PSOCK (default) or FORK.
+##' @param global_error single value to be considered as error probability in HMM emission function
+##' @param genotypes_errors matrix individuals x markers with error values for each marker
+##' @param genotypes_probs table containing the probability distribution for each combination of marker × individual. 
+##' Each line on this table represents the combination of one marker with one individual, and the respective probabilities.
+##' The table should contain four three columns (prob(AA), prob(AB) and prob(BB)) and individuals*markers rows.
+##'
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}
@@ -93,7 +99,10 @@
 ##'@export
 map <- function(input.seq,tol=10E-5, verbose=FALSE, 
                 rm_unlinked=FALSE, phase_cores = 1, 
-                parallelization.type = "PSOCK")
+                parallelization.type = "PSOCK",
+                global_error = NULL, 
+                genotypes_errors = NULL, 
+                genotypes_probs = NULL)
 {
   ## checking for correct object
   if(!(is(input.seq, "sequence")))
@@ -104,8 +113,14 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE,
     phase_cores <- 1
   }
   ## Checking version
-  if(!any(names(input.seq$data.name) %in% "error")){
-    input.seq$data.name <- create_probs(input.seq$data.name, global_error = 10^(-5))
+  if(!is.null(global_error)){
+    input.seq <- create_probs(input.seq, global_error = global_error)
+  } else if(!is.null(genotypes_errors)){
+    input.seq <- create_probs(input.seq, genotypes_errors = genotypes_errors)
+  } else if(!is.null(genotypes_probs)){
+    input.seq <- create_probs(input.seq, genotypes_probs = genotypes_probs)
+  } else if(!any(names(input.seq$data.name) %in% "error")){
+    input.seq <- create_probs(input.seq, global_error = 10^(-5))
   }
   
   ##Gathering sequence information
@@ -164,11 +179,11 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE,
                           function(j) {
                             ## call to 'map' function with predefined linkage phase
                             onemap::map(make_seq(input.seq$twopt,
-                                         seq.num[1:2],
-                                         phase=Ph.Init[j]), 
-                                tol=tol, 
-                                rm_unlinked = rm_unlinked,
-                                parallelization.type = parallelization.type)
+                                                 seq.num[1:2],
+                                                 phase=Ph.Init[j]), 
+                                        tol=tol, 
+                                        rm_unlinked = rm_unlinked,
+                                        parallelization.type = parallelization.type)
                           })
       stopCluster(cl)
       gc(verbose = F)
@@ -235,11 +250,11 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE,
                               function(j) {
                                 ## call to 'map' function with predefined linkage phases
                                 onemap::map(make_seq(input.seq$twopt,
-                                             seq.num[1:(mrk+1)],
-                                             phase=Ph.Init[j,]), 
-                                    tol=tol, 
-                                    rm_unlinked = rm_unlinked,
-                                    parallelization.type = parallelization.type)
+                                                     seq.num[1:(mrk+1)],
+                                                     phase=Ph.Init[j,]), 
+                                            tol=tol, 
+                                            rm_unlinked = rm_unlinked,
+                                            parallelization.type = parallelization.type)
                               })
           stopCluster(cl)
           gc(verbose = F)
@@ -325,6 +340,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE,
 ##' if \code{TRUE} one of the markers is removed and returns a vector with remaining 
 ##' marker numbers (useful for mds_onemap and map_avoid_unlinked functions).
 ##' @param verbose If \code{TRUE}, print tracing information.
+##' @param max.gap the marker will be removed if it have gaps higher than this defined threshold in both sides
 ##' 
 map_save_ram <- function(input.seq,
                          tol=10E-5, 
@@ -333,7 +349,8 @@ map_save_ram <- function(input.seq,
                          phase_cores = 1, 
                          size = NULL, 
                          overlap = NULL,
-                         parallelization.type = "PSOCK"){
+                         parallelization.type = "PSOCK",
+                         max.gap = FALSE){
   
   input.seq.tot <- input.seq
   input.seq_ram <- input.seq
@@ -356,7 +373,8 @@ map_save_ram <- function(input.seq,
                                             size = size, overlap = overlap, 
                                             phase_cores = phase_cores, 
                                             tol=tol, rm_unlinked = rm_unlinked,
-                                            parallelization.type = parallelization.type)
+                                            parallelization.type = parallelization.type,
+                                            max.gap = max.gap)
     }
   }
   if(length(input.seq_ram$seq.num) < input.seq.tot$data.name$n.mar){
@@ -373,32 +391,62 @@ map_save_ram <- function(input.seq,
   return(return.map)
 }
 
-#' Repeat HMM if map find unlinked maker
+#' Repeat HMM if map find unlinked marker
 #'
 #' @param input.seq object of class sequence
 #' @param size The center size around which an optimum is to be searched
 #' @param overlap The desired overlap between batches
 #' @param phase_cores The number of parallel processes to use when estimating
 #' the phase of a marker. (Should be no more than 4)
-##' @param parallelization.type one of the supported cluster types. This should 
+#' @param parallelization.type one of the supported cluster types. This should 
 #' be either PSOCK (default) or FORK.
 #' @param tol tolerance for the C routine, i.e., the value used to evaluate
 #' convergence.
-#' 
+#' @param max.gap the marker will be removed if it have gaps higher than this defined threshold in both sides
+#'@param global_error single value to be considered as error probability in HMM emission function
+#'@param genotypes_errors matrix individuals x markers with error values for each marker
+#'@param genotypes_probs table containing the probability distribution for each combination of marker × individual. 
+#'Each line on this table represents the combination of one marker with one individual, and the respective probabilities.
+#'The table should contain four three columns (prob(AA), prob(AB) and prob(BB)) and individuals*markers rows.
+#'
 #' @export
 map_avoid_unlinked <- function(input.seq, 
                                size = NULL, 
                                overlap = NULL,
                                phase_cores = 1, 
                                tol = 10E-5,
-                               parallelization.type = "PSOCK"){
-  #TODO: error checks...
+                               parallelization.type = "PSOCK",
+                               max.gap = FALSE,
+                               global_error = NULL, 
+                               genotypes_errors = NULL, 
+                               genotypes_probs = NULL){
+  
+  ## checking for correct object
+  if(!(is(input.seq, "sequence")))
+    stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+  ## Checking phase_cores
+  if(is(input.seq$data.name, c("riself", "risib", "backcross")) & phase_cores != 1){
+    warning("For RILs and backcross populations, we do not need to estimate phase. Therefore, the parallelization is not possible with our approach.")
+    phase_cores <- 1
+  }
+  ## Checking version
+  if(!is.null(global_error)){
+    input.seq <- create_probs(input.seq, global_error = global_error)
+  } else if(!is.null(genotypes_errors)){
+    input.seq <- create_probs(input.seq, genotypes_errors = genotypes_errors)
+  } else if(!is.null(genotypes_probs)){
+    input.seq <- create_probs(input.seq, genotypes_probs = genotypes_probs)
+  } else if(!any(names(input.seq$data.name) %in% "error")){
+    input.seq <- create_probs(input.seq, global_error = 10^(-5))
+  } 
+  
   map_df <- map_save_ram(input.seq, rm_unlinked = T, 
                          size = size, 
                          overlap = overlap, 
                          tol=tol, 
                          phase_cores = phase_cores,
-                         parallelization.type = parallelization.type)
+                         parallelization.type = parallelization.type,
+                         max.gap = max.gap)
   
   while(is(map_df, "integer")){
     seq_true <- make_seq(input.seq$twopt, map_df)
@@ -408,7 +456,8 @@ map_avoid_unlinked <- function(input.seq,
                            size = size, 
                            overlap = overlap, 
                            phase_cores = phase_cores,
-                           parallelization.type = parallelization.type)
+                           parallelization.type = parallelization.type,
+                           max.gap = max.gap)
   }
   return(map_df)
 }

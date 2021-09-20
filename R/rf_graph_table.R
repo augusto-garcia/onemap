@@ -127,8 +127,6 @@ rf_graph_table <- function(input.seq,
   ## extracting data
   if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2"))
   {
-    #if(input.seq$seq.phases[1] == -1 || input.seq$seq.rf[1] == -1 || is.null(input.seq$seq.like))
-    # stop("You must estimate parameters before running 'rf_graph_table' ")
     ## making a list with necessary information
     n.mrk <- length(input.seq$seq.num)
     LOD <- lapply(input.seq$twopt$analysis,
@@ -145,8 +143,6 @@ rf_graph_table <- function(input.seq,
     )
     mat<-t(get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
   } else {
-    #if(input.seq$seq.rf[1] == -1 || is.null(input.seq$seq.like))
-    #stop("You must estimate parameters before running 'rf_graph_table' ")
     ## making a list with necessary information
     n.mrk <- length(input.seq$seq.num) 
     LOD<-matrix(0, length(input.seq$seq.num), length(input.seq$seq.num))
