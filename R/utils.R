@@ -305,3 +305,73 @@ check_twopts <- function(x){
     return(0)
 }
 
+
+#' Filter markers based on 2pts distance
+#' 
+#' @param input.seq object of class sequence with ordered markers
+#' 
+#' @param max.gap maximum gap measured in kosambi centimorgans allowed between adjacent markers. 
+#' Markers that presents the defined distance between both adjacent neighbors will be removed.
+#' 
+#' @export
+filter_2pts_gaps <- function(input.seq, max.gap=10){
+  
+  if(!is(input.seq, "sequence"))
+    stop("input.seq object must be of class sequence.")
+  
+  ## extracting data
+  if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2"))
+  {
+    ## making a list with necessary information
+    n.mrk <- length(input.seq$seq.num)
+    LOD <- lapply(input.seq$twopt$analysis,
+                  function(x, w){
+                    m<-matrix(0, length(w), length(w))
+                    for(i in 1:(length(w)-1)){
+                      for(j in (i+1):length(w)){
+                        z<-sort(c(w[i],w[j]))
+                        m[j,i]<-m[i,j]<-x[z[1], z[2]]
+                      }
+                    }
+                    return(m)
+                  }, input.seq$seq.num
+    )
+    mat<-t(get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
+  } else {
+    ## making a list with necessary information
+    n.mrk <- length(input.seq$seq.num) 
+    LOD<-matrix(0, length(input.seq$seq.num), length(input.seq$seq.num))
+    for(i in 1:(length(input.seq$seq.num)-1)){
+      for(j in (i+1):length(input.seq$seq.num)){
+        z<-sort(c(input.seq$seq.num[i],input.seq$seq.num[j]))
+        LOD[j,i]<-LOD[i,j]<-input.seq$twopt$analysis[z[1], z[2]]
+      }
+    }
+    mat<-t(get_mat_rf_in(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
+  }
+  
+  dist.LOD <- dist.rf <- vector()
+  for(i in 1:dim(mat)[1]-1){
+    dist.LOD <- c(dist.LOD, mat[i, i+1])
+    dist.rf <- c(dist.rf, round(kosambi(mat[i+1, i]),2))
+  }
+  
+  idx <- which(dist.rf > max.gap)
+  rm.seq <- vector()
+  for(i in 1:length(idx)){
+    if(idx[i] == 1){
+      rm.seq <- c(rm.seq, 1)
+    } else if(idx[i] == length(dist.rf) -1){
+      rm.seq <- c(rm.seq, idx[i] + 1)
+      if(idx[i-1] == idx[i] -1)
+        rm.seq <- c(rm.seq, idx[i])
+    } else if(i-1 != 0){
+      if(idx[i-1] == idx[i] -1) {
+        rm.seq <- c(rm.seq, idx[i])
+      }
+    }
+  }
+  
+  new.seq <- make_seq(input.seq$twopt, input.seq$seq.num[-rm.seq])
+  return(new.seq)
+}

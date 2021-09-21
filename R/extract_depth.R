@@ -115,6 +115,7 @@ extract_depth <- function(vcfR.object=NULL,
     error_matrix <- 10^(-apply(par_matrix,1,as.numeric)/10)
     idx <- which(IND %in% c(parent1, parent2, f1))
     error_matrix <- error_matrix[-idx,]
+    rownames(error_matrix) <- ind
     return(error_matrix)
   } else if (vcf.par == "PL" | vcf.par == "GL") {
     idx <- which(IND %in% c(parent1, parent2, f1))
@@ -136,7 +137,7 @@ extract_depth <- function(vcfR.object=NULL,
     return(probs)
   } 
   
-  if(vcf.par!="GQ" | vcf.par!="PL"){
+  if(vcf.par!="GQ" & vcf.par!="PL"){
     if(vcf.par=="DPR"){
       size_matrix <- ref_matrix
       ref_matrix <- size_matrix - alt_matrix

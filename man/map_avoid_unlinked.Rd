@@ -2,7 +2,7 @@
 % Please edit documentation in R/map.R
 \name{map_avoid_unlinked}
 \alias{map_avoid_unlinked}
-\title{Repeat HMM if map find unlinked maker}
+\title{Repeat HMM if map find unlinked marker}
 \usage{
 map_avoid_unlinked(
   input.seq,
@@ -10,7 +10,11 @@ map_avoid_unlinked(
   overlap = NULL,
   phase_cores = 1,
   tol = 1e-04,
-  parallelization.type = "PSOCK"
+  parallelization.type = "PSOCK",
+  max.gap = FALSE,
+  global_error = NULL,
+  genotypes_errors = NULL,
+  genotypes_probs = NULL
 )
 }
 \arguments{
@@ -28,7 +32,17 @@ convergence.}
 
 \item{parallelization.type}{one of the supported cluster types. This should 
 be either PSOCK (default) or FORK.}
+
+\item{max.gap}{the marker will be removed if it have gaps higher than this defined threshold in both sides}
+
+\item{global_error}{single value to be considered as error probability in HMM emission function}
+
+\item{genotypes_errors}{matrix individuals x markers with error values for each marker}
+
+\item{genotypes_probs}{table containing the probability distribution for each combination of marker × individual. 
+Each line on this table represents the combination of one marker with one individual, and the respective probabilities.
+The table should contain four three columns (prob(AA), prob(AB) and prob(BB)) and individuals*markers rows.}
 }
 \description{
-Repeat HMM if map find unlinked maker
+Repeat HMM if map find unlinked marker
 }

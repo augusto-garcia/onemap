@@ -5,11 +5,6 @@
 
 using namespace Rcpp;
 
-#ifdef RCPP_USE_GLOBAL_ROSTREAM
-Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
-Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
-#endif
-
 // est_hmm_out
 RcppExport SEXP est_hmm_out(SEXP geno_R, SEXP error_R, SEXP type_R, SEXP phase_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R);
 RcppExport SEXP _onemap_est_hmm_out(SEXP geno_RSEXP, SEXP error_RSEXP, SEXP type_RSEXP, SEXP phase_RSEXP, SEXP rf_RSEXP, SEXP verbose_RSEXP, SEXP tol_RSEXP) {

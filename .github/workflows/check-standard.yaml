@@ -5,12 +5,12 @@ on:
     branches:
       - main
       - master
-      - update_checks
+      - gap_filter
   pull_request:
     branches:
       - main
       - master
-      - update_checks
+      - gap_filter
 
 name: R-CMD-check
 
