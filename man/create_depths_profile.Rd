@@ -6,6 +6,7 @@
 \usage{
 create_depths_profile(
   onemap.obj = NULL,
+  vcfR.object = NULL,
   vcf = NULL,
   parent1 = NULL,
   parent2 = NULL,
@@ -22,6 +23,8 @@ create_depths_profile(
 }
 \arguments{
 \item{onemap.obj}{an object of class \code{onemap}.}
+
+\item{vcfR.object}{object of class vcfR;}
 
 \item{vcf}{path to VCF file.}
 

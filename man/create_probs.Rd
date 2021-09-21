@@ -5,22 +5,20 @@
 \title{Converts probabilities to onemap format}
 \usage{
 create_probs(
-  input.obj = NULL,
+  onemap.obj = NULL,
   global_error = NULL,
   genotypes_errors = NULL,
   genotypes_probs = NULL
 )
 }
 \arguments{
-\item{input.obj}{object of class onemap or onemap sequence}
+\item{onemap.obj}{define}
 
-\item{global_error}{single value to be considered as error probability in HMM emission function}
+\item{global_error}{define}
 
-\item{genotypes_errors}{matrix individuals x markers with error values for each marker}
+\item{genotypes_errors}{define}
 
-\item{genotypes_probs}{table containing the probability distribution for each combination of marker × individual. 
-Each line on this table represents the combination of one marker with one individual, and the respective probabilities.
-The table should contain four three columns (prob(AA), prob(AB) and prob(BB)) and individuals x markers rows.}
+\item{genotypes_probs}{define}
 }
 \description{
 Converts probabilities to onemap format
