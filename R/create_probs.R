@@ -178,7 +178,14 @@ create_probs <- function(onemap.obj = NULL,
       
       # The homozygotes can be inverted in heterozygotes genotypes
       hom1.idx <- which(probs$value == 1)
-      for_het <- table(apply(genotypes_probs[hom1.idx,-2],1, which.max)) 
+      # If it has only one marker the apply breaks
+      if(length(hom1.idx) > 1){
+        sub <- genotypes_probs[hom1.idx,-2]
+      } else {
+        sub <- t(as.matrix(genotypes_probs[hom1.idx,-2]))
+      }
+      
+      for_het <- table(apply(sub,1, which.max)) 
       for_het <- as.numeric(which.max(for_het))
       
       if(for_het == 2){
@@ -191,18 +198,24 @@ create_probs <- function(onemap.obj = NULL,
       
       # We consider that the genotype number is correct and the probability need to be the max at the genotype column
       # We change the position of the wrong probabilities
-      hom1.idx.prob <- which(apply(genotypes_probs[hom1.idx,-2],1, which.max) == 1)
+      hom1.idx.prob <- which(apply(sub,1, which.max) == 1)
       prob.temp[hom1.idx[hom1.idx.prob],1] <- genotypes_probs[hom1.idx[hom1.idx.prob], 1]
       prob.temp[hom1.idx[hom1.idx.prob],3] <- genotypes_probs[hom1.idx[hom1.idx.prob], 3]
-      hom1.idx.prob <- which(apply(genotypes_probs[hom1.idx,-2],1, which.max) == 2)
+      hom1.idx.prob <- which(apply(sub,1, which.max) == 2)
       prob.temp[hom1.idx[hom1.idx.prob],1] <- genotypes_probs[hom1.idx[hom1.idx.prob], 3]
       prob.temp[hom1.idx[hom1.idx.prob],3] <- genotypes_probs[hom1.idx[hom1.idx.prob], 1]
       
       hom3.idx <- which(probs$value == 3)
-      hom3.idx.prob <- which(apply(genotypes_probs[hom3.idx,-2],1, which.max) == 1)
+      if(length(hom3.idx) > 1){
+        sub <- genotypes_probs[hom3.idx,-2]
+      } else {
+        sub <- t(as.matrix(genotypes_probs[hom3.idx,-2]))
+      }
+      
+      hom3.idx.prob <- which(apply(sub,1, which.max) == 1)
       prob.temp[hom3.idx[hom3.idx.prob],3] <- genotypes_probs[hom3.idx[hom3.idx.prob], 1]
       prob.temp[hom3.idx[hom3.idx.prob],1] <- genotypes_probs[hom3.idx[hom3.idx.prob], 3]
-      hom3.idx.prob <- which(apply(genotypes_probs[hom3.idx,-2],1, which.max) == 2)
+      hom3.idx.prob <- which(apply(sub,1, which.max) == 2)
       prob.temp[hom3.idx[hom3.idx.prob],3] <- genotypes_probs[hom3.idx[hom3.idx.prob], 3]
       prob.temp[hom3.idx[hom3.idx.prob],1] <- genotypes_probs[hom3.idx[hom3.idx.prob], 1]
       
@@ -231,6 +244,13 @@ create_probs <- function(onemap.obj = NULL,
       het.idx <- which(probs$value == 2)
       
       hom1.idx <- which(probs$value == 1)
+      # If it has only one marker the apply breaks
+      if(length(hom1.idx) > 1){
+        sub <- genotypes_probs[hom1.idx,-2]
+      } else {
+        sub <- t(as.matrix(genotypes_probs[hom1.idx,-2]))
+      }
+      
       hom1.idx.prob <- unique(apply(genotypes_probs[hom1.idx,],1, which.max))
       prob.temp[hom1.idx,1] <- genotypes_probs[hom1.idx, hom1.idx.prob]
       if(hom1.idx.prob == 3){
@@ -244,6 +264,13 @@ create_probs <- function(onemap.obj = NULL,
       }
       
       hom3.idx <- which(probs$value == 3)
+      # If it has only one marker the apply breaks
+      if(length(hom3.idx) > 1){
+        sub <- genotypes_probs[hom3.idx,-2]
+      } else {
+        sub <- t(as.matrix(genotypes_probs[hom3.idx,-2]))
+      }
+      
       hom3.idx.prob <- unique(apply(genotypes_probs[hom3.idx,],1, which.max))
       prob.temp[hom3.idx,3] <- genotypes_probs[hom3.idx, hom3.idx.prob]
       if(hom3.idx.prob == 3){
@@ -275,8 +302,6 @@ create_probs <- function(onemap.obj = NULL,
     }
     
     # The values of estimated genotypes must sum 1
-    
-    
   }
   
   rownames(prob) <- paste0(probs$Var1, "_", probs$Var2)
@@ -285,5 +310,3 @@ create_probs <- function(onemap.obj = NULL,
   
   return(onemap.obj)
 }
-
-
