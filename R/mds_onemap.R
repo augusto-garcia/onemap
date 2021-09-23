@@ -27,6 +27,7 @@
 #' @param displaytext Shows markers names in analysis graphic view
 #' @param weightfn Character string specifying the values to use for the weight
 #' matrix in the MDS 'lod2' or 'lod'.
+#' @param ndim number of dimensions to be considered in the multidimensional scaling procedure (default = 2)
 #' @param mapfn Character string specifying the map function to use on the
 #' recombination fractions 'haldane' is default, 'kosambi' or 'none'.
 #' @param ispc Logical determining the method to be used to estimate the map. By default 
@@ -91,6 +92,7 @@ mds_onemap <- function(input.seq,
                        displaytext=FALSE, 
                        weightfn='lod2', 
                        mapfn='haldane',
+                       ndim = 2,
                        rm_unlinked=TRUE, 
                        size = NULL, 
                        overlap = NULL,
@@ -137,7 +139,7 @@ mds_onemap <- function(input.seq,
               row.names = FALSE, quote = FALSE)
   
   mds_map <- estimate.map(out.file, p = p, ispc = ispc,
-                                   weightfn = weightfn, mapfn = mapfn)
+                                   weightfn = weightfn, mapfn = mapfn, ndim = ndim)
   
   plot(mds_map, displaytext = displaytext)
   
@@ -183,15 +185,15 @@ mds_onemap <- function(input.seq,
 #'
 #'@import smacof 
 #'@keywords internal
-calc.maps.sphere<-function(fname,p=100,weightfn='lod2',mapfn='haldane'){
+calc.maps.sphere<-function(fname,p=100,weightfn='lod2',mapfn='haldane', ndim=2){
   lodrf<-calc.pair.rf.lod(fname,weightfn)
   confplotno<-1:lodrf$nloci
   r<-lodrf$rf
   lod<-lodrf$lod
   M<-dmap(r,mapfn)
   nloci=length(confplotno)
-  smacofsym<-smacofSym(M,ndim=2,weightmat=lod,itmax=100000)
-  smacofsphere<-smacofSphere(M,ndim=2,algorithm="dual",weightmat=lod,penalty=p,itmax=1000000,modulus=10,verbose=FALSE)
+  smacofsym<-smacofSym(M,ndim=ndim,weightmat=lod,itmax=100000)
+  smacofsphere<-smacofSphere(M,ndim=ndim,algorithm="dual",weightmat=lod,penalty=p,itmax=1000000,modulus=10,verbose=FALSE)
   mapsphere<-map.to.interval(smacofsphere,nloci)
   length<-mapsphere$chromlength[nloci]
   distmap<-outer(mapsphere$maporder,mapsphere$maporder,Vectorize(function(i,j)M[i,j]))
@@ -322,7 +324,7 @@ calc.pair.rf.lod<-function(fname,weightfn='lod',...){
 #'@keywords internal
 estimate.map<-function(fname,p=NULL,ispc=TRUE,ndim=2,weightfn='lod2',mapfn='haldane',D1lim=NULL,D2lim=NULL,D3lim=NULL){
   if(ispc==FALSE){
-    map<-calc.maps.sphere(fname, p, weightfn=weightfn, mapfn=mapfn)
+    map<-calc.maps.sphere(fname, p, weightfn=weightfn, mapfn=mapfn, ndim=ndim)
   } else {
     map<-calc.maps.pc(fname, spar=p, ndim=ndim, weightfn=weightfn, mapfn=mapfn)
   }

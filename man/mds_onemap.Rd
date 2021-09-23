@@ -12,6 +12,7 @@ mds_onemap(
   displaytext = FALSE,
   weightfn = "lod2",
   mapfn = "haldane",
+  ndim = 2,
   rm_unlinked = TRUE,
   size = NULL,
   overlap = NULL,
@@ -40,6 +41,8 @@ matrix in the MDS 'lod2' or 'lod'.}
 
 \item{mapfn}{Character string specifying the map function to use on the
 recombination fractions 'haldane' is default, 'kosambi' or 'none'.}
+
+\item{ndim}{number of dimensions to be considered in the multidimensional scaling procedure (default = 2)}
 
 \item{rm_unlinked}{When some pair of markers do not follow the linkage criteria, 
 if \code{TRUE} one of the markers is removed and mds is performed again.}
