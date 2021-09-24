@@ -315,7 +315,7 @@ create_probs <- function(input.obj = NULL,
   
   rownames(prob) <- paste0(probs$Var1, "_", probs$Var2)
   
-  input.obj$error <- prob
+  input.obj$error<- t(apply(prob, 1, function(x) if(all(is.na(x))) rep(1, 4) else x))
   
   if(flag) {
     seq.obj$data.name <- input.obj
