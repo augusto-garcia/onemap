@@ -558,8 +558,7 @@ onemap_read_vcfR <- function(vcf=NULL,
                        POS = onemap.obj$POS, 
                        ID = colnames(onemap.obj$geno), 
                        REF = REF, 
-                       ALT = ALT,
-                       GT_parents)
+                       ALT = ALT)
     saveRDS(info, file = output_info_rds)
   }
   
