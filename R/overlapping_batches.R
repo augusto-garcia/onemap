@@ -265,6 +265,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
     
     if(length(rm.seq)> 0){
       new.seq <- make_seq(mp$twopt, mp$seq.num[-rm.seq])
+      # Make exception if number of remaining markers is smaller than the batch size
       cat("Markers", mp$seq.num[rm.seq], "were remove because they cause gaps higher than ", max.gap, " cM with both neighboors markers.\n")
       mp <- map_overlapping_batches(input.seq = new.seq,
                                     size = size, overlap = overlap,
