@@ -137,9 +137,17 @@ onemap_read_vcfR <- function(vcf=NULL,
   max.alleles <- max(as.numeric(do.call(c, GT_names_up[-1])))
   
   if(phased){
-    GT_names_up[[1]] <- 0 # avoiding warning
+    
+    if(length(grep("[.]", GT_names_up)) > 0){
+      idx.mis <- grep("[.]", GT_names_up)
+      GT_names_up[[idx.mis]] <- 0 # avoiding warning
+    } else idx.mis <- "nomis"
+    
     GT_names_up <- sapply(GT_names_up, function(x) paste(sort(as.numeric(x)), collapse = "/"))
-    GT_names_up[1] <- "./."
+    
+    if(idx.mis != "nomis")
+      GT_names_up[idx.mis] <- "./."
+    
     only_diff <- which(GT_names_up != GT_names)
     repl <- GT_names_up[only_diff]
     sear <- GT_names[only_diff]
@@ -721,5 +729,3 @@ write_onemap_raw <- function(onemap.obj=NULL,
   }
   close(fileConn)
 }
-
-

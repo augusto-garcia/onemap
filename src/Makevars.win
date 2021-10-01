@@ -1,13 +1,2 @@
 PKG_LIBS= $(BLAS_LIBS) $(FLIBS) 
 CXX_STD = CXX11
-ENABLE_STD_THREAD=0
-
-XGB_RFLAGS = -DDMLC_ENABLE_STD_THREAD=$(ENABLE_STD_THREAD)
-
-# disable the use of thread_local for 32 bit windows:
-ifeq ($(R_OSTYPE)$(WIN),windows)
-    XGB_RFLAGS += -DDMLC_CXX11_THREAD_LOCAL=0
-endif
-$(foreach v, $(XGB_RFLAGS), $(warning $(v)))
-
-PKG_CPPFLAGS= $(XGB_RFLAGS)
