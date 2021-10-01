@@ -6,9 +6,7 @@
 # Contains: onemap_read_vcfR write_onemap_raw                         #
 #                                                                     #
 # Written by Cristiane Hayumi Taniguti                                #
-#                                                                     #
-# First version: 09/01/2018                                           #
-# Last update: 09/01/2018                                             #
+#                                                                     #                                            #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
