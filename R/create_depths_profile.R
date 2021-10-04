@@ -224,7 +224,8 @@ create_depths_profile <- function(onemap.obj = NULL,
   
   # Remove multiallelic vcf
   rm.mks <- grep("[2-9]", data$gt.vcf)
-  data <- data[-rm.mks,]
+  if(length(rm.mks) > 0)
+    data <- data[-rm.mks,]
   
   if(class(mks) == "character"){
     data <- data[which(data$mks %in% mks),]
