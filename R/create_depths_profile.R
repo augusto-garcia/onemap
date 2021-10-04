@@ -40,7 +40,7 @@ globalVariables(c("gt.onemap", "gt.vcf"))
 #'
 #'
 #'@import tidyr ggplot2
-#'@importFrom vcfR read.vcfR
+#'@import vcfR 
 #'
 #'@export
 create_depths_profile <- function(onemap.obj = NULL, 
@@ -84,15 +84,15 @@ create_depths_profile <- function(onemap.obj = NULL,
   } 
   
   if(is.null(parent1) | is.null(parent2)) stop("Parents ID must be defined.")
-
+  
   depths <- extract_depth(vcfR.object = vcfR.object, onemap.object = onemap.obj, vcf.par, parent1, parent2,recovering = recovering)
   
   # parents onemap genotypes
   ## Only for biallelic codominant markers
   p1 <- p2 <- vector()
   # parents depth
-  alt <- depths$palt %>% data.frame(mks=depths$mks) %>% gather("ind", "alt", -"mks")
-  ref <- depths$pref %>% data.frame(mks=depths$mks) %>% gather("ind", "ref", -"mks")
+  alt <- depths$palt %>% cbind(mks=depths$mks) %>% as.data.frame %>% gather("ind", "alt", -"mks")
+  ref <- depths$pref %>% cbind(mks=depths$mks) %>% as.data.frame %>% gather("ind", "ref", -"mks")
   parents <- merge(alt,ref)
   parents$mks <- gsub("[|]", ".", parents$mks)
   
@@ -115,20 +115,20 @@ create_depths_profile <- function(onemap.obj = NULL,
   
   id.parents <- c(parent1, parent2)
   p.gt <- data.frame(mks=colnames(onemap.obj$geno), p1, p2)
-
+  
   colnames(p.gt) <- c("mks", id.parents)
   p.gt <- gather(p.gt, "ind", "gt.onemap", -"mks")
   parents <- merge(parents, p.gt)
   
   # parents vcf genotypes
   idx.parents <- which(colnames(vcfR.object@gt[,-1]) %in% id.parents)
-  gts <- vcfR.object@gt[,-1] %>% strsplit(":") %>% sapply("[",1) %>% matrix(ncol = dim(vcfR.object@gt)[2] -1)
+  gts <- extract.gt(vcfR.object)
   
   MKS <- vcfR.object@fix[,3]
   if (any(MKS == "." | is.na(MKS))) MKS <- paste0(vcfR.object@fix[,1], "_",vcfR.object@fix[,2])
   
   p.gt <- data.frame(mks = MKS, gts[,idx.parents], stringsAsFactors = F)
-  colnames(p.gt) <- c("mks", id.parents)
+  colnames(p.gt) <- c("mks", colnames(gts)[idx.parents])
   p.gt <- gather(p.gt, "ind", "gt.vcf", -"mks")
   parents <- merge(parents, p.gt)
   
@@ -138,8 +138,8 @@ create_depths_profile <- function(onemap.obj = NULL,
     parents <- data.frame(parents, A=NA, AB=NA)
   }
   # progeny depth
-  alt <- depths$oalt %>% data.frame(mks=depths$mks) %>% gather("ind", "alt", -"mks")
-  ref <- depths$oref %>% data.frame(mks=depths$mks) %>% gather("ind", "ref", -"mks")
+  alt <- depths$oalt %>% cbind(mks=depths$mks) %>% as.data.frame %>% gather("ind", "alt", -"mks")
+  ref <- depths$oref %>% cbind(mks=depths$mks) %>% as.data.frame %>% gather("ind", "ref", -"mks")
   progeny <- merge(alt,ref)
   
   # progeny onemap genotypes
@@ -157,9 +157,10 @@ create_depths_profile <- function(onemap.obj = NULL,
   
   # progeny vcf genotypes
   pro.gt <- data.frame(mks = MKS, gts[, -idx.parents], stringsAsFactors = F)
-  colnames(pro.gt) <- c("mks", colnames(vcfR.object@gt)[-1][-idx.parents])
+  colnames(pro.gt) <- c("mks", colnames(gts)[-idx.parents])
   pro.gt <- gather(pro.gt, "ind", "gt.vcf", -"mks")
   progeny <- merge(progeny, pro.gt)
+  
   data <- rbind(parents, progeny)
   
   # Add marker type
@@ -221,6 +222,10 @@ create_depths_profile <- function(onemap.obj = NULL,
   data$gt.onemap.alt.ref <- as.factor(data$gt.onemap.alt.ref)
   data$gt.vcf.alt.ref <- as.factor(data$gt.vcf.alt.ref)
   
+  # Remove multiallelic vcf
+  rm.mks <- grep("[2-9]", data$gt.vcf)
+  data <- data[-rm.mks,]
+  
   if(class(mks) == "character"){
     data <- data[which(data$mks %in% mks),]
   }
@@ -228,6 +233,8 @@ create_depths_profile <- function(onemap.obj = NULL,
   if(class(inds) == "character"){
     data <- data[which(data$ind %in% inds),]
   }
+  
+  data <- data %>% transform(ref = as.numeric(ref), alt = as.numeric(alt)) 
   
   if(is.null(y_lim))
     y_lim <- max(data$ref) 
