@@ -235,8 +235,9 @@ create_depths_profile <- function(onemap.obj = NULL,
     data <- data[which(data$ind %in% inds),]
   }
   
-  data <- data %>% transform(ref = as.numeric(ref), alt = as.numeric(alt)) 
-  
+  data$ref <- as.numeric(data$ref)
+  data$alt <- as.numeric(data$alt)
+
   if(is.null(y_lim))
     y_lim <- max(data$ref) 
   if(is.null(x_lim))
