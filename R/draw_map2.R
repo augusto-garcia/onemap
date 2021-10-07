@@ -62,7 +62,9 @@
 ##'
 ##' }
 ##'@export
-draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL,group.names=NULL,centered=F,y.axis=TRUE,space=NULL,col.group=NULL,col.mark=NULL,col.tag=NULL,output=NULL){
+draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,
+                    main=NULL,group.names=NULL,centered=F,y.axis=TRUE,
+                    space=NULL,col.group=NULL,col.mark=NULL,col.tag=NULL,output=NULL){
   #check input
   input<-list(...)
   if(length(input)==0) stop("argument '...' missing, with no default")
@@ -114,25 +116,27 @@ draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL,grou
   if(is.null(col.group)) col.group<-"grey85"
   if(is.null(col.mark)) col.mark<-"#cc662f"
   if(is.null(col.tag)) col.tag<-"#003350"
-  if(is.null(output)) output<-"map"
-  
-  
+
   # Split output
-  if(strsplit(output,"")[[1]][length(strsplit(output,"")[[1]])]=="/") output<-paste(output,"map",sep = "")
-  output<-strsplit(output,"/",T)[[1]]
-  if(length(output)>1){
-    output.dir<-paste(output[-length(output)],collapse = "/")
-    output<-output[length(output)]
-  } else output.dir<-"."
-  if(!dir.exists(output.dir)) stop("\nInvalid directory")
-  output<-strsplit(output,".",T)[[1]]
-  if(output[length(output)]%in%c("bmp","jpeg","png","tiff","pdf","eps")){
-    output.ext<-output[length(output)]
-    output<-paste(output[1:(length(output)-1)],collapse = ".")
-  } else{
-    output.ext<-"eps"
-    output<-paste(output[1:length(output)],collapse = ".")
+  if(is.null(output)){
+    output.dir <- getwd()
+    output <- "map"
+    output.ext <- "eps"
+  } else {
+    output.dir <- dirname(output)
+    if(!dir.exists(output.dir)) stop("\nInvalid directory")
+    output <- basename(output)
   }
+
+  if(length(grep("[.]", output)) > 0)
+  output.split <- unlist(strsplit(output, "[.]"))
+  output.ext <- output.split[length(output.split)]
+  output<-paste(output.split[1:(length(output.split)-1)],collapse = ".")
+    
+  if(!(output.ext %in% c("bmp","jpeg","png","tiff","pdf","eps"))){
+    output.ext<-"eps"
+  }
+  
   n<-0
   if(paste(output,output.ext,sep = ".")%in%list.files(output.dir)){
     repeat{
@@ -146,18 +150,19 @@ draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL,grou
   }
   
   # Preparing plot area
+  file_path <- file.path(output.dir, paste(output, paste0(".",output.ext),sep=""))
   if(output.ext=="bmp"){
-    bmp(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15,width = nchr*(1+space)+(mleft+1)/2,res = 300,units = "cm")
+    bmp(file_path,height = 15,width = nchr*(1+space)+(mleft+1)/2,res = 300,units = "cm")
   } else  if(output.ext=="jpeg"){
-    jpeg(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15,width = nchr*(1+space)+(mleft+1)/2,res = 300,units = "cm")
+    jpeg(file_path,height = 15,width = nchr*(1+space)+(mleft+1)/2,res = 300,units = "cm")
   } else if(output.ext=="png"){
-    png(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15,width = nchr*(1+space)+(mleft+1)/2,res = 300,units = "cm")
+    png(file_path,height = 15,width = nchr*(1+space)+(mleft+1)/2,res = 300,units = "cm")
   } else if(output.ext=="tiff"){
-    tiff(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15,width = nchr*(1+space)+(mleft+1)/2,res = 300,units = "cm")
+    tiff(file_path,height = 15,width = nchr*(1+space)+(mleft+1)/2,res = 300,units = "cm")
   } else if(output.ext=="pdf"){
-    pdf(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15/2.54,width = (nchr*(1+space)+(mleft+1)/2)/2.54)
+    pdf(file_path,height = 15/2.54,width = (nchr*(1+space)+(mleft+1)/2)/2.54)
   } else if(output.ext=="eps"){
-    postscript(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15/2.54,width = (nchr*(1+space)+(mleft+1)/2)/2.54,paper = "special",horizontal = F,onefile = F)
+    postscript(file_path,height = 15/2.54,width = (nchr*(1+space)+(mleft+1)/2)/2.54,paper = "special",horizontal = F,onefile = F)
   }
   
   par(mar=c(1,mleft,2,1))
@@ -239,6 +244,6 @@ draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL,grou
   }
   dev.off()
   cat("Completed\nOutput file: ")
-  if(output.dir==".") cat(getwd(),"/",output,".",output.ext,"\n",sep = "") else cat(output.dir,"/",output,".",output.ext,"\n",sep = "")
+  cat(file_path)
 }
 ##end of file
