@@ -128,10 +128,11 @@ draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,
     output <- basename(output)
   }
 
-  if(length(grep("[.]", output)) > 0)
-  output.split <- unlist(strsplit(output, "[.]"))
-  output.ext <- output.split[length(output.split)]
-  output<-paste(output.split[1:(length(output.split)-1)],collapse = ".")
+  if(length(grep("[.]", output)) > 0){
+    output.split <- unlist(strsplit(output, "[.]"))
+    output.ext <- output.split[length(output.split)]
+    output<-paste(output.split[1:(length(output.split)-1)],collapse = ".")
+  } else output.ext <- "eps" 
     
   if(!(output.ext %in% c("bmp","jpeg","png","tiff","pdf","eps"))){
     output.ext<-"eps"
