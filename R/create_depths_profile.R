@@ -171,6 +171,8 @@ create_depths_profile <- function(onemap.obj = NULL,
   data$gt.onemap.alt.ref[which(data$gt.onemap == 2)] <- "heterozygous"
   
   # Search the ref and alt alleles using parents
+  data$alt <- as.numeric(data$alt)
+  data$ref <- as.numeric(data$ref)
   
   # D2.15 = aa x ab
   idx <- data$gt.onemap == 1 & (data$mk.type == "D2.15")
