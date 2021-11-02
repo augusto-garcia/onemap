@@ -2,7 +2,7 @@
 % Please edit documentation in R/create_probs.R
 \name{create_probs}
 \alias{create_probs}
-\title{Converts probabilities to onemap format}
+\title{Build genotype probabilities matrix for hmm}
 \usage{
 create_probs(
   input.obj = NULL,
@@ -14,14 +14,43 @@ create_probs(
 \arguments{
 \item{input.obj}{object of class onemap or onemap sequence}
 
-\item{global_error}{single value to be considered as error probability in HMM emission function}
+\item{global_error}{a integer specifing the global error value}
 
-\item{genotypes_errors}{matrix individuals x markers with error values for each marker}
+\item{genotypes_errors}{a matrix with dimensions (number of individuals) x (number of markers) with genotypes errors values}
 
-\item{genotypes_probs}{table containing the probability distribution for each combination of marker × individual. 
-Each line on this table represents the combination of one marker with one individual, and the respective probabilities.
-The table should contain four three columns (prob(AA), prob(AB) and prob(BB)) and individuals x markers rows.}
+\item{genotypes_probs}{a matrix with dimensions (number of individuals)*(number of markers) x possible genotypes 
+(i.e., a ab ba b) with four columns for f2 and outcrossing populations, and two for backcross and RILs).}
+}
+\value{
+An object of class \code{onemap} with the built matrix at prob component of the list
 }
 \description{
-Converts probabilities to onemap format
+The genotypes probabilities can be calculated considering a global error (default method)
+or considering a genotype error probability for each genotype. Furthermore, user can provide 
+directly the genotype probability matrix.
+}
+\details{
+The genotype probability matrix has number of individuals x number of markers rows and
+four columns (or two if considering backcross or RILs populations), one for each possible genotype
+of the population. This format follows the one proposed by MAPpoly.
+
+The genotype probabilities come from SNP calling methods. If you do not have them, you can use a global
+error or a error value for each genotype. The OneMap until 2.1 version have only the global error option.
+}
+\examples{
+
+  data(onemap_example_out)
+  new.data <- create_probs(onemap_example_out, global_error = 10^-5)
+  
+}
+\references{
+Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
+(2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
+1.09-43
+}
+\seealso{
+\code{\link[onemap]{make_seq}}
+}
+\author{
+Cristiane Taniguti \email{chtaniguti@usp.br}
 }

@@ -14,7 +14,6 @@ globalVariables(c("gt.onemap.alt.ref", "gt.vcf.alt.ref", "parents"))
 #' @param parent1 parent 1 identification in vcfR object
 #' @param parent2 parent 2 identification in vcfR objetc
 #' @param f1 if your cross type is f2, you must define the F1 individual
-#' @param mean_phred genotyping error rate to be considered when estimate genotypes by binomial approach
 #' @param recovering TRUE/FALSE, if TRUE avaliate all markers from vcf file, if FALSE avaliate only markers in onemap object
 #' @return list containing the following components: \item{palt}{a \code{matrix} with parent 1 and 2 
 #' alternative alelle counts.} \item{pref}{a \code{matrix} with parent 1 and 2 
@@ -36,7 +35,6 @@ extract_depth <- function(vcfR.object=NULL,
                           parent1="P1",
                           parent2="P2",
                           f1="F1",
-                          mean_phred=20,
                           recovering = FALSE){
   if(is.null(vcfR.object))
     stop("You must specify one vcfR object.")
@@ -63,7 +61,7 @@ extract_depth <- function(vcfR.object=NULL,
   chr.pos.onemap <- paste0(onemap.object$CHROM,"_", onemap.object$POS)
   
   # If there are no marker names                                                                                 
-  if(all(is.na(MKS)))
+  if(anyNA(MKS))
     MKS <- chr.pos.vcf
   
   parents <- c(which(IND == parent1),which(IND == parent2))
@@ -86,9 +84,8 @@ extract_depth <- function(vcfR.object=NULL,
   if(length(which(par_matrix == ".")) > 0 | length(which(is.na(par_matrix))) > 0 ){
     if(vcf.par=="GQ") {
       par_matrix[which(par_matrix == ".")] <- NA
-      par_matrix[which(is.na(par_matrix))] <- NA
     } else if (vcf.par == "PL" | vcf.par == "GL") { 
-      par_matrix[which(par_matrix == ".")] <- "0,0,0"
+      par_matrix[which(par_matrix == "." | is.na(par_matrix))] <- "0,0,0"
     } else {
       par_matrix[which(par_matrix == ".")] <- "0,0"
     }
@@ -122,17 +119,22 @@ extract_depth <- function(vcfR.object=NULL,
     if(vcf.par == "PL"){
       probs <- par_matrix  %>% .[,-idx] %>% strsplit(., ",") %>% 
         do.call(rbind, .) %>% apply(., 2,as.numeric) %>% 
-        apply(., 2, function(x) 10^(-x)/10) 
+        apply(., 2, function(x) 10^(-x/10)) 
     } else {
       probs <- par_matrix %>% .[,-idx] %>% strsplit(., ",") %>% 
         do.call(rbind, .) %>% apply(., 2,as.numeric) %>% 
         apply(., 2, function(x) 10^(x)) 
     }
+    
+    probs[apply(probs, 1, function(x) all(x == 1)),] <- NA
+    
     sums <- apply(probs, 1, sum)
     comb <- expand.grid(MKS, IND[-idx])
     
     # Probs sum 1
     probs <- probs/sums 
+    probs[apply(probs, 1, function(x) all(is.na(x))),] <- 1
+    
     rownames(probs) <- paste0(comb$Var1, "_", comb$Var2)
     return(probs)
   } 
@@ -146,7 +148,7 @@ extract_depth <- function(vcfR.object=NULL,
       size_matrix <- ref_matrix + alt_matrix
     }
     
-    # Separing offspring and parents                                                                               
+    # Splitting offspring and parents                                                                               
     idx <- parents
     palt <- alt_matrix[,idx]
     pref <- ref_matrix[,idx]
@@ -162,7 +164,6 @@ extract_depth <- function(vcfR.object=NULL,
       oalt <- alt_matrix[,-parents]
       oref <- ref_matrix[,-parents]
       osize <- size_matrix[,-parents]
-      
     }
     
     n.ind <- dim(oref)[2]

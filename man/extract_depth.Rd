@@ -11,7 +11,6 @@ extract_depth(
   parent1 = "P1",
   parent2 = "P2",
   f1 = "F1",
-  mean_phred = 20,
   recovering = FALSE
 )
 }
@@ -29,8 +28,6 @@ PL return a data.frame with genotypes probabilities for every genotype.}
 \item{parent2}{parent 2 identification in vcfR objetc}
 
 \item{f1}{if your cross type is f2, you must define the F1 individual}
-
-\item{mean_phred}{genotyping error rate to be considered when estimate genotypes by binomial approach}
 
 \item{recovering}{TRUE/FALSE, if TRUE avaliate all markers from vcf file, if FALSE avaliate only markers in onemap object}
 }
