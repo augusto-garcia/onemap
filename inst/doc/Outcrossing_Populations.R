@@ -1,4 +1,4 @@
-## ----knitr_init, echo=FALSE, cache=FALSE--------------------------------------
+## ----knitr_init, echo=FALSE, cache=FALSE, message=FALSE-----------------------
 library(knitr)
 library(rmarkdown)
 knitr::opts_chunk$set(collapse = TRUE,

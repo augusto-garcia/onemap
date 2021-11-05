@@ -9,18 +9,35 @@ Description: Analysis of molecular marker data from model (backcrosses,
     phases (genetic map construction) according to Wu et al. (2002)
     <doi:10.1006/tpbi.2002.1577>. All analysis are based on multipoint 
     approaches using hidden Markov models.
-Date: 2021-08-19
-Authors@R: c(person("Gabriel", "Margarido", role = "aut", email =
-        "gramarga@usp.br"), person("Marcelo", "Mollinari", role =
-        "aut", email = "mmollina@usp.br"), person("Karl",
-        "Broman", role = "ctb", email = "kbroman@biostat.wisc.edu"),
-        person("Getulio", "Ferreira", role="ctb", email="getulio.caifer@usp.br"),
-        person("Rodrigo", "Amadeu", role = "ctb", email = "rodrigo.amadeu@usp.br"),
-        person("Cristiane", "Taniguti", role=c("ctb", "cre"), email="chtaniguti@usp.br"),
-        person("Augusto", "Garcia", role = c("aut", "ctb"), email =
-        "augusto.garcia@usp.br"))
-Author: Gabriel Margarido [aut], Marcelo Mollinari [aut], Karl
-        Broman [ctb], Getulio Ferreira [ctb], Rodrigo Amadeu [ctb], Cristiane Taniguti [ctb, cre], Augusto Garcia [aut, ctb]
+Date: 2021-11-05
+Authors@R: c(person("Gabriel", 
+                    "Margarido", 
+                    role = "aut",
+                    email = "gramarga@usp.br"), 
+             person("Marcelo", 
+                    "Mollinari", 
+                    role = "aut"), 
+             person("Cristiane", 
+                    "Taniguti", 
+                    role=c("aut", "cre"), 
+                    email="chtaniguti@tamu.edu"),
+             person("Getulio", 
+                    "Ferreira", 
+                    role="ctb"),
+             person("Rodrigo", 
+                    "Amadeu", 
+                    role = "ctb"),
+             person("Karl",
+                    "Broman", 
+                    role = "ctb"),
+            person(given = "Katharine",
+                    family = "Preedy",
+                    role = c("ctb", "cph"),
+                    comment = "MDS ordering algorithm"),
+             person("Augusto", 
+                    "Garcia", 
+                    role = c("aut", "ctb"), 
+                    email = "augusto.garcia@usp.br"))
 LinkingTo: Rcpp (>= 0.10.5)
 Depends: R (>= 3.6.0)
 Imports: ggplot2 (>= 2.2.1), 
@@ -53,7 +70,7 @@ Encoding: UTF-8
 License: GPL-3
 URL: https://github.com/augusto-garcia/onemap
 BugReports: https://github.com/augusto-garcia/onemap/wiki
-Maintainer: Cristiane Taniguti <chtaniguti@usp.br>
+Maintainer: Cristiane Taniguti <chtaniguti@tamu.edu>
 Repository: CRAN
 Packaged: 2019-09-22 22:25:43 UTC; cris
 NeedsCompilation: yes
