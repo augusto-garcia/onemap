@@ -19,7 +19,7 @@ Authors@R: c(person("Gabriel",
                     role = "aut"), 
              person("Cristiane", 
                     "Taniguti", 
-                    role=c("aut", "cre"), 
+                    role=c("ctb", "cre"), 
                     email="chtaniguti@tamu.edu"),
              person("Getulio", 
                     "Ferreira", 
@@ -38,6 +38,8 @@ Authors@R: c(person("Gabriel",
                     "Garcia", 
                     role = c("aut", "ctb"), 
                     email = "augusto.garcia@usp.br"))
+Author: Gabriel Margarido [aut], Marcelo Mollinari [aut], Karl
+        Broman [ctb], Getulio Ferreira [ctb], Rodrigo Amadeu [ctb], Cristiane Taniguti [ctb, cre], Augusto Garcia [aut, ctb]
 LinkingTo: Rcpp (>= 0.10.5)
 Depends: R (>= 3.6.0)
 Imports: ggplot2 (>= 2.2.1), 
