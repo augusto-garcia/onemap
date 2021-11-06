@@ -777,7 +777,7 @@ In this particular case, seriation will return an expected error:
 LG1_ser_f2 <- seriation(LG1_f2, hmm = F) # Will return an error (can not be used in this case)
 ```
 
-Another method that has been demonstrated to be very efficient in ordering markers uses the multidimensional scaling (MDS) approach. `OneMap` has the `mds_onemap` function that makes an interface with the MDSMap package to apply this approach to order markers. This is particularly useful if you are dealing with many markers (up to 20). The method also provides diagnostics graphics and parameters to find outliers to help users to filter the dataset.  You can find more information in `MDSMap` [vignette](https://cran.r-project.org/web/packages/MDSMap/vignettes/MDSMap.pdf). Our `mds_onemap` does not present all possibilities of analysis that the MDSMap package presents. See help page `?mds_onemap` to check which ones we implemented.
+Another method that has been demonstrated to be very efficient in ordering markers uses the multidimensional scaling (MDS) approach. `OneMap` has the `mds_onemap` function that makes an interface with the MDSMap package to apply this approach to order markers. This is particularly useful if you are dealing with many markers (up to 20). The method also provides diagnostics graphics and parameters to find outliers to help users to filter the dataset.  You can find more information in `MDSMap` [vignette](https://CRAN.R-project.org/package=MDSMap). Our `mds_onemap` does not present all possibilities of analysis that the MDSMap package presents. See help page `?mds_onemap` to check which ones we implemented.
 
 ```{r}
 LG1_mds_f2 <- mds_onemap(input.seq = LG1_f2, hmm = F)

@@ -134,7 +134,7 @@ function such as its syntax, its arguments, and some usage examples.
 
 There are many other ways of getting help, of course. For example, from RStudio,
 click _Help_ on the menu. For doing searches on the internet, it is
-better to first go to [http://rseek.org/](http://rseek.org/), since R
+better to first go to [https://rseek.org/](https://rseek.org/), since R
 is a very common letter to include in searches.  
 
 # Packages
