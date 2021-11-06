@@ -392,8 +392,6 @@ No Starch Press, Inc., 404 pages.
 Adler, J. R. 2009. R in a Nutshell. A Desktop Quick Reference.
 O'Reilly Media.
 
-A tutorial by two OneMap authors: [Introduction to
-R](http://augusto-garcia.github.io/R-Introduction/)
 
 
 

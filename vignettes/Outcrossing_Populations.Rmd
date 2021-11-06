@@ -30,7 +30,7 @@ The following example is intended to show the usage of `OneMap`
 functions for linkage mapping in outcrossing (non-inbred) populations.
 With basic knowledge of R syntax, one should have no problems using
 it. If you are not familiar with R, we recommend reading the vignette
-[Introduction to R](https://htmlpreview.github.io/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Introduction_R.html).
+[Introduction to R](https://statgen-esalq.github.io/tutorials/onemap/Introduction_R.html).
 
 Hopefully, these examples will be clear enough to help any user to
 understand its functionality and start using it. You do not need to be
@@ -526,7 +526,7 @@ LGs
 
 <span style="color:orange">(new!)</span>
 
-The other function for grouping is called `group_upgma`. It is an adapted version of [mappoly](https://github.com/mmollina/MAPpoly) grouping function. 
+The other function for grouping is called `group_upgma`. It is an adapted version of [MAPpoly](https://github.com/mmollina/MAPpoly) grouping function. 
 
 ```{r}
 LGs_upgma <- group_upgma(mark_no_dist, expected.groups = 5, inter = F)

@@ -40,7 +40,7 @@ globalVariables(c("gt.onemap", "gt.vcf"))
 #'
 #'
 #'@import tidyr ggplot2
-#'@import vcfR 
+#'@importFrom vcfR read.vcfR extract.gt masplit
 #'
 #'@export
 create_depths_profile <- function(onemap.obj = NULL, 

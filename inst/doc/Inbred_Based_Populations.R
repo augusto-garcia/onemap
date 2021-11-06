@@ -1,4 +1,4 @@
-## ----knitr_init, echo=FALSE, cache=FALSE, message=FALSE-----------------------
+## ----knitr_init, echo=FALSE, cache=FALSE, message=FALSE, cache.comments=FALSE, comment=F, warning=FALSE----
 library(knitr)
 library(rmarkdown)
 

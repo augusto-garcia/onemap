@@ -9,7 +9,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r knitr_init, echo=FALSE, cache=FALSE, message=FALSE}
+```{r knitr_init, echo=FALSE, cache=FALSE, message=FALSE, cache.comments=FALSE, comment=F, warning=FALSE}
 library(knitr)
 library(rmarkdown)
 
@@ -38,7 +38,7 @@ mapping in outcrossing species; please read the proper vignette.
 
 If you are not familiar with `R`, we recommend first the reading of
 vignette
-[Introduction to R](https://htmlpreview.github.io/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Introduction_R.html).
+[Introduction to R](https://statgen-esalq.github.io/tutorials/onemap/Introduction_R.html).
 You do not need to be an expert in R to build your linkage map, but
 some concepts are necessary and will help you through the process.
 
@@ -225,7 +225,7 @@ modify it accordingly. The second one is the data file name.
 In this example, an object named `mapmaker_example_f2.raw` was created. Notice
 that if you leave the argument `dir` blank, the file will be read from
 your current _working directory_. To set a working directory, see
-[Introduction to R (Importing and Exporting Data)](http://augustogarcia.me/onemap/vignettes_highres/Introduction_R.html).
+[Introduction to R (Importing and Exporting Data)](https://statgen-esalq.github.io/tutorials/onemap/Introduction_R.html).
 
 ```{r, eval=FALSE}
 mapmaker_example_f2 <- read_mapmaker(file= system.file("extdata/mapmaker_example_f2.raw", 
@@ -673,7 +673,7 @@ just to avoid typing `LGs_f2` in a new row to have the object printed).
 We can see that the markers were assigned to only one linkage group. 
 This division isn't so trustful, mostly if you are also working with dominant markers. 
 
-Another option is the `group_upgma` function. It is an adapted version of [mappoly](https://github.com/mmollina/MAPpoly) grouping function. 
+Another option is the `group_upgma` function. It is an adapted version of [MAPpoly](https://github.com/mmollina/MAPpoly) grouping function. 
 
 ```{r}
 LGs_upgma <- group_upgma(mark_all_f2, expected.groups = 5, inter = F)
