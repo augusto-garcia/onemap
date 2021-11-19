@@ -1541,7 +1541,7 @@ knitr::kable(time_spent)
 Reading the simulated dataset:
 
 ```{r, eval=FALSE}
-simParallel <- read_onemap(system.file(package = "onemap", "extdata/simParall_out.raw"))
+simParallel <- read_onemap(system.file(package = "onemap", "extdata/simParall_out.raw")) # dataset available only in onemap github version
 plot(simParallel, all=FALSE)
 ```
 

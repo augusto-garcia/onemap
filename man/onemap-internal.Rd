@@ -17,7 +17,6 @@
 \alias{est_map_hmm_f2}
 \alias{est_map_hmm_bc}
 \alias{est_rf_bc}
-\alias{est_rf_f2}
 \alias{est_rf_out}
 \alias{get_bins}
 \alias{get_mat_rf_in}
@@ -60,7 +59,6 @@ compare_outcross(input.seq, n.best, tol, verbose)
 Cindex(order,r)
 diplo(w, seq.num, seq.phases)
 est_rf_out(geno, mrk, seg_type, nind, verbose)
-est_rf_f2(geno, mrk, seg_type, nind, verbose)
 est_rf_bc(geno, mrk,  nind, type, verbose)
 est_map_hmm_f2(geno, error, rf.vec, verbose, tol)
 est_map_hmm_bc(geno, error, rf.vec, verbose, tol)

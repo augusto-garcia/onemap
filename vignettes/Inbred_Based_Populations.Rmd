@@ -919,10 +919,6 @@ LG1_f2_ord <- order_seq(input.seq = LG1_ug2_f2, n.init = 5,
 
 ```
 
-```{r, echo=FALSE}
-data(LG1_f2_ord)
-```
-
 The first argument is an object of class `sequence` (LG1_ug2_f2). `n.init
 = 5` means that five markers will be used in the `compare` step. The
 argument `subset.search = "twopt"` indicates that these five markers
@@ -933,11 +929,11 @@ the sequence which can be mapped with LOD Score greater than 3.
 
 Check the order obtained by this procedure:
 
-```{r, show_order_seq}
-LG1_f2_ord
+```{r, show_order_seq, eval=FALSE}
+LG1_f2_ord # Results not shown in this vignette
 ``` 
 
-Note that markers `5`, `66`, and `2` could not be safely mapped to a single
+Markers `5`, `66`, and `2` could not be safely mapped to a single
 position (`LOD Score > THRES` in absolute value). The output displays
 the `safe` order and the most likely positions for markers not mapped,
 where `***` indicates the most likely position, and `*` corresponds to
@@ -946,14 +942,14 @@ will recognize the representation).
 
 To get the `safe` order, use:
 
-```{r, safe, results="hide"}
+```{r, safe, results="hide", eval=FALSE}
 LG1_f2_safe <- make_seq(LG1_f2_ord, "safe")
 ``` 
 
 and to get the order with all markers (_i.e._, including the ones not
 mapped to a single position), use:
 
-```{r, force}
+```{r, force, eval=FALSE}
 (LG1_f2_all <- make_seq(LG1_f2_ord, "force"))
 ```
 
@@ -1377,7 +1373,7 @@ As already mentioned, `OneMap` uses HMM multipoint approach to estimate genetic 
 
 The parallelization is here available for all types of operational systems, however, we suggest setting argument `parallelization.type` to `FORK` if you are not using Windows system. It will improve the procedure speed.
 
-Here we will show an example of how to use the BatchMap approach in some functions that requires HMM. For this, we simulated the `simParall_f2.raw` data with a group with 300 markers (we don't want this vignette to take too much time to run, but usually maps with markers from high-throughput technologies result in larger groups). Before start, you can see the time spent for each approach (See also [Session Info](#Session-info)) in this example:
+Here we will show an example of how to use the BatchMap approach in some functions that requires HMM. For this, we simulated a dataset with a group with 300 markers (we don't want this vignette to take too much time to run, but usually maps with markers from high-throughput technologies result in larger groups). Before start, you can see the time spent for each approach (See also [Session Info](#Session-info)) in this example:
 
 ```{r, echo=FALSE, eval=FALSE}
 data(parallel_results_out)
@@ -1418,7 +1414,7 @@ plot(simParallel)
 ```
 
 ```{r, eval=FALSE}
-simParallel <- read_onemap(system.file("extdata/simParall_f2.raw", package = "onemap"))
+simParallel <- read_onemap(system.file("extdata/simParall_f2.raw", package = "onemap")) # dataset available only in onemap github version
 plot(simParallel)
 ```
 

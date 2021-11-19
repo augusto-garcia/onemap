@@ -3,7 +3,7 @@
 # Package: onemap                                                     #
 #                                                                     #
 # File: cpp_utils.R                                                   #
-# Contains: get_bins est_rf_out est_rf_f2 est_rf_bc est_map_hmm_f2    #
+# Contains: get_bins est_rf_out est_rf_bc est_map_hmm_f2              #
 #  est_map_hmm_bc est_map_hmm_out                                     #
 # These functions are for internal use only                           #
 #                                                                     #
@@ -70,26 +70,6 @@ est_rf_out<-function(geno, mrk=0, seg_type=NULL, nind, verbose=TRUE)
       colnames(r[[2]])<-colnames(geno)
       return(r)
   }
-}
-
-
-# This function calls C++ routine for two-point analysis (F2)
-##' @useDynLib onemap
-##' @import Rcpp
-est_rf_f2<-function(geno, mrk=0, seg_type=NULL, nind, verbose=TRUE)
-{
-    r<-.Call("est_rf_f2_wrap",
-             geno,
-             mrk-1,
-             as.numeric(seg_type),
-             as.numeric(nind),
-             as.numeric(verbose),
-             PACKAGE = "onemap" )
-    if(mrk <= 0)
-        dimnames(r)<-list(colnames(geno), colnames(geno))
-    else
-        dimnames(r)<-list(c("rf", "LOD"), colnames(geno))
-    return(r)
 }
 
 # This function calls C++ routine for two-point analysis (bc)
