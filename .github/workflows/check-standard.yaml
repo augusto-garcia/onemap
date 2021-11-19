@@ -4,13 +4,11 @@ on:
   push:
     branches:
       - main
-      - master
-      - gap_filter
+      - cran_submission
   pull_request:
     branches:
       - main
-      - master
-      - gap_filter
+      - cran_submission
 
 name: R-CMD-check
 
