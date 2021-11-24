@@ -94,7 +94,8 @@ be found at the tutorial distributed along with this package.
 }
 \examples{
 
- outcr_data <- read_onemap(inputfile= system.file("extdata/onemap_example_out.raw", package= "onemap"))
+ outcr_data <- read_onemap(inputfile= 
+ system.file("extdata/onemap_example_out.raw", package= "onemap"))
   
 }
 \references{

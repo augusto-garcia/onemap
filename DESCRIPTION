@@ -45,6 +45,7 @@ Author: Gabriel Margarido [aut], Marcelo Mollinari [aut],
         Cristiane Taniguti [ctb, cre], Getulio Ferreira [ctb], 
         Rodrigo Amadeu [ctb], Karl Broman [ctb], 
         Katharine Preedy [ctb, cph] (MDS ordering algorithm), 
+        Bastian Schiffthaler [ctb, cph] (HMM parallelization),
         Augusto Garcia [aut, ctb]
 LinkingTo: Rcpp (>= 0.10.5)
 Depends: R (>= 3.6.0)

@@ -111,7 +111,8 @@
 ##' @keywords IO
 ##' @examples
 ##'
-##'  outcr_data <- read_onemap(inputfile= system.file("extdata/onemap_example_out.raw", package= "onemap"))
+##'  outcr_data <- read_onemap(inputfile= 
+##'  system.file("extdata/onemap_example_out.raw", package= "onemap"))
 ##'   
 ##'@export
 read_onemap <- function (inputfile=NULL, dir=NULL, verbose=TRUE) {

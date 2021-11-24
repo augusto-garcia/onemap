@@ -123,23 +123,6 @@ resulting in a map with all markers positioned.
   make_seq(LG2.ord) # get safe sequence
   make_seq(LG2.ord,"force") # get forced sequence
 
-  #F2 example
-  data(onemap_example_f2)
-  twopt <- rf_2pts(onemap_example_f2)
-  all_mark <- make_seq(twopt,"all")
-  groups <- group(all_mark)
-  LG3 <- make_seq(groups,3)
-  LG3.ord <- order_seq(LG3, subset.search = "twopt", twopt.alg = "rcd", touchdown=TRUE)
-  LG3.ord
-  make_seq(LG3.ord) # get safe sequence
-  ord.1<-make_seq(LG3.ord,"force") # get forced sequence
-
-  LG3.ord.s <- order_seq(LG3, subset.search = "sample", touchdown=TRUE)
-  LG3.ord.s
-  make_seq(LG3.ord) # get safe sequence
-  ord.2<-make_seq(LG3.ord,"force") # get forced sequence
-
-  rbind(ord.1$seq.num, ord.2$seq.num) # probably, the same order for this dataset
 }
 }
 \references{
