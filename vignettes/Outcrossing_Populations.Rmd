@@ -10,8 +10,6 @@ vignette: >
 ---
 
 ```{r knitr_init, echo=FALSE, cache=FALSE, message=FALSE}
-library(knitr)
-library(rmarkdown)
 knitr::opts_chunk$set(collapse = TRUE,
                       comment = "#>",
                       fig.width = 6,
@@ -1384,15 +1382,10 @@ Drawing the map, which was built with only recombinations information:
 
 ```{r, echo=TRUE, results='hide', eval=FALSE}
 draw_map2(LG1_final, LG2_final, LG3_final, main = "Only with linkage information", 
-          group.names = c("LG1", "LG2", "LG3"))
+          group.names = c("LG1", "LG2", "LG3"), output = "map.png")
 ```
 
-```{r, echo=FALSE, results='hide'}
-draw_map2(LG1_final, LG2_final, LG3_final, main = "Only with linkage information", 
-          group.names = c("LG1", "LG2", "LG3"), output = "map1.png")
-```
-
-<img src="map1.png" width="300" height="400">
+*NOTE*: Check the [GitHub vignette version](https://statgen-esalq.github.io/tutorials/onemap/Outcrossing_Populations.html) to visualize the graphic.
 
 The figure will be saved in your work directory with the default name `map.eps`. You can change the file name and extension specifying them in the argument `output`.
 
@@ -1404,13 +1397,8 @@ draw_map2(CHR1_final, CHR2_final, CHR3_final, output= "map_ref.pdf",
           col.mark= "#335C81")
 ``` 
 
-```{r, echo=TRUE, results='hide', echo=FALSE}
-draw_map2(CHR1_final, CHR2_final, CHR3_final, output= "map_ref.png", 
-          col.group = "#58A4B0",
-          col.mark= "#335C81")
-``` 
+*NOTE*: Check the [GitHub vignette version](https://statgen-esalq.github.io/tutorials/onemap/Outcrossing_Populations.html) to visualize the graphic.
 
-<img src="map_ref.png" width="300" height="300">
 
 With the argument `tag`, we can highlight some markers with other colors. The arguments `col.group`, `col.mark` and `col.tag` can be changed to personalize the color of the groups, the markers, and the highlighted markers, respectively. 
 
@@ -1420,11 +1408,7 @@ We also can draw maps comparing corresponding linkage groups in each strategy:
 draw_map2(LG1_final, CHR1_final, output = "map_comp.pdf", tag = c("M1","SNP2"))
 ```
 
-```{r, results='hide', echo=FALSE}
-draw_map2(LG1_final, CHR1_final, output = "map_comp.png", tag = c("M1","SNP2"))
-```
-
-<img src="map_comp.png" width="200" height="400">
+*NOTE*: Check the [GitHub vignette version](https://statgen-esalq.github.io/tutorials/onemap/Outcrossing_Populations.html) to visualize the graphic.
 
 When defining marker names in the `tag` argument, all markers with these names will be highlighted no matter in which group it/they is/are.
 
@@ -1433,12 +1417,7 @@ draw_map2(LG2_final, CHR3_final, tag= c("SNP17", "SNP18", "M29"), main = "Chromo
           group.names = c("Only linkage", "With genome"), centered = TRUE, output = "map_comp2.pdf")
 ``` 
 
-```{r, results='hide', echo=FALSE}
-draw_map2(LG2_final, CHR3_final, tag= c("SNP17", "SNP18", "M29"), main = "Chromosome 3", 
-          group.names = c("Only linkage", "With genome"), centered = TRUE, output = "map_comp2.png")
-``` 
-
-<img src="map_comp2.png" width="200" height="400">
+*NOTE*: Check the [GitHub vignette version](https://statgen-esalq.github.io/tutorials/onemap/Outcrossing_Populations.html) to visualize the graphic.
 
 # Map estimation for an arbitrary order
 
