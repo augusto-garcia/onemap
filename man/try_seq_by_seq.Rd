@@ -15,6 +15,9 @@ try_seq_by_seq(sequence, markers, cM.thr = 10, lod.thr = -10, verbose = TRUE)
 
 \item{lod.thr}{the difference of LODs between model before and after inserting the marker need to have 
 value higher than the value defined in this argument}
+
+\item{verbose}{A logical, if TRUE it output progress status
+information.}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the

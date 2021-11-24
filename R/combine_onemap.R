@@ -64,8 +64,10 @@
 ##' \emph{Theoretical Population Biology} 61: 349-363.
 ##' @keywords IO
 ##' @examples
-##'
-##'     combined_data <- combine_onemap(onemap_data1, onemap_data2)
+##'     
+##'     data("onemap_example_out")
+##'     data("vcf_example_out")
+##'     combined_data <- combine_onemap(onemap_example_out, vcf_example_out)
 ##'   
 ##'@export
 combine_onemap <- function(...) {

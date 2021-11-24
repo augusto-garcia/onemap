@@ -5,7 +5,7 @@
 \title{Try to map a marker into every possible position between markers
 in a given map}
 \usage{
-try_seq(input.seq, mrk, tol = 0.1, pos = NULL, verbose = TRUE)
+try_seq(input.seq, mrk, tol = 0.1, pos = NULL, verbose = FALSE)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence} with a

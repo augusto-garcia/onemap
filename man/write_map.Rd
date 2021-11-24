@@ -42,19 +42,6 @@ for(i in 1:lg$n.groups){
   ##write maps.list to "mapmaker_example_f2.map" file
   write_map(map.list, "mapmaker_example_f2.map")
 
-  ##Using R/qtl
-  ##you must install the package  'qtl'
-
-  require(qtl)
-  file<-paste(system.file("example",package="onemap"),"mapmaker_example_f2.raw", sep="/")
-  dat1 <- read.cross("mm", file=file, mapfile="mapmaker_example_f2.map")
-  newmap <- est.map(dat1, tol=1e-6, map.function="kosambi")
-
-  (logliks <- sapply(newmap, attr, "loglik"))
-  plot.map(dat1, newmap)
-
- ##Using R/qtl to generate QTL Cartographer input files (.map and .cro)
-  write.cross(dat1, format="qtlcart", filestem="mapmaker_example_f2")
 }
 }
 

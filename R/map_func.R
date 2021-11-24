@@ -13,13 +13,7 @@
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
-##' Apply haldane function to recombination fraction values
-##' 
-##'  @param rcmb vector with recombination fraction values
-##'  
-##'  @return vector with centimorgan values 
-##'
-##'@export
+
 haldane <- function(rcmb) {
   # rcmb must be a number between 0 and 0.5
   if (is.numeric(rcmb) & !any(is.nan(rcmb))) {
@@ -31,13 +25,7 @@ haldane <- function(rcmb) {
             dQuote("numeric"),". Check if you don't have excess of missing data in your onemap object.")
 }
 
-##' Apply kosambi function to recombination fraction values
-##' 
-##'  @param rcmb vector with recombination fraction values
-##'  
-##'  @return vector with centimorgan values 
-##'  
-##'@export
+
 kosambi <- function(rcmb) {
   # rcmb must be a number between 0 and 0.5
   if (is.numeric(rcmb) & !any(is.nan(rcmb))) {
