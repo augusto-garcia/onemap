@@ -57,6 +57,8 @@
 #' if \code{TRUE} one of the markers is removed and ug is performed again.
 #' @param hmm logical defining if the HMM must be applied to estimate multipoint
 #' genetic distances
+##' @param verbose A logical, if TRUE it output progress status
+##' information.
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}

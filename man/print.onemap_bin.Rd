@@ -8,6 +8,8 @@
 }
 \arguments{
 \item{x}{object of class \code{onemap_bin}}
+
+\item{...}{currently ignored}
 }
 \value{
 No return value, called for side effects

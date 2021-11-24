@@ -16,7 +16,7 @@ order_seq(
   touchdown = FALSE,
   tol = 0.1,
   rm_unlinked = FALSE,
-  verbose = TRUE
+  verbose = FALSE
 )
 }
 \arguments{

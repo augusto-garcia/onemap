@@ -638,6 +638,8 @@ draw.try<-function(base.input, try.input, pos=NULL){
 #' @param cM.thr number defining the threshold for total map size increase when inserting a single marker
 #' @param lod.thr the difference of LODs between model before and after inserting the marker need to have 
 #' value higher than the value defined in this argument 
+##' @param verbose A logical, if TRUE it output progress status
+##' information.
 #' 
 #' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the

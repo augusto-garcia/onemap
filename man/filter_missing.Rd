@@ -10,6 +10,9 @@ filter_missing(onemap.obj = NULL, threshold = 0.25, verbose = TRUE)
 \item{onemap.obj}{an object of class \code{onemap}.}
 
 \item{threshold}{a numeric from 0 to 1 to define the threshold of missing data allowed}
+
+\item{verbose}{A logical, if TRUE it output progress status
+information.}
 }
 \value{
 An object of class \code{onemap}, i.e., a list with the following

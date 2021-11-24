@@ -62,6 +62,7 @@ find_bins <- function(input.obj, exact=TRUE)
 ##' print method for object class 'onemap_bin'
 ##' 
 ##' @param x object of class \code{onemap_bin}
+##' @param ... currently ignored
 ##' 
 ##' @return No return value, called for side effects
 ##' 

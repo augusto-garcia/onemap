@@ -6,7 +6,7 @@
 \usage{
 mds_onemap(
   input.seq,
-  out.file = "out.file",
+  out.file = NULL,
   p = NULL,
   ispc = TRUE,
   displaytext = FALSE,

@@ -19,6 +19,8 @@
 ##'
 ##' @param onemap.obj an object of class \code{onemap}.
 ##' @param threshold a numeric from 0 to 1 to define the threshold of missing data allowed
+##' @param verbose A logical, if TRUE it output progress status
+##' information.
 ##' 
 ##' @return An object of class \code{onemap}, i.e., a list with the following
 ##' components: \item{geno}{a matrix with integers indicating the genotypes
