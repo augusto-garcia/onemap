@@ -65,7 +65,7 @@ marker_type <- function(input.seq) {
   ## printing marker type
   
   tot <- data.frame()
-  if(is(input.seq$data.name,"outcross")) {
+  if(is(input.seq$data.name,"outcross") | is(input.seq$data.name,"f2")) {
     for(i in 1:length(input.seq$seq.num)){
       temp <- data.frame(Marker = input.seq$seq.num[i], 
                          Marker.name = colnames(input.seq$twopt$analysis[[1]])[input.seq$seq.num[i]], 

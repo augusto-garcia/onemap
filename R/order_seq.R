@@ -175,7 +175,7 @@ order_seq <- function(input.seq,
                       touchdown=FALSE, 
                       tol=10E-2, 
                       rm_unlinked = FALSE, 
-                      verbose = TRUE) {
+                      verbose = FALSE) {
   
   ## checking for correct objects
   if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
@@ -191,9 +191,7 @@ order_seq <- function(input.seq,
     seq.ord<-map(seq.ord, tol=10E-5, rm_unlinked = rm_unlinked)
     structure(list(ord=seq.ord, mrk.unpos=NULL, LOD.unpos=NULL, THRES=THRES,
                    ord.all=seq.ord, data.name=input.seq$data.name, probs = seq.ord$probs, twopt=input.seq$twopt), class = "order")
-  }
-  else
-  {
+  } else  {
     ## here, the complete algorithm will be applied
     cross.type <- class(input.seq$data.name)[2]
     if(cross.type == "f2") FLAG <- "f2"
@@ -275,7 +273,7 @@ order_seq <- function(input.seq,
     input.seq2 <- make_seq(seq.ord,1)
     if(verbose) cat ("\n\nRunning try algorithm\n")
     for (i in (n.init+1):length(input.seq$seq.num)){
-      seq.ord <- try_seq(input.seq2,input.seq$seq.num[seq.work[i]],tol=tol)
+      seq.ord <- try_seq(input.seq2,input.seq$seq.num[seq.work[i]],tol=tol, verbose = verbose)
       if(all(seq.ord$LOD[-which(seq.ord$LOD==max(seq.ord$LOD))[1]] < -THRES))
         input.seq2 <- make_seq(seq.ord,which.max(seq.ord$LOD))
     }
@@ -291,7 +289,7 @@ order_seq <- function(input.seq,
       ## here, a second round of the 'try' algorithm is performed, if requested
       if(verbose) cat("\n\n\nTrying to map remaining markers with LOD threshold ",THRES-1,"\n")
       for (i in mrk.unpos) {
-        seq.ord <- try_seq(input.seq2,i,tol=tol)
+        seq.ord <- try_seq(input.seq2,i,tol=tol, verbose = verbose)
         if(all(seq.ord$LOD[-which(seq.ord$LOD==max(seq.ord$LOD))[1]] < (-THRES+1)))
           input.seq2 <- make_seq(seq.ord,which.max(seq.ord$LOD))
       }
@@ -310,7 +308,7 @@ order_seq <- function(input.seq,
       j <- 1
       if(verbose) cat("\n\nCalculating LOD-Scores\n")
       for (i in mrk.unpos){
-        LOD.unpos[j,] <- try_seq(input.seq=input.seq2,mrk=i,tol=tol)$LOD
+        LOD.unpos[j,] <- try_seq(input.seq=input.seq2,mrk=i,tol=tol, verbose = verbose)$LOD
         j <- j+1
       }
     }
@@ -325,7 +323,7 @@ order_seq <- function(input.seq,
       which.order <- order(apply(LOD.unpos,1,function(x) max(x[-which(x==0)[1]])))
       
       for (i in mrk.unpos[which.order]) {
-        seq.ord <- try_seq(input.seq3,i,tol)
+        seq.ord <- try_seq(input.seq3,i,tol, verbose = verbose)
         input.seq3 <- make_seq(seq.ord,which(seq.ord$LOD==0)[sample(sum(seq.ord$LOD==0))[1]])
       }
     }

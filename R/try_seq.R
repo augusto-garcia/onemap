@@ -121,7 +121,7 @@
 try_seq<-function(input.seq,mrk,
                   tol=10E-2,
                   pos= NULL,
-                  verbose=TRUE)
+                  verbose=FALSE)
 {
   if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2"))
     return(try_seq_outcross(input.seq=input.seq,
@@ -161,7 +161,7 @@ try_seq_inbred_f2 <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=TRUE)
   final.map<-est_map_hmm_f2(geno=t(input.seq$data.name$geno[,try.ord]),
                             error=input.seq$data.name$error[try.ord + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(try.ord)),],
                             rf.vec=rf.temp,
-                            verbose=TRUE,
+                            verbose=verbose,
                             tol=tol)
   ord.rf[1,] <- final.map$rf
   ord.like[1] <- final.map$loglike
@@ -184,7 +184,7 @@ try_seq_inbred_f2 <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=TRUE)
     final.map<-est_map_hmm_f2(geno=t(input.seq$data.name$geno[,try.ord[i+1,]]),
                               error=input.seq$data.name$error[try.ord[i+1,] + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(try.ord[i+1,])),],
                               rf.vec=rf.temp,
-                              verbose=TRUE,
+                              verbose=verbose,
                               tol=tol)
     ord.rf[i+1,] <- final.map$rf
     ord.like[i+1] <- final.map$loglike
@@ -198,7 +198,7 @@ try_seq_inbred_f2 <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=TRUE)
   final.map<-est_map_hmm_f2(geno=t(input.seq$data.name$geno[,try.ord[length(input.seq$seq.num)+1,]]),
                             error=input.seq$data.name$error[try.ord[length(input.seq$seq.num)+1,] + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(try.ord[length(input.seq$seq.num)+1,])),],
                             rf.vec=rf.temp,
-                            verbose=TRUE,
+                            verbose=verbose,
                             tol=tol)
   ord.rf[length(input.seq$seq.num)+1,] <- final.map$rf
   ord.like[length(input.seq$seq.num)+1] <- final.map$loglike
@@ -244,7 +244,7 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=TRUE)
   final.map<-est_map_hmm_bc(geno=t(input.seq$data.name$geno[,try.ord]),
                             error=input.seq$data.name$error[try.ord + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(try.ord)),],
                             rf.vec=rf.temp,
-                            verbose=TRUE,
+                            verbose=verbose,
                             tol=tol)
   if(is(input.seq$data.name, "riself") ||
      is(input.seq$data.name, "risib"))
@@ -271,7 +271,7 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=TRUE)
     final.map<-est_map_hmm_bc(geno=t(input.seq$data.name$geno[,try.ord[i+1,]]),
                               error=input.seq$data.name$error[try.ord[i+1,] + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(try.ord[i+1,])),],
                               rf.vec=rf.temp,
-                              verbose=TRUE,
+                              verbose=verbose,
                               tol=tol)
     if(is(input.seq$data.name, "riself") ||
        is(input.seq$data.name, "risib"))
@@ -290,7 +290,7 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=TRUE)
   final.map<-est_map_hmm_bc(geno=t(input.seq$data.name$geno[,try.ord[length(input.seq$seq.num)+1,]]),
                             error=input.seq$data.name$error[try.ord[length(input.seq$seq.num)+1,] + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(try.ord[length(input.seq$seq.num)+1,])),],
                             rf.vec=rf.temp,
-                            verbose=TRUE,
+                            verbose=verbose,
                             tol=tol)
   if(is(input.seq$data.name, "riself") ||
      is(input.seq$data.name, "risib"))
@@ -375,7 +375,7 @@ try_seq_outcross<- function(input.seq,mrk,
                                  type=input.seq$data.name$segr.type.num[c(mrk,input.seq$seq.num)],
                                  phase=Ph.Init[j,],
                                  rf.vec=Rf.Init[j,],
-                                 verbose=TRUE,
+                                 verbose=verbose,
                                  tol=tol)
     ord[[1]]$rf[j,] <- final.map$rf
     ord[[1]]$phase[j,] <- Ph.Init[j,]
@@ -435,7 +435,7 @@ try_seq_outcross<- function(input.seq,mrk,
                                    type=input.seq$data.name$segr.type.num[c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)])],
                                    phase=Ph.Init[j,],
                                    rf.vec=Rf.Init[j,],
-                                   verbose=TRUE,
+                                   verbose=verbose,
                                    tol=tol)
       ord[[i+1]]$rf[j,] <- final.map$rf
       ord[[i+1]]$phase[j,] <- Ph.Init[j,]
@@ -482,7 +482,7 @@ try_seq_outcross<- function(input.seq,mrk,
                                  type=input.seq$data.name$segr.type.num[c(input.seq$seq.num,mrk)],
                                  phase=Ph.Init[j,],
                                  rf.vec=Rf.Init[j,],
-                                 verbose=TRUE,
+                                 verbose=verbose,
                                  tol=tol)
     ord[[length(input.seq$seq.num)+1]]$rf[j,] <- final.map$rf
     ord[[length(input.seq$seq.num)+1]]$phase[j,] <- Ph.Init[j,]

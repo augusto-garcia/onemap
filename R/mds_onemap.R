@@ -86,7 +86,7 @@
 #'
 #'@export
 mds_onemap <- function(input.seq, 
-                       out.file= "out.file", 
+                       out.file= NULL, 
                        p = NULL, 
                        ispc=TRUE,
                        displaytext=FALSE, 
@@ -135,6 +135,7 @@ mds_onemap <- function(input.seq,
   vector.file <- apply(df, 1, function(x) paste(x, collapse = " "))
   file.out <- c(paste(n_mk, n_col, collapse = " "), vector.file)
   
+  if(is.null(out.file)) out.file = tempfile(fileext = ".rds")
   write.table(file.out, file = out.file, col.names = FALSE,
               row.names = FALSE, quote = FALSE)
   
