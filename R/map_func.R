@@ -14,6 +14,13 @@
 #                                                                     #
 #######################################################################
 
+#' Apply Haldane mapping function
+#' 
+#' @param rcmp vector of recombination fraction values
+#' 
+#' @return vector with centimorgan values
+#' 
+#' @export
 haldane <- function(rcmb) {
   # rcmb must be a number between 0 and 0.5
   if (is.numeric(rcmb) & !any(is.nan(rcmb))) {
@@ -25,7 +32,13 @@ haldane <- function(rcmb) {
             dQuote("numeric"),". Check if you don't have excess of missing data in your onemap object.")
 }
 
-
+#' Apply Kosambi mapping function
+#' 
+#' @param rcmp vector of recombination fraction values
+#' 
+#' @return vector with centimorgan values
+#' 
+#' @export
 kosambi <- function(rcmb) {
   # rcmb must be a number between 0 and 0.5
   if (is.numeric(rcmb) & !any(is.nan(rcmb))) {
@@ -47,6 +60,7 @@ kosambi <- function(rcmb) {
 ##'
 ##' @param type Indicates the function that should be used, which can be
 ##' \code{"kosambi"} or \code{"haldane"}
+##' 
 ##' @author Marcelo Mollinari, \email{mmollina@@usp.br}
 ##' @seealso \code{\link[onemap]{kosambi}} and \code{\link[onemap]{haldane}}
 ##' @references Haldane, J. B. S. (1919) The combination of linkage values and
@@ -58,6 +72,7 @@ kosambi <- function(rcmb) {
 ##' Kosambi, D. D. (1944) The estimation of map distance from recombination
 ##' values. \emph{Annuaire of Eugenetics} 12: 172-175.
 ##' @keywords arith
+##' 
 ##' @export
 set_map_fun<- function(type=c("kosambi", "haldane")){
     type<-match.arg(type,c("kosambi", "haldane"))
