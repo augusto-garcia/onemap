@@ -16,8 +16,6 @@
 ##                                                                     ##
 #######################################################################
 
-
-
 ##' Recombination Counting and Ordering
 ##'
 ##' Implements the marker ordering algorithm \emph{Recombination Counting and
@@ -51,6 +49,8 @@
 #' if \code{TRUE} one of the markers is removed and record is performed again.
 #' @param hmm logical defining if the HMM must be applied to estimate multipoint
 #' genetic distances
+#' @param verbose A logical, if TRUE it output progress status information.
+#' 
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}
@@ -63,6 +63,7 @@
 ##' \item{data.name}{name of the object of class \code{onemap} with the raw
 ##' data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
 ##' 2-point analyses.}
+##' 
 ##' @author Marcelo Mollinari, \email{mmollina@@usp.br}
 ##' @seealso \code{\link[onemap]{make_seq}} and \code{\link[onemap]{map}}
 ##' @references Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia,
@@ -75,14 +76,14 @@
 ##' @keywords utilities
 ##' @examples
 ##'
-##' \dontrun{
+##' \donttest{
 ##'   ##outcross example
 ##'   data(onemap_example_out)
 ##'   twopt <- rf_2pts(onemap_example_out)
 ##'   all_mark <- make_seq(twopt,"all")
 ##'   groups <- group(all_mark)
 ##'   LG1 <- make_seq(groups,1)
-##'   LG1.rec <- record(LG1)
+##'   LG1.rec <- record(LG1, hmm = FALSE)
 ##'
 ##'   ##F2 example
 ##'   data(onemap_example_f2)
@@ -90,7 +91,7 @@
 ##'   all_mark <- make_seq(twopt,"all")
 ##'   groups <- group(all_mark)
 ##'   LG1 <- make_seq(groups,1)
-##'   LG1.rec <- record(LG1)
+##'   LG1.rec <- record(LG1, hmm = FALSE)
 ##'   LG1.rec
 ##' }
 ##'@export
@@ -98,7 +99,7 @@ record<-function(input.seq, times=10, LOD=0, max.rf=0.5, tol=10E-5,
                  rm_unlinked = TRUE,
                  size = NULL, 
                  overlap = NULL, 
-                 phase_cores = 1, hmm = TRUE, parallelization.type = "PSOCK"){
+                 phase_cores = 1, hmm = TRUE, parallelization.type = "PSOCK", verbose= TRUE){
   ## checking for correct object
   if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is
     not an object of class 'sequence'")
@@ -204,14 +205,13 @@ record<-function(input.seq, times=10, LOD=0, max.rf=0.5, tol=10E-5,
       }
       if(COUNT(X,result.new) > COUNT(X,result)){
         result.new<-result
-        ##print(COUNT(X,result.new))
       }
     }
   }
   
   if(hmm){
     ## end of RECORD algorithm
-    cat("\norder obtained using RECORD algorithm:\n\n", input.seq$seq.num[avoid_reverse(result.new)], "\n\ncalculating multipoint map using tol", tol, ".\n\n")
+    if(verbose) cat("\norder obtained using RECORD algorithm:\n\n", input.seq$seq.num[avoid_reverse(result.new)], "\n\ncalculating multipoint map using tol", tol, ".\n\n")
     
     if(phase_cores == 1 | is(input.seq$data.name, c("backcross", "riself", "risib"))){
       record_map <- map(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(result.new)],

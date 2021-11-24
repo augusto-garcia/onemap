@@ -30,6 +30,14 @@ globalVariables(c("V1", "V2", "V3", "V4",
 #' and names (mk.names), position in centimorgan (dist) and parents haplotypes 
 #' (P1_1, P1_2, P2_1, P2_2)
 #' 
+#' @examples 
+#' 
+#' data("onemap_example_out")
+#' twopts <- rf_2pts(onemap_example_out)
+#' lg1 <- make_seq(twopts, 1:5)
+#' lg1.map <- map(lg1)
+#' parents_haplotypes(lg1.map)
+#' 
 #' @author Getulio Caixeta Ferreira, \email{getulio.caifer@@gmail.com}
 #' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
 #' @export
@@ -52,9 +60,8 @@ parents_haplotypes <- function(..., group_names=NULL){
     marnames <- colnames(input$data.name$geno)[input$seq.num]
     if(length(input$seq.rf) == 1 && input$seq.rf == -1) {
       # no information available for the order
-      cat("\nParameters not estimated.\n\n")
-    }
-    else {
+      warning("\nParameters not estimated.\n\n")
+    } else {
       # convert numerical linkage phases to strings
       link.phases <- matrix(NA,length(input$seq.num),2)
       link.phases[1,] <- rep(1,2)
@@ -86,9 +93,8 @@ parents_haplotypes <- function(..., group_names=NULL){
       }
       ## whithout diplotypes for other classes
       else if(is(input$data.name, c("backcross", "riself", "risib"))){
-        cat("There is only a possible phase for this cross type\n")
-      }
-      else warning("invalid cross type")
+        warning("There is only a possible phase for this cross type\n")
+      } else warning("invalid cross type")
     }
   }
   return(out_dat)
@@ -104,9 +110,16 @@ parents_haplotypes <- function(..., group_names=NULL){
 #' if FALSE (default) the genotype probability is plotted.
 #' @param group_names Names of the groups.
 #' 
-#' @return a data.frame information: individual (ind) and group (grp) ID, position in centimorgan (pos), 
-#' group (grp), genotypes probabilities (prob), parent (homologs), and the parents homologs (homologs) 
-#' in that homolog and position. 
+#' @return a data.frame information: individual (ind) and marker ID, group ID (grp), position in centimorgan (pos), 
+#' genotypes probabilities (prob), parents, and the parents homologs and the allele IDs. 
+#' 
+#' @examples 
+#' 
+#' data("onemap_example_out")
+#' twopts <- rf_2pts(onemap_example_out)
+#' lg1 <- make_seq(twopts, 1:5)
+#' lg1.map <- map(lg1)
+#' progeny_haplotypes(lg1.map)
 #' 
 #' @import dplyr
 #' @import tidyr
@@ -250,6 +263,17 @@ progeny_haplotypes <- function(...,
 ##' @param ... currently ignored
 ##' 
 ##' @method plot onemap_progeny_haplotypes
+##' 
+##' @examples 
+##' 
+#' data("onemap_example_out")
+#' twopts <- rf_2pts(onemap_example_out)
+#' lg1 <- make_seq(twopts, 1:5)
+#' lg1.map <- map(lg1)
+#' plot(progeny_haplotypes(lg1.map))
+##' 
+##' @return a ggplot graphic
+##' 
 ##' @import ggplot2
 #' @import dplyr
 #' @import tidyr
@@ -305,10 +329,25 @@ plot.onemap_progeny_haplotypes <- function(x,
   return(p)
 }
 
-#' Generate graphic with the number of break points for each individual considering the most likely genotypes estimated by the HMM.
-#' Genotypes with same probability for two genotypes are removed. By now, only available for outcrossing and f2 intercross. 
+#' Plot number of breakpoints by individuals
+#' 
+#' Generate graphic with the number of break points for each individual 
+#' considering the most likely genotypes estimated by the HMM.
+#' Genotypes with same probability for two genotypes are removed.
+#'  By now, only available for outcrossing and f2 intercross. 
 #' 
 #' @param x object of class onemap_progeny_haplotypes
+#' 
+#' @examples 
+#' 
+#' data("onemap_example_out")
+#' twopts <- rf_2pts(onemap_example_out)
+#' lg1 <- make_seq(twopts, 1:5)
+#' lg1.map <- map(lg1)
+#' progeny_haplotypes_counts(progeny_haplotypes(lg1.map, most_likely = T))
+#' 
+#' @return a \code{data.frame} with columns individuals ID (ind), group ID (grp),
+#' homolog (homolog) and counts of breakpoints
 #' 
 #' @import dplyr
 #' @import tidyr
@@ -330,14 +369,15 @@ progeny_haplotypes_counts <- function(x){
   x <- x[order(x$ind, x$grp, x$prob, x$parents,x$pos),]
   
   if(is(x, "outcross")){
-    counts <- x %>% group_by(ind, grp, parents) %>%
-      mutate(seq = sequence(rle(as.character(parents.homologs))$length) == 1) %>%
+    counts <- x %>% group_by(ind, grp, parents.homologs) %>%
+      mutate(seq = sequence(rle(as.character(parents))$length) == 1) %>%
       summarise(counts = sum(seq) -1) %>% ungroup()
   } else {
     counts <- x %>% group_by(ind, grp, progeny.homologs) %>%
       mutate(seq = sequence(rle(as.character(parents))$length) == 1) %>%
       summarise(counts = sum(seq) -1) %>% ungroup()
   }
+  colnames(counts)[3] <- "homolog"
   class(counts) <- c("onemap_progeny_haplotypes_counts", cross, "data.frame")
   return(counts)
 }
@@ -353,6 +393,17 @@ globalVariables(c("counts", "colorRampPalette", "alleles"))
 ##' @param n.graphics integer defining the number of graphics to be plotted, they separate the individuals in different plots 
 ##' @param ncol integer defining the number of columns in plot
 ##' @param ... currently ignored
+##' 
+##' @return a ggplot graphic
+##' 
+##' @examples 
+##' 
+#' data("onemap_example_out")
+#' twopts <- rf_2pts(onemap_example_out)
+#' lg1 <- make_seq(twopts, 1:5)
+#' lg1.map <- map(lg1)
+#' prog.haplo <- progeny_haplotypes(lg1.map, most_likely = T)
+#' plot(progeny_haplotypes_counts(prog.haplo))
 ##' 
 ##' @method plot onemap_progeny_haplotypes_counts
 ##' @import ggplot2
@@ -397,7 +448,7 @@ plot.onemap_progeny_haplotypes_counts <- function(x,
     div.n.graphics <- div.n.graphics[1:size]
     p <- x %>% mutate(div.n.graphics = div.n.graphics) %>%
       split(., .$div.n.graphics) %>%
-      lapply(., function(x) ggplot(x, aes(x=parents, y=counts)) +
+      lapply(., function(x) ggplot(x, aes(x=homolog, y=counts)) +
                geom_bar(stat="identity", aes(fill=grp)) + theme_minimal() + 
                coord_flip() + 
                scale_fill_manual(values=mycolors) +

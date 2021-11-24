@@ -70,7 +70,7 @@ same in both parents. Hidden Markov chain codes adapted from Broman et al.
 (2008) were used.
 }
 \examples{
-\dontrun{
+\donttest{
   data(onemap_example_out)
   twopt <- rf_2pts(onemap_example_out)
 

@@ -15,7 +15,8 @@ order_seq(
   THRES = 3,
   touchdown = FALSE,
   tol = 0.1,
-  rm_unlinked = FALSE
+  rm_unlinked = FALSE,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -56,6 +57,9 @@ evaluate convergence of the EM algorithm.}
 \item{rm_unlinked}{When some pair of markers do not follow the linkage criteria, 
 if \code{TRUE} one of the markers is removed and returns a vector with remaining 
 marker numbers (useful for mds_onemap and map_avoid_unlinked functions).}
+
+\item{verbose}{A logical, if TRUE its output progress status
+information.}
 }
 \value{
 An object of class \code{order}, which is a list containing the
@@ -107,7 +111,7 @@ resulting in a map with all markers positioned.
 }
 \examples{
 
-\dontrun{
+\donttest{
   #outcross example
   data(onemap_example_out)
   twopt <- rf_2pts(onemap_example_out)
@@ -135,8 +139,7 @@ resulting in a map with all markers positioned.
   make_seq(LG3.ord) # get safe sequence
   ord.2<-make_seq(LG3.ord,"force") # get forced sequence
 
-  rbind(ord.1$seq.num, ord.2$seq.num) # probably, the same order for
-  this dataset
+  rbind(ord.1$seq.num, ord.2$seq.num) # probably, the same order for this dataset
 }
 }
 \references{

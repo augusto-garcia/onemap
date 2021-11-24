@@ -31,6 +31,9 @@ globalVariables(c("mkt.wrg"))
 ##'
 ##' @param dir directory where the input file is located.
 ##' @param file the name of the input file which contains the data to be read.
+##' @param verbose A logical, if TRUE it output progress status
+##' information.
+##' 
 ##' @return An object of class \code{onemap}, i.e., a list with the following
 ##' components: \item{geno}{a matrix with integers indicating the genotypes
 ##' read for each marker in \code{onemap} fashion. Each column contains data
@@ -50,7 +53,8 @@ globalVariables(c("mkt.wrg"))
 ##' \link{read_onemap}.} \item{input}{the name of the input file.}
 ##' \item{n.phe}{number of phenotypes.} \item{pheno}{a matrix with phenotypic
 ##' values.  Each column contains data for a trait and each row represents an
-##' individual. Currently ignored.}
+##' individual. Currently ignored.} \item{error}{matrix containing HMM emission probabilities}
+##' 
 ##' @author Adapted from Karl Broman (package \pkg{qtl}) by Marcelo Mollinari,
 ##' \email{mmollina@@usp.br}
 ##' @seealso \code{mapmaker_example_bc} and \code{mapmaker_example_f2} raw files in the
@@ -66,22 +70,21 @@ globalVariables(c("mkt.wrg"))
 ##' @keywords IO
 ##' @examples
 ##'
-##'   \dontrun{
-##'     map_data <-read_mapmaker(dir="work_directory",file="data_file.txt")
-##'     #Checking 'mapmaker_example_f2'
-##'     data(mapmaker_example_f2)
-##'     names(mapmaker_example_f2)
-##'   }
+##'  map_data <-read_mapmaker(file=system.file("extdata/mapmaker_example_f2.raw", package = "onemap"))
+##'  #Checking 'mapmaker_example_f2'
+##'  data(mapmaker_example_f2)
+##'  names(mapmaker_example_f2)
+##'   
 ##'@export
-read_mapmaker<-function (file=NULL, dir=NULL)
+read_mapmaker<-function (file=NULL, dir=NULL, verbose=TRUE)
 {
     ## create file name
     if (is.null(file))
-         stop("Missing file.")
+        stop("Missing file.")
     if (!is.null(dir) && dir != "") {
-         file <- file.path(dir, file)
-     }
-     
+        file <- file.path(dir, file)
+    }
+    
     ## count lines in rawfile
     n.lines <- length(scan(file, what = character(), skip = 0,
                            nlines = 0, blank.lines.skip = FALSE,
@@ -118,10 +121,13 @@ read_mapmaker<-function (file=NULL, dir=NULL)
             n.ind <- as.numeric(a[1])
             n.mar <- as.numeric(a[2])
             n.phe <- as.numeric(a[3])
-            cat(" --Read the following data:\n")
-            cat("\tType of cross:         ", type, "\n")
-            cat("\tNumber of individuals: ", n.ind, "\n")
-            cat("\tNumber of markers:     ", n.mar, "\n")
+            if(verbose){
+                cat(" --Read the following data:\n")
+                
+                cat("\tType of cross:         ", type, "\n")
+                cat("\tNumber of individuals: ", n.ind, "\n")
+                cat("\tNumber of markers:     ", n.mar, "\n")
+            }
             ## if there's a set of "symbols" for non-standard symbols in
             ## the file, use them.
             if (length(a) > 3 && ("symbols" %in% a)) {
@@ -133,11 +139,11 @@ read_mapmaker<-function (file=NULL, dir=NULL)
                 fixed <- rep(0, length(OLD.symb))
                 for (j in 1:length(std.symb)) if (std.symb[j] %in%
                                                   OLD.symb)
-                                                  wh[j] <- match(std.symb[j], OLD.symb)
+                    wh[j] <- match(std.symb[j], OLD.symb)
                 for (j in 1:length(std.symb)) if (wh[j] != 0) {
-                                                  OLD.symb[wh[j]] <- infile.symb[j]
-                                                  fixed[wh[j]] <- 1
-                                              }
+                    OLD.symb[wh[j]] <- infile.symb[j]
+                    fixed[wh[j]] <- 1
+                }
                 temp <- table(OLD.symb)
                 if (any(temp > 1)) {
                     for (j in names(temp)[temp > 1]) {
@@ -305,9 +311,11 @@ read_mapmaker<-function (file=NULL, dir=NULL)
         stop("Invalid cross type")
     if(n.phe != 0) {
         miss.value.pheno <- apply((apply(pheno, 2,is.na)),2,sum)
-        cat("\tMissing trait values:      ", "\n")
-        for(i in 1:n.phe) {
-            cat("\t",formatC(paste(colnames(pheno)[i],":",sep=""),width=max(nchar(paste(colnames(pheno),":",sep="")))), miss.value.pheno[i], "\n")
+        if(verbose){
+            cat("\tMissing trait values:      ", "\n")
+            for(i in 1:n.phe) {
+                cat("\t",formatC(paste(colnames(pheno)[i],":",sep=""),width=max(nchar(paste(colnames(pheno),":",sep="")))), miss.value.pheno[i], "\n")
+            }
         }
     }
     

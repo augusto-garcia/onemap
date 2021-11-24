@@ -6,6 +6,9 @@
 \usage{
 vcf2raw()
 }
+\value{
+No return value, called for side effects
+}
 \description{
 These functions are defunct and no longer available.
 }

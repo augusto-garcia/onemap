@@ -9,8 +9,8 @@ seeded_map(
   tol = 1e-04,
   phase_cores = 1,
   seeds,
-  verbose = F,
-  rm_unlinked = F,
+  verbose = FALSE,
+  rm_unlinked = FALSE,
   parallelization.type = "PSOCK"
 )
 }

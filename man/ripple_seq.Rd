@@ -5,7 +5,7 @@
 \title{Compares and displays plausible alternative orders for a given linkage
 group}
 \usage{
-ripple_seq(input.seq, ws = 4, ext.w = NULL, LOD = 3, tol = 0.1)
+ripple_seq(input.seq, ws = 4, ext.w = NULL, LOD = 3, tol = 0.1, verbose = TRUE)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence} with a
@@ -26,6 +26,9 @@ displayed.}
 
 \item{tol}{tolerance for the C routine, i.e., the value used to
 evaluate convergence.}
+
+\item{verbose}{A logical, if TRUE it output progress status
+information.}
 }
 \value{
 This function does not return any value; it just produces
@@ -43,25 +46,25 @@ there are many partially informative markers.
 }
 \examples{
 
-\dontrun{
- #Outcross example
-  data(onemap_example_out)
-  twopt <- rf_2pts(onemap_example_out)
-  markers <- make_seq(twopt,c(27,16,20,4,19,21,23,9,24,29))
-  markers.map <- map(markers)
-  ripple_seq(markers.map)
+\donttest{
+#Outcross example
+ data(onemap_example_out)
+ twopt <- rf_2pts(onemap_example_out)
+ markers <- make_seq(twopt,c(27,16,20,4,19,21,23,9,24,29))
+ markers.map <- map(markers)
+ ripple_seq(markers.map)
 
 #F2 example
- data(onemap_example_f2)
- twopt <- rf_2pts(onemap_example_f2)
- all_mark <- make_seq(twopt,"all")
- groups <- group(all_mark)
- LG3 <- make_seq(groups,3)
- LG3.ord <- order_seq(LG3, subset.search = "twopt", twopt.alg = "rcd", touchdown=TRUE)
- LG3.ord
- make_seq(LG3.ord) # get safe sequence
- ord.1<-make_seq(LG3.ord,"force") # get forced sequence
- ripple_seq(ord.1, ws=5)
+data(onemap_example_f2)
+twopt <- rf_2pts(onemap_example_f2)
+all_mark <- make_seq(twopt,"all")
+groups <- group(all_mark)
+LG3 <- make_seq(groups,1)
+LG3.ord <- order_seq(LG3, subset.search = "twopt", twopt.alg = "rcd", touchdown=TRUE)
+LG3.ord
+make_seq(LG3.ord) # get safe sequence
+ord.1<-make_seq(LG3.ord,"force") # get forced sequence
+ripple_seq(ord.1, ws=5)
 }
 
 }

@@ -15,7 +15,7 @@ linkage group sequence are printed.}
 \item{...}{currently ignored}
 }
 \value{
-\code{NULL}
+No return value, called for side effects
 }
 \description{
 It shows the groups sequences, the repeated markers, as well as the unlinked markers.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/make_seq.R
 \name{make_seq}
 \alias{make_seq}
-\title{Create a sequence of markers}
+\title{Create a sequence of markers based on other OneMap object types}
 \usage{
 make_seq(input.obj, arg = NULL, phase = NULL, data.name = NULL, twopt = NULL)
 }
@@ -44,12 +44,12 @@ given by argument \code{arg}. In both cases, \code{NULL} (default) makes the
 best combination to be taken. If \code{input.obj} is of class, \code{group}, 
 \code{group.upgma} or \code{order}, this argument has no effect.}
 
-\item{data.name}{a \code{string} indicating the name of the object which
+\item{data.name}{the object which
 contains the raw data. This does not have to be defined by the
 user: it is here for compatibility issues when calling \code{make_seq} from
 inside other functions.}
 
-\item{twopt}{a \code{string} indicating the name of the object which
+\item{twopt}{the object which
 contains the two-point information. This does not have to be defined by the
 user: it is here for compatibility issues when calling \code{make_seq} from
 inside other functions.}
@@ -64,8 +64,8 @@ no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
 recombination frequencies between markers in the sequence. \code{-1} means
 that there are no estimated recombination frequencies.}
 \item{seq.like}{log-likelihood of the corresponding linkage map.}
-\item{data.name}{name of the object of class \code{onemap} with the raw
-data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
+\item{data.name}{object of class \code{onemap} with the raw
+data.} \item{twopt}{object of class \code{rf_2pts} with the
 2-point analyses.}
 }
 \description{
@@ -73,7 +73,7 @@ Makes a sequence of markers based on an object of another type.
 }
 \examples{
 
-\dontrun{
+\donttest{
   data(onemap_example_out)
   twopt <- rf_2pts(onemap_example_out)
 

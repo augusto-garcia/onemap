@@ -29,10 +29,22 @@
 
 \item{...}{currently ignored}
 }
+\value{
+a ggplot graphic
+}
 \description{
 Figure is generated with the haplotypes for each selected individual. As a representation, the recombination breakpoints are here considered 
 to be in the mean point of the distance between two markers.  It is important to highlight that it did not reflects the exact breakpoint position, 
 specially if the genetic map have low resolution.
+}
+\examples{
+
+data("onemap_example_out")
+twopts <- rf_2pts(onemap_example_out)
+lg1 <- make_seq(twopts, 1:5)
+lg1.map <- map(lg1)
+plot(progeny_haplotypes(lg1.map))
+
 }
 \author{
 Getulio Caixeta Ferreira, \email{getulio.caifer@gmail.com}

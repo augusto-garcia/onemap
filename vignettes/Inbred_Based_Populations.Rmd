@@ -9,7 +9,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r knitr_init, echo=FALSE, cache=FALSE, message=FALSE, cache.comments=FALSE, comment=F, warning=FALSE}
+```{r knitr_init, echo=FALSE, cache=FALSE, message=FALSE, cache.comments=FALSE, comment=FALSE, warning=FALSE}
 library(knitr)
 library(rmarkdown)
 
@@ -237,13 +237,13 @@ population which is distributed along with `OneMap`. Because this
 particular data set is distributed along with the package, you can
 load it by typing:
 
-```{r, load_data}
+```{r, eval=FALSE}
 data("mapmaker_example_f2")
 ``` 
 
 To see what this data set is about, type:
 
-```{r}
+```{r, eval=FALSE}
 mapmaker_example_f2
 ``` 
 
@@ -333,7 +333,7 @@ graphic. To see it in action, try:
 
 ```{r, plot_raw_data}
 plot(onemap_example_f2)
-plot(vcf_example_f2)
+#(vcf_example_f2)
 ```
 
 The graphic is self-explanatory. If you want to save it, see the help
@@ -352,7 +352,7 @@ loci within each type using function `plot_by_segreg_type`:
 
 ```{r, plot_by_type}
 plot_by_segreg_type(onemap_example_f2)
-plot_by_segreg_type(vcf_example_f2)
+#plot_by_segreg_type(vcf_example_f2)
 ```
 
 So, as shown before, the object `onemap_example_f2` has 36 codominant markers and 30 dominant
@@ -461,7 +461,7 @@ class(f2_test)
 You cannot see the results if you simply type the object name; use `OneMap`'s
 version of the `print` function for objects of class `onemap_segreg_test`:
 
-```{r, print_chi1}
+```{r, eval=FALSE}
 f2_test
 ```
 
@@ -516,7 +516,7 @@ select_segreg(f2_test)
 
 To get a list of distorted ones (none in this example):
 
-```{r, select_distorted}
+```{r, eval=FALSE}
 select_segreg(f2_test, distorted = TRUE)
 ```
 
@@ -526,14 +526,16 @@ For the next steps will be useful to know the numbers of each marker with segreg
 
 To access the corresponding number for of these markers you can change the `numbers` argument:
 
-```{r}
+```{r, eval=FALSE}
 no_dist <- select_segreg(f2_test, distorted = FALSE, numbers = TRUE) #to show the markers numbers without segregation distortion
-no_dist
 
 dist <- select_segreg(f2_test, distorted = TRUE, numbers = TRUE) #to show the markers numbers with segregation distortion
-dist
-
 ```
+
+```{r, echo=FALSE}
+no_dist <- select_segreg(f2_test, distorted = FALSE, numbers = TRUE) #to show the markers numbers without segregation distortion
+```
+
 
 # Estimating two-point recombination fractions
 
@@ -627,7 +629,7 @@ class(mark_all_f2)
 If you want to form groups with a subset of markers, say `M1`, `M3`
 and `M7`, use:
 
-```{r, subset_3mks}
+```{r, eval=FALSE}
 mrk_subset <- make_seq(twopts_f2, c(1, 3, 7))
 ``` 
 In this case, it was easy because marker names and order in the 
@@ -650,9 +652,8 @@ In our example, there are no markers with segregation distortion, then the objec
 `OneMap` has two functions to perform the markers grouping. The first presented here is the
 `group` function:
 
-```{r, group1}
+```{r, group1, eval=FALSE}
 LGs_f2 <- group(mark_all_f2)
-LGs_f2
 ``` 
 
 This will show the linkage groups which are formed with criteria
@@ -753,11 +754,15 @@ algorithm such as Seriation (Buetow and Chakravarti, 1987), Rapid
 Chain Delineation (Doerge, 1996), Recombination Counting and Ordering
 (Van Os et al., 2005) and Unidirectional Growth (Tan and Fu, 2006):
 
-```{r, results="hide"}
+```{r, results="hide", eval=FALSE}
 LG1_rcd_f2 <- rcd(LG1_f2, hmm = FALSE)
 LG1_rec_f2 <- record(LG1_f2, hmm = FALSE)
 LG1_ug_f2 <- ug(LG1_f2, hmm = FALSE)
 ``` 
+
+```{r, results="hide", echo=FALSE}
+LG1_ug_f2 <- ug(LG1_f2, hmm = FALSE)
+```
 
 Argument `hmm` defines if the function should run the HMM chain multipoint approach to estimate the genetic distances given the marker order provided by the two-points ordering algorithm. We set here the argument `hmm=FALSE` because we just want to obtain the marker order. We are not yet estimating the genetic
 distances. We suggest to use `hmm=TRUE` only when you already decided which order
@@ -779,7 +784,7 @@ LG1_ser_f2 <- seriation(LG1_f2, hmm = F) # Will return an error (can not be used
 
 Another method that has been demonstrated to be very efficient in ordering markers uses the multidimensional scaling (MDS) approach. `OneMap` has the `mds_onemap` function that makes an interface with the MDSMap package to apply this approach to order markers. This is particularly useful if you are dealing with many markers (up to 20). The method also provides diagnostics graphics and parameters to find outliers to help users to filter the dataset.  You can find more information in `MDSMap` [vignette](https://CRAN.R-project.org/package=MDSMap). Our `mds_onemap` does not present all possibilities of analysis that the MDSMap package presents. See help page `?mds_onemap` to check which ones we implemented.
 
-```{r}
+```{r, eval=FALSE}
 LG1_mds_f2 <- mds_onemap(input.seq = LG1_f2, hmm = F)
 ```
 
@@ -810,12 +815,14 @@ closely on the map.
 
 Let's see the maps we have until now:
 
-```{r}
+```{r, eval=FALSE}
 rf_graph_table(LG1_rcd_f2)
 rf_graph_table(LG1_rec_f2)
 rf_graph_table(LG1_ug_f2)
 rf_graph_table(LG1_mds_f2)
 ```
+
+*NOTE*: Results are not plotted in this vignette, please check the vignette in [GitHub version](https://statgen-esalq.github.io/tutorials/onemap/Inbred_Based_Populations.html).
 
 With default arguments, the graphic cells represent the recombination fractions. 
 If you change the argument to `graph.LOD = TRUE`, LOD score values are plotted. The color scale varies from red (small distances and big LODs) to dark blue. You can also change the number of colors from the `rainbow` palette with argument `n.colors`,
@@ -964,12 +971,19 @@ first using `THRES` and then `THRES - 1` as the threshold. This
 generally results in safe orders with more markers mapped but takes
 longer to run. To do this, type (it will take some time to run):
 
-```{r, touchdown}
+```{r, touchdown, eval=FALSE}
 LG1_f2_ord <- order_seq(input.seq = LG1_ug2_f2, n.init = 5,
                         subset.search = "twopt",
                         twopt.alg = "rcd", THRES = 3,
                         touchdown = TRUE)
 ``` 
+
+```{r, echo=FALSE}
+LG1_f2_ord <- order_seq(input.seq = LG1_ug2_f2, n.init = 5,
+                        subset.search = "twopt",
+                        twopt.alg = "rcd", THRES = 3,
+                        touchdown = FALSE)
+```
 
 The output is too big to be included here, so please try it to see
 what happens. In short, for this particular sequence, the `touchdown`
@@ -985,7 +999,7 @@ rf_graph_table(LG1_f2_final)
 
 Finally, to check for alternative orders, use the `ripple_seq` function:
 
-```{r, ripple_lg2_final, results="hide"}
+```{r, ripple_lg2_final, results="hide", eval=FALSE}
 ripple_seq(LG1_f2_final, ws = 5, LOD = 3)
 ``` 
 
@@ -1005,11 +1019,18 @@ In this example, the first two windows showed alternative orders with LOD smalle
 
 Here we will use the multipoint approach to re-order the LG2. The approach is the automatic usage of the `try` algorithm:
 
-```{r, results='hide'}
+```{r, results='hide', eval=FALSE}
 LG2_f2_ord <- order_seq(input.seq = LG2_ug_f2, n.init = 5,
                         subset.search = "twopt",
                         twopt.alg = "rcd", THRES = 3,
                         touchdown = TRUE, rm_unlinked = TRUE)
+``` 
+
+```{r, results='hide', echo=FALSE}
+LG2_f2_ord <- order_seq(input.seq = LG2_ug_f2, n.init = 5,
+                        subset.search = "twopt",
+                        twopt.alg = "rcd", THRES = 3,
+                        touchdown = FALSE, rm_unlinked = TRUE)
 ``` 
 
 The second round of `try_seq` added markers `23`, `29`, `67`, `44`, `68`, `36`, `40`, `26`, `63`, `31`, `17`, `12`, `75`, `74`, `58`, `35`, `13`, `6`, `70`, `72`, `30`, `69`, `1`, `46`, `42`, `3`, `27`  and `55`  (try
@@ -1052,7 +1073,7 @@ LG2_edit_map <- onemap::map(LG2_edit)
 
 See what happened:
 
-```{r}
+```{r, eval=FALSE}
 rf_graph_table(LG2_edit_map)
 ```
 
@@ -1072,7 +1093,7 @@ rf_graph_table(LG2_f2_final)
 
 Check the final map (results not shown):
 
-```{r, results="hide"}
+```{r, results="hide", eval=FALSE}
 ripple_seq(LG2_f2_final, ws = 5)
 ``` 
 
@@ -1086,9 +1107,11 @@ This is the final version of the map for this linkage group.
 
 #### Linkage group 3
 
+*NOTE*: Results in this session are not plotted in this vignette, please check the vignette in [GitHub version](https://statgen-esalq.github.io/tutorials/onemap/Inbred_Based_Populations.html).
+
 Automatic usage of try algorithm.
 
-```{r, order_LG3, results='hide'}
+```{r, order_LG3, results='hide', eval=FALSE}
 LG3_f2_ord <- order_seq(input.seq = LG3_ug_f2, n.init = 5,
                         subset.search = "twopt",
                         twopt.alg = "rcd", THRES = 3,
@@ -1099,19 +1122,19 @@ A careful examination of the graphics can be a good source of information about 
 
 Now, get the order with all markers:
 
-```{r, LG3_force}
+```{r, LG3_force, eval=FALSE}
 (LG3_f2_final <- make_seq(LG3_f2_ord, "force"))
 ``` 
 
 Check heatmap:
 
-```{r}
+```{r, eval=FALSE}
 rf_graph_table(LG3_f2_final)
 ``` 
 
 Markers `34`, `39`, `50`, `56`, `20`, `24` and `64` seem to broke the color pattern. We will remove them and use try_seq to find better locations:
 
-```{r}
+```{r, eval=FALSE}
 LG3_edit <- drop_marker(LG3_f2_final, c(34,39,50,56, 20,24, 64))
 LG3_edit_map <- order_seq(LG3_edit) # We remove several markers maybe it's better to order again
 LG3_edit_map <- make_seq(LG3_edit_map, "force")
@@ -1121,7 +1144,7 @@ rf_graph_table(LG3_edit_map)
 
 Adding one by one we can see how each one changes the map log-likelihood, map size, and the color pattern in the heatmap and judge if we will remove them.
 
-```{r}
+```{r, eval=FALSE}
 LG3_edit <- try_seq(LG3_edit_map, 34)
 LG3_edit_temp <- make_seq(LG3_edit, 1) # Not included
 LG3_edit <- try_seq(LG3_edit_map, 39)
@@ -1145,13 +1168,13 @@ LG3_f2_final <- LG3_edit_map
 
 Check the final map (not shown):
 
-```{r, ripple_LG3, results="hide"}
+```{r, ripple_LG3, results="hide", eval=FALSE}
 ripple_seq(LG3_f2_final, ws = 5)
 ``` 
 
 The fifth window presented alternative orders that seem better than the current one. Let's try to substitute the current order with the best presented by ripple. See that, instead of `59-49-76-28-80` we have `59-49-76-80-28`. Let's find this window and substitute the sequence:
 
-```{r}
+```{r, eval=FALSE}
 idx <- which(LG3_f2_final$seq.num == 59) 
 new_seq <- LG3_f2_final$seq.num
 new_seq[idx:(idx+4)] <- c(59, 49, 76, 80, 28)
@@ -1160,13 +1183,13 @@ LG3_edit_seq <- make_seq(twopts_f2, new_seq)
 
 Now, we estimate the distances for this already known order using `map`:
 
-```{r}
+```{r, eval=FALSE}
 LG3_edit_map <- onemap::map(LG3_edit_seq)
 ```
 
 Print it:
 
-```{r, LG3_final}
+```{r, LG3_final, eval=FALSE}
 LG3_f2_final <- LG3_edit_map
 
 rf_graph_table(LG3_f2_final)
@@ -1309,7 +1332,7 @@ We can draw a genetic map for all linkage groups using the function
 `draw_map`. First, we have to create a list of ordered linkage groups:
 
 ```{r}
-maps_list <- list(LG1_f2_final, LG2_f2_final, LG3_f2_final)
+maps_list <- list(LG1_f2_final, LG2_f2_final)
 ```
 
 Then use function `draw_map` for this list:
@@ -1336,12 +1359,12 @@ The same figures did with `draw_map` can be done with the `draw_map2` function. 
 Let's draw all three groups built:
 
 ```{r, eval=FALSE, results='hide', eval=FALSE}
-draw_map2(LG1_f2_final, LG2_f2_final, LG3_f2_final, main = "Only linkage information", 
+draw_map2(LG1_f2_final, LG2_f2_final, main = "Only linkage information", 
           group.names = c("LG1", "LG2", "LG3"))
 ```
 
 ```{r, echo=FALSE, results='hide', echo=FALSE}
-draw_map2(LG1_f2_final, LG2_f2_final, LG3_f2_final, main = "Only linkage information", 
+draw_map2(LG1_f2_final, LG2_f2_final, main = "Only linkage information", 
           group.names = c("LG1", "LG2", "LG3"), output = "map.png")
 ```
 

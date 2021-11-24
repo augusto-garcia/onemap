@@ -38,8 +38,10 @@
 ##' @seealso \code{\link[onemap]{create_data_bins}}
 ##' @keywords bins dimension reduction
 ##' @examples
+##' 
 ##'   data("onemap_example_f2")
 ##'   (bins<-find_bins(onemap_example_f2, exact=FALSE))
+##' 
 ##'@export
 find_bins <- function(input.obj, exact=TRUE)
 {
@@ -57,7 +59,12 @@ find_bins <- function(input.obj, exact=TRUE)
     structure(list(bins=w,info=list(n.ind=input.obj$n.ind, n.mar=input.obj$n.mar, exact.search=exact)), class="onemap_bin")
 }
 
-##print method for object class 'onemap_bin'
+##' print method for object class 'onemap_bin'
+##' 
+##' @param x object of class \code{onemap_bin}
+##' 
+##' @return No return value, called for side effects
+##' 
 ##' @export
 ##' @method print onemap_bin
 print.onemap_bin<-function (x, ...) {

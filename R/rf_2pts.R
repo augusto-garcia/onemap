@@ -39,11 +39,13 @@
 ##' @param rm_mks logical. If \code{TRUE} the algorithm will remove the markers for which it found numerical 
 ##' problems to calculates the recombination fraction. The numerical problems can happens because of excess of 
 ##' missing data or segregation deviation.
+##' 
 ##' @return An object of class \code{rf_2pts}, which is a list containing the
 ##' following components:  \item{n.mar}{total number of markers.} \item{LOD}{minimum LOD Score to declare
 ##' linkage.} \item{max.rf}{maximum recombination fraction to declare linkage.}
 ##' \item{input}{the name of the input file.} \item{analysis}{an array with the
 ##' complete results of the two-point analysis for each pair of markers.}
+##' 
 ##' @note The thresholds used for \code{LOD} and \code{max.rf} will be used in
 ##' subsequent analyses, but can be overriden.
 ##' @author Gabriel R A Margarido \email{gramarga@@gmail.com} and Marcelo Mollinari \email{mmollina@@usp.br}
@@ -52,13 +54,15 @@
 ##' outcrossing species. \emph{Theoretical Population Biology} 61: 349-363.
 ##' @keywords utilities
 ##' @examples
-##'
+##' 
 ##'   data(onemap_example_out)
 ##'
 ##'   twopts <- rf_2pts(onemap_example_out,LOD=3,max.rf=0.5) # perform two-point analyses
 ##'   twopts
 ##'
 ##'   print(twopts,c("M1","M2")) # detailed results for markers 1 and 2
+##'   
+##'   
 ##'@export
 rf_2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE, rm_mks = FALSE) {
   ## checking for correct object

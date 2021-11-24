@@ -52,7 +52,7 @@ same in both parents. Hidden Markov chain codes adapted from Broman et al.
 }
 \examples{
 
-\dontrun{
+\donttest{
   #outcrossing example
   data(onemap_example_out)
   twopt <- rf_2pts(onemap_example_out)

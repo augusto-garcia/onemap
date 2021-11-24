@@ -32,13 +32,13 @@
 #'     markers to linkage groups.}
 #'
 #' @examples
-#'
+#' 
 #' data("vcf_example_out")
 #' twopts <- rf_2pts(vcf_example_out)
 #' input.seq <- make_seq(twopts, "all")
 #' lgs <- group_upgma(input.seq, expected.groups = 3, comp.mat=TRUE, inter = FALSE)
 #' plot(lgs)
-#'    
+#' 
 #' @author Marcelo Mollinari, \email{mmollin@ncsu.edu}
 #' @author Cristiane Taniguti \email{chtaniguti@usp.br}
 #'
@@ -167,8 +167,20 @@ group_upgma <- function(input.seq, expected.groups = NULL,
             class = "group.upgma")
 }
 
+##' Show the results of grouping procedure
+##'
+##' It shows the linkage groups as well as the unlinked markers.
+##'
+##' @aliases print.group.upgma
+##' @param x an object of class group.upgma
+##' @param ... currently ignored
+##' 
+##' @return \code{NULL}
+##' @keywords internal
+##' 
+#' @method print group.upgma
 #' @export
-print.group.upgma <- function(x, detailed = TRUE, ...) {
+print.group.upgma <- function(x, ...) {
   cat("  This is an object of class 'group.upgma'\n  ------------------------------------------\n")
   ## criteria
   cat("  Criteria used to assign markers to groups:\n\n")
@@ -187,6 +199,19 @@ print.group.upgma <- function(x, detailed = TRUE, ...) {
   }
 }
 
+##' Show the results of grouping procedure
+##'
+##' It shows the linkage groups as well as the unlinked markers.
+##'
+##' @aliases plot.group.upgma
+##' @param x an object of class group.upgma
+##' @param ... currently ignored
+##' 
+##' @return \code{NULL}
+##' @keywords internal
+#' 
+#' @method plot group.upgma
+#' 
 #' @export
 plot.group.upgma <- function(x, ...) {
   dend <- as.dendrogram(x$hc.snp)

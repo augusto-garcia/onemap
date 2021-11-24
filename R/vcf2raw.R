@@ -16,7 +16,9 @@
 
 
 ##' These functions are defunct and no longer available.
-##'   
+##' 
+##' @return No return value, called for side effects
+##' 
 ##'@export
 vcf2raw <- function() {
   .Defunct(new = "onemap_read_vcfR", msg = "Defunct since version 2.1.1006. See onemap_read_vcfR function.")

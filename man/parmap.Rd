@@ -10,7 +10,8 @@ parmap(
   overlap = 4,
   tol = 1e-04,
   avoid_link_errors = TRUE,
-  export_diff = F
+  export_diff = FALSE,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -30,6 +31,9 @@ If FALSE an error stops the algorithm it find these markers.}
 
 \item{export_diff}{If TRUE also returns (in the first level of the list) the differences
 in genetic distances between overlaped markers}
+
+\item{verbose}{A logical, if TRUE its output progress status
+information.}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the

@@ -29,9 +29,24 @@ acum <- function(w) {
 #' @param sequence object of class or sequence
 #' @param mk_type vector of character with marker type to be selected
 #' 
-#' @return new sequence object with selected marker type
-#' @export
+##' @return New sequence object of class \code{sequence} with selected marker type, 
+##' which is a list containing the
+##' following components: \item{seq.num}{a \code{vector} containing the
+##' (ordered) indices of markers in the sequence, according to the input file.}
+##' \item{seq.phases}{a \code{vector} with the linkage phases between markers
+##' in the sequence, in corresponding positions. \code{-1} means that there are
+##' no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
+##' recombination frequencies between markers in the sequence. \code{-1} means
+##' that there are no estimated recombination frequencies.}
+##' \item{seq.like}{log-likelihood of the corresponding linkage map.}
+##' \item{data.name}{object of class \code{onemap} with the raw
+##' data.} \item{twopt}{object of class \code{rf_2pts} with the
+##' 2-point analyses.}
 #' 
+##' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
+##' @seealso \code{\link[onemap]{make_seq}}
+##' 
+#' @export
 seq_by_type <- function(sequence, mk_type){
   if(!is(sequence, c("sequence"))) stop("Input object must be of class sequence")
   if(length(mk_type) > 1) pat <- paste0(mk_type, collapse = "|") else pat <- mk_type
@@ -40,11 +55,17 @@ seq_by_type <- function(sequence, mk_type){
   return(new.seq)
 }
 
-#' Split rf_2pts object by mks
+#' Split rf_2pts object by markers
 #' 
 #' @param twopts.obj object of class rf_2pts
 #' @param mks markers names (vector of characters) or number (vector of integers) to be removed and added to a new rf_2pts object
 #' 
+##' @return An object of class \code{rf_2pts} with only the selected markers, which is a list containing the
+##' following components:  \item{n.mar}{total number of markers.} \item{LOD}{minimum LOD Score to declare
+##' linkage.} \item{max.rf}{maximum recombination fraction to declare linkage.}
+#' 
+##' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
+##' 
 #' @export
 split_2pts <- function(twopts.obj, mks){
   split.dat <- split_onemap(onemap.obj = twopts.obj$data.name, mks)
@@ -85,11 +106,31 @@ split_2pts <- function(twopts.obj, mks){
 }
 
 
-
-#'Remove inviduals from the onemap object
+#'Remove individuals from the onemap object
 #'
 #'@param onemap.obj object of class onemap
 #'@param rm.ind vector of charaters with individuals names
+#'
+##' @return An object of class \code{onemap} without the selected individuals, 
+##' i.e., a list with the following
+##' components: \item{geno}{a matrix with integers indicating the genotypes
+##' read for each marker. Each column contains data for a marker and each row
+##' represents an individual.} \item{n.ind}{number of individuals.}
+##' \item{n.mar}{number of markers.} \item{segr.type}{a vector with the
+##' segregation type of each marker, as \code{strings}.} \item{segr.type.num}{a
+##' vector with the segregation type of each marker, represented in a
+##' simplified manner as integers, i.e. 1 corresponds to markers of type
+##' \code{"A"}; 2 corresponds to markers of type \code{"B1.5"}; 3 corresponds
+##' to markers of type \code{"B2.6"}; 4 corresponds to markers of type
+##' \code{"B3.7"}; 5 corresponds to markers of type \code{"C.8"}; 6 corresponds
+##' to markers of type \code{"D1"} and 7 corresponds to markers of type
+##' \code{"D2"}. Markers for F2 intercrosses are coded as 1; all other crosses
+##' are left as \code{NA}.} \item{input}{the name of the input file.}
+##' \item{n.phe}{number of phenotypes.} \item{pheno}{a matrix with phenotypic
+##' values. Each column contains data for a trait and each row represents an
+##' individual.}
+#'
+##' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
 #'
 #'@export
 remove_inds <- function(onemap.obj, rm.ind){
@@ -109,6 +150,26 @@ remove_inds <- function(onemap.obj, rm.ind){
 #' Sort markers in onemap object by their position in reference genome
 #' 
 #' @param onemap.obj object of class onemap
+#' 
+##' @return An object of class \code{onemap}, i.e., a list with the following
+##' components: \item{geno}{a matrix with integers indicating the genotypes
+##' read for each marker. Each column contains data for a marker and each row
+##' represents an individual.} \item{n.ind}{number of individuals.}
+##' \item{n.mar}{number of markers.} \item{segr.type}{a vector with the
+##' segregation type of each marker, as \code{strings}.} \item{segr.type.num}{a
+##' vector with the segregation type of each marker, represented in a
+##' simplified manner as integers, i.e. 1 corresponds to markers of type
+##' \code{"A"}; 2 corresponds to markers of type \code{"B1.5"}; 3 corresponds
+##' to markers of type \code{"B2.6"}; 4 corresponds to markers of type
+##' \code{"B3.7"}; 5 corresponds to markers of type \code{"C.8"}; 6 corresponds
+##' to markers of type \code{"D1"} and 7 corresponds to markers of type
+##' \code{"D2"}. Markers for F2 intercrosses are coded as 1; all other crosses
+##' are left as \code{NA}.} \item{input}{the name of the input file.}
+##' \item{n.phe}{number of phenotypes.} \item{pheno}{a matrix with phenotypic
+##' values. Each column contains data for a trait and each row represents an
+##' individual.}
+#' 
+##' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
 #' 
 #' @export
 sort_by_pos <- function(onemap.obj){
@@ -136,6 +197,26 @@ sort_by_pos <- function(onemap.obj){
 #' \code{"ri self"} for recombinant inbred lines by self-mating; or
 #' \code{"ri sib"} for recombinant inbred lines by sib-mating.
 #' 
+##' @return An empty object of class \code{onemap}, i.e., a list with the following
+##' components: \item{geno}{a matrix with integers indicating the genotypes
+##' read for each marker. Each column contains data for a marker and each row
+##' represents an individual.} \item{n.ind}{number of individuals.}
+##' \item{n.mar}{number of markers.} \item{segr.type}{a vector with the
+##' segregation type of each marker, as \code{strings}.} \item{segr.type.num}{a
+##' vector with the segregation type of each marker, represented in a
+##' simplified manner as integers, i.e. 1 corresponds to markers of type
+##' \code{"A"}; 2 corresponds to markers of type \code{"B1.5"}; 3 corresponds
+##' to markers of type \code{"B2.6"}; 4 corresponds to markers of type
+##' \code{"B3.7"}; 5 corresponds to markers of type \code{"C.8"}; 6 corresponds
+##' to markers of type \code{"D1"} and 7 corresponds to markers of type
+##' \code{"D2"}. Markers for F2 intercrosses are coded as 1; all other crosses
+##' are left as \code{NA}.} \item{input}{the name of the input file.}
+##' \item{n.phe}{number of phenotypes.} \item{pheno}{a matrix with phenotypic
+##' values. Each column contains data for a trait and each row represents an
+##' individual.}
+#' 
+##' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
+##' 
 #' @export
 empty_onemap_obj <- function(vcf, P1, P2, cross){
   legacy_crosses <- setNames(c("outcross", "f2", "backcross", "riself", "risib"), 
@@ -161,6 +242,27 @@ empty_onemap_obj <- function(vcf, P1, P2, cross){
 #' Remove duplicated markers keeping the one with less missing data
 #'  
 #' @param onemap.obj object of class \code{onemap}
+#'  
+##' @return An empty object of class \code{onemap}, i.e., a list with the following
+##' components: \item{geno}{a matrix with integers indicating the genotypes
+##' read for each marker. Each column contains data for a marker and each row
+##' represents an individual.} \item{n.ind}{number of individuals.}
+##' \item{n.mar}{number of markers.} \item{segr.type}{a vector with the
+##' segregation type of each marker, as \code{strings}.} \item{segr.type.num}{a
+##' vector with the segregation type of each marker, represented in a
+##' simplified manner as integers, i.e. 1 corresponds to markers of type
+##' \code{"A"}; 2 corresponds to markers of type \code{"B1.5"}; 3 corresponds
+##' to markers of type \code{"B2.6"}; 4 corresponds to markers of type
+##' \code{"B3.7"}; 5 corresponds to markers of type \code{"C.8"}; 6 corresponds
+##' to markers of type \code{"D1"} and 7 corresponds to markers of type
+##' \code{"D2"}. Markers for F2 intercrosses are coded as 1; all other crosses
+##' are left as \code{NA}.} \item{input}{the name of the input file.}
+##' \item{n.phe}{number of phenotypes.} \item{pheno}{a matrix with phenotypic
+##' values. Each column contains data for a trait and each row represents an
+##' individual.}
+#' 
+##' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
+##' 
 #'  
 #' @export
 rm_dupli_mks <- function(onemap.obj){
@@ -281,7 +383,7 @@ check_data <- function(x){
 #' twopts <- rf_2pts(onemap_example_bc)
 #' check_twopts(twopts)
 #' 
-#' @author Cristiane Taniguti, \email{chtaniguti@usp.br}
+#' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
 #' 
 #' @export
 check_twopts <- function(x){
@@ -312,6 +414,21 @@ check_twopts <- function(x){
 #' 
 #' @param max.gap maximum gap measured in kosambi centimorgans allowed between adjacent markers. 
 #' Markers that presents the defined distance between both adjacent neighbors will be removed.
+#' 
+##' @return New sequence object of class \code{sequence}, which is a list containing the
+##' following components: \item{seq.num}{a \code{vector} containing the
+##' (ordered) indices of markers in the sequence, according to the input file.}
+##' \item{seq.phases}{a \code{vector} with the linkage phases between markers
+##' in the sequence, in corresponding positions. \code{-1} means that there are
+##' no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
+##' recombination frequencies between markers in the sequence. \code{-1} means
+##' that there are no estimated recombination frequencies.}
+##' \item{seq.like}{log-likelihood of the corresponding linkage map.}
+##' \item{data.name}{object of class \code{onemap} with the raw
+##' data.} \item{twopt}{object of class \code{rf_2pts} with the
+##' 2-point analyses.}
+#' 
+#' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
 #' 
 #' @export
 filter_2pts_gaps <- function(input.seq, max.gap=10){

@@ -14,7 +14,8 @@ rcd(
   overlap = NULL,
   phase_cores = 1,
   hmm = TRUE,
-  parallelization.type = "PSOCK"
+  parallelization.type = "PSOCK",
+  verbose = TRUE
 )
 }
 \arguments{
@@ -44,6 +45,9 @@ genetic distances}
 
 \item{parallelization.type}{one of the supported cluster types. This should 
 be either PSOCK (default) or FORK.}
+
+\item{verbose}{A logical, if TRUE it output progress status
+information.}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the
@@ -87,14 +91,14 @@ using the multipoint approach (function \code{\link[onemap]{map}}).
 }
 \examples{
 
-\dontrun{
+\donttest{
   #outcross example
   data(onemap_example_out)
   twopt <- rf_2pts(onemap_example_out)
   all_mark <- make_seq(twopt,"all")
   groups <- group(all_mark)
   LG1 <- make_seq(groups,1)
-  LG1.rcd <- rcd(LG1)
+  LG1.rcd <- rcd(LG1, hmm = FALSE)
 
   #F2 example
   data(onemap_example_f2)
@@ -102,9 +106,10 @@ using the multipoint approach (function \code{\link[onemap]{map}}).
   all_mark <- make_seq(twopt,"all")
   groups <- group(all_mark)
   LG1 <- make_seq(groups,1)
-  LG1.rcd <- rcd(LG1)
+  LG1.rcd <- rcd(LG1, hmm = FALSE)
   LG1.rcd
 }
+
 }
 \references{
 Basten, C. J., Weir, B. S. and Zeng, Z.-B. (2005) \emph{QTL

@@ -83,7 +83,7 @@
 ##' @keywords utilities
 ##' @examples
 ##'
-##' \dontrun{
+##' \donttest{
 ##'   #outcrossing example
 ##'   data(onemap_example_out)
 ##'   twopt <- rf_2pts(onemap_example_out)
@@ -117,10 +117,10 @@ compare_outcross<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
   if(!is(input.seq,"sequence"))
     stop(sQuote(deparse(substitute(input.seq)))," is not an object of class 'sequence'")
   if(length(input.seq$seq.num) > 5)
-    cat("WARNING: this operation may take a VERY long time\n")
+    warning("This operation may take a VERY long time\n")
   flush.console()
   if(length(input.seq$seq.num) > 10) {
-    cat("\nIt is not wise trying to use 'compare' with more than 10 markers \n")
+    warning("It is not wise trying to use 'compare' with more than 10 markers")
     ANSWER <- readline("Are you sure you want to proceed? [y or n]\n")
     while(substr(ANSWER, 1, 1) != "n" & substr(ANSWER, 1, 1) != "y")
       ANSWER <- readline("\nPlease answer: 'y' or 'n' \n")
@@ -142,8 +142,8 @@ compare_outcross<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
     
     ## 'perm_pars' generates all n!/2 orders
     all.ord <- perm_pars(input.seq$seq.num)
-    cat("\nComparing",nrow(all.ord),"orders:     \n\n")
     if (verbose){
+      cat("\nComparing",nrow(all.ord),"orders:     \n\n")
       for(i in 1:nrow(all.ord)){
         ## print output for each order
         cat("Order", i, ":", all.ord[i,], "\n")
@@ -194,24 +194,12 @@ compare_outcross<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
           best.ord.like <- sort(best.ord.like, decreasing=TRUE)
         }
       }
-    }
-    else{
+    } else{
       count <- 0
       pb <- txtProgressBar(style=3)
       setTxtProgressBar(pb, 0)
       
-      ## nc<-NA
-      ## out.pr <- seq(from=1,to=nrow(all.ord), length.out=20)
-      cat("    ")
       for(i in 1:nrow(all.ord)){
-        ## print output for each order
-        ##    if (sum(i == round(out.pr))){
-        ##      cat(rep("\b",nchar(nc)+1),sep="")
-        ##      nc<-round(i*100/nrow(all.ord))
-        ##      cat(nc,"%", sep="")
-        ##      flush.console()
-        ##    }
-        ## get initial values for the HMM
         all.match <- match(all.ord[i,],input.seq$seq.num)
         for(j in 1:(length(input.seq$seq.num)-1)){
           if(all.match[j] > all.match[j+1]){
@@ -261,7 +249,7 @@ compare_outcross<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
       }
       close(pb)
     }
-    cat("\n")
+
     best.ord.LOD <- round((best.ord.like-max(best.ord.like))/log(10),4)
     structure(list(best.ord = best.ord,
                    best.ord.rf = best.ord.rf,
@@ -282,10 +270,10 @@ compare_inbred_bc<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
   if(!is(input.seq,"sequence"))
     stop(sQuote(deparse(substitute(input.seq)))," is not an object of class 'sequence'")
   if(length(input.seq$seq.num) > 5)
-    cat("WARNING: this operation may take a VERY long time\n")
+    warning("This operation may take a VERY long time\n")
   flush.console()
   if(length(input.seq$seq.num) > 10) {
-    cat("\nIt is not wise trying to use 'compare' with more than 10 markers \n")
+    warning("It is not wise trying to use 'compare' with more than 10 markers")
     ANSWER <- readline("Are you sure you want to proceed? [y or n]\n")
     while(substr(ANSWER, 1, 1) != "n" & substr(ANSWER, 1, 1) != "y")
       ANSWER <- readline("\nPlease answer: 'y' or 'n' \n")
@@ -301,13 +289,12 @@ compare_inbred_bc<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
     best.ord <- matrix(NA,(n.best+1),length(input.seq$seq.num))
     best.ord.rf <- matrix(NA,(n.best+1),length(input.seq$seq.num)-1)
     best.ord.like <- best.ord.LOD <- rep(-Inf,(n.best+1))
-    cat("\nComparing",nrow(all.ord),"orders:     \n\n")
-    if(!verbose)
-    {
+    if(verbose) {
+      cat("\nComparing",nrow(all.ord),"orders:     \n\n")
+    } else {
       count <- 0
       pb <- txtProgressBar(style=3)
       setTxtProgressBar(pb, 0)
-      cat("    ")
     }
     for(i in 1:nrow(all.ord))
     {
@@ -342,8 +329,6 @@ compare_inbred_bc<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
       }
     }
     close(pb)
-    ## cat("\nFinished\n\n")
-    cat("\n")
     best.ord.LOD <- round((best.ord.like-max(best.ord.like))/log(10),4)
     structure(list(best.ord = best.ord,
                    best.ord.rf = best.ord.rf,
@@ -363,10 +348,10 @@ compare_inbred_f2<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
   if(!is(input.seq,"sequence"))
     stop(sQuote(deparse(substitute(input.seq)))," is not an object of class 'sequence'")
   if(length(input.seq$seq.num) > 5)
-    cat("WARNING: this operation may take a VERY long time\n")
+    warning("This operation may take a VERY long time\n")
   flush.console()
   if(length(input.seq$seq.num) > 10) {
-    cat("\nIt is not wise trying to use 'compare' with more than 10 markers \n")
+    warning("It is not wise trying to use 'compare' with more than 10 markers")
     ANSWER <- readline("Are you sure you want to proceed? [y or n]\n")
     while(substr(ANSWER, 1, 1) != "n" & substr(ANSWER, 1, 1) != "y")
       ANSWER <- readline("\nPlease answer: 'y' or 'n' \n")
@@ -382,13 +367,10 @@ compare_inbred_f2<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
     best.ord <- matrix(NA,(n.best+1),length(input.seq$seq.num))
     best.ord.rf <- matrix(NA,(n.best+1),length(input.seq$seq.num)-1)
     best.ord.like <- best.ord.LOD <- rep(-Inf,(n.best+1))
-    cat("\nComparing",nrow(all.ord),"orders:     \n\n")
-    if(!verbose)
-    {
+    if(!verbose){
       count <- 0
       pb <- txtProgressBar(style=3)
       setTxtProgressBar(pb, 0)
-      cat("    ")
     }
     for(i in 1:nrow(all.ord))
     {
@@ -417,8 +399,6 @@ compare_inbred_f2<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
       }
     }
     close(pb)
-    ## cat("\nFinished\n\n")
-    cat("\n")
     best.ord.LOD <- round((best.ord.like-max(best.ord.like))/log(10),4)
     structure(list(best.ord = best.ord,
                    best.ord.rf = best.ord.rf,

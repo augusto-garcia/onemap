@@ -48,18 +48,22 @@
 #' be either PSOCK (default) or FORK.
 #' @param hmm logical defining if the HMM must be applied to estimate multipoint
 #' genetic distances
+##' @param verbose A logical, if TRUE it output progress status
+##' information.
+##' 
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}
 ##' \item{seq.phases}{a \code{vector} with the linkage phases between markers
-##' in the sequence, in corresponding positions. \code{-1} means taht there are
+##' in the sequence, in corresponding positions. \code{-1} means that there are
 ##' no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
 ##' recombination frequencies between markers in the sequence. \code{-1} means
 ##' that there are no estimated recombination frequencies.}
 ##' \item{seq.like}{log-likelihood of the corresponding linkage map.}
-##' \item{data.name}{name of the object of class \code{onemap} with the raw
-##' data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
+##' \item{data.name}{object of class \code{onemap} with the raw
+##' data.} \item{twopt}{object of class \code{rf_2pts} with the
 ##' 2-point analyses.}
+##' 
 ##' @author Marcelo Mollinari, \email{mmollina@@usp.br}
 ##' @seealso \code{\link[onemap]{make_seq}}, \code{\link[onemap]{map}}
 ##' @references Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia,
@@ -71,7 +75,7 @@
 ##' @keywords utilities
 ##' @examples
 ##'
-##' \dontrun{
+##' \donttest{
 ##'   #outcross example
 ##'   data(onemap_example_out)
 ##'   twopt <- rf_2pts(onemap_example_out)
@@ -94,7 +98,7 @@ ug<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
              rm_unlinked = TRUE,
              size = NULL, 
              overlap = NULL, 
-             phase_cores = 1, hmm=TRUE, parallelization.type = "PSOCK")
+             phase_cores = 1, hmm=TRUE, parallelization.type = "PSOCK", verbose=TRUE)
 {
   ## checking for correct object
   if(!is(input.seq,"sequence"))
@@ -229,7 +233,7 @@ ug<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
   complete<-partial
   ## end of UG algorithm
   if(hmm){
-    cat("\norder obtained using UG algorithm:\n\n", input.seq$seq.num[avoid_reverse(complete)], "\n\ncalculating multipoint map using tol ", tol, ".\n\n")
+    if(verbose) cat("\norder obtained using UG algorithm:\n\n", input.seq$seq.num[avoid_reverse(complete)], "\n\ncalculating multipoint map using tol ", tol, ".\n\n")
     if(phase_cores == 1 | is(input.seq$data.name, c("backcross", "riself", "risib"))){
       ug_map <- map(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(complete)],
                              twopt=input.seq$twopt), tol=tol, rm_unlinked = rm_unlinked, 

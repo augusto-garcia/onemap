@@ -81,30 +81,21 @@
 ##' @keywords utilities
 ##' @examples
 ##'
-##' \dontrun{
-##'   ##outcross example
-##'   data(onemap_example_out)
-##'   twopt <- rf_2pts(onemap_example_out)
-##'   all_mark <- make_seq(twopt,"all")
-##'   groups <- group(all_mark)
-##'   LG3 <- make_seq(groups,3)
-##'   LG3.ser <- seriation(LG3)
-##'
-##'   ##F2 example
-##'   data(onemap_example_f2)
-##'   twopt <- rf_2pts(onemap_example_f2)
-##'   all_mark <- make_seq(twopt,"all")
-##'   groups <- group(all_mark)
-##'   LG1 <- make_seq(groups,1)
-##'   LG1.ser <- seriation(LG1)
-##'   LG1.ser
+##' \donttest{
+#'   ##outcross example
+#'   data(onemap_example_out)
+#'   twopt <- rf_2pts(onemap_example_out)
+#'   all_mark <- make_seq(twopt,"all")
+#'   groups <- group(all_mark)
+#'   LG3 <- make_seq(groups,3)
+#'   LG3.ser <- seriation(LG3)
 ##' }
 ##'@export
 seriation<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5, 
                     rm_unlinked = TRUE,
                     size = NULL, 
                     overlap = NULL, 
-                    phase_cores = 1, hmm=TRUE, parallelization.type = "PSOCK")
+                    phase_cores = 1, hmm=TRUE, parallelization.type = "PSOCK", verbose = TRUE)
 {
   ## checking for correct object
   if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is
@@ -137,7 +128,7 @@ seriation<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
   
   ## end of SERIATION algorithm
   if(hmm){
-    cat("\norder obtained using SERIATION algorithm:\n\n", input.seq$seq.num[complete], "\n\ncalculating multipoint map using tol = ", tol, ".\n\n")
+    if(verbose) cat("\norder obtained using SERIATION algorithm:\n\n", input.seq$seq.num[complete], "\n\ncalculating multipoint map using tol = ", tol, ".\n\n")
     
     if(phase_cores == 1 | is(input.seq$data.name, c("backcross", "riself", "risib"))){
       ser_map <- map(make_seq(input.seq$twopt,input.seq$seq.num[complete],

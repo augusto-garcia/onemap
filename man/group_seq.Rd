@@ -72,6 +72,7 @@ using \code{NULL}, the new values override the ones in object
 \code{input.2pts}.
 }
 \examples{
+
 data(onemap_example_out) # load OneMap's fake dataset for a outcrossing population
 data(vcf_example_out) # load OneMap's fake dataset from a VCF file for a outcrossing population
 comb_example <- combine_onemap(onemap_example_out, vcf_example_out) # Combine datasets

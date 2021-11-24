@@ -9,11 +9,11 @@ map_overlapping_batches(
   size = 50,
   overlap = 15,
   phase_cores = 1,
-  verbose = F,
+  verbose = FALSE,
   seeds = NULL,
   tol = 1e-04,
-  rm_unlinked = T,
-  max.gap = F,
+  rm_unlinked = TRUE,
+  max.gap = FALSE,
   parallelization.type = "PSOCK"
 )
 }
