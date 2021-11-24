@@ -36,7 +36,7 @@ Provides a simple draw of a genetic map.
 }
 \examples{
 
-\dontrun{
+\donttest{
  #outcross example
   data(onemap_example_out)
   twopt <- rf_2pts(onemap_example_out)

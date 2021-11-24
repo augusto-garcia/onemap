@@ -52,6 +52,7 @@ using \code{NULL}, the new values override the ones in object
   link_gr <- group(all.data)
   link_gr
   print(link_gr, details=FALSE) #omit the names of the markers
+
 }
 \references{
 Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993)

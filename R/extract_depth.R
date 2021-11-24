@@ -22,6 +22,7 @@ globalVariables(c("gt.onemap.alt.ref", "gt.vcf.alt.ref", "parents"))
 #' alternative alelle counts.}\item{oref}{a \code{matrix} with progeny 
 #' reference alelle counts.}\item{osize}{a \code{matrix} with progeny 
 #' total alelle counts.}\item{n.mks}{total number of markers.} 
+#' 
 #' \item{n.ind}{total number of individuals in progeny.} \item{inds}{progeny individuals identification.}
 #' \item{mks}{markers identification.} \item{onemap.object}{same onemap.object inputed}
 #' 

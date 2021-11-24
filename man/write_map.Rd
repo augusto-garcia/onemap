@@ -23,43 +23,41 @@ QTLCartographer program.
 This function is avaliable only for backcross, F2 and RILs.
 }
 \examples{
-
-\dontrun{
+\donttest{
 data(mapmaker_example_f2)
 twopt<-rf_2pts(mapmaker_example_f2)
 lg<-group(make_seq(twopt, "all"))
 
 ##"pre-allocate" an empty list of length lg$n.groups (3, in this case)
-  maps.list<-vector("list", lg$n.groups)
+maps.list<-vector("list", lg$n.groups)
 
-  for(i in 1:lg$n.groups){
-    ##create linkage group i
-    LG.cur <- make_seq(lg,i)
-    ##ordering
-    map.cur<-order_seq(LG.cur, subset.search = "sample")
-    ##assign the map of the i-th group to the maps.list
-    maps.list[[i]]<-make_seq(map.cur, "force")
-  }
+for(i in 1:lg$n.groups){
+  ##create linkage group i
+  LG.cur <- make_seq(lg,i)
+  ##ordering
+  map.cur<-order_seq(LG.cur, subset.search = "sample")
+  ##assign the map of the i-th group to the maps.list
+  maps.list[[i]]<-make_seq(map.cur, "force")
 
-##write maps.list to "mapmaker_example_f2.map" file
-write_map(map.list, "mapmaker_example_f2.map")
+  ##write maps.list to "mapmaker_example_f2.map" file
+  write_map(map.list, "mapmaker_example_f2.map")
 
-##Using R/qtl
-##you must install the package  'qtl'
-##install.packages("qtl")
+  ##Using R/qtl
+  ##you must install the package  'qtl'
 
-require(qtl)
-file<-paste(system.file("example",package="onemap"),"mapmaker_example_f2.raw", sep="/")
-dat1 <- read.cross("mm", file=file, mapfile="mapmaker_example_f2.map")
-newmap <- est.map(dat1, tol=1e-6, map.function="kosambi")
+  require(qtl)
+  file<-paste(system.file("example",package="onemap"),"mapmaker_example_f2.raw", sep="/")
+  dat1 <- read.cross("mm", file=file, mapfile="mapmaker_example_f2.map")
+  newmap <- est.map(dat1, tol=1e-6, map.function="kosambi")
 
-(logliks <- sapply(newmap, attr, "loglik"))
-plot.map(dat1, newmap)
+  (logliks <- sapply(newmap, attr, "loglik"))
+  plot.map(dat1, newmap)
 
-##Using R/qtl to generate QTL Cartographer input files (.map and .cro)
-write.cross(dat1, format="qtlcart", filestem="mapmaker_example_f2")
-
+ ##Using R/qtl to generate QTL Cartographer input files (.map and .cro)
+  write.cross(dat1, format="qtlcart", filestem="mapmaker_example_f2")
 }
+}
+
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.

@@ -2,15 +2,29 @@
 % Please edit documentation in R/write_haplotypes.R
 \name{progeny_haplotypes_counts}
 \alias{progeny_haplotypes_counts}
-\title{Generate graphic with the number of break points for each individual considering the most likely genotypes estimated by the HMM.
-Genotypes with same probability for two genotypes are removed. By now, only available for outcrossing and f2 intercross.}
+\title{Plot number of breakpoints by individuals}
 \usage{
 progeny_haplotypes_counts(x)
 }
 \arguments{
 \item{x}{object of class onemap_progeny_haplotypes}
 }
+\value{
+a \code{data.frame} with columns individuals ID (ind), group ID (grp),
+homolog (homolog) and counts of breakpoints
+}
 \description{
-Generate graphic with the number of break points for each individual considering the most likely genotypes estimated by the HMM.
-Genotypes with same probability for two genotypes are removed. By now, only available for outcrossing and f2 intercross.
+Generate graphic with the number of break points for each individual 
+considering the most likely genotypes estimated by the HMM.
+Genotypes with same probability for two genotypes are removed.
+ By now, only available for outcrossing and f2 intercross.
+}
+\examples{
+
+data("onemap_example_out")
+twopts <- rf_2pts(onemap_example_out)
+lg1 <- make_seq(twopts, 1:5)
+lg1.map <- map(lg1)
+progeny_haplotypes_counts(progeny_haplotypes(lg1.map, most_likely = T))
+
 }

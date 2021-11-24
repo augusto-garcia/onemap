@@ -30,8 +30,10 @@ Function to allocate markers with redundant information into bins.
 Within each bin, the pairwise recombination fraction between markers is zero.
 }
 \examples{
+
   data("onemap_example_f2")
   (bins<-find_bins(onemap_example_f2, exact=FALSE))
+
 }
 \seealso{
 \code{\link[onemap]{create_data_bins}}

@@ -37,6 +37,8 @@ globalVariables(c("var"))
 ##' If FALSE an error stops the algorithm it find these markers.
 ##' @param export_diff If TRUE also returns (in the first level of the list) the differences
 ##' in genetic distances between overlaped markers
+##' @param verbose A logical, if TRUE its output progress status
+##' information.
 ##'   
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
@@ -53,6 +55,7 @@ globalVariables(c("var"))
 ##' 
 ##' @author Cristiane Taniguti \email{chtaniguti@@usp.br} 
 ##' @seealso \code{\link[onemap]{map}}
+##' 
 ##' @references Schiffthaler, B., Bernhardsson, C., Ingvarsson, P. K., & Street, 
 ##' N. R. (2017). BatchMap: A parallel implementation of the OneMap R package 
 ##' for fast computation of F1 linkage maps in outcrossing species. PLoS ONE, 
@@ -66,7 +69,7 @@ parmap <- function(input.seq=NULL,
                    overlap=4, 
                    tol=10E-5, 
                    avoid_link_errors = TRUE,
-                   export_diff = F){
+                   export_diff = FALSE, verbose=TRUE){
   
   twopts <- input.seq$twopt
   
@@ -121,7 +124,7 @@ parmap <- function(input.seq=NULL,
     diff1 <- c(diff1,end - init)
   }
   
-  cat("The overlap markers have mean ", mean(diff1), " of  recombination fraction differences, and variance of ", var(diff1), "\n")
+  if(verbose) cat("The overlap markers have mean ", mean(diff1), " of  recombination fraction differences, and variance of ", var(diff1), "\n")
   
   joint.map$seq.num <- new.seq.num
   joint.map$seq.phases <- new.seq.phases

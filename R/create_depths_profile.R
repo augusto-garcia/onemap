@@ -32,10 +32,14 @@ globalVariables(c("gt.onemap", "gt.vcf"))
 #' @param rds.file rds file name to store the data frame with values used to build the graphic
 #' @param x_lim set scale limit for x axis
 #' @param y_lim set scale limit for y axis
+#' @param verbose If \code{TRUE}, print tracing information.
 #' 
 #' @return an rds file and a ggplot graphic.
+#' 
 #' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
+#' 
 #' @seealso \code{\link[onemap]{onemap_read_vcfR}}
+#' 
 #' @keywords depth alleles 
 #'
 #'
@@ -56,7 +60,7 @@ create_depths_profile <- function(onemap.obj = NULL,
                                   alpha=1,
                                   rds.file = "data.rds",
                                   y_lim = NULL,
-                                  x_lim = NULL){
+                                  x_lim = NULL, verbose=TRUE){
   
   if (is.null(vcf) & is.null(vcfR.object)) {
     stop("You must specify one vcf file.")
@@ -239,7 +243,7 @@ create_depths_profile <- function(onemap.obj = NULL,
   
   data$ref <- as.numeric(data$ref)
   data$alt <- as.numeric(data$alt)
-
+  
   if(is.null(y_lim))
     y_lim <- max(data$ref) 
   if(is.null(x_lim))
@@ -286,12 +290,13 @@ create_depths_profile <- function(onemap.obj = NULL,
   
   saveRDS(data, file = rds.file)
   
-  cat("Summary of reference counts: \n")
-  print(summary(data$ref[-which(data$ref == 0)]))
-  
-  cat("Summary of alternative counts: \n")
-  print(summary(data$alt[-which(data$alt == 0)]))
-  
+  if(verbose){
+    cat("Summary of reference counts: \n")
+    print(summary(data$ref[-which(data$ref == 0)]))
+    
+    cat("Summary of alternative counts: \n")
+    print(summary(data$alt[-which(data$alt == 0)]))
+  }
   return(p)
   
 }

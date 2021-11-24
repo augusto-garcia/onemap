@@ -77,16 +77,16 @@
 ##' sex-specific differences. \emph{Genetical Research} 79: 85-96
 ##' @keywords utilities
 ##' @examples
-##'
+##' 
 ##'   data(onemap_example_out)
 ##'   twopt <- rf_2pts(onemap_example_out)
 ##'
 ##'   markers <- make_seq(twopt,c(30,12,3,14,2))
 ##'   seeded_map(markers, seeds = c(4,2))
-##'
+##' 
 ##' @export
 seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
-                       seeds, verbose = F, rm_unlinked=F, parallelization.type = "PSOCK")
+                       seeds, verbose = FALSE, rm_unlinked=FALSE, parallelization.type = "PSOCK")
 {
   ## checking for correct object
   if(!("sequence" %in% class(input.seq)))
@@ -140,7 +140,7 @@ seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
                                 parallelization.type = parallelization.type)
                           })
       stopCluster(cl)
-      gc(verbose = F)
+      gc(verbose = FALSE)
     }
     if(!all(sapply(phases, function(x) is(x, "sequence")))) {
       if(rm_unlinked){

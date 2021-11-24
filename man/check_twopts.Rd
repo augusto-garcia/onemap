@@ -25,5 +25,5 @@ check_twopts(twopts)
 
 }
 \author{
-Cristiane Taniguti, \email{chtaniguti@usp.br}
+Cristiane Taniguti, \email{chtaniguti@tamu.edu}
 }

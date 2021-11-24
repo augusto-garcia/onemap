@@ -18,12 +18,20 @@ If there are more than one most likely both receive 0.5.
 if FALSE (default) the genotype probability is plotted.}
 }
 \value{
-a data.frame information: individual (ind) and group (grp) ID, position in centimorgan (pos), 
-group (grp), genotypes probabilities (prob), parent (homologs), and the parents homologs (homologs) 
-in that homolog and position.
+a data.frame information: individual (ind) and marker ID, group ID (grp), position in centimorgan (pos), 
+genotypes probabilities (prob), parents, and the parents homologs and the allele IDs.
 }
 \description{
 Generate data.frame with genotypes estimated by HMM and its probabilities
+}
+\examples{
+
+data("onemap_example_out")
+twopts <- rf_2pts(onemap_example_out)
+lg1 <- make_seq(twopts, 1:5)
+lg1.map <- map(lg1)
+progeny_haplotypes(lg1.map)
+
 }
 \author{
 Getulio Caixeta Ferreira, \email{getulio.caifer@gmail.com}

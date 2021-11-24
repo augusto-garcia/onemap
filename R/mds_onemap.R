@@ -452,6 +452,10 @@ calc.nnfit<-function(distmap,lodmap,estmap){
 #'@import graphics
 #'@export
 plot.onemap.pcmap <- function (x,D1lim=NULL,D2lim=NULL,displaytext=TRUE,...){
+  
+  oldpar <- par(no.readonly = TRUE)
+  on.exit(par(oldpar))            
+  
   par(mfrow=c(1,2))
   with(x,{
     if (displaytext==TRUE) {
@@ -478,6 +482,10 @@ plot.onemap.pcmap <- function (x,D1lim=NULL,D2lim=NULL,displaytext=TRUE,...){
 #'@import graphics
 #'@export
 plot.onemap.pcmap3d <- function (x,D1lim=NULL,D2lim=NULL,D3lim=NULL,displaytext=TRUE,...) {
+
+  oldpar <- par(no.readonly = TRUE)
+  on.exit(par(oldpar))            
+  
   par(mfrow=c(2,2))
   with(x,{
     if (displaytext==TRUE) {
@@ -510,6 +518,9 @@ plot.onemap.pcmap3d <- function (x,D1lim=NULL,D2lim=NULL,D3lim=NULL,displaytext=
 #'@import graphics
 #'@export
 plot.onemap.spheremap <- function (x,displaytext=TRUE,...) {
+  
+  oldpar <- par(no.readonly = TRUE)
+  on.exit(par(oldpar))            
   
   par(mfrow=c(2,2))
   with(x,{

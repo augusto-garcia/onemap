@@ -49,7 +49,7 @@ globalVariables(c("marker", "geno"))
 ##'
 ##' @examples
 ##' 
-##' \dontrun{
+##' \donttest{
 ##' # library(ggplot2)
 ##' data(onemap_example_bc) # Loads a fake backcross dataset installed with onemap
 ##' plot(onemap_example_bc) # This will show you the graph
@@ -57,7 +57,6 @@ globalVariables(c("marker", "geno"))
 ##' # You can store the graphic in an object, then save it with a number of properties
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' g <- plot(onemap_example_bc)
-##' # ggsave("MyRawData_bc.jpg", g, width=7, height=4, dpi=600)
 ##'
 ##' data(onemap_example_f2) # Loads a fake backcross dataset installed with onemap
 ##' plot(onemap_example_f2) # This will show you the graph
@@ -65,7 +64,6 @@ globalVariables(c("marker", "geno"))
 ##' # You can store the graphic in an object, then save it with a number of properties
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' g <- plot(onemap_example_f2)
-##' # ggsave("MyRawData_f2.jpg", g, width=7, height=4, dpi=600)
 ##'
 ##' data(onemap_example_out) # Loads a fake full-sib dataset installed with onemap
 ##' plot(onemap_example_out) # This will show you the graph for all markers
@@ -74,7 +72,6 @@ globalVariables(c("marker", "geno"))
 ##' # You can store the graphic in an object, then save it.
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' g <- plot(onemap_example_out, all=FALSE)
-##' # ggsave("MyRawData_out.jpg", g, width=9, height=4, dpi=600)
 ##'}
 ##'
 ##'@method plot onemap
@@ -378,11 +375,6 @@ create_dataframe_for_plot_outcross <- function(x) {
 ##' data(mapmaker_example_f2)
 ##' plot_by_segreg_type(mapmaker_example_f2)
 ##'
-##' # You can store the graphic in an object, then save it.
-##' # For details, see the help of ggplot2's function ggsave()
-##' # data(onemap_example_out) #Outcrossing data
-##' # g <- plot_by_segreg_type(onemap_example_out)
-##' # ggsave("SegregationTypes.jpg", g, width=7, height=4, dpi=600)
 ##'
 ##'@export
 plot_by_segreg_type <- function(x, subcateg=TRUE) {

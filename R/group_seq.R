@@ -46,6 +46,7 @@
 ##' maximum recombination fraction to declare linkage.
 ##' @param min_mks integer defining the minimum number of markers that a provided 
 ##' sequence (seqs or CHROM) should have to be considered a group. 
+##' 
 ##' @return Returns an object of class \code{group_seq}, which is a list
 ##'     containing the following components: \item{data.name}{name of
 ##'     the object of class \code{onemap} that contains the raw
@@ -63,10 +64,12 @@
 ##'     sequences} \item{repeated}{list with the number of the markers that are repeated
 ##'     in each outputted sequence} \item{unlinked}{number of the markers which remained
 ##'     unlinked}
+##'     
 ##' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
 ##' @seealso \code{\link[onemap]{make_seq}} and \code{\link[onemap]{group}}
 ##'
 ##' @examples
+##' 
 ##' data(onemap_example_out) # load OneMap's fake dataset for a outcrossing population
 ##' data(vcf_example_out) # load OneMap's fake dataset from a VCF file for a outcrossing population
 ##' comb_example <- combine_onemap(onemap_example_out, vcf_example_out) # Combine datasets
@@ -81,9 +84,14 @@
 ##'
 ##' out_seqs <- group_seq(twopts, seqs=list(seq1,seq2,seq3))
 ##' out_seqs
-##'
+##' 
 ##'@export
-group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FALSE, LOD=NULL, max.rf=NULL, min_mks = NULL){
+group_seq <- function(input.2pts, seqs= "CHROM", 
+                      unlink.mks="all", 
+                      repeated = FALSE, 
+                      LOD=NULL, 
+                      max.rf=NULL, 
+                      min_mks = NULL){
   
   ## checking for correct object
   if(!is(input.2pts,"rf_2pts")) stop(deparse(substitute(input.2pts)),
@@ -157,8 +165,9 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FA
     new_seqs[[i]] <- make_seq(groups[[i]], select_group[[i]])
   }
   
-  if(!all(same)) cat("One or more of the provided marker sequences from",deparse(substitute(seqs)),
-                     "do not form single linkage groups. The group with the highest number of markers belonging to the sequence will be considered.")
+  
+  if(!all(same)) message(cat("One or more of the provided marker sequences from",deparse(substitute(seqs)),
+                     "do not form single linkage groups. The group with the highest number of markers belonging to the sequence will be considered."))
   
   # Find repeated markers
   mks_new_seqs <- lapply(new_seqs, '[[',1)
@@ -175,7 +184,7 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FA
   mk_names <- colnames(input.2pts$data.name$geno)
   
   if(!(identical(repeated_mks, integer(0)) || identical(repeated_mks, numeric(0)))) {
-    cat("There are one or more markers that grouped in more than one sequence")
+    message("There are one or more markers that grouped in more than one sequence")
     
     # List with repeated markers
     repeated_mks_list <- pos_repeated
@@ -258,9 +267,11 @@ group_seq <- function(input.2pts, seqs= "CHROM", unlink.mks="all", repeated = FA
 ##'
 ##' @param ... currently ignored
 ##'
-##' @return \code{NULL}
+##' @return No return value, called for side effects
 ##' @keywords internal
+##' 
 ##' @method print group_seq
+##' 
 ##' @export
 print.group_seq <- function(x, detailed=TRUE,...) {
   

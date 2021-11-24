@@ -14,8 +14,6 @@
 ##                                                                     ##
 #######################################################################
 
-
-
 ##' Rapid Chain Delineation
 ##'
 ##' Implements the marker ordering algorithm \emph{Rapid Chain Delineation}
@@ -59,6 +57,9 @@
 #' if \code{TRUE} one of the markers is removed and rcd is performed again.
 #' @param hmm logical defining if the HMM must be applied to estimate multipoint
 #' genetic distances
+##' @param verbose A logical, if TRUE it output progress status
+##' information.
+#' 
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}
@@ -71,6 +72,7 @@
 ##' \item{data.name}{name of the object of class \code{onemap} with the raw
 ##' data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
 ##' 2-point analyses.}
+##' 
 ##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com}
 ##' @seealso \code{\link[onemap]{make_seq}}, \code{\link[onemap]{map}}
 ##' @references Basten, C. J., Weir, B. S. and Zeng, Z.-B. (2005) \emph{QTL
@@ -86,14 +88,14 @@
 ##' @keywords utilities
 ##' @examples
 ##'
-##' \dontrun{
+##' \donttest{
 ##'   #outcross example
 ##'   data(onemap_example_out)
 ##'   twopt <- rf_2pts(onemap_example_out)
 ##'   all_mark <- make_seq(twopt,"all")
 ##'   groups <- group(all_mark)
 ##'   LG1 <- make_seq(groups,1)
-##'   LG1.rcd <- rcd(LG1)
+##'   LG1.rcd <- rcd(LG1, hmm = FALSE)
 ##'
 ##'   #F2 example
 ##'   data(onemap_example_f2)
@@ -101,15 +103,16 @@
 ##'   all_mark <- make_seq(twopt,"all")
 ##'   groups <- group(all_mark)
 ##'   LG1 <- make_seq(groups,1)
-##'   LG1.rcd <- rcd(LG1)
+##'   LG1.rcd <- rcd(LG1, hmm = FALSE)
 ##'   LG1.rcd
 ##' }
+##' 
 ##'@export
 rcd <-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5, 
                rm_unlinked= TRUE,
                size = NULL, 
                overlap = NULL, 
-               phase_cores = 1, hmm=TRUE, parallelization.type = "PSOCK")
+               phase_cores = 1, hmm=TRUE, parallelization.type = "PSOCK", verbose=TRUE)
 {
   ## checking for correct object
   if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is
@@ -172,7 +175,7 @@ rcd <-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
   }
   ## end of chain
   if(hmm){
-  cat("\norder obtained using RCD algorithm:\n\n", input.seq$seq.num[avoid_reverse(order)], "\n\ncalculating multipoint map using tol = ", tol, ".\n\n")
+  if(verbose) cat("\norder obtained using RCD algorithm:\n\n", input.seq$seq.num[avoid_reverse(order)], "\n\ncalculating multipoint map using tol = ", tol, ".\n\n")
   
   if(phase_cores == 1 | is(input.seq$data.name, c("backcross", "riself", "risib"))){
     rcd.hmm <- map(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(order)],

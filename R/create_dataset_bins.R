@@ -28,14 +28,34 @@
 #' @param input.obj an object of class \code{onemap}.
 #' @param bins an object of class \code{onemap_bin}.
 #'
-#' @return an object of class \code{onemap}.
+##' @return An object of class \code{onemap}, i.e., a list with the following
+##' components: \item{geno}{a matrix with integers indicating the genotypes
+##' read for each marker. Each column contains data for a marker and each row
+##' represents an individual.} \item{n.ind}{number of individuals.}
+##' \item{n.mar}{number of markers.} \item{segr.type}{a vector with the
+##' segregation type of each marker, as \code{strings}.} \item{segr.type.num}{a
+##' vector with the segregation type of each marker, represented in a
+##' simplified manner as integers, i.e. 1 corresponds to markers of type
+##' \code{"A"}; 2 corresponds to markers of type \code{"B1.5"}; 3 corresponds
+##' to markers of type \code{"B2.6"}; 4 corresponds to markers of type
+##' \code{"B3.7"}; 5 corresponds to markers of type \code{"C.8"}; 6 corresponds
+##' to markers of type \code{"D1"} and 7 corresponds to markers of type
+##' \code{"D2"}. Markers for F2 intercrosses are coded as 1; all other crosses
+##' are left as \code{NA}.} \item{input}{the name of the input file.}
+##' \item{n.phe}{number of phenotypes.} \item{pheno}{a matrix with phenotypic
+##' values. Each column contains data for a trait and each row represents an
+##' individual.} \item{error}{matrix containing HMM emission probabilities}
+#' 
+#' 
 #' @author Marcelo Mollinari, \email{mmollina@@usp.br}
 #' @seealso \code{\link[onemap]{find_bins}}
 #' @keywords bins dimension reduction
 #' @examples
+#' 
 ##'   data("onemap_example_f2")
 ##'   (bins<-find_bins(onemap_example_f2, exact=FALSE))
 ##'   onemap_bins <- create_data_bins(onemap_example_f2, bins)
+#' 
 #'@export
 create_data_bins <- function(input.obj, bins)
 {
@@ -71,6 +91,25 @@ create_data_bins <- function(input.obj, bins)
 #' @param sequence object of class \code{sequence}
 #' @param onemap.obj object of class \code{onemap.obj} before redundant markers were removed
 #' @param bins object of class \code{onemap_bin}
+#' 
+##' @return New sequence object of class \code{sequence}, which is a list containing the
+##' following components: \item{seq.num}{a \code{vector} containing the
+##' (ordered) indices of markers in the sequence, according to the input file.}
+##' \item{seq.phases}{a \code{vector} with the linkage phases between markers
+##' in the sequence, in corresponding positions. \code{-1} means that there are
+##' no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
+##' recombination frequencies between markers in the sequence. \code{-1} means
+##' that there are no estimated recombination frequencies.}
+##' \item{seq.like}{log-likelihood of the corresponding linkage map.}
+##' \item{data.name}{object of class \code{onemap} with the raw
+##' data.} \item{twopt}{object of class \code{rf_2pts} with the
+##' 2-point analyses.} 
+#' 
+#' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
+#' 
+#' @seealso \code{\link[onemap]{find_bins}}
+#' 
+#' @keywords redundants bins
 #' 
 #' @export
 add_redundants <- function(sequence, onemap.obj, bins){

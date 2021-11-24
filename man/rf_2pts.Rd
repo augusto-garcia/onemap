@@ -49,6 +49,8 @@ subsequent analyses, but can be overriden.
   twopts
 
   print(twopts,c("M1","M2")) # detailed results for markers 1 and 2
+  
+  
 }
 \references{
 Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002)

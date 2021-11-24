@@ -42,6 +42,28 @@
 ##' @param f1 \code{string} if you are working with f2 intercross or backcross populations you may have f1 parents in you vcf, specify its ID here
 ##' @param only_biallelic if TRUE (default) only biallelic markers are considered, if FALSE multiallelic markers are included.
 ##' @param output_info_rds define a name for the file with alleles information.
+##' @param verbose A logical, if TRUE it output progress status
+##' information.
+##' 
+##' 
+##' @return An object of class \code{onemap}, i.e., a list with the following
+##' components: \item{geno}{a matrix with integers indicating the genotypes
+##' read for each marker. Each column contains data for a marker and each row
+##' represents an individual.} \item{n.ind}{number of individuals.}
+##' \item{n.mar}{number of markers.} \item{segr.type}{a vector with the
+##' segregation type of each marker, as \code{strings}.} \item{segr.type.num}{a
+##' vector with the segregation type of each marker, represented in a
+##' simplified manner as integers, i.e. 1 corresponds to markers of type
+##' \code{"A"}; 2 corresponds to markers of type \code{"B1.5"}; 3 corresponds
+##' to markers of type \code{"B2.6"}; 4 corresponds to markers of type
+##' \code{"B3.7"}; 5 corresponds to markers of type \code{"C.8"}; 6 corresponds
+##' to markers of type \code{"D1"} and 7 corresponds to markers of type
+##' \code{"D2"}. Markers for F2 intercrosses are coded as 1; all other crosses
+##' are left as \code{NA}.} \item{input}{the name of the input file.}
+##' \item{n.phe}{number of phenotypes.} \item{pheno}{a matrix with phenotypic
+##' values. Each column contains data for a trait and each row represents an
+##' individual.} \item{error}{matrix containing HMM emission probabilities}
+##' 
 ##' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
 ##' 
 ##' @seealso \code{read_onemap} for a description of the output object of class onemap.
@@ -50,12 +72,12 @@
 ##' @importFrom vcfR read.vcfR extract.gt masplit
 ##' 
 ##' @examples
-##' \dontrun{
+##' 
 ##' data <- onemap_read_vcfR(vcf=system.file("extdata/vcf_example_out.vcf.gz", package = "onemap"),
 ##'                  cross="outcross",
 ##'                  parent1=c("P1"),
 ##'                  parent2=c("P2"))
-##' }
+##'
 ##'                 
 ##'@export                  
 onemap_read_vcfR <- function(vcf=NULL,
@@ -65,7 +87,8 @@ onemap_read_vcfR <- function(vcf=NULL,
                              parent2 =NULL,
                              f1=NULL,
                              only_biallelic = TRUE,
-                             output_info_rds = NULL){
+                             output_info_rds = NULL,
+                             verbose=TRUE){
   
   if (is.null(vcf) & is.null(vcfR.object)) {
     stop("You must specify one vcf file.")
@@ -209,14 +232,15 @@ onemap_read_vcfR <- function(vcf=NULL,
     
     # It informs to user why markers are being removed
     idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./." |  GT_matrix[,P2] == "." | GT_matrix[,P1] == ".")
-    if (length(idx) > 0)
-      cat(length(MKS[idx]), "Markers were removed of the dataset because one or both of parents have no informed genotypes (are missing data)\n")
-    
+    if(verbose){
+      if (length(idx) > 0)
+        cat(length(MKS[idx]), "Markers were removed of the dataset because one or both of parents have no informed genotypes (are missing data)\n")
+    }
     idx <- which(P1_1 == P1_2 & P2_1 == P2_2)
-    
-    if (length(idx) > 0)
-      cat( length(MKS[idx]), "Markers were removed from the dataset because both of parents are homozygotes, these markers are considered non-informative in outcrossing populations.\n")
-    
+    if(verbose) {
+      if (length(idx) > 0)
+        cat( length(MKS[idx]), "Markers were removed from the dataset because both of parents are homozygotes, these markers are considered non-informative in outcrossing populations.\n")
+    }
     # Excluding non-informative markers
     rm_mk <- which(is.na(mk.type))
     if(length(rm_mk)!=0){
@@ -335,17 +359,18 @@ onemap_read_vcfR <- function(vcf=NULL,
     
     # Informs to user why markers are being removed
     idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./.")
-    if (length(idx) > 0)
-      cat(length(MKS[idx]), "Markers were removed of the dataset because one or both of parents have no informed genotypes (are missing data)\n")
-    
-    idx <- which((GT_matrix[,P1] == "0/1" | GT_matrix[,P2] == "0/1"))
-    if (length(idx) > 0)
-      cat(length(MKS[idx]), "Markers were removed from the dataset because one or both of the parents are heterozygotes, we do not expect heterozygotes parents in F2 populations.\n") 
-    
-    idx <- which((GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "0/0") | (GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "1/1"))
-    if (length(idx) > 0)
-      cat(length(MKS[idx]), "Markers were removed from the dataset because they are monomorphic for the parents, these markers are not informative for the genetic map.\n") 
-    
+    if(verbose){
+      if (length(idx) > 0)
+        cat(length(MKS[idx]), "Markers were removed of the dataset because one or both of parents have no informed genotypes (are missing data)\n")
+      
+      idx <- which((GT_matrix[,P1] == "0/1" | GT_matrix[,P2] == "0/1"))
+      if (length(idx) > 0)
+        cat(length(MKS[idx]), "Markers were removed from the dataset because one or both of the parents are heterozygotes, we do not expect heterozygotes parents in F2 populations.\n") 
+      
+      idx <- which((GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "0/0") | (GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "1/1"))
+      if (length(idx) > 0)
+        cat(length(MKS[idx]), "Markers were removed from the dataset because they are monomorphic for the parents, these markers are not informative for the genetic map.\n") 
+    }
     # Excluding non-informative markers
     rm_mk <- which(is.na(mk.type))
     if(length(rm_mk)!=0){
@@ -395,18 +420,19 @@ onemap_read_vcfR <- function(vcf=NULL,
     GT_parents <- GT_matrix[,c(P1,P2)]
     
     # Informs to user why markers are being removed
-    idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./.")
-    if (length(idx) > 0)
-      cat(length(MKS[idx]), "Markers were removed of the dataset because one or both of parents have no informed genotypes (are missing data)\n")
-    
-    idx <- which((GT_matrix[,P1] == "0/1" | GT_matrix[,P2] == "0/1"))
-    if (length(idx) > 0)
-      cat(length(MKS[idx]), "Markers were removed from the dataset because one or both of the parents are heterozygotes, we do not expect heterozygotes parents in F2 populations.\n") 
-    
-    idx <- which((GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "0/0") | (GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "1/1"))
-    if (length(idx) > 0)
-      cat(length(MKS[idx]), "Markers were removed from the dataset because they are monomorphic for the parents, these markers are not informative for the genetic map.\n") 
-    
+    if(verbose) {
+      idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./.")
+      if (length(idx) > 0)
+        cat(length(MKS[idx]), "Markers were removed of the dataset because one or both of parents have no informed genotypes (are missing data)\n")
+      
+      idx <- which((GT_matrix[,P1] == "0/1" | GT_matrix[,P2] == "0/1"))
+      if (length(idx) > 0)
+        cat(length(MKS[idx]), "Markers were removed from the dataset because one or both of the parents are heterozygotes, we do not expect heterozygotes parents in F2 populations.\n") 
+      
+      idx <- which((GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "0/0") | (GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "1/1"))
+      if (length(idx) > 0)
+        cat(length(MKS[idx]), "Markers were removed from the dataset because they are monomorphic for the parents, these markers are not informative for the genetic map.\n") 
+    }
     # Excluding non-informative markers
     rm_mk <- which(is.na(mk.type))
     if(length(rm_mk)!=0){
@@ -457,18 +483,19 @@ onemap_read_vcfR <- function(vcf=NULL,
     GT_parents <- GT_matrix[,c(P1,P2)]
     
     # Informs to user why markers are being removed
-    idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./.")
-    if (length(idx) > 0)
-      cat(length(MKS[idx]), "Markers were removed of the dataset because one or both of parents have no informed genotypes (are missing data)\n")
-    
-    idx <- which((GT_matrix[,P1] == "0/1" | GT_matrix[,P2] == "0/1"))
-    if (length(idx) > 0)
-      cat(length(MKS[idx]), "Markers were removed from the dataset because one or both of the parents are heterozygotes, we do not expect heterozygotes parents in RILs populations.\n") 
-    
-    idx <- which((GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "0/0") | (GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "1/1"))
-    if (length(idx) > 0)
-      cat(length(MKS[idx]), "Markers were removed from the dataset because they are monomorphic for the parents, these markers are not informative for the genetic map.\n") 
-    
+    if(verbose) {
+      idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./.")
+      if (length(idx) > 0)
+        cat(length(MKS[idx]), "Markers were removed of the dataset because one or both of parents have no informed genotypes (are missing data)\n")
+      
+      idx <- which((GT_matrix[,P1] == "0/1" | GT_matrix[,P2] == "0/1"))
+      if (length(idx) > 0)
+        cat(length(MKS[idx]), "Markers were removed from the dataset because one or both of the parents are heterozygotes, we do not expect heterozygotes parents in RILs populations.\n") 
+      
+      idx <- which((GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "0/0") | (GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "1/1"))
+      if (length(idx) > 0)
+        cat(length(MKS[idx]), "Markers were removed from the dataset because they are monomorphic for the parents, these markers are not informative for the genetic map.\n") 
+    }
     # Excluding non-informative markers
     rm_mk <- which(is.na(mk.type))
     if(length(rm_mk)!=0){
@@ -588,15 +615,17 @@ onemap_read_vcfR <- function(vcf=NULL,
 ##' 
 ##' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
 ##' @seealso \code{read_onemap} for a description of the output object of class onemap.
-##' @examples
-##' \dontrun{
-##' data(onemap_example_out)
 ##' 
-##' write_onemap_raw(onemap_example_out, file.name = "onemap_example_out.raw")
-##' }
+##' @return a onemap input file
+##' 
+##' @examples
+##' 
+##' data(onemap_example_out)
+##' write_onemap_raw(onemap_example_out, file.name = paste0(tempfile(), ".raw"))
+##' 
 ##'@export                  
 write_onemap_raw <- function(onemap.obj=NULL, 
-                             file.name = "out.raw"){
+                             file.name = NULL){
   
   if(is(onemap.obj, "outcross")){
     cross <- "outcross"
@@ -609,6 +638,8 @@ write_onemap_raw <- function(onemap.obj=NULL,
   } else if(is(onemap.obj, "risib")){
     cross <- "ri sib"
   }
+  
+  if(is.null(file.name)) file.name = paste0(tempfile(), ".raw")
   
   fileConn<-file(file.name, "w")
   head1 <- paste("data type", cross)

@@ -4,12 +4,15 @@
 \alias{write_onemap_raw}
 \title{Convert onemap object to onemap raw file}
 \usage{
-write_onemap_raw(onemap.obj = NULL, file.name = "out.raw")
+write_onemap_raw(onemap.obj = NULL, file.name = NULL)
 }
 \arguments{
 \item{onemap.obj}{object of class `onemap`}
 
 \item{file.name}{a character for the onemap raw file name. Default is "out.raw"}
+}
+\value{
+a onemap input file
 }
 \description{
 Converts onemap R object to onemap input file. The input file brings information about the mapping population:
@@ -21,11 +24,10 @@ Final lines: chromossome, position and phenotypes informations.
 See more about input file format at vignettes.
 }
 \examples{
-\dontrun{
-data(onemap_example_out)
 
-write_onemap_raw(onemap_example_out, file.name = "onemap_example_out.raw")
-}
+data(onemap_example_out)
+write_onemap_raw(onemap_example_out, file.name = paste0(tempfile(), ".raw"))
+
 }
 \seealso{
 \code{read_onemap} for a description of the output object of class onemap.

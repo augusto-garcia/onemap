@@ -69,7 +69,7 @@ globalVariables(c("LOD.CR", "LOD.RC", "LOD.RR"))
 ##' @keywords utilities
 ##' @examples
 ##'
-##'\dontrun{
+##'\donttest{
 ##' ##outcross example
 ##'   data(onemap_example_out)
 ##'   twopt <- rf_2pts(onemap_example_out)
@@ -99,15 +99,8 @@ globalVariables(c("LOD.CR", "LOD.RC", "LOD.RR"))
 ##'     ##assign the map of the i-th group to the maps.list
 ##'     maps.list[[i]]<-make_seq(map.cur, "force")
 ##'   }
-##'   ##Plot LOD/recombination fraction matrices for each group
-##'   require(gridExtra)
-##'   plot1 <- rf_graph_table(maps.list[[1]], main="Group 1",inter=FALSE)
-##'   plot2 <- rf_graph_table(maps.list[[2]], main="Group 2",inter=FALSE)
-##'   plot3 <- rf_graph_table(maps.list[[3]], main="Group 3",inter=FALSE)
-##'   grid.arrange(plot1, plot2, plot3, nrow=3)
 ##' }
 ##'@export
-
 rf_graph_table <- function(input.seq,
                            graph.LOD=FALSE,
                            main=NULL,
@@ -116,7 +109,7 @@ rf_graph_table <- function(input.seq,
                            mrk.axis="numbers",
                            lab.xy=NULL,
                            n.colors=4,
-                           display=T){
+                           display=TRUE){
   
   ## checking for correct objects
   if(!any(is(input.seq,"sequence")))

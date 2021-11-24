@@ -18,7 +18,8 @@ create_depths_profile(
   alpha = 1,
   rds.file = "data.rds",
   y_lim = NULL,
-  x_lim = NULL
+  x_lim = NULL,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -49,6 +50,8 @@ create_depths_profile(
 \item{y_lim}{set scale limit for y axis}
 
 \item{x_lim}{set scale limit for x axis}
+
+\item{verbose}{If \code{TRUE}, print tracing information.}
 }
 \value{
 an rds file and a ggplot graphic.

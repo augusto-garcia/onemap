@@ -12,13 +12,14 @@ draw_map2(
   cex.label = NULL,
   main = NULL,
   group.names = NULL,
-  centered = F,
+  centered = FALSE,
   y.axis = TRUE,
   space = NULL,
   col.group = NULL,
   col.mark = NULL,
   col.tag = NULL,
-  output = NULL
+  output = NULL,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -49,20 +50,22 @@ draw_map2(
 \item{col.tag}{the color used for highlighted marker(s) and its/theirs label(s).}
 
 \item{output}{the name of the output file. The file format can be specified by adding its extension. Available formats: 'bmp', 'jpeg', 'png', 'tiff', 'pdf' and 'eps' (default).}
+
+\item{verbose}{If \code{TRUE}, print tracing information.}
 }
 \description{
 Provides a simple draw of a linkage map.
 }
 \examples{
 
-\dontrun{
+\donttest{
  data("onemap_example_out")
  twopt <- rf_2pts(onemap_example_out)
  lg<-group(make_seq(twopt, "all"))
  seq1<-make_seq(order_seq(input.seq= make_seq(lg,1),twopt.alg = "rcd"), "force")
  seq2<-make_seq(order_seq(input.seq= make_seq(lg,2),twopt.alg = "rcd"), "force")
  seq3<-make_seq(order_seq(input.seq= make_seq(lg,3),twopt.alg = "rcd"), "force")
- draw_map2(seq1,seq2,seq3,tag = c("M1","M2","M3","M4","M5"))
+ draw_map2(seq1,seq2,seq3,tag = c("M1","M2","M3","M4","M5"),output = paste0(tempfile(), ".png"))
  
  data("onemap_example_f2")
  twopt <- rf_2pts(onemap_example_f2)
@@ -72,7 +75,7 @@ Provides a simple draw of a linkage map.
  make_seq(order_seq(input.seq= make_seq(lg,2),twopt.alg = "rcd"), "force"),
  make_seq(order_seq(input.seq= make_seq(lg,3),twopt.alg = "rcd"), "force")
  )
- draw_map2(seq,tag = "all",group.names = c("Chr 1","Chr 2","Chr 3"),main="Linkage Map")
+ draw_map2(seq,tag = "all",group.names = c("Chr 1","Chr 2","Chr 3"),main="Linkage Map", output = paste0(tempfile(), ".png"))
 
 }
 }

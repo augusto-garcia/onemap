@@ -24,10 +24,11 @@ A function to shows which marker have segregation distortion if Bonferroni's cor
 applied for the Chi-square tests of mendelian segregation.
 }
 \examples{
+
 # Loads a fake backcross dataset installed with onemap
-data(onemap_example_bc)
+data(onemap_example_out)
 # Performs the chi-square test for all markers
-Chi <- test_segregation(onemap_example_bc)
+Chi <- test_segregation(onemap_example_out)
 # To show non-distorted markers
 select_segreg(Chi)
 # To show markers with segregation distortion

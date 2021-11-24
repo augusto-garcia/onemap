@@ -2,11 +2,9 @@
 % Please edit documentation in R/try_seq.R
 \name{try_seq_by_seq}
 \alias{try_seq_by_seq}
-\title{It uses try_seq function repeatedly trying to positioned each marker in a vector of markers into a already ordered sequence.
-Each marker in the vector \code{"markers"} is kept in the sequence if the difference of LOD and total group size of the models 
-with and without the marker are below the thresholds \code{"lod.thr"} and \code{"cM.thr"}.}
+\title{Run try_seq considering previous sequence}
 \usage{
-try_seq_by_seq(sequence, markers, cM.thr = 10, lod.thr = -10)
+try_seq_by_seq(sequence, markers, cM.thr = 10, lod.thr = -10, verbose = TRUE)
 }
 \arguments{
 \item{sequence}{object of class sequence with ordered markers}
@@ -18,8 +16,24 @@ try_seq_by_seq(sequence, markers, cM.thr = 10, lod.thr = -10)
 \item{lod.thr}{the difference of LODs between model before and after inserting the marker need to have 
 value higher than the value defined in this argument}
 }
+\value{
+An object of class \code{sequence}, which is a list containing the
+following components: \item{seq.num}{a \code{vector} containing the
+(ordered) indices of markers in the sequence, according to the input file.}
+\item{seq.phases}{a \code{vector} with the linkage phases between markers
+in the sequence, in corresponding positions. \code{-1} means that there are
+no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
+recombination frequencies between markers in the sequence. \code{-1} means
+that there are no estimated recombination frequencies.}
+\item{seq.like}{log-likelihood of the corresponding linkage map.}
+\item{data.name}{name of the object of class \code{onemap} with the raw
+data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
+2-point analyses.}
+}
 \description{
-It uses try_seq function repeatedly trying to positioned each marker in a vector of markers into a already ordered sequence.
-Each marker in the vector \code{"markers"} is kept in the sequence if the difference of LOD and total group size of the models 
+It uses try_seq function repeatedly trying to positioned each marker 
+in a vector of markers into a already ordered sequence.
+Each marker in the vector \code{"markers"} is kept in the sequence 
+if the difference of LOD and total group size of the models 
 with and without the marker are below the thresholds \code{"lod.thr"} and \code{"cM.thr"}.
 }

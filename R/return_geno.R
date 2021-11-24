@@ -15,8 +15,7 @@
 #######################################################################
 
 # Function to create diplotypes based on segregation type and linkage phase
-return_geno <-
-function(segr.type, link.phases) {
+return_geno <- function(segr.type, link.phases) {
   switch(EXPR=segr.type,
          'A.1' = {
            switch(EXPR=link.phases,

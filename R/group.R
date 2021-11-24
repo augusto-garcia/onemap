@@ -65,6 +65,7 @@
 ##'   link_gr <- group(all.data)
 ##'   link_gr
 ##'   print(link_gr, details=FALSE) #omit the names of the markers
+##' 
 ##'@export
 group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
 {
@@ -110,7 +111,7 @@ group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
             i<-i+1
         }
     }
-    if(all(groups==0)) cat("\t No group found.\n")
+    if(all(groups==0)) warning("\t No group found.\n")
     ## results
     structure(list(data.name=input.seq$data.name, input.name=deparse(substitute(input.seq)),
                    twopt=input.seq$twopt, marnames=colnames(geno),
@@ -123,7 +124,7 @@ group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
 ##' It shows the linkage groups as well as the unlinked markers.
 ##'
 ##' @aliases print.group
-##' @param x an object of class onemap_segreg_test
+##' @param x an object of class group
 ##'
 ##' @param detailed logical. If \code{TRUE} the markers in each
 ##'     linkage group are printed.
@@ -133,8 +134,7 @@ group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
 ##' @keywords internal
 ##' @method print group
 ##' @export
-print.group <-
-    function(x, detailed=TRUE,...) {
+print.group <- function(x, detailed=TRUE,...) {
         ## checking for correct object
         if(!is(x,"group")) stop(deparse(substitute(x))," is not an object of class 'group'")
 

@@ -17,6 +17,7 @@
 #######################################################################
 
 ##' Function to divide the sequence in batches with user defined size
+##' 
 ##' @param input.seq an object of class \code{sequence}.
 ##' @param size The center size around which an optimum is to be searched
 ##' @param overlap The desired overlap between batches
@@ -68,10 +69,9 @@ generate_overlapping_batches <- function(input.seq, size = 50, overlap = 15)
 ##' @keywords utilities
 ##' @examples
 ##'
-##' \dontrun{
 ##'   LG <- structure(list(seq.num = seq(1,800)), class = "sequence")
 ##'   batchsize <- pick_batch_sizes(LG, 50, 19)
-##' }
+##' 
 ##' @export
 pick_batch_sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
 {
@@ -139,9 +139,9 @@ pick_batch_sizes <- function(input.seq, size = 50, overlap = 15, around = 5)
 ##' @keywords utilities
 ##' @export
 map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
-                                    phase_cores = 1, verbose = F, 
-                                    seeds = NULL, tol=10E-5, rm_unlinked = T, 
-                                    max.gap=F, parallelization.type = "PSOCK")
+                                    phase_cores = 1, verbose = FALSE, 
+                                    seeds = NULL, tol=10E-5, rm_unlinked = TRUE, 
+                                    max.gap=FALSE, parallelization.type = "PSOCK")
 {
   #TODO: error checks...
   #Create initial set of batches
@@ -266,7 +266,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
     if(length(rm.seq)> 0){
       new.seq <- make_seq(mp$twopt, mp$seq.num[-rm.seq])
       # Make exception if number of remaining markers is smaller than the batch size
-      cat("Markers", mp$seq.num[rm.seq], "were remove because they cause gaps higher than ", max.gap, " cM with both neighboors markers.\n")
+      if(verbose) cat("Markers", mp$seq.num[rm.seq], "were remove because they cause gaps higher than ", max.gap, " cM with both neighboors markers.\n")
       mp <- map_overlapping_batches(input.seq = new.seq,
                                     size = size, overlap = overlap,
                                     phase_cores = phase_cores, verbose = verbose , 

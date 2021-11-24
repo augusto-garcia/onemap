@@ -13,9 +13,14 @@
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
+##' Apply haldane function to recombination fraction values
+##' 
+##'  @param rcmb vector with recombination fraction values
+##'  
+##'  @return vector with centimorgan values 
+##'
 ##'@export
-haldane <-
-function(rcmb) {
+haldane <- function(rcmb) {
   # rcmb must be a number between 0 and 0.5
   if (is.numeric(rcmb) & !any(is.nan(rcmb))) {
     if (all(rcmb >= 0) & all(rcmb <= 0.5)){
@@ -26,9 +31,14 @@ function(rcmb) {
             dQuote("numeric"),". Check if you don't have excess of missing data in your onemap object.")
 }
 
+##' Apply kosambi function to recombination fraction values
+##' 
+##'  @param rcmb vector with recombination fraction values
+##'  
+##'  @return vector with centimorgan values 
+##'  
 ##'@export
-kosambi <-
-function(rcmb) {
+kosambi <- function(rcmb) {
   # rcmb must be a number between 0 and 0.5
   if (is.numeric(rcmb) & !any(is.nan(rcmb))) {
     if (all(rcmb >= 0) && all(rcmb <= 0.5)){
@@ -54,13 +64,14 @@ function(rcmb) {
 ##' @references Haldane, J. B. S. (1919) The combination of linkage values and
 ##' the calculation of distance between the loci of linked factors.
 ##' \emph{Journal of Genetics} 8: 299-309.
+##' 
+##' @return No return value, called for side effects
 ##'
 ##' Kosambi, D. D. (1944) The estimation of map distance from recombination
 ##' values. \emph{Annuaire of Eugenetics} 12: 172-175.
 ##' @keywords arith
 ##' @export
-set_map_fun<-
-  function(type=c("kosambi", "haldane")){
+set_map_fun<- function(type=c("kosambi", "haldane")){
     type<-match.arg(type,c("kosambi", "haldane"))
     if(type=="haldane") assign(".map.fun",  "haldane", envir = .onemapEnv)
     else assign(".map.fun",  "kosambi", envir = .onemapEnv)

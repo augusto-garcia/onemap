@@ -14,7 +14,8 @@ ug(
   overlap = NULL,
   phase_cores = 1,
   hmm = TRUE,
-  parallelization.type = "PSOCK"
+  parallelization.type = "PSOCK",
+  verbose = TRUE
 )
 }
 \arguments{
@@ -44,19 +45,22 @@ genetic distances}
 
 \item{parallelization.type}{one of the supported cluster types. This should 
 be either PSOCK (default) or FORK.}
+
+\item{verbose}{A logical, if TRUE it output progress status
+information.}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the
 following components: \item{seq.num}{a \code{vector} containing the
 (ordered) indices of markers in the sequence, according to the input file.}
 \item{seq.phases}{a \code{vector} with the linkage phases between markers
-in the sequence, in corresponding positions. \code{-1} means taht there are
+in the sequence, in corresponding positions. \code{-1} means that there are
 no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
 recombination frequencies between markers in the sequence. \code{-1} means
 that there are no estimated recombination frequencies.}
 \item{seq.like}{log-likelihood of the corresponding linkage map.}
-\item{data.name}{name of the object of class \code{onemap} with the raw
-data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
+\item{data.name}{object of class \code{onemap} with the raw
+data.} \item{twopt}{object of class \code{rf_2pts} with the
 2-point analyses.}
 }
 \description{
@@ -75,7 +79,7 @@ using the multipoint approach (function \code{\link[onemap]{map}}).
 }
 \examples{
 
-\dontrun{
+\donttest{
   #outcross example
   data(onemap_example_out)
   twopt <- rf_2pts(onemap_example_out)

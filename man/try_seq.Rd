@@ -5,7 +5,7 @@
 \title{Try to map a marker into every possible position between markers
 in a given map}
 \usage{
-try_seq(input.seq, mrk, tol = 0.1, pos = NULL, verbose = FALSE)
+try_seq(input.seq, mrk, tol = 0.1, pos = NULL, verbose = TRUE)
 }
 \arguments{
 \item{input.seq}{an object of class \code{sequence} with a
@@ -46,7 +46,7 @@ the original linkage map unaltered.
 }
 \examples{
 
-\dontrun{
+\donttest{
   #outcrossing example
   data(onemap_example_out)
   twopt <- rf_2pts(onemap_example_out)

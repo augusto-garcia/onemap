@@ -43,6 +43,31 @@ be either PSOCK (default) or FORK.}
 Each line on this table represents the combination of one marker with one individual, and the respective probabilities.
 The table should contain four three columns (prob(AA), prob(AB) and prob(BB)) and individuals*markers rows.}
 }
+\value{
+An object of class \code{sequence}, which is a list containing the
+following components: \item{seq.num}{a \code{vector} containing the
+(ordered) indices of markers in the sequence, according to the input file.}
+\item{seq.phases}{a \code{vector} with the linkage phases between markers
+in the sequence, in corresponding positions. \code{-1} means that there are
+no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
+recombination frequencies between markers in the sequence. \code{-1} means
+that there are no estimated recombination frequencies.}
+\item{seq.like}{log-likelihood of the corresponding linkage map.}
+\item{data.name}{name of the object of class \code{onemap} with the raw
+data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
+2-point analyses.}
+
+\donttest{
+  data(onemap_example_out)
+  twopt <- rf_2pts(onemap_example_out)
+
+  markers <- make_seq(twopt,c(30,12,3,14,2)) # correct phases
+  map_avoid_unlinked(markers)
+
+  markers <- make_seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
+  map_avoid_unlinked(markers)
+}
+}
 \description{
 Repeat HMM if map find unlinked marker
 }

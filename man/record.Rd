@@ -15,7 +15,8 @@ record(
   overlap = NULL,
   phase_cores = 1,
   hmm = TRUE,
-  parallelization.type = "PSOCK"
+  parallelization.type = "PSOCK",
+  verbose = TRUE
 )
 }
 \arguments{
@@ -47,6 +48,8 @@ genetic distances}
 
 \item{parallelization.type}{one of the supported cluster types. This should 
 be either PSOCK (default) or FORK.}
+
+\item{verbose}{A logical, if TRUE it output progress status information.}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the
@@ -79,14 +82,14 @@ constructed using the multipoint approach (function
 }
 \examples{
 
-\dontrun{
+\donttest{
   ##outcross example
   data(onemap_example_out)
   twopt <- rf_2pts(onemap_example_out)
   all_mark <- make_seq(twopt,"all")
   groups <- group(all_mark)
   LG1 <- make_seq(groups,1)
-  LG1.rec <- record(LG1)
+  LG1.rec <- record(LG1, hmm = FALSE)
 
   ##F2 example
   data(onemap_example_f2)
@@ -94,7 +97,7 @@ constructed using the multipoint approach (function
   all_mark <- make_seq(twopt,"all")
   groups <- group(all_mark)
   LG1 <- make_seq(groups,1)
-  LG1.rec <- record(LG1)
+  LG1.rec <- record(LG1, hmm = FALSE)
   LG1.rec
 }
 }

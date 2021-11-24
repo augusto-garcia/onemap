@@ -15,10 +15,7 @@
 #                                                                     #
 #######################################################################
 
-# Function to create sequences based on other OneMap object types
-
-
-##' Create a sequence of markers
+##' Create a sequence of markers based on other OneMap object types
 ##'
 ##' Makes a sequence of markers based on an object of another type.
 ##'
@@ -57,14 +54,15 @@
 ##' given by argument \code{arg}. In both cases, \code{NULL} (default) makes the
 ##' best combination to be taken. If \code{input.obj} is of class, \code{group}, 
 ##' \code{group.upgma} or \code{order}, this argument has no effect.
-##' @param data.name a \code{string} indicating the name of the object which
+##' @param data.name the object which
 ##' contains the raw data. This does not have to be defined by the
 ##' user: it is here for compatibility issues when calling \code{make_seq} from
 ##' inside other functions.
-##' @param twopt a \code{string} indicating the name of the object which
+##' @param twopt the object which
 ##' contains the two-point information. This does not have to be defined by the
 ##' user: it is here for compatibility issues when calling \code{make_seq} from
 ##' inside other functions.
+##' 
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}
@@ -74,9 +72,10 @@
 ##' recombination frequencies between markers in the sequence. \code{-1} means
 ##' that there are no estimated recombination frequencies.}
 ##' \item{seq.like}{log-likelihood of the corresponding linkage map.}
-##' \item{data.name}{name of the object of class \code{onemap} with the raw
-##' data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
+##' \item{data.name}{object of class \code{onemap} with the raw
+##' data.} \item{twopt}{object of class \code{rf_2pts} with the
 ##' 2-point analyses.}
+##' 
 ##' @author Gabriel Margarido, \email{gramarga@@gmail.com}
 ##' @seealso \code{\link[onemap]{compare}}, \code{\link[onemap]{try_seq}},
 ##' \code{\link[onemap]{order_seq}} and \code{\link[onemap]{map}}.
@@ -89,7 +88,7 @@
 ##' @importFrom utils head
 ##' @examples
 ##'
-##' \dontrun{
+##' \donttest{
 ##'   data(onemap_example_out)
 ##'   twopt <- rf_2pts(onemap_example_out)
 ##'

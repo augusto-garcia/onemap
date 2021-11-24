@@ -13,7 +13,7 @@ rf_graph_table(
   mrk.axis = "numbers",
   lab.xy = NULL,
   n.colors = 4,
-  display = T
+  display = TRUE
 )
 }
 \arguments{
@@ -63,7 +63,7 @@ data for that marker.
 }
 \examples{
 
-\dontrun{
+\donttest{
 ##outcross example
   data(onemap_example_out)
   twopt <- rf_2pts(onemap_example_out)
@@ -93,12 +93,6 @@ data for that marker.
     ##assign the map of the i-th group to the maps.list
     maps.list[[i]]<-make_seq(map.cur, "force")
   }
-  ##Plot LOD/recombination fraction matrices for each group
-  require(gridExtra)
-  plot1 <- rf_graph_table(maps.list[[1]], main="Group 1",inter=FALSE)
-  plot2 <- rf_graph_table(maps.list[[2]], main="Group 2",inter=FALSE)
-  plot3 <- rf_graph_table(maps.list[[3]], main="Group 3",inter=FALSE)
-  grid.arrange(plot1, plot2, plot3, nrow=3)
 }
 }
 \author{
