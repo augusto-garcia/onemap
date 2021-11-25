@@ -104,18 +104,6 @@
 ##'   print(extend.map,5) # best position
 ##'   print(extend.map,4) # second best position
 ##'
-##'   #F2 example
-##'   data(mapmaker_example_f2)
-##'   twopt <- rf_2pts(mapmaker_example_f2)
-##'   all_mark <- make_seq(twopt,"all")
-##'   groups <- group(all_mark)
-##'   LG3 <- make_seq(groups,3)
-##'   LG3.ord <- order_seq(LG3, subset.search = "twopt", twopt.alg = "rcd", touchdown=TRUE)
-##'   LG3.ord
-##'   safe.map<-make_seq(LG3.ord,"safe")
-##'   extend.map <- try_seq(safe.map,64)
-##'   extend.map
-##'   (new.map<-make_seq(extend.map,14)) # best position
 ##' }
 ##'@export
 try_seq<-function(input.seq,mrk,
