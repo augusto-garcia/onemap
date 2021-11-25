@@ -53,7 +53,7 @@
 ##'   maps.list[[i]]<-make_seq(map.cur, "force")
 ##' 
 ##'   ##write maps.list to "mapmaker_example_f2.map" file
-##'   write_map(map.list, "mapmaker_example_f2.map")
+##'   write_map(maps.list, "mapmaker_example_f2.map")
 ##' 
 ##' }
 ##' }
