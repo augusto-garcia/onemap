@@ -73,8 +73,6 @@ data for that marker.
   LG1.rcd <- rcd(LG1)
   rf_graph_table(LG1.rcd, inter=FALSE)
 
-  ##Now, using interactive plotly
-  rf_graph_table(LG1.rcd, inter=TRUE, html.file= "LG1.rcd.html")
 
   ##F2 example
   data(onemap_example_f2)

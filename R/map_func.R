@@ -16,7 +16,7 @@
 
 #' Apply Haldane mapping function
 #' 
-#' @param rcmp vector of recombination fraction values
+#' @param rcmb vector of recombination fraction values
 #' 
 #' @return vector with centimorgan values
 #' 
@@ -34,7 +34,7 @@ haldane <- function(rcmb) {
 
 #' Apply Kosambi mapping function
 #' 
-#' @param rcmp vector of recombination fraction values
+#' @param rcmb vector of recombination fraction values
 #' 
 #' @return vector with centimorgan values
 #' 

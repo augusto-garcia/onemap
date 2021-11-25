@@ -37,7 +37,6 @@
 \alias{try_seq_outcross}
 \alias{print.compare}
 \alias{print.onemap}
-\alias{print.onemap_bin}
 \alias{print.order}
 \alias{print.sequence}
 \title{Internal onemap functions}
@@ -73,14 +72,13 @@ perm_tot(v)
 phases(input.seq, LOD=0, max.rf=0.50)
 rem_amb_ph(M,w,seq.num)
 return_geno(segr.type, link.phases)
-ripple_seq_inbred(input.seq, ws, ext.w, LOD, tol)
-ripple_seq_outcross(input.seq, ws, LOD, tol)
+ripple_seq_inbred(input.seq, ws, ext.w, LOD, tol, verbose)
+ripple_seq_outcross(input.seq, ws, LOD, tol, verbose)
 ser_ord(r,i)
 try_seq_inbred_f2(input.seq, mrk, tol, pos, verbose)
 try_seq_outcross(input.seq, mrk, tol, pos, verbose)
 \method{print}{compare}(x, \dots)
 \method{print}{onemap}(x, \dots)
-\method{print}{onemap_bin}(x, \dots)
 \method{print}{order}(x, \dots)
 \method{print}{order}(x, \dots)
 \method{print}{sequence}(x, \dots)

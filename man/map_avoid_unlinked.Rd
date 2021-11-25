@@ -56,6 +56,11 @@ that there are no estimated recombination frequencies.}
 \item{data.name}{name of the object of class \code{onemap} with the raw
 data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
 2-point analyses.}
+}
+\description{
+Repeat HMM if map find unlinked marker
+}
+\examples{
 
 \donttest{
   data(onemap_example_out)
@@ -67,7 +72,5 @@ data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
   markers <- make_seq(twopt,c(30,12,3,14,2),phase=c(4,1,4,3)) # incorrect phases
   map_avoid_unlinked(markers)
 }
-}
-\description{
-Repeat HMM if map find unlinked marker
+   
 }

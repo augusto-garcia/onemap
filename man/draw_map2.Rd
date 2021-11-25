@@ -59,23 +59,14 @@ Provides a simple draw of a linkage map.
 \examples{
 
 \donttest{
- data("onemap_example_out")
- twopt <- rf_2pts(onemap_example_out)
- lg<-group(make_seq(twopt, "all"))
- seq1<-make_seq(order_seq(input.seq= make_seq(lg,1),twopt.alg = "rcd"), "force")
- seq2<-make_seq(order_seq(input.seq= make_seq(lg,2),twopt.alg = "rcd"), "force")
- seq3<-make_seq(order_seq(input.seq= make_seq(lg,3),twopt.alg = "rcd"), "force")
- draw_map2(seq1,seq2,seq3,tag = c("M1","M2","M3","M4","M5"),output = paste0(tempfile(), ".png"))
- 
- data("onemap_example_f2")
- twopt <- rf_2pts(onemap_example_f2)
- lg<-group(make_seq(twopt, "all"))
- seq<-list(
- make_seq(order_seq(input.seq= make_seq(lg,1),twopt.alg = "rcd"), "force"),
- make_seq(order_seq(input.seq= make_seq(lg,2),twopt.alg = "rcd"), "force"),
- make_seq(order_seq(input.seq= make_seq(lg,3),twopt.alg = "rcd"), "force")
- )
- draw_map2(seq,tag = "all",group.names = c("Chr 1","Chr 2","Chr 3"),main="Linkage Map", output = paste0(tempfile(), ".png"))
+data("onemap_example_out")
+twopt <- rf_2pts(onemap_example_out)
+lg<-group(make_seq(twopt, "all"))
+seq1<-make_seq(order_seq(input.seq= make_seq(lg,1),twopt.alg = "rcd"), "force")
+seq2<-make_seq(order_seq(input.seq= make_seq(lg,2),twopt.alg = "rcd"), "force")
+seq3<-make_seq(order_seq(input.seq= make_seq(lg,3),twopt.alg = "rcd"), "force")
+draw_map2(seq1,seq2,seq3,tag = c("M1","M2","M3","M4","M5"),
+output = paste0(tempfile(), ".png"))
 
 }
 }

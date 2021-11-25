@@ -16,7 +16,7 @@
 #######################################################################
 
 globalVariables(c("grp", "for.split", ".", "pos", "prob", "pos2", 
-                  "allele","parents.homologs", "progeny.homologs"))
+                  "allele","parents.homologs", "progeny.homologs", "homolog"))
 globalVariables(c("V1", "V2", "V3", "V4", 
                   "H1_P1", "H1_P2", "H2_P1", "H2_P2",
                   "P1_H1", "P1_H2", "P2_H1", "P2_H2"))
@@ -344,7 +344,7 @@ plot.onemap_progeny_haplotypes <- function(x,
 #' twopts <- rf_2pts(onemap_example_out)
 #' lg1 <- make_seq(twopts, 1:5)
 #' lg1.map <- map(lg1)
-#' progeny_haplotypes_counts(progeny_haplotypes(lg1.map, most_likely = T))
+#' progeny_haplotypes_counts(progeny_haplotypes(lg1.map, most_likely = TRUE))
 #' 
 #' @return a \code{data.frame} with columns individuals ID (ind), group ID (grp),
 #' homolog (homolog) and counts of breakpoints
@@ -402,7 +402,7 @@ globalVariables(c("counts", "colorRampPalette", "alleles"))
 #' twopts <- rf_2pts(onemap_example_out)
 #' lg1 <- make_seq(twopts, 1:5)
 #' lg1.map <- map(lg1)
-#' prog.haplo <- progeny_haplotypes(lg1.map, most_likely = T)
+#' prog.haplo <- progeny_haplotypes(lg1.map, most_likely = TRUE)
 #' plot(progeny_haplotypes_counts(prog.haplo))
 ##' 
 ##' @method plot onemap_progeny_haplotypes_counts

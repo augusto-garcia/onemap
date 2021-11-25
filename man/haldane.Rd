@@ -7,7 +7,7 @@
 haldane(rcmb)
 }
 \arguments{
-\item{rcmp}{vector of recombination fraction values}
+\item{rcmb}{vector of recombination fraction values}
 }
 \value{
 vector with centimorgan values

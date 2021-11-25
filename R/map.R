@@ -421,6 +421,8 @@ map_save_ram <- function(input.seq,
 ##' data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
 ##' 2-point analyses.}
 ##' 
+##' @examples 
+##' 
 ##' \donttest{
 ##'   data(onemap_example_out)
 ##'   twopt <- rf_2pts(onemap_example_out)
