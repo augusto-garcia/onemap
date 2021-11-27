@@ -34,7 +34,7 @@ Add the redundant markers removed by create_data_bins function
 \code{\link[onemap]{find_bins}}
 }
 \author{
-Cristiane Taniguti, \email{chtaniguti@usp.br}
+Cristiane Taniguti, \email{chtaniguti@tamu.edu}
 }
 \keyword{bins}
 \keyword{redundants}

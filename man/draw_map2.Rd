@@ -53,6 +53,9 @@ draw_map2(
 
 \item{verbose}{If \code{TRUE}, print tracing information.}
 }
+\value{
+ggplot graphic with genetic map draw
+}
 \description{
 Provides a simple draw of a linkage map.
 }

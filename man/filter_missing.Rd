@@ -43,5 +43,5 @@ Filter markers according with a missing data threshold
  
 }
 \author{
-Cristiane Taniguti, \email{chtaniguti@usp.br}
+Cristiane Taniguti, \email{chtaniguti@tamu.edu}
 }

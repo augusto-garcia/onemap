@@ -9,7 +9,6 @@
 # copyright (c) 2015, Marcelo Mollinari                               #
 #                                                                     #
 # First version: 08/27/2015                                           #
-# Last update: 01/14/2016                                             #
 # License: GNU General Public License version 3                       #
 #                                                                     #
 #######################################################################
@@ -38,10 +37,10 @@
 ##' @seealso \code{\link[onemap]{create_data_bins}}
 ##' @keywords bins dimension reduction
 ##' @examples
-##' 
+##' \donttest{
 ##'   data("onemap_example_f2")
 ##'   (bins<-find_bins(onemap_example_f2, exact=FALSE))
-##' 
+##' }
 ##'@export
 find_bins <- function(input.obj, exact=TRUE)
 {

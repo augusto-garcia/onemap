@@ -64,7 +64,7 @@
 ##' values. Each column contains data for a trait and each row represents an
 ##' individual.} \item{error}{matrix containing HMM emission probabilities}
 ##' 
-##' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
+##' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
 ##' 
 ##' @seealso \code{read_onemap} for a description of the output object of class onemap.
 ##' 
@@ -72,12 +72,12 @@
 ##' @importFrom vcfR read.vcfR extract.gt masplit
 ##' 
 ##' @examples
-##' 
+##' \donttest{
 ##' data <- onemap_read_vcfR(vcf=system.file("extdata/vcf_example_out.vcf.gz", package = "onemap"),
 ##'                  cross="outcross",
 ##'                  parent1=c("P1"),
 ##'                  parent2=c("P2"))
-##'
+##' }
 ##'                 
 ##'@export                  
 onemap_read_vcfR <- function(vcf=NULL,
@@ -613,7 +613,7 @@ onemap_read_vcfR <- function(vcf=NULL,
 ##' 
 ##' @param file.name a character for the onemap raw file name. Default is "out.raw"
 ##' 
-##' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
+##' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
 ##' @seealso \code{read_onemap} for a description of the output object of class onemap.
 ##' 
 ##' @return a onemap input file

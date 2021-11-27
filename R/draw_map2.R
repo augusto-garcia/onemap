@@ -37,6 +37,8 @@
 ##' @param output the name of the output file. The file format can be specified by adding its extension. Available formats: 'bmp', 'jpeg', 'png', 'tiff', 'pdf' and 'eps' (default).
 ##' @param verbose If \code{TRUE}, print tracing information.
 ##' 
+##' @return ggplot graphic with genetic map draw
+##' 
 ##' @author Getulio Caixeta Ferreira, \email{getulio.caifer@@gmail.com}
 ##' @keywords rqtl
 ##' @examples

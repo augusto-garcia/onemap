@@ -70,5 +70,5 @@ for fast computation of F1 linkage maps in outcrossing species. PLoS ONE,
 \code{\link[onemap]{map}}
 }
 \author{
-Cristiane Taniguti \email{chtaniguti@usp.br}
+Cristiane Taniguti \email{chtaniguti@tamu.edu}
 }

@@ -110,10 +110,10 @@
 ##' \emph{Theoretical Population Biology} 61: 349-363.
 ##' @keywords IO
 ##' @examples
-##'
+##' \donttest{
 ##'  outcr_data <- read_onemap(inputfile= 
 ##'  system.file("extdata/onemap_example_out.raw", package= "onemap"))
-##'   
+##' }
 ##'@export
 read_onemap <- function (inputfile=NULL, dir=NULL, verbose=TRUE) {
   if (is.null(inputfile)){
@@ -303,7 +303,12 @@ read_onemap <- function (inputfile=NULL, dir=NULL, verbose=TRUE) {
   return(new.onemap.obj)
 }
 
-## Print method for object class 'onemap'
+##' Print method for object class 'onemap'
+##' 
+##' @param x object of class onemap
+##' @param ... currently ignored
+##' 
+##' @return printed information about onemap object
 ##'@export
 ##' @method print onemap
 print.onemap <- function (x, ...) {

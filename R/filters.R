@@ -40,7 +40,7 @@
 ##' values. Each column contains data for a trait and each row represents an
 ##' individual.} \item{error}{matrix containing HMM emission probabilities}
 ##' 
-##' @author Cristiane Taniguti, \email{chtaniguti@@usp.br} 
+##' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu} 
 ##' @examples
 ##' 
 ##'   data(onemap_example_out)
@@ -92,7 +92,7 @@ filter_missing <- function(onemap.obj=NULL, threshold= 0.25,  verbose = TRUE){
 ##' values. Each column contains data for a trait and each row represents an
 ##' individual.} \item{error}{matrix containing HMM emission probabilities}
 ##' 
-##' @author Cristiane Taniguti, \email{chtaniguti@@usp.br} 
+##' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu} 
 ##' @examples
 ##' 
 ##'   data(onemap_example_out)

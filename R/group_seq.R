@@ -8,7 +8,6 @@
 ## Written by Cristiane Taniguti                                       ##
 ##                                                                     ##
 ## First version: 09/08/2017                                           ##
-## Last update: 09/08/2017                                             ##
 ## License: GNU General Public License version 2 (June, 1991) or later ##
 ##                                                                     ##
 #######################################################################
@@ -65,11 +64,11 @@
 ##'     in each outputted sequence} \item{unlinked}{number of the markers which remained
 ##'     unlinked}
 ##'     
-##' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
+##' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
 ##' @seealso \code{\link[onemap]{make_seq}} and \code{\link[onemap]{group}}
 ##'
 ##' @examples
-##' 
+##' \donttest{
 ##' data(onemap_example_out) # load OneMap's fake dataset for a outcrossing population
 ##' data(vcf_example_out) # load OneMap's fake dataset from a VCF file for a outcrossing population
 ##' comb_example <- combine_onemap(onemap_example_out, vcf_example_out) # Combine datasets
@@ -84,7 +83,7 @@
 ##'
 ##' out_seqs <- group_seq(twopts, seqs=list(seq1,seq2,seq3))
 ##' out_seqs
-##' 
+##' }
 ##'@export
 group_seq <- function(input.2pts, seqs= "CHROM", 
                       unlink.mks="all", 

@@ -45,12 +45,12 @@ current version supports backcross, F2s and RIL populations. The file
 can contain phenotypic data, but it will not be used in the analysis.
 }
 \examples{
-
+\donttest{
  map_data <-read_mapmaker(file=system.file("extdata/mapmaker_example_f2.raw", package = "onemap"))
  #Checking 'mapmaker_example_f2'
  data(mapmaker_example_f2)
  names(mapmaker_example_f2)
-  
+}
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.

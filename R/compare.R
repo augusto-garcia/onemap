@@ -9,7 +9,6 @@
 ## copyright (c) 2009, Gabriel R A Margarido & Marcelo Mollinari       ##
 ##                                                                     ##
 ## First version: 02/27/2009                                           ##
-## Last update: 07/25/2015 (only documentation, by Augusto Garcia)     ##
 ## License: GNU General Public License version 2 (June, 1991) or later ##
 ##                                                                     #
 #######################################################################
@@ -410,7 +409,13 @@ compare_inbred_f2<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
   }
 }
 
-## print method for object class 'compare'
+##' print method for object class 'compare'
+##' 
+##' @param x object of class compare
+##' @param ... currently ignored
+##' 
+##' @return compare object description
+##' 
 ##'@export
 ##'@method print compare
 print.compare <- function(x,...) {

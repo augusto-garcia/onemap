@@ -10,7 +10,6 @@
 ## copyright (c) 2007-15, Gabriel R A Margarido and Marcelo Mollinari  ##
 ##                                                                     ##
 ## First version: 11/07/2007                                           ##
-## Last update: 07/06/2017                                             ##
 ## License: GNU General Public License version 2 (June, 1991) or later ##
 ##                                                                     ##
 #########################################################################
@@ -54,14 +53,14 @@
 ##' outcrossing species. \emph{Theoretical Population Biology} 61: 349-363.
 ##' @keywords utilities
 ##' @examples
-##' 
+##' \donttest{
 ##'   data(onemap_example_out)
 ##'
 ##'   twopts <- rf_2pts(onemap_example_out,LOD=3,max.rf=0.5) # perform two-point analyses
 ##'   twopts
 ##'
 ##'   print(twopts,c("M1","M2")) # detailed results for markers 1 and 2
-##'   
+##' }
 ##'   
 ##'@export
 rf_2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE, rm_mks = FALSE) {

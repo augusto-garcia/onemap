@@ -42,14 +42,14 @@ The thresholds used for \code{LOD} and \code{max.rf} will be used in
 subsequent analyses, but can be overriden.
 }
 \examples{
-
+\donttest{
   data(onemap_example_out)
 
   twopts <- rf_2pts(onemap_example_out,LOD=3,max.rf=0.5) # perform two-point analyses
   twopts
 
   print(twopts,c("M1","M2")) # detailed results for markers 1 and 2
-  
+}
   
 }
 \references{

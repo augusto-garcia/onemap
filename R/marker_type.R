@@ -9,7 +9,6 @@
 # copyright (c) 2007-9, Gabriel R A Margarido                         #
 #                                                                     #
 # First version: 11/07/2007                                           #
-# Last update: 04/04/2016                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -35,16 +34,16 @@
 ##' \tab oo x ao \tab 1:1 }
 ##'
 ##' @param input.seq an object of class \code{sequence}.
-##' @return Nothing is returned. Segregation types of all markers in the
+##' @return data.frame with segregation types of all markers in the
 ##' sequence are displayed on the screen.
 ##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com}
 ##' @seealso \code{\link[onemap]{make_seq}}
 ##' @references Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002)
 ##' Simultaneous maximum likelihood estimation of linkage and linkage phases in
 ##' outcrossing species. \emph{Theoretical Population Biology} 61: 349-363.
-##' @keywords manip utilities
+##' @keywords utilities
 ##' @examples
-##'
+##' \donttest{
 ##'  data(onemap_example_out)
 ##'  twopts <- rf_2pts(onemap_example_out)
 ##'  markers.ex <- make_seq(twopts,c(3,6,8,12,16,25))
@@ -56,7 +55,7 @@
 ##'  lgs<-group(all_mrk)
 ##'  lg1<-make_seq(lgs,1)
 ##'  marker_type(lg1) # segregation type for linkage group 1
-##'
+##' }
 ##'@export
 marker_type <- function(input.seq) {
   ## checking for correct objects

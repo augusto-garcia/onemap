@@ -20,11 +20,12 @@ Genotypes with same probability for two genotypes are removed.
  By now, only available for outcrossing and f2 intercross.
 }
 \examples{
-
+\donttest{
 data("onemap_example_out")
 twopts <- rf_2pts(onemap_example_out)
 lg1 <- make_seq(twopts, 1:5)
 lg1.map <- map(lg1)
 progeny_haplotypes_counts(progeny_haplotypes(lg1.map, most_likely = TRUE))
+}
 
 }

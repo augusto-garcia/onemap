@@ -9,7 +9,6 @@
 ## copyright (c) 2007-9, Gabriel R A Margarido                         ##
 ##                                                                     ##
 ## First version: 11/29/2009                                           ##
-## Last update: 12/2015                                                ##
 ## Description was update by Augusto Garcia on 2015/07/25              ##
 ## License: GNU General Public License version 2 (June, 1991) or later ##
 ##                                                                     ##

@@ -9,7 +9,6 @@
 ## copyright (c) 2009, Marcelo Mollinari                               ##
 ##                                                                     ##
 ## First version: 02/27/2009                                           ##
-## Last update: 08/2021                                                ##
 ## Description of the function was modified by augusto.garcia@usp.br   ##
 ## on 2015/07/25
 ## License: GNU General Public License version 2 (June, 1991) or later ##

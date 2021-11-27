@@ -9,7 +9,6 @@
 # copyright (c) 2010, Marcelo Mollinari                               #
 #                                                                     #
 # First version: 10/10/2010                                           #
-# Last update: 11/30/2010                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -31,6 +30,8 @@
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
 ##' 1.09-43
+##' 
+##' @return file with genetic map information
 ##'
 ##' Wang S., Basten, C. J. and Zeng Z.-B. (2010) Windows QTL Cartographer 2.5.
 ##' Department of Statistics, North Carolina State University, Raleigh, NC.
@@ -52,8 +53,8 @@
 ##'   ##assign the map of the i-th group to the maps.list
 ##'   maps.list[[i]]<-make_seq(map.cur, "force")
 ##' 
-##'   ##write maps.list to "mapmaker_example_f2.map" file
-##'   write_map(maps.list, "mapmaker_example_f2.map")
+##'   ##write maps.list to ".map" file
+##'   write_map(maps.list, tempfile(fileext = ".map"))
 ##' 
 ##' }
 ##' }

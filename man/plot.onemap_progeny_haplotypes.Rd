@@ -38,16 +38,17 @@ to be in the mean point of the distance between two markers.  It is important to
 specially if the genetic map have low resolution.
 }
 \examples{
-
+ \donttest{
 data("onemap_example_out")
 twopts <- rf_2pts(onemap_example_out)
 lg1 <- make_seq(twopts, 1:5)
 lg1.map <- map(lg1)
 plot(progeny_haplotypes(lg1.map))
+}
 
 }
 \author{
 Getulio Caixeta Ferreira, \email{getulio.caifer@gmail.com}
 
-Cristiane Taniguti, \email{chtaniguti@usp.br}
+Cristiane Taniguti, \email{chtaniguti@tamu.edu}
 }

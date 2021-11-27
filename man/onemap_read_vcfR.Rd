@@ -78,17 +78,17 @@ genotypes cannot be determined are discarded.
 Reference sequence ID and position for each variant site are also stored.
 }
 \examples{
-
+\donttest{
 data <- onemap_read_vcfR(vcf=system.file("extdata/vcf_example_out.vcf.gz", package = "onemap"),
                  cross="outcross",
                  parent1=c("P1"),
                  parent2=c("P2"))
-
+}
                 
 }
 \seealso{
 \code{read_onemap} for a description of the output object of class onemap.
 }
 \author{
-Cristiane Taniguti, \email{chtaniguti@usp.br}
+Cristiane Taniguti, \email{chtaniguti@tamu.edu}
 }

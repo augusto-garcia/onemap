@@ -62,13 +62,13 @@ recombination fraction is the same in both parents. Hidden Markov chain
 codes adapted from Broman et al. (2008) were used.
 }
 \examples{
-
+\donttest{
   data(onemap_example_out)
   twopt <- rf_2pts(onemap_example_out)
 
   markers <- make_seq(twopt,c(30,12,3,14,2))
   seeded_map(markers, seeds = c(4,2))
-
+}
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.

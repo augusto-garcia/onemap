@@ -43,5 +43,5 @@ Function filter genotypes by genotype probability
  
 }
 \author{
-Cristiane Taniguti, \email{chtaniguti@usp.br}
+Cristiane Taniguti, \email{chtaniguti@tamu.edu}
 }

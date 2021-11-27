@@ -20,16 +20,16 @@ and names (mk.names), position in centimorgan (dist) and parents haplotypes
 Generates data.frame with parents estimated haplotypes
 }
 \examples{
-
+\donttest{
 data("onemap_example_out")
 twopts <- rf_2pts(onemap_example_out)
 lg1 <- make_seq(twopts, 1:5)
 lg1.map <- map(lg1)
 parents_haplotypes(lg1.map)
-
+}
 }
 \author{
 Getulio Caixeta Ferreira, \email{getulio.caifer@gmail.com}
 
-Cristiane Taniguti, \email{chtaniguti@usp.br}
+Cristiane Taniguti, \email{chtaniguti@tamu.edu}
 }

@@ -9,7 +9,6 @@
 ## copyright (c) 2007-9, Marcelo Mollinari                             ##
 ##                                                                     ##
 ## First version: 11/29/2009                                           ##
-## Last update: 12/2015                                                ##
 ## The detailed description of the algorithm was removed by Augusto    ##
 ## Garcia, on 2015/07/25, since it was not compiling in new R versions ##
 ## License: GNU General Public License version 2 (June, 1991) or later ##

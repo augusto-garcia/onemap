@@ -9,7 +9,6 @@
 # copyright (c) 2009, Marcelo Mollinari                               #
 #                                                                     #
 # First version: 01/15/2010                                           #
-# Last update: 01/15/2010                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################

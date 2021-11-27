@@ -15,6 +15,7 @@ globalVariables(c("gt.onemap.alt.ref", "gt.vcf.alt.ref", "parents"))
 #' @param parent2 parent 2 identification in vcfR objetc
 #' @param f1 if your cross type is f2, you must define the F1 individual
 #' @param recovering TRUE/FALSE, if TRUE avaliate all markers from vcf file, if FALSE avaliate only markers in onemap object
+#' 
 #' @return list containing the following components: \item{palt}{a \code{matrix} with parent 1 and 2 
 #' alternative alelle counts.} \item{pref}{a \code{matrix} with parent 1 and 2 
 #' reference alelle counts.} \item{psize}{a \code{matrix} with parent 1 and 2 
@@ -28,7 +29,7 @@ globalVariables(c("gt.onemap.alt.ref", "gt.vcf.alt.ref", "parents"))
 #' 
 #' @import dplyr
 #' @importFrom vcfR extract.gt masplit
-#' @author Cristiane Taniguti, \email{chtaniguti@@usp.br} 
+#' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu} 
 #' @export
 extract_depth <- function(vcfR.object=NULL,
                           onemap.object= NULL,

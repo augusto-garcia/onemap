@@ -10,7 +10,6 @@
 # Written Marcelo Mollinari                                           #
 #                                                                     #
 # First version: 09/2015                                              #
-# Last update: 01/2016                                                #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################

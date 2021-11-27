@@ -10,7 +10,6 @@
 ## Written by  Getulio Caixeta Ferreira and Cristiane Taniguti         ##
 ##                                                                     ##
 ## First version: 2020/05/26                                           ##
-## Last update: 2020/05/26                                             ##
 ## License: GNU General Public License version 3 or later              ##
 ##                                                                     ##
 #######################################################################
@@ -31,15 +30,15 @@ globalVariables(c("V1", "V2", "V3", "V4",
 #' (P1_1, P1_2, P2_1, P2_2)
 #' 
 #' @examples 
-#' 
+#' \donttest{
 #' data("onemap_example_out")
 #' twopts <- rf_2pts(onemap_example_out)
 #' lg1 <- make_seq(twopts, 1:5)
 #' lg1.map <- map(lg1)
 #' parents_haplotypes(lg1.map)
-#' 
+#' }
 #' @author Getulio Caixeta Ferreira, \email{getulio.caifer@@gmail.com}
-#' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
+#' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
 #' @export
 parents_haplotypes <- function(..., group_names=NULL){
   input <- list(...)
@@ -114,18 +113,18 @@ parents_haplotypes <- function(..., group_names=NULL){
 #' genotypes probabilities (prob), parents, and the parents homologs and the allele IDs. 
 #' 
 #' @examples 
-#' 
+#' \donttest{
 #' data("onemap_example_out")
 #' twopts <- rf_2pts(onemap_example_out)
 #' lg1 <- make_seq(twopts, 1:5)
 #' lg1.map <- map(lg1)
 #' progeny_haplotypes(lg1.map)
-#' 
+#' }
 #' @import dplyr
 #' @import tidyr
 #' 
 #' @author Getulio Caixeta Ferreira, \email{getulio.caifer@@gmail.com}
-#' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
+#' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
 #' @export
 progeny_haplotypes <- function(...,
                                ind = 1, 
@@ -265,12 +264,13 @@ progeny_haplotypes <- function(...,
 ##' @method plot onemap_progeny_haplotypes
 ##' 
 ##' @examples 
-##' 
+##'  \donttest{
 #' data("onemap_example_out")
 #' twopts <- rf_2pts(onemap_example_out)
 #' lg1 <- make_seq(twopts, 1:5)
 #' lg1.map <- map(lg1)
 #' plot(progeny_haplotypes(lg1.map))
+##' }
 ##' 
 ##' @return a ggplot graphic
 ##' 
@@ -279,7 +279,7 @@ progeny_haplotypes <- function(...,
 #' @import tidyr
 #' 
 ##' @author Getulio Caixeta Ferreira, \email{getulio.caifer@@gmail.com}
-##' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
+##' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
 ##' 
 ##' @export
 plot.onemap_progeny_haplotypes <- function(x,
@@ -339,12 +339,13 @@ plot.onemap_progeny_haplotypes <- function(x,
 #' @param x object of class onemap_progeny_haplotypes
 #' 
 #' @examples 
-#' 
+#' \donttest{
 #' data("onemap_example_out")
 #' twopts <- rf_2pts(onemap_example_out)
 #' lg1 <- make_seq(twopts, 1:5)
 #' lg1.map <- map(lg1)
 #' progeny_haplotypes_counts(progeny_haplotypes(lg1.map, most_likely = TRUE))
+#' }
 #' 
 #' @return a \code{data.frame} with columns individuals ID (ind), group ID (grp),
 #' homolog (homolog) and counts of breakpoints
@@ -397,13 +398,14 @@ globalVariables(c("counts", "colorRampPalette", "alleles"))
 ##' @return a ggplot graphic
 ##' 
 ##' @examples 
-##' 
+##' \donttest{
 #' data("onemap_example_out")
 #' twopts <- rf_2pts(onemap_example_out)
 #' lg1 <- make_seq(twopts, 1:5)
 #' lg1.map <- map(lg1)
 #' prog.haplo <- progeny_haplotypes(lg1.map, most_likely = TRUE)
 #' plot(progeny_haplotypes_counts(prog.haplo))
+##' }
 ##' 
 ##' @method plot onemap_progeny_haplotypes_counts
 ##' @import ggplot2

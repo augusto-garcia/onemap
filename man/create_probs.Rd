@@ -68,5 +68,5 @@ Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 \code{\link[onemap]{make_seq}}
 }
 \author{
-Cristiane Taniguti \email{chtaniguti@usp.br}
+Cristiane Taniguti \email{chtaniguti@tamu.edu}
 }

@@ -61,7 +61,7 @@
 #' 
 #' @details For better description about MDS method, see MDSMap package vignette.
 #' 
-#' @author Cristiane Taniguti, \email{chtaniguti@@usp.br} 
+#' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu} 
 #' @seealso  \url{https://CRAN.R-project.org/package=MDSMap}.
 #'
 #'

@@ -25,16 +25,16 @@ genotypes probabilities (prob), parents, and the parents homologs and the allele
 Generate data.frame with genotypes estimated by HMM and its probabilities
 }
 \examples{
-
+\donttest{
 data("onemap_example_out")
 twopts <- rf_2pts(onemap_example_out)
 lg1 <- make_seq(twopts, 1:5)
 lg1.map <- map(lg1)
 progeny_haplotypes(lg1.map)
-
+}
 }
 \author{
 Getulio Caixeta Ferreira, \email{getulio.caifer@gmail.com}
 
-Cristiane Taniguti, \email{chtaniguti@usp.br}
+Cristiane Taniguti, \email{chtaniguti@tamu.edu}
 }

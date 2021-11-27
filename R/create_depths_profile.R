@@ -36,7 +36,7 @@ globalVariables(c("gt.onemap", "gt.vcf"))
 #' 
 #' @return an rds file and a ggplot graphic.
 #' 
-#' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
+#' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
 #' 
 #' @seealso \code{\link[onemap]{onemap_read_vcfR}}
 #' 
