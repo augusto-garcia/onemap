@@ -35,10 +35,6 @@
 \alias{try_seq_inbred_f2}
 \alias{try_seq_inbred_bc}
 \alias{try_seq_outcross}
-\alias{print.compare}
-\alias{print.onemap}
-\alias{print.order}
-\alias{print.sequence}
 \title{Internal onemap functions}
 \description{
   Functions from \pkg{onemap} not to be directly called by the user.

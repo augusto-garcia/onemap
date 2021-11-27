@@ -45,8 +45,8 @@ for(i in 1:lg$n.groups){
   ##assign the map of the i-th group to the maps.list
   maps.list[[i]]<-make_seq(map.cur, "force")
 
-  ##write maps.list to "mapmaker_example_f2.map" file
-  write_map(maps.list, "mapmaker_example_f2.map")
+  ##write maps.list to ".map" file
+  write_map(maps.list, tempfile(fileext = ".map"))
 
 }
 }
