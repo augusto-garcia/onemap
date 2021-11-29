@@ -21,6 +21,9 @@ est_hmm_out(geno_R, error_R, type_R, phase_R, rf_R, verbose_R, tol_R)
 
 \item{tol_R}{EM algorithm tolerance}
 }
+\value{
+vector with recombination fraction estimated by multipoint approach
+}
 \description{
 Run HMM chains
 }
