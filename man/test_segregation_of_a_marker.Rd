@@ -4,12 +4,14 @@
 \alias{test_segregation_of_a_marker}
 \title{test_segregation_of_a_marker}
 \usage{
-test_segregation_of_a_marker(x, marker)
+test_segregation_of_a_marker(x, marker, simulate.p.value = TRUE)
 }
 \arguments{
 \item{x}{an object of class \code{onemap}, with data and additional information.}
 
 \item{marker}{the marker which will be tested for its segregation.}
+
+\item{simulate.p.value}{a logical indicating whether to compute p-values by Monte Carlo simulation.}
 }
 \value{
 a list with the H0 hypothesis being tested, the chi-square statistics,

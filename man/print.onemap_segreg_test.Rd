@@ -21,8 +21,10 @@ of cross type outcross, backcross, F2 intercross or recombinant inbred lines.
 }
 \examples{
 
+\donttest{
 data(onemap_example_out) # Loads a fake outcross dataset installed with onemap
 Chi <- test_segregation(onemap_example_out) # Performs the chi-square test for all markers
 print(Chi) # Shows the results
+}
 
 }
