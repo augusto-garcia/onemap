@@ -93,10 +93,10 @@ example data file to be read with this function. Further instructions can
 be found at the tutorial distributed along with this package.
 }
 \examples{
-
+\donttest{
  outcr_data <- read_onemap(inputfile= 
  system.file("extdata/onemap_example_out.raw", package= "onemap"))
-  
+}
 }
 \references{
 Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993)

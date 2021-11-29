@@ -31,6 +31,9 @@ horizontally. Default is \code{FALSE}}
 
 \item{cex.grp}{the magnification to be used for group axis annotation.}
 }
+\value{
+figure with genetic map draw
+}
 \description{
 Provides a simple draw of a genetic map.
 }
@@ -47,19 +50,8 @@ Provides a simple draw of a genetic map.
    "rcd"), "force")
   draw_map(maps, grid=TRUE)
   draw_map(maps, grid=TRUE, horizontal=TRUE)
-
-  #F2 example
-  data(onemap_example_f2)
-  twopt<-rf_2pts(onemap_example_f2)
-  lg<-group(make_seq(twopt, "all"))
-  maps<-vector("list", lg$n.groups)
-  for(i in 1:lg$n.groups)
-     maps[[i]]<- make_seq(order_seq(input.seq= make_seq(lg,i),twopt.alg =
-   "rcd"), "force")
-  draw_map(maps, grid=TRUE)
-  draw_map(maps, grid=TRUE, horizontal=TRUE)
-
 }
+
 }
 \author{
 Marcelo Mollinari, \email{mmollina@usp.br}

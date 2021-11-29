@@ -11,7 +11,6 @@
 ##  copyright (c) 2000-6, Karl W Broman                                 #
 ##                                                                      #
 ##  First version: 09/27/2009                                           #
-##  Last update:   06/20/2017                                           #
 ##  License: GNU General Public License version 3 (June, 2007) or later #
 ##                                                                      #
 #########################################################################
@@ -69,12 +68,12 @@ globalVariables(c("mkt.wrg"))
 ##' Report}.
 ##' @keywords IO
 ##' @examples
-##'
+##' \donttest{
 ##'  map_data <-read_mapmaker(file=system.file("extdata/mapmaker_example_f2.raw", package = "onemap"))
 ##'  #Checking 'mapmaker_example_f2'
 ##'  data(mapmaker_example_f2)
 ##'  names(mapmaker_example_f2)
-##'   
+##' }
 ##'@export
 read_mapmaker<-function (file=NULL, dir=NULL, verbose=TRUE)
 {

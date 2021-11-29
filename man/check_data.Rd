@@ -25,5 +25,5 @@ check_data(onemap_example_bc)
 
 }
 \author{
-Cristiane Taniguti, \email{chtaniguti@usp.br}
+Cristiane Taniguti, \email{chtaniguti@tamu.edu}
 }

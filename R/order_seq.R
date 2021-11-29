@@ -10,7 +10,6 @@
 # copyright (c) 2009, Gabriel R A Margarido & Marcelo Mollinari       #
 #                                                                     #
 # First version: 02/27/2009                                           #
-# Last update: 08/09/2017                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -319,7 +318,15 @@ order_seq <- function(input.seq,
   }
 }
 
+##'Print order_seq object
+##'
+##'@param x object of class order_seq
+##'@param ... currently ignored
+##'
+##'@return printed information about order_seq object
 ##'@export
+##'
+##'
 ##'@method print order
 print.order <- function(x,...) {
   cat("\nBest sequence found.")

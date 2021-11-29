@@ -10,7 +10,6 @@
 # copyright (c) 2009, Gabriel R A Margarido                           #
 #                                                                     #
 # First version: 02/27/2009                                           #
-# Last update: 07/06/2017                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -223,10 +222,15 @@ make_seq <-
     }
   }
 
-# print method for object class 'sequence'
+##' Print method for object class 'sequence'
+##' 
+##' @param x object of class sequence
+##' @param ... corrently ignored
+##' 
+##' @return printed information about sequence object
+##' 
 ##'@export
 ##'@method print sequence
-
 print.sequence <- function(x,...) {
   marnames <- colnames(x$data.name$geno)[x$seq.num]
   if(length(x$seq.rf) == 1 && x$seq.rf == -1) {

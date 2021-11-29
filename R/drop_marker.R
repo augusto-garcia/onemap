@@ -9,7 +9,6 @@
 ## copyright (c) 2009, Marcelo Mollinari                               #
 ##                                                                     #
 ## First version: 02/27/2009                                           #
-## Last update: 01/02/2009                                             #
 ## License: GNU General Public License version 2 (June, 1991) or later #
 ##                                                                     #
 #######################################################################
@@ -50,15 +49,16 @@
 ##' @seealso \code{\link[onemap]{add_marker}}
 ##'
 ##' @examples
+##' \donttest{
 ##' data(onemap_example_out)
 ##' twopt <- rf_2pts(onemap_example_out)
 ##' all_mark <- make_seq(twopt,"all")
 ##' groups <- group(all_mark)
 ##' (LG1 <- make_seq(groups,1))
 ##' (LG.aug<-drop_marker(LG1, c(10,14)))
-##'
+##' }
+##' 
 ##' @export
-
 drop_marker<-function(input.seq, mrks)
   {
     if (!is(input.seq,"sequence"))

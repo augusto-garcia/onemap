@@ -8,7 +8,6 @@
 # Written Marcelo Mollinari                                           #
 #                                                                     #
 # First version: 02/27/2009                                           #
-# Last update: 02/27/2009                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################

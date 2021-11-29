@@ -105,5 +105,5 @@ sex-specific differences. \emph{Genetical Research} 79: 85-96
 \url{https://CRAN.R-project.org/package=MDSMap}.
 }
 \author{
-Cristiane Taniguti, \email{chtaniguti@usp.br}
+Cristiane Taniguti, \email{chtaniguti@tamu.edu}
 }

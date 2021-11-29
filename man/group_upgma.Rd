@@ -41,13 +41,13 @@ Identifies linkage groups of markers using the results of two-point
 written by Marcelo Mollinari.
 }
 \examples{
-
+\donttest{
 data("vcf_example_out")
 twopts <- rf_2pts(vcf_example_out)
 input.seq <- make_seq(twopts, "all")
 lgs <- group_upgma(input.seq, expected.groups = 3, comp.mat=TRUE, inter = FALSE)
 plot(lgs)
-
+}
 }
 \references{
 Mollinari, M., and Garcia, A.  A. F. (2019) Linkage
@@ -59,5 +59,5 @@ Mollinari, M., and Garcia, A.  A. F. (2019) Linkage
 \author{
 Marcelo Mollinari, \email{mmollin@ncsu.edu}
 
-Cristiane Taniguti \email{chtaniguti@usp.br}
+Cristiane Taniguti \email{chtaniguti@tamu.edu}
 }

@@ -39,6 +39,9 @@ marker numbers and "none" to display axis free of labels.}
 
 \item{display}{logical. If inter \code{TRUE} and display \code{TRUE} iteractive graphic is plotted in browser automatically when run the function}
 }
+\value{
+a ggplot graphic
+}
 \description{
 Plots a matrix of pairwise recombination fraction or
 LOD Scores using a color scale. Any value of the

@@ -51,7 +51,7 @@
 ##' values. Each column contains data for a trait and each row represents an
 ##' individual.} \item{error}{matrix containing HMM emission probabilities}
 ##' 
-##' @author Cristiane Taniguti \email{chtaniguti@@usp.br} 
+##' @author Cristiane Taniguti \email{chtaniguti@@tamu.edu} 
 ##' @seealso \code{\link[onemap]{make_seq}}
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version

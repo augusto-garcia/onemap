@@ -63,7 +63,7 @@ Create database and ggplot graphic of allele reads depths
 \code{\link[onemap]{onemap_read_vcfR}}
 }
 \author{
-Cristiane Taniguti, \email{chtaniguti@usp.br}
+Cristiane Taniguti, \email{chtaniguti@tamu.edu}
 }
 \keyword{alleles}
 \keyword{depth}

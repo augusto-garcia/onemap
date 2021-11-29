@@ -25,7 +25,7 @@ if Bonferroni's correction is considered, as well as the percentage of markers t
 will be discarded if this criterion is used.
 }
 \examples{
-
+\donttest{
 data(onemap_example_bc) # load OneMap's fake dataset for a backcross population
 BC.seg <- test_segregation(onemap_example_bc) # Applies chi-square tests
 print(BC.seg) # Shows the results
@@ -37,5 +37,5 @@ Out.seg <- test_segregation(onemap_example_out) # Applies chi-square tests
 print(Out.seg) # Shows the results
 plot(Out.seg) # Plot the graph, ordering the p-values
 plot(Out.seg, order=FALSE) # Plot the graph showing the results keeping the order in the dataset
-
+}
 }

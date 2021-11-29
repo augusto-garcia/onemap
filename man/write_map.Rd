@@ -13,6 +13,12 @@ a list of maps.}
 
 \item{file.out}{output map file.}
 }
+\value{
+file with genetic map information
+
+Wang S., Basten, C. J. and Zeng Z.-B. (2010) Windows QTL Cartographer 2.5.
+Department of Statistics, North Carolina State University, Raleigh, NC.
+}
 \description{
 Write a genetic map to a file, base on a given map, or a list of maps. The
 output file can be used as an input to perform QTL mapping using the package
@@ -39,8 +45,8 @@ for(i in 1:lg$n.groups){
   ##assign the map of the i-th group to the maps.list
   maps.list[[i]]<-make_seq(map.cur, "force")
 
-  ##write maps.list to "mapmaker_example_f2.map" file
-  write_map(maps.list, "mapmaker_example_f2.map")
+  ##write maps.list to ".map" file
+  write_map(maps.list, tempfile(fileext = ".map"))
 
 }
 }
@@ -50,9 +56,6 @@ for(i in 1:lg$n.groups){
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
 1.09-43
-
-Wang S., Basten, C. J. and Zeng Z.-B. (2010) Windows QTL Cartographer 2.5.
-Department of Statistics, North Carolina State University, Raleigh, NC.
 }
 \author{
 Marcelo Mollinari, \email{mmollina@usp.br}

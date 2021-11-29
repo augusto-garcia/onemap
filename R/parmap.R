@@ -53,7 +53,7 @@ globalVariables(c("var"))
 ##' data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
 ##' 2-point analyses.}
 ##' 
-##' @author Cristiane Taniguti \email{chtaniguti@@usp.br} 
+##' @author Cristiane Taniguti \email{chtaniguti@@tamu.edu} 
 ##' @seealso \code{\link[onemap]{map}}
 ##' 
 ##' @references Schiffthaler, B., Bernhardsson, C., Ingvarsson, P. K., & Street, 

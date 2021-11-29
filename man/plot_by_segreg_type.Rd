@@ -21,6 +21,7 @@ For outcrossing populations, it can show detailed information (all 18 possible c
 or a simplified version.
 }
 \examples{
+\donttest{
 data(onemap_example_out) #Outcrossing data
 plot_by_segreg_type(onemap_example_out)
 plot_by_segreg_type(onemap_example_out, subcateg=FALSE)
@@ -30,6 +31,6 @@ plot_by_segreg_type(onemap_example_bc)
 
 data(mapmaker_example_f2)
 plot_by_segreg_type(mapmaker_example_f2)
-
+}
 
 }

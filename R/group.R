@@ -9,7 +9,6 @@
 ## copyright (c) 2007-9, Gabriel R A Margarido and Marcelo Mollinari   ##
 ##                                                                     ##
 ## First version: 11/07/2007                                           ##
-## Last update: 21/06/2016                                             ##
 ## License: GNU General Public License version 2 (June, 1991) or later ##
 ##                                                                     ##
 #######################################################################
@@ -57,7 +56,7 @@
 ##'     Institute for Biomedical Research Technical Report}.
 ##' @keywords misc
 ##' @examples
-##'
+##' \donttest{
 ##'   data(onemap_example_out)
 ##'   twopts <- rf_2pts(onemap_example_out)
 ##'
@@ -65,7 +64,7 @@
 ##'   link_gr <- group(all.data)
 ##'   link_gr
 ##'   print(link_gr, details=FALSE) #omit the names of the markers
-##' 
+##' }
 ##'@export
 group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
 {

@@ -65,6 +65,8 @@ globalVariables(c("LOD.CR", "LOD.RC", "LOD.RR"))
 ##' @param n.colors integer. Number of colors in the pallete.
 ##' @param display logical. If inter \code{TRUE} and display \code{TRUE} iteractive graphic is plotted in browser automatically when run the function
 ##' 
+##' @return a ggplot graphic
+##' 
 ##' @author Rodrigo Amadeu, \email{rramadeu@@gmail.com}
 ##' @keywords utilities
 ##' @examples

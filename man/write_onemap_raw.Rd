@@ -33,5 +33,5 @@ write_onemap_raw(onemap_example_out, file.name = paste0(tempfile(), ".raw"))
 \code{read_onemap} for a description of the output object of class onemap.
 }
 \author{
-Cristiane Taniguti, \email{chtaniguti@usp.br}
+Cristiane Taniguti, \email{chtaniguti@tamu.edu}
 }

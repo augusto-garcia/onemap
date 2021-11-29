@@ -10,7 +10,6 @@
 # copyright (c) 2015, Marcelo Mollinari                               #
 #                                                                     #
 # First version: 09/2015                                              #
-# Last update: 08/2021                                                #
 # License: GNU General Public License version 3                       #
 #                                                                     #
 #######################################################################
@@ -105,7 +104,7 @@ create_data_bins <- function(input.obj, bins)
 ##' data.} \item{twopt}{object of class \code{rf_2pts} with the
 ##' 2-point analyses.} 
 #' 
-#' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
+#' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
 #' 
 #' @seealso \code{\link[onemap]{find_bins}}
 #' 

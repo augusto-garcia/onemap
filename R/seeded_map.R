@@ -77,13 +77,13 @@
 ##' sex-specific differences. \emph{Genetical Research} 79: 85-96
 ##' @keywords utilities
 ##' @examples
-##' 
+##' \donttest{
 ##'   data(onemap_example_out)
 ##'   twopt <- rf_2pts(onemap_example_out)
 ##'
 ##'   markers <- make_seq(twopt,c(30,12,3,14,2))
 ##'   seeded_map(markers, seeds = c(4,2))
-##' 
+##' }
 ##' @export
 seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
                        seeds, verbose = FALSE, rm_unlinked=FALSE, parallelization.type = "PSOCK")

@@ -12,7 +12,6 @@
 ## copyright (c) 2015 Antonio Augusto Franco Garcia                    ##
 ##                                                                     ##
 ## First version: 2015/04/18                                           ##
-## Last update: 2017/11/08                                             ##
 ## License: GNU General Public License version 3 or later              ##
 ##                                                                     ##
 #######################################################################
@@ -220,7 +219,7 @@ print.onemap_segreg_test <- function(x,...) {
 ##' @import ggplot2
 ##'
 ##' @examples
-##' 
+##' \donttest{
 ##' data(onemap_example_bc) # load OneMap's fake dataset for a backcross population
 ##' BC.seg <- test_segregation(onemap_example_bc) # Applies chi-square tests
 ##' print(BC.seg) # Shows the results
@@ -232,7 +231,7 @@ print.onemap_segreg_test <- function(x,...) {
 ##' print(Out.seg) # Shows the results
 ##' plot(Out.seg) # Plot the graph, ordering the p-values
 ##' plot(Out.seg, order=FALSE) # Plot the graph showing the results keeping the order in the dataset
-##' 
+##' }
 ##' @method plot onemap_segreg_test
 ##' @export
 plot.onemap_segreg_test <- function(x, order=TRUE,...) {

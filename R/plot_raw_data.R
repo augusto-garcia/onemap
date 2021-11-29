@@ -12,7 +12,6 @@
 ## copyright (c) 2015 Antonio Augusto Franco Garcia                    ##
 ##                                                                     ##
 ## First version: 2015/03/31                                           ##
-## Last update: 2017/12/18                                             ##
 ## License: GNU General Public License version 3 or later              ##
 ##                                                                     ##
 #########################################################################
@@ -365,6 +364,7 @@ create_dataframe_for_plot_outcross <- function(x) {
 ##' @importFrom reshape2 melt
 ##'
 ##' @examples
+##' \donttest{
 ##' data(onemap_example_out) #Outcrossing data
 ##' plot_by_segreg_type(onemap_example_out)
 ##' plot_by_segreg_type(onemap_example_out, subcateg=FALSE)
@@ -374,7 +374,7 @@ create_dataframe_for_plot_outcross <- function(x) {
 ##'
 ##' data(mapmaker_example_f2)
 ##' plot_by_segreg_type(mapmaker_example_f2)
-##'
+##' }
 ##'
 ##'@export
 plot_by_segreg_type <- function(x, subcateg=TRUE) {

@@ -49,5 +49,5 @@ reference alelle count and total counts for each marker and genotypes
 included in onemap object (only available for biallelic sites)
 }
 \author{
-Cristiane Taniguti, \email{chtaniguti@usp.br}
+Cristiane Taniguti, \email{chtaniguti@tamu.edu}
 }
