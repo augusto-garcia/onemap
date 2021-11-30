@@ -51,6 +51,9 @@ using namespace std;
 //' @param verbose_R logical to display or not the procedure
 //' @param tol_R EM algorithm tolerance
 //' 
+//' @return a list containing the re-estimated vector of recombination
+//'      fractions and the logarithm of the likelihood
+//' 
 //' @export
 //' 
 // [[Rcpp::export]]
