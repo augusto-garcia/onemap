@@ -348,7 +348,7 @@ The arguments are the `onemap` object and the number of the marker you want to t
 You can also test all the markers in your `onemap` object using the `test_segregation` function. The results can be viewed by printing the output object of class `onemap_segreg_test`.
 
 ```{r}
-segreg_test <- test_segregation(bins_example)
+segreg_test <- test_segregation(bins_example, simulate.p.value = FALSE)
 print(segreg_test)
 ```
 
@@ -1026,39 +1026,41 @@ rf_graph_table(LG2_final, mrk.axis = "numbers")
 
 ## Genetic mapping of linkage group 1
 
+*NOTE*: Check the [GitHub vignette version](https://statgen-esalq.github.io/tutorials/onemap/Outcrossing_Populations.html) to visualize the results of this session.
+
 Finally, linkage group 1 (the largest one) will be analyzed. Extract markers:
 
-```{r}
+```{r, eval=FALSE}
 LG1 <- make_seq(LGs, 1)
 ``` 
 
 Construct the linkage map, by automatically using the try algorithm:
 
-```{r, results='hide'}
+```{r, results='hide', eval=FALSE}
 LG1_ord <- order_seq(LG1, n.init = 6, touchdown = TRUE)
 ```
 
 Notice that the second round of `try_seq` added markers `10`, `31`, `32`, `35`, `36`, and `40`.
 
-```{r}
+```{r, eval=FALSE}
 LG1_ord
 ```
 
 Now, get the order with all markers:
 
-```{r}
+```{r, eval=FALSE}
 (LG1_frame <- make_seq(LG1_ord, "force"))
 ``` 
 
 Check the map graphically:
 
-```{r}
+```{r, eval=FALSE}
 rf_graph_table(LG1_frame, mrk.axis = "numbers")
 ```
 
 Check for alternative orders:
 
-```{r}
+```{r, eval=FALSE}
 ripple_seq(LG1_frame)
 ``` 
 
@@ -1066,26 +1068,26 @@ No better order was observed.
 
 Let's check how it behaves with the MDS approach:
 
-```{r}
+```{r, eval=FALSE}
 LG1_mds <- mds_onemap(LG1, rm_unlinked = TRUE, hmm = F)
 ```
 
-```{r}
+```{r, eval=FALSE}
 rf_graph_table(LG1_mds)
 ```
 
 Based on the drafts from `order_seq` or/and `mds_onemap`, we can remove some doubtful markers accordingly with the graphic, try to position them again, and decide if and where we will maintain them.
 
-```{r}
+```{r, eval=FALSE}
 LG1_test_seq <- drop_marker(LG1_frame, c(10,11,28,42))
 LG1_test_map <- onemap::map(LG1_test_seq)
 ```
 
-```{r}
+```{r, eval=FALSE}
 rf_graph_table(LG1_test_map, mrk.axis = "numbers")
 ```
 
-```{r, results='hide'}
+```{r, results='hide', eval=FALSE}
 LG1_extend <- try_seq(LG1_test_map,10)
 LG1_test_map <- make_seq(LG1_extend,15) 
 LG1_extend <- try_seq(LG1_test_map,11)
@@ -1097,17 +1099,17 @@ LG1_final <- make_seq(LG1_extend,17)
 ```
 
 Print it:
-```{r}
+```{r, eval=FALSE}
 LG1_final
 ```
 
-```{r}
+```{r, eval=FALSE}
 rf_graph_table(LG1_final)
 ```
 
 As an option, different algorithms to order markers could be applied: 
 
-```{r}
+```{r, eval=FALSE}
 LG1_ser <- seriation(LG1, hmm = F)
 rf_graph_table(LG1_ser)
 LG1_rcd <- rcd(LG1, hmm = F)
@@ -1333,7 +1335,7 @@ If you prefer the old function, we also keep it. Follow examples on how to use b
 Drawing the map, which was built with only recombinations information.
 
 ```{r, echo=TRUE, fig=TRUE}
-map1 <- list(LG1_final, LG2_final, LG3_final)
+map1 <- list(LG2_final, LG3_final)
 draw_map(map1, names = TRUE, grid = TRUE, cex.mrk = 0.7)
 ```
 
@@ -1367,7 +1369,7 @@ draw_map(CHR3_comp, names = TRUE, grid = TRUE, cex.mrk = 0.7)
 Or groups alone:
 
 ```{r}
-draw_map(LG1_final, names = TRUE, grid = TRUE, cex.mrk = 0.7)
+draw_map(LG2_final, names = TRUE, grid = TRUE, cex.mrk = 0.7)
 ``` 
 
 Function `draw_map` draws a straightforward graphic

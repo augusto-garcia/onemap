@@ -37,10 +37,10 @@ individual.} \item{error}{matrix containing HMM emission probabilities}
 Function filter genotypes by genotype probability
 }
 \examples{
-
+\donttest{
   data(onemap_example_out)
   filt_obj <- filter_prob(onemap_example_out, threshold=0.8)
- 
+ }
 }
 \author{
 Cristiane Taniguti, \email{chtaniguti@tamu.edu}

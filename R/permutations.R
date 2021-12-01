@@ -12,7 +12,7 @@
 #                                                                     #
 #######################################################################
 
-#N! combination
+# N! combination
 perm_tot <- function(v){
   n <- length(v)
   result <- v 
@@ -31,7 +31,7 @@ perm_tot <- function(v){
   return(result) 
 }
 
-#N!/2 combination
+# N!/2 combination
 perm_pars <- function(v){
   n <- length(v)
   result <- v 
