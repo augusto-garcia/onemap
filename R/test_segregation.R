@@ -158,7 +158,7 @@ test_segregation_of_a_marker <- function(x, marker, simulate.p.value=FALSE) {
 ##' }
 ##' 
 ##' @export
-test_segregation <- function(x, simulate.p.value = TRUE) {
+test_segregation <- function(x, simulate.p.value = FALSE) {
     if (is(x,"onemap")) {
         y <- list(Marker=dimnames(x$geno)[[2]],
                   Results.of.tests=sapply(1:x$n.mar, function(onemap.object, marker)

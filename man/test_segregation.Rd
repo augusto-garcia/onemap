@@ -4,7 +4,7 @@
 \alias{test_segregation}
 \title{test_segregation}
 \usage{
-test_segregation(x, simulate.p.value = TRUE)
+test_segregation(x, simulate.p.value = FALSE)
 }
 \arguments{
 \item{x}{an object of class \code{onemap}, with data and additional information.}
