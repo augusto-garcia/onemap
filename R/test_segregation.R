@@ -46,7 +46,7 @@ globalVariables(c("Marker", "p.value"))
 ##' test_segregation_of_a_marker(onemap_example_out,1)
 ##' 
 ##' @export
-test_segregation_of_a_marker <- function(x, marker, simulate.p.value=TRUE) {
+test_segregation_of_a_marker <- function(x, marker, simulate.p.value=FALSE) {
   # Break if marker has any genotype information
   if(all(x$geno[,marker] ==0)) {
     warning(cat("Marker", marker, "do not have genotype information for any sample. We suggest to remove it from the dataset\n"))
@@ -143,7 +143,8 @@ test_segregation_of_a_marker <- function(x, marker, simulate.p.value=TRUE) {
 ##' and then tests it.
 ##'
 ##' @param x an object of class \code{onemap}, with data and additional information.
-##'
+##' @param simulate.p.value a logical indicating whether to compute p-values by Monte Carlo simulation.
+##' 
 ##' @return an object of class onemap_segreg_test, which is a list with marker name,
 ##' H0 hypothesis being tested, the chi-square statistics, the associated p-values
 ##' and the \% of individuals genotyped. To see the object, it is necessary to print
@@ -151,17 +152,17 @@ test_segregation_of_a_marker <- function(x, marker, simulate.p.value=TRUE) {
 ##'
 ##' @examples
 ##' \donttest{
-##' data(onemap_example_out) # Loads a fake outcross dataset installed with onemap
-##' Chi <- test_segregation(onemap_example_out) # Performs the chi-square test for all markers
-##' print(Chi) # Shows the results
+##'  data(onemap_example_out) # Loads a fake outcross dataset installed with onemap
+##'  Chi <- test_segregation(onemap_example_out) # Performs the chi-square test for all markers
+##'  print(Chi) # Shows the results
 ##' }
 ##' 
 ##' @export
-test_segregation <- function(x) {
+test_segregation <- function(x, simulate.p.value = FALSE) {
     if (is(x,"onemap")) {
         y <- list(Marker=dimnames(x$geno)[[2]],
                   Results.of.tests=sapply(1:x$n.mar, function(onemap.object, marker)
-                      test_segregation_of_a_marker(onemap.object, marker),
+                      test_segregation_of_a_marker(onemap.object, marker, simulate.p.value = simulate.p.value),
                       onemap.object=x))
                                         # sapply iterates from 1 to x$n.mar; x is fixed (onemap object with data)
         class(y) <- c("onemap_segreg_test")
@@ -186,9 +187,9 @@ test_segregation <- function(x) {
 ##' @examples
 ##' 
 ##' \donttest{
-##' data(onemap_example_out) # Loads a fake outcross dataset installed with onemap
-##' Chi <- test_segregation(onemap_example_out) # Performs the chi-square test for all markers
-##' print(Chi) # Shows the results
+##'  data(onemap_example_out) # Loads a fake outcross dataset installed with onemap
+##'  Chi <- test_segregation(onemap_example_out) # Performs the chi-square test for all markers
+##'  print(Chi) # Shows the results
 ##' }
 ##' 
 ##' @method print onemap_segreg_test
@@ -224,17 +225,17 @@ print.onemap_segreg_test <- function(x,...) {
 ##'
 ##' @examples
 ##' \donttest{
-##' data(onemap_example_bc) # load OneMap's fake dataset for a backcross population
-##' BC.seg <- test_segregation(onemap_example_bc) # Applies chi-square tests
-##' print(BC.seg) # Shows the results
-##' plot(BC.seg) # Plot the graph, ordering the p-values
-##' plot(BC.seg, order=FALSE) # Plot the graph showing the results keeping the order in the dataset
+##'  data(onemap_example_bc) # load OneMap's fake dataset for a backcross population
+##'  BC.seg <- test_segregation(onemap_example_bc) # Applies chi-square tests
+##'  print(BC.seg) # Shows the results
+##'  plot(BC.seg) # Plot the graph, ordering the p-values
+##'  plot(BC.seg, order=FALSE) # Plot the graph showing the results keeping the order in the dataset
 ##'
-##' data(onemap_example_out) # load OneMap's fake dataset for an outcrossing population
-##' Out.seg <- test_segregation(onemap_example_out) # Applies chi-square tests
-##' print(Out.seg) # Shows the results
-##' plot(Out.seg) # Plot the graph, ordering the p-values
-##' plot(Out.seg, order=FALSE) # Plot the graph showing the results keeping the order in the dataset
+##'  data(onemap_example_out) # load OneMap's fake dataset for an outcrossing population
+##'  Out.seg <- test_segregation(onemap_example_out) # Applies chi-square tests
+##'  print(Out.seg) # Shows the results
+##'  plot(Out.seg) # Plot the graph, ordering the p-values
+##'  plot(Out.seg, order=FALSE) # Plot the graph showing the results keeping the order in the dataset
 ##' }
 ##' @method plot onemap_segreg_test
 ##' @export
@@ -279,10 +280,10 @@ plot.onemap_segreg_test <- function(x, order=TRUE,...) {
 ##'
 ##' @examples
 ##' \donttest{
-##' data(onemap_example_bc) # Loads a fake backcross dataset installed with onemap
-##' Chi <- test_segregation(onemap_example_bc) # Performs the chi-square test for all markers
-##' print(Chi) # Shows the results of the Chi-square tests
-##' Bonferroni_alpha (Chi) # Shows the individual alpha level to be used
+##'  data(onemap_example_bc) # Loads a fake backcross dataset installed with onemap
+##'  Chi <- test_segregation(onemap_example_bc) # Performs the chi-square test for all markers
+##'  print(Chi) # Shows the results of the Chi-square tests
+##'  Bonferroni_alpha (Chi) # Shows the individual alpha level to be used
 ##' }
 ##' 
 ##' @export
@@ -308,16 +309,16 @@ Bonferroni_alpha <- function(x, global.alpha=0.05) {
 ##'
 ##' @examples
 ##' \donttest{
-##' # Loads a fake backcross dataset installed with onemap
-##' data(onemap_example_out)
-##' # Performs the chi-square test for all markers
-##' Chi <- test_segregation(onemap_example_out)
-##' # To show non-distorted markers
-##' select_segreg(Chi)
-##' # To show markers with segregation distortion
-##' select_segreg(Chi, distorted=TRUE)
-##' # To show the numbers of the markers with segregation distortion
-##' select_segreg(Chi, distorted=TRUE, numbers=TRUE)
+##'  # Loads a fake backcross dataset installed with onemap
+##'  data(onemap_example_out)
+##'  # Performs the chi-square test for all markers
+##'  Chi <- test_segregation(onemap_example_out)
+##'  # To show non-distorted markers
+##'  select_segreg(Chi)
+##'  # To show markers with segregation distortion
+##'  select_segreg(Chi, distorted=TRUE)
+##'  # To show the numbers of the markers with segregation distortion
+##'  select_segreg(Chi, distorted=TRUE, numbers=TRUE)
 ##' }
 ##' @export
 select_segreg <- function(x, distorted=FALSE, numbers=FALSE, threshold = NULL) {

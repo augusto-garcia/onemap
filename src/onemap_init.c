@@ -13,7 +13,7 @@ extern SEXP est_hmm_f2(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP est_hmm_out(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP est_rf_bc_wrap(SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP est_rf_out_wrap(SEXP, SEXP, SEXP, SEXP, SEXP);
-extern SEXP get_bins(SEXP, SEXP, SEXP);
+extern SEXP get_bins(SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
   {"est_hmm_bc",      (DL_FUNC) &est_hmm_bc,      5},

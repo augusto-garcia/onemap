@@ -25,15 +25,15 @@ applied for the Chi-square tests of mendelian segregation.
 }
 \examples{
 \donttest{
-# Loads a fake backcross dataset installed with onemap
-data(onemap_example_out)
-# Performs the chi-square test for all markers
-Chi <- test_segregation(onemap_example_out)
-# To show non-distorted markers
-select_segreg(Chi)
-# To show markers with segregation distortion
-select_segreg(Chi, distorted=TRUE)
-# To show the numbers of the markers with segregation distortion
-select_segreg(Chi, distorted=TRUE, numbers=TRUE)
+ # Loads a fake backcross dataset installed with onemap
+ data(onemap_example_out)
+ # Performs the chi-square test for all markers
+ Chi <- test_segregation(onemap_example_out)
+ # To show non-distorted markers
+ select_segreg(Chi)
+ # To show markers with segregation distortion
+ select_segreg(Chi, distorted=TRUE)
+ # To show the numbers of the markers with segregation distortion
+ select_segreg(Chi, distorted=TRUE, numbers=TRUE)
 }
 }

@@ -109,6 +109,21 @@ I1 I2 I3 I4 I5 I6 I7 I8 I9 I10
 *M5 D2.18 a a o - o o a o o o
 ```
 
+In case you have physical chromosome and position information:
+
+```
+data type outcross
+10 5 1 1 0
+I1 I2 I3 I4 I5 I6 I7 I8 I9 I10
+*M1 B3.7 ab ab - ab b ab ab - ab b
+*M2 D2.18 o - a a - o a - o o
+*M3 D1.13 o a a o o - a o a o
+*M4 A.4 ab b - ab a b ab b - a
+*M5 D2.18 a a o - o o a o o o
+*CHROM    1 1 1 2 2
+*POS    2391 3812 5281 1823 3848
+```
+
 Notice that once the marker type is identified, no variations of
 symbols presented on the table for the **observed bands** are allowed.
 For example, for `A.1`, only `ac`, `ad`, `bc`, and `bd` genotypes are
@@ -348,7 +363,7 @@ The arguments are the `onemap` object and the number of the marker you want to t
 You can also test all the markers in your `onemap` object using the `test_segregation` function. The results can be viewed by printing the output object of class `onemap_segreg_test`.
 
 ```{r}
-segreg_test <- test_segregation(bins_example)
+segreg_test <- test_segregation(bins_example, simulate.p.value = FALSE)
 print(segreg_test)
 ```
 
@@ -1026,39 +1041,41 @@ rf_graph_table(LG2_final, mrk.axis = "numbers")
 
 ## Genetic mapping of linkage group 1
 
+*NOTE*: Check the [GitHub vignette version](https://statgen-esalq.github.io/tutorials/onemap/Outcrossing_Populations.html) to visualize the results of this session.
+
 Finally, linkage group 1 (the largest one) will be analyzed. Extract markers:
 
-```{r}
+```{r, eval=FALSE}
 LG1 <- make_seq(LGs, 1)
 ``` 
 
 Construct the linkage map, by automatically using the try algorithm:
 
-```{r, results='hide'}
+```{r, results='hide', eval=FALSE}
 LG1_ord <- order_seq(LG1, n.init = 6, touchdown = TRUE)
 ```
 
 Notice that the second round of `try_seq` added markers `10`, `31`, `32`, `35`, `36`, and `40`.
 
-```{r}
+```{r, eval=FALSE}
 LG1_ord
 ```
 
 Now, get the order with all markers:
 
-```{r}
+```{r, eval=FALSE}
 (LG1_frame <- make_seq(LG1_ord, "force"))
 ``` 
 
 Check the map graphically:
 
-```{r}
+```{r, eval=FALSE}
 rf_graph_table(LG1_frame, mrk.axis = "numbers")
 ```
 
 Check for alternative orders:
 
-```{r}
+```{r, eval=FALSE}
 ripple_seq(LG1_frame)
 ``` 
 
@@ -1066,26 +1083,26 @@ No better order was observed.
 
 Let's check how it behaves with the MDS approach:
 
-```{r}
+```{r, eval=FALSE}
 LG1_mds <- mds_onemap(LG1, rm_unlinked = TRUE, hmm = F)
 ```
 
-```{r}
+```{r, eval=FALSE}
 rf_graph_table(LG1_mds)
 ```
 
 Based on the drafts from `order_seq` or/and `mds_onemap`, we can remove some doubtful markers accordingly with the graphic, try to position them again, and decide if and where we will maintain them.
 
-```{r}
+```{r, eval=FALSE}
 LG1_test_seq <- drop_marker(LG1_frame, c(10,11,28,42))
 LG1_test_map <- onemap::map(LG1_test_seq)
 ```
 
-```{r}
+```{r, eval=FALSE}
 rf_graph_table(LG1_test_map, mrk.axis = "numbers")
 ```
 
-```{r, results='hide'}
+```{r, results='hide', eval=FALSE}
 LG1_extend <- try_seq(LG1_test_map,10)
 LG1_test_map <- make_seq(LG1_extend,15) 
 LG1_extend <- try_seq(LG1_test_map,11)
@@ -1097,17 +1114,17 @@ LG1_final <- make_seq(LG1_extend,17)
 ```
 
 Print it:
-```{r}
+```{r, eval=FALSE}
 LG1_final
 ```
 
-```{r}
+```{r, eval=FALSE}
 rf_graph_table(LG1_final)
 ```
 
 As an option, different algorithms to order markers could be applied: 
 
-```{r}
+```{r, eval=FALSE}
 LG1_ser <- seriation(LG1, hmm = F)
 rf_graph_table(LG1_ser)
 LG1_rcd <- rcd(LG1, hmm = F)
@@ -1199,7 +1216,9 @@ To order those groups, first, we will use the `order_seq` function to access a p
 
 ## Genetic mapping of linkage group 1 (with reference genome information)
 
-```{r, results='hide'}
+*NOTE*: Check the [GitHub vignette version](https://statgen-esalq.github.io/tutorials/onemap/Outcrossing_Populations.html) to visualize the results of this session.
+
+```{r, results='hide', eval=FALSE}
 # CHR1_frame <- mds_onemap(CHR_mks$sequences$CHR1, hmm = F)
 # or
 CHR1_ord <- order_seq(CHR_mks$sequences$CHR1)
@@ -1212,7 +1231,7 @@ rf_graph_table(CHR1_frame) # graphic not shown
 
 The group is similar to that built before with only recombinations information. We will better explore differences in the later step. Only marker `11` does not follow the expected color pattern; then, we will try to reposition it.
 
-```{r}
+```{r, eval=FALSE}
 CHR1_test_seq <- drop_marker(CHR1_frame, 11)
 CHR1_test_map <- onemap::map(CHR1_test_seq)
 CHR1_add11_seq <- try_seq(CHR1_test_map, 11)
@@ -1221,27 +1240,27 @@ CHR1_add11 <- make_seq(CHR1_add11_seq, 25) # marker 11 was placed at the same po
 
 Based in those results, we decide not to include marker 11 in our map.
 
-```{r}
+```{r, eval=FALSE}
 CHR1_test_map
 ```
 
-```{r}
+```{r, eval=FALSE}
 rf_graph_table(CHR1_test_map) 
 ```
 
-```{r}
+```{r, eval=FALSE}
 CHR1_final <- CHR1_test_map
 ```
 
 Checking for better orders:
 
-```{r}
+```{r, eval=FALSE}
 ripple_seq(CHR1_final)
 ```
 
 ## Genetic mapping of linkage group 2 (with reference genome information)
 
-```{r, results='hide'}
+```{r, results='hide', eval=FALSE}
 # CHR2_frame <- mds_onemap(CHR_mks$sequences$CHR2)
 # or
 CHR2_ord <- order_seq(CHR_mks$sequences$CHR2)
@@ -1254,32 +1273,32 @@ rf_graph_table(CHR2_frame) # graphic not shown
 
 As did before, we will not change the positions of the markers of this group.
 
-```{r}
+```{r, eval=FALSE}
 CHR2_final <- CHR2_frame
 ```
 
 ## Genetic mapping of linkage group 2 (with reference genome information)
 
-```{r, results='hide'}
+```{r, results='hide', eval=FALSE}
 # CHR2_frame <- mds_onemap(CHR_mks$sequences$CHR2)
 # or
 CHR2_ord <- order_seq(CHR_mks$sequences$CHR2)
 CHR2_frame <- make_seq(CHR2_ord, "force")
 ```
 
-```{r, eval=FALSE}
+```{r, eval=FALSE, eval=FALSE}
 rf_graph_table(CHR2_frame) # graphic not shown
 ```
 
 As did before, we will not change the positions of the markers of this group.
 
-```{r}
+```{r, eval=FALSE}
 CHR2_final <- CHR2_frame
 ```
 
 ## Genetic mapping of linkage group 3 (with reference genome information)
 
-```{r, results='hide'}
+```{r, results='hide', eval=FALSE}
 # CHR3_frame <- mds_onemap(CHR_mks$sequences$CHR3)
 # or
 CHR3_ord <- order_seq(CHR_mks$sequences$CHR3)
@@ -1292,7 +1311,7 @@ rf_graph_table(CHR3_frame, mrk.axis = "numbers") # graphic not shown
 
 Here, marker `29` has a color pattern too different from the expected, removing it could be influential in other markers ordering. Then we will remove them and search for a new order.
 
-```{r, results='hide'}
+```{r, results='hide', eval=FALSE}
 CHR3_test_seq <- drop_marker(CHR3_frame, c(29))
 CHR3_test_ord <- order_seq(CHR3_test_seq)
 CHR3_test_map <- make_seq(CHR3_test_ord, "force")
@@ -1304,19 +1323,19 @@ rf_graph_table(CHR3_test_map, mrk.axis = "numbers") #graphic not shown
 
 Trying to add marker `29` again.
 
-```{r, results='hide'}
+```{r, results='hide', eval=FALSE}
 CHR3_add29_seq <- try_seq(CHR3_test_map, 29)
 CHR3_add29 <- make_seq(CHR3_add29_seq, 12) # Marker 29 increase the map size disproportionately, it was removed from the map
 ```
 
-```{r}
+```{r, eval=FALSE}
 CHR3_final <- CHR3_test_map
 rf_graph_table(CHR3_final, inter = FALSE)
 ```
 
 Checking for better orders:
 
-```{r}
+```{r, eval=FALSE}
 ripple_seq(CHR3_final)
 ```
 
@@ -1331,33 +1350,33 @@ If you prefer the old function, we also keep it. Follow examples on how to use b
 Drawing the map, which was built with only recombinations information.
 
 ```{r, echo=TRUE, fig=TRUE}
-map1 <- list(LG1_final, LG2_final, LG3_final)
+map1 <- list(LG2_final, LG3_final)
 draw_map(map1, names = TRUE, grid = TRUE, cex.mrk = 0.7)
 ```
 
 Drawing the map, which built with reference genome and  recombinations information
 
-```{r, echo=TRUE, fig=TRUE}
+```{r, echo=TRUE, eval=FALSE}
 map2 <- list(CHR1_final, CHR2_final, CHR3_final)
 draw_map(map2, names = TRUE, grid = TRUE, cex.mrk = 0.7)
 ``` 
 
 We also can draw maps comparing corresponding linkage groups in each strategy:
 
-```{r, width = 9.5, height = 9.5}
+```{r, width = 9.5, height = 9.5, eval=FALSE}
 CHR1_comp <- list(LG1_final, CHR1_final)
 draw_map(CHR1_comp, names = TRUE, grid = TRUE, cex.mrk = 0.7)
 ```
 
 
-```{r, width = 9.5, height = 9.5}
+```{r, width = 9.5, height = 9.5, eval=FALSE}
 CHR2_comp <- list(LG3_final, CHR2_final)
 draw_map(CHR2_comp, names = TRUE, grid = TRUE, cex.mrk = 0.7)
 ```
 
 Both strategies produced the same result for CHR2 (the map is only inverted).
 
-```{r, width = 9.5, height = 9.5}
+```{r, width = 9.5, height = 9.5, eval=FALSE}
 CHR3_comp <- list(LG2_final, CHR3_final)
 draw_map(CHR3_comp, names = TRUE, grid = TRUE, cex.mrk = 0.7)
 ``` 
@@ -1365,7 +1384,7 @@ draw_map(CHR3_comp, names = TRUE, grid = TRUE, cex.mrk = 0.7)
 Or groups alone:
 
 ```{r}
-draw_map(CHR1_final, names = TRUE, grid = TRUE, cex.mrk = 0.7)
+draw_map(LG2_final, names = TRUE, grid = TRUE, cex.mrk = 0.7)
 ``` 
 
 Function `draw_map` draws a straightforward graphic
@@ -1764,13 +1783,13 @@ As you can see in the above maps, heuristic ordering algorithms do not return an
 In the older version, users could only access the estimated linkage phase by observing the print in the console:
 
 ```{r}
-CHR3_final
+LG3_final
 ```
 
 Now, you can export this information into a data.frame using:
 
 ```{r}
-(parents_haplot <- parents_haplotypes(CHR3_final))
+(parents_haplot <- parents_haplotypes(LG3_final))
 ```
 
 ```{r, eval=FALSE}
@@ -1782,7 +1801,7 @@ The data.frame contains: group ID (group), marker number (mk.number) and names (
 You can also obtain a data.frame with a list of sequences and personalize the group names:
 
 ```{r}
-parents_haplotypes(CHR2_final,CHR3_final, group_names=c("CHR2","CHR3"))
+parents_haplotypes(LG2_final,LG3_final, group_names=c("LG2","LG3"))
 ```
 
 
@@ -1792,7 +1811,7 @@ Function `progeny_haplotypes` generates a data.frame with progeny phased haploty
 
 
 ```{r}
-(progeny_haplot <- progeny_haplotypes(CHR2_final, most_likely = TRUE, ind = c(1,2), group_names = "CHR2_final"))
+(progeny_haplot <- progeny_haplotypes(LG2_final, most_likely = TRUE, ind = c(1,2), group_names = "LG2_final"))
 ```
 
 You can also have a view of progeny estimated haplotypes using `plot`. It shows which markers came from each parent’s homologs. `position` argument defines if haplotypes will be plotted by homologs (`stack`) or alleles (`split`). `split` option is a good way to view the likelihoods of each allele.

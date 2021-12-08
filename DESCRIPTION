@@ -8,7 +8,7 @@ Description: Analysis of molecular marker data from model (backcrosses,
     phases (genetic map construction) according to Wu et al. (2002)
     <doi:10.1006/tpbi.2002.1577>. All analysis are based on multipoint 
     approaches using hidden Markov models.
-Date: 2021-11-27
+Date: 2021-11-30
 Authors@R: c(person("Gabriel", 
                     "Margarido", 
                     role = "aut",
@@ -68,7 +68,8 @@ Imports: ggplot2 (>= 2.2.1),
         RColorBrewer,
         dendextend,
         rebus,
-        vcfR (>= 1.6.0)
+        vcfR (>= 1.6.0),
+        stringi
 Suggests: 
     knitr (>= 1.10),
     rmarkdown,

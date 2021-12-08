@@ -94,10 +94,10 @@ filter_missing <- function(onemap.obj=NULL, threshold= 0.25,  verbose = TRUE){
 ##' 
 ##' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu} 
 ##' @examples
-##' 
+##' \donttest{
 ##'   data(onemap_example_out)
 ##'   filt_obj <- filter_prob(onemap_example_out, threshold=0.8)
-##'  
+##'  }
 ##' @importFrom reshape2 melt dcast
 ##' 
 ##' @export
