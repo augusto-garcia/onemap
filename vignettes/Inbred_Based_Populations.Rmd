@@ -199,6 +199,23 @@ I1 I2 I3 I4 I5 I6 I7 I8 I9 I10
 *fen2 42 49 - 45 51 42 28 32 38 40
 ```
 
+In case you have physical chromosome and position information:
+
+```
+data type f2 intercross
+10 5 1 1 2
+I1 I2 I3 I4 I5 I6 I7 I8 I9 I10
+*M1 A.H.B  ab a - ab b a ab - ab b
+*M2 A.H.B  a - ab ab - b a - a ab
+*M3 C.A    c a a c c - a c a c
+*M4 A.H.B  ab b - ab a b ab b - a
+*M5 D.B    b b d - b d b b b d
+*CHROM    1 1 1 2 2
+*POS    2391 3812 5281 1823 3848
+*fen1 10.3 11.2 11.1 - 9.8 8.9 11.0 10.7 - 10.1
+*fen2 42 49 - 45 51 42 28 32 38 40
+```
+
 The input file must be saved in text format, with extensions like
 `.raw`. It is a good idea to open the text files called
 `onemap_example_f2.raw`, `onemap_example_bc`, `onemap_example_riself` (available in `extdata` with `OneMap` and saved in the directory

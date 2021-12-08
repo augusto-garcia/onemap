@@ -68,7 +68,8 @@ Imports: ggplot2 (>= 2.2.1),
         RColorBrewer,
         dendextend,
         rebus,
-        vcfR (>= 1.6.0)
+        vcfR (>= 1.6.0),
+        stringi
 Suggests: 
     knitr (>= 1.10),
     rmarkdown,

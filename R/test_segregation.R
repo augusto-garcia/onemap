@@ -46,7 +46,7 @@ globalVariables(c("Marker", "p.value"))
 ##' test_segregation_of_a_marker(onemap_example_out,1)
 ##' 
 ##' @export
-test_segregation_of_a_marker <- function(x, marker, simulate.p.value=TRUE) {
+test_segregation_of_a_marker <- function(x, marker, simulate.p.value=FALSE) {
   # Break if marker has any genotype information
   if(all(x$geno[,marker] ==0)) {
     warning(cat("Marker", marker, "do not have genotype information for any sample. We suggest to remove it from the dataset\n"))

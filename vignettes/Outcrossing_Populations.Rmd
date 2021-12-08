@@ -109,6 +109,21 @@ I1 I2 I3 I4 I5 I6 I7 I8 I9 I10
 *M5 D2.18 a a o - o o a o o o
 ```
 
+In case you have physical chromosome and position information:
+
+```
+data type outcross
+10 5 1 1 0
+I1 I2 I3 I4 I5 I6 I7 I8 I9 I10
+*M1 B3.7 ab ab - ab b ab ab - ab b
+*M2 D2.18 o - a a - o a - o o
+*M3 D1.13 o a a o o - a o a o
+*M4 A.4 ab b - ab a b ab b - a
+*M5 D2.18 a a o - o o a o o o
+*CHROM    1 1 1 2 2
+*POS    2391 3812 5281 1823 3848
+```
+
 Notice that once the marker type is identified, no variations of
 symbols presented on the table for the **observed bands** are allowed.
 For example, for `A.1`, only `ac`, `ad`, `bc`, and `bd` genotypes are
