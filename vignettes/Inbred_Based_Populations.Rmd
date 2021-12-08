@@ -464,7 +464,7 @@ function `test_segregation` using as argument an object of class
 `onemap`.
 
 ```{r, chi_square}
-f2_test <- test_segregation(bins_example, simulate.p.value = FALSE)
+f2_test <- test_segregation(bins_example)
 ```
 
 This will produce an object of class `onemap_segreg_test`:
@@ -827,16 +827,10 @@ Let's see the maps we have until now:
 
 ```{r}
 rf_graph_table(LG1_rcd_f2)
-```
-
-
-```{r, eval=FALSE}
 rf_graph_table(LG1_rec_f2)
 rf_graph_table(LG1_ug_f2)
 rf_graph_table(LG1_mds_f2)
 ```
-
-*NOTE*: Check the [GitHub vignette version](https://statgen-esalq.github.io/tutorials/onemap/Inbred_Based_Populations.html) to visualize all the graphics.
 
 With default arguments, the graphic cells represent the recombination fractions. 
 If you change the argument to `graph.LOD = TRUE`, LOD score values are plotted. The color scale varies from red (small distances and big LODs) to dark blue. You can also change the number of colors from the `rainbow` palette with argument `n.colors`,
@@ -1024,11 +1018,9 @@ In this example, the first two windows showed alternative orders with LOD smalle
 
 ## Linkage group 2
 
-*NOTE*: Check the results of this session in the [GitHub vignette version](https://statgen-esalq.github.io/tutorials/onemap/Inbred_Based_Populations.html).
-
 Here we will use the multipoint approach to re-order the LG2. The approach is the automatic usage of the `try` algorithm:
 
-```{r, results='hide', eval=FALSE}
+```{r, results='hide'}
 LG2_f2_ord <- order_seq(input.seq = LG2_ug_f2, n.init = 5,
                         subset.search = "twopt",
                         twopt.alg = "rcd", THRES = 3,
@@ -1040,7 +1032,7 @@ it; results not shown).
 
 Get the order with all markers:
 
-```{r, eval=FALSE}
+```{r}
 (LG2_f2_final <- make_seq(LG2_f2_ord, "force"))
 
 rf_graph_table(LG2_f2_final)
@@ -1048,7 +1040,7 @@ rf_graph_table(LG2_f2_final)
 
 Our heatmap is already very good with an automatic approach, but I may want to see what happens if I remove a marker and try to reposition it. To remove a marker use function `drop_marker`:
 
-```{r, eval=FALSE}
+```{r}
 LG2_edit <- drop_marker(LG2_f2_final, 23) # removing marker 23
 ```
 
@@ -1066,7 +1058,7 @@ Error in as_mapper(.f, ...) : argument ".f" is missing, with no default
 
 It's because the `map` function has a very common name and you can have in your environment other functions with the same name. In the case of the presented error, R is using the `map` function from `purrr` package instead of `OneMap`, to solve this, simply specify that you want the `OneMap` function with `::` command from `stringr` package:
 
-```{r, eval=FALSE}
+```{r}
 library(stringr)
 LG2_edit_map <- onemap::map(LG2_edit) 
 ```
@@ -1075,19 +1067,19 @@ LG2_edit_map <- onemap::map(LG2_edit)
 
 See what happened:
 
-```{r, eval=FALSE}
+```{r}
 rf_graph_table(LG2_edit_map)
 ```
 
 And try to reposition the marker:
 
-```{r, eval=FALSE}
+```{r}
 (LG2_temp <- try_seq(input.seq = LG2_edit_map, mrk = 23))
 ```
 
 The result shows us that the best position for this marker (with higher LOD) is the 1 (as before). Let's now include the marker at this position using:
 
-```{r, eval=FALSE}
+```{r}
 LG2_f2_final <- make_seq(LG2_temp, 1)
 
 rf_graph_table(LG2_f2_final)
@@ -1095,13 +1087,13 @@ rf_graph_table(LG2_f2_final)
 
 Check the final map (results not shown):
 
-```{r, results="hide", eval=FALSE}
+```{r, results="hide"}
 ripple_seq(LG2_f2_final, ws = 5)
 ``` 
 
 Print it:
 
-```{r, eval=FALSE}
+```{r}
 LG2_f2_final
 ```
 
@@ -1109,11 +1101,9 @@ This is the final version of the map for this linkage group.
 
 #### Linkage group 3
 
-*NOTE*: Check the results of this session in the [GitHub vignette version](https://statgen-esalq.github.io/tutorials/onemap/Inbred_Based_Populations.html).
-
 Automatic usage of try algorithm.
 
-```{r, order_LG3, results='hide', eval=FALSE}
+```{r, order_LG3, results='hide'}
 LG3_f2_ord <- order_seq(input.seq = LG3_ug_f2, n.init = 5,
                         subset.search = "twopt",
                         twopt.alg = "rcd", THRES = 3,
@@ -1124,19 +1114,19 @@ A careful examination of the graphics can be a good source of information about 
 
 Now, get the order with all markers:
 
-```{r, LG3_force, eval=FALSE}
+```{r, LG3_force}
 (LG3_f2_final <- make_seq(LG3_f2_ord, "force"))
 ``` 
 
 Check heatmap:
 
-```{r, eval=FALSE}
+```{r}
 rf_graph_table(LG3_f2_final)
 ``` 
 
 Markers `34`, `39`, `50`, `56`, `20`, `24` and `64` seem to broke the color pattern. We will remove them and use try_seq to find better locations:
 
-```{r, eval=FALSE}
+```{r}
 LG3_edit <- drop_marker(LG3_f2_final, c(34,39,50,56, 20,24, 64))
 LG3_edit_map <- order_seq(LG3_edit) # We remove several markers maybe it's better to order again
 LG3_edit_map <- make_seq(LG3_edit_map, "force")
@@ -1146,7 +1136,7 @@ rf_graph_table(LG3_edit_map)
 
 Adding one by one we can see how each one changes the map log-likelihood, map size, and the color pattern in the heatmap and judge if we will remove them.
 
-```{r, eval=FALSE}
+```{r}
 LG3_edit <- try_seq(LG3_edit_map, 34)
 LG3_edit_temp <- make_seq(LG3_edit, 1) # Not included
 LG3_edit <- try_seq(LG3_edit_map, 39)
@@ -1170,13 +1160,13 @@ LG3_f2_final <- LG3_edit_map
 
 Check the final map (not shown):
 
-```{r, ripple_LG3, results="hide", eval=FALSE}
+```{r, ripple_LG3, results="hide"}
 ripple_seq(LG3_f2_final, ws = 5)
 ``` 
 
 The fifth window presented alternative orders that seem better than the current one. Let's try to substitute the current order with the best presented by ripple. See that, instead of `59-49-76-28-80` we have `59-49-76-80-28`. Let's find this window and substitute the sequence:
 
-```{r, eval=FALSE}
+```{r}
 idx <- which(LG3_f2_final$seq.num == 59) 
 new_seq <- LG3_f2_final$seq.num
 new_seq[idx:(idx+4)] <- c(59, 49, 76, 80, 28)
@@ -1185,13 +1175,13 @@ LG3_edit_seq <- make_seq(twopts_f2, new_seq)
 
 Now, we estimate the distances for this already known order using `map`:
 
-```{r, eval=FALSE}
+```{r}
 LG3_edit_map <- onemap::map(LG3_edit_seq)
 ```
 
 Print it:
 
-```{r, LG3_final, eval=FALSE}
+```{r, LG3_final}
 LG3_f2_final <- LG3_edit_map
 
 rf_graph_table(LG3_f2_final)
@@ -1333,13 +1323,13 @@ If you prefer the old function, we also keep it. Follow examples of how to use b
 We can draw a genetic map for all linkage groups using the function
 `draw_map`. First, we have to create a list of ordered linkage groups:
 
-```{r, eval=FALSE}
+```{r}
 maps_list <- list(LG1_f2_final, LG2_f2_final, LG3_f2_final)
 ```
 
 Then use function `draw_map` for this list:
 
-```{r, eval=FALSE}
+```{r}
 draw_map(maps_list, names = TRUE, grid = TRUE, cex.mrk = 0.7)
 ``` 
 
@@ -1361,7 +1351,7 @@ The same figures did with `draw_map` can be done with the `draw_map2` function. 
 Let's draw all three groups built:
 
 ```{r, eval=FALSE, results='hide', eval=FALSE}
-draw_map2(LG1_f2_final, LG2_f2_final, LG3_f2_final main = "Only linkage information", 
+draw_map2(LG1_f2_final, LG2_f2_final, main = "Only linkage information", 
           group.names = c("LG1", "LG2", "LG3"), output = "map.eps")
 
 ```
@@ -1699,7 +1689,7 @@ can see in the above maps, heuristic ordering algorithms do not return an optima
 Function `progeny_haplotypes` generates a data.frame with progeny phased haplotypes estimated by `OneMap` HMM. For progeny, the HMM results in probabilities for each possible genotype, then the generated data.frame contains all possible genotypes. If `most_likely = TRUE`  the most likely genotype receives 1 and the rest 0 (if there are two most likely both receive 0.5), if `most_likely = FALSE` genotypes probabilities will be according to the HMM results. You can choose which individual to be evaluated in `ind`. The data.frame is composed of the information: individual (ind) and group (grp) ID, position in centimorgan (pos), progeny homologs (homologs), and from each parent the allele came (parents).
 
 ```{r}
-(progeny_haplot <- progeny_haplotypes(LG1_f2_final, most_likely = TRUE, ind = 2, group_names = "LG1_final"))
+(progeny_haplot <- progeny_haplotypes(LG2_f2_final, most_likely = TRUE, ind = 2, group_names = "LG2_final"))
 ```
 
 You can also have a view of progeny estimated haplotypes using `plot`. It shows which markers came from each parent's homologs. `position` argument defines if haplotypes will be plotted by homologs (`stack`) or alleles (`split`). `split` option is a good way to better view the likelihoods of each allele.
