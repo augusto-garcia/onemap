@@ -21,7 +21,6 @@ get_bins <- function(geno, exact=TRUE)
   bins<-.Call("get_bins",
               geno,
               as.numeric(exact),
-              options()$width-6,
               PACKAGE = "onemap" )
   return(bins)
 }

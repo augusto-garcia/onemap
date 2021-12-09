@@ -21,7 +21,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"est_hmm_out",     (DL_FUNC) &est_hmm_out,     7},
   {"est_rf_bc_wrap",  (DL_FUNC) &est_rf_bc_wrap,  5},
   {"est_rf_out_wrap", (DL_FUNC) &est_rf_out_wrap, 5},
-  {"get_bins",        (DL_FUNC) &get_bins,        3},
+  {"get_bins",        (DL_FUNC) &get_bins,        2},
   {NULL, NULL, 0}
 };
 
