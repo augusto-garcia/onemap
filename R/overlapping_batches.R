@@ -161,7 +161,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
               phase_cores = phase_cores, 
               rm_unlinked = rm_unlinked, 
               tol=tol, parallelization.type = parallelization.type)
-    if(is(LG,"integer")){
+    if(inherits(LG,"integer")){
       rmed.mks <- batches[[1]][which(!batches[[1]] %in% LG)]
       warning(cat("Markers", rmed.mks,"did not reached the OneMap default criteria. They are probably segregating independently 
                   and new vector of marker numbers was generated without them. Use function map_avoid_unlinked to remove these markers automatically.\n"))
@@ -174,7 +174,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
                      phase_cores = phase_cores,
                      verbose = verbose, seeds = seeds, tol=tol,
                      parallelization.type = parallelization.type)
-    if(is(LG,"integer")){
+    if(inherits(LG,"integer")){
       rmed.mks <- batches[[1]][which(!batches[[1]] %in% LG)]
       warning(cat("Markers", rmed.mks,"did not reached the OneMap default criteria. They are probably segregating independently 
                   and new vector of marker numbers was generated without them. Use function map_avoid_unlinked to remove these markers automatically.\n"))
@@ -205,7 +205,7 @@ map_overlapping_batches <- function(input.seq, size = 50, overlap = 15,
                      verbose = verbose,
                      seeds = seeds, rm_unlinked = rm_unlinked,
                      tol=tol, parallelization.type = parallelization.type)
-    if(is(LG,"integer")){
+    if(inherits(LG,"integer")){
       rmed.mks <- batches[[1]][which(!batches[[1]] %in% LG)]
       warning(cat("Markers", rmed.mks,"did not reached the OneMap default criteria. They are probably segregating independently 
                   and new vector of marker numbers was generated without them. Use function map_avoid_unlinked to remove these markers automatically.\n"))

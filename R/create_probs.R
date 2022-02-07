@@ -70,11 +70,11 @@ create_probs <- function(input.obj = NULL,
                          genotypes_errors = NULL, 
                          genotypes_probs = NULL){
   
-  if(!(is(input.obj,"onemap") | is(input.obj,"sequence"))){
+  if(!(inherits(input.obj,c("onemap", "sequence")))){
     stop("input.obj should be of class onemap or sequence")
   }
   
-  if(is(input.obj, "sequence")) {
+  if(inherits(input.obj, "sequence")) {
     seq.obj <- input.obj
     input.obj <- input.obj$data.name
     flag <- TRUE

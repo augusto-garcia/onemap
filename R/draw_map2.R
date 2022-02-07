@@ -63,7 +63,7 @@ draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,
   if(length(input)==0) stop("argument '...' missing, with no default")
   map.data<-list()
   for(i in seq(input)) map.data<-c(map.data, if(inherits(input[[i]], "list")) input[[i]] else input[i])
-  if(!all(sapply(map.data, function(x) (is(x, "sequence") || is(x,"data.frame"))))) stop(paste("\nObject '",seq(map.data)[!sapply(map.data, function(x)  (is(x, "sequence") || is(x,"data.frame")))],"' is not an object of class 'sequence' or 'data.frame",sep=""))
+  if(!all(sapply(map.data, function(x) (inherits(x, c("sequence","data.frame")))))) stop(paste("\nObject '",seq(map.data)[!sapply(map.data, function(x)  (inherits(x, c("sequence", "data.frame"))))],"' is not an object of class 'sequence' or 'data.frame",sep=""))
   
   # reset par after exit
   oldpar <- par(no.readonly = TRUE)   
@@ -71,7 +71,7 @@ draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,
   
   #sequence to data.frame
   for(i in seq_along(map.data)){
-    if(is(map.data[[i]], "sequence")){
+    if(inherits(map.data[[i]], "sequence")){
       if(is.character(map.data[[i]]$data.name)){
         if (!map.data[[i]]$data.name %in% ls(.GlobalEnv)) stop(paste("Object data missing:", map.data[[i]]$data.name))
         map.data[[i]]$data.name <- get(map.data[[i]]$data.name, envir = .GlobalEnv)

@@ -142,7 +142,7 @@ seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
       stopCluster(cl)
       gc(verbose = FALSE)
     }
-    if(!all(sapply(phases, function(x) is(x, "sequence")))) {
+    if(!all(sapply(phases, function(x) inherits(x, "sequence")))) {
       if(rm_unlinked){
         warning(cat("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], 
                     "did not reached the OneMap default criteria. They are probably segregating independently. Marker", seq.num[mrk+1], "will be removed.

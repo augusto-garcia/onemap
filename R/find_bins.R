@@ -45,7 +45,7 @@
 find_bins <- function(input.obj, exact=TRUE)
 {
     ## checking for correct object
-    if(!is(input.obj,"onemap"))
+    if(!inherits(input.obj,"onemap"))
       stop(deparse(substitute(input.obj))," is not an object of class 'onemap'")
 
     if (input.obj$n.mar<2) stop("there must be at least two markers to proceed with analysis")

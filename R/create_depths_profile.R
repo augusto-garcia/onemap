@@ -71,14 +71,14 @@ create_depths_profile <- function(onemap.obj = NULL,
   } else vcfR.object <- vcfR.object
   
   # Exclude multiallelic markers
-  if(is(onemap.obj, "outcross")){
+  if(inherits(onemap.obj, "outcross")){
     idx.mks <- colnames(onemap.obj$geno)[which(!(onemap.obj$segr.type %in% c("B3.7", "D1.10", "D2.15")))]
     if(length(idx.mks) > 0){
       idx.mks <- colnames(onemap.obj$geno)[which((onemap.obj$segr.type %in% c("B3.7", "D1.10", "D2.15")))]
       warning("Only biallelic codominant markers are supported. The multiallelic markers present in onemap object will not be plotted.\n") 
       onemap.obj <- split_onemap(onemap.obj, mks= idx.mks)
     }
-  } else if(is(onemap.obj,"f2")){
+  } else if(inherits(onemap.obj,"f2")){
     idx.mks <- colnames(onemap.obj$geno)[which(!(onemap.obj$segr.type %in% c("A.H.B")))]
     if(length(idx.mks) > 0){
       idx.mks <- colnames(onemap.obj$geno)[which((onemap.obj$segr.type %in% c("A.H.B")))]
@@ -100,7 +100,7 @@ create_depths_profile <- function(onemap.obj = NULL,
   parents <- merge(alt,ref)
   parents$mks <- gsub("[|]", ".", parents$mks)
   
-  if(is(onemap.obj, "outcross")){
+  if(inherits(onemap.obj, "outcross")){
     p1[which(onemap.obj$segr.type == "D1.10")] <- 2
     p1[which(onemap.obj$segr.type == "D2.15")] <- 1
     p1[which(onemap.obj$segr.type == "B3.7")] <- 2
@@ -109,7 +109,7 @@ create_depths_profile <- function(onemap.obj = NULL,
     p2[which(onemap.obj$segr.type == "D2.15")] <- 2
     p2[which(onemap.obj$segr.type == "B3.7")] <- 2
     
-  } else  if(is(onemap.obj,c("riself", "risib", "f2"))){
+  } else  if(inherits(onemap.obj,c("riself", "risib", "f2"))){
     p1 <- 1
     p2 <- 3
   } else{
@@ -136,7 +136,7 @@ create_depths_profile <- function(onemap.obj = NULL,
   p.gt <- gather(p.gt, "ind", "gt.vcf", -"mks")
   parents <- merge(parents, p.gt)
   
-  if(is(onemap.obj, "outcross") | is(onemap.obj, "f2")){
+  if(inherits(onemap.obj, c("outcross", "f2"))){
     parents <- data.frame(parents, A=NA, AB=NA, BA=NA, B=NA)
   } else {
     parents <- data.frame(parents, A=NA, AB=NA)
@@ -152,7 +152,7 @@ create_depths_profile <- function(onemap.obj = NULL,
   temp <- match(paste0(gt$mks, "_", gt$ind), rownames(onemap.obj$error))
   gt <- data.frame(gt, onemap.obj$error[temp,])
   
-  if(is(onemap.obj, "outcross") | is(onemap.obj, "f2")){
+  if(inherits(onemap.obj, c("outcross", "f2"))){
     colnames(gt) <- c("ind", "mks", "gt.onemap", "A", "AB", "BA", "B")
   } else {
     colnames(gt) <- c("ind", "mks", "gt.onemap", "A", "AB")
@@ -266,7 +266,7 @@ create_depths_profile <- function(onemap.obj = NULL,
       xlim(0, x_lim) +
       ylim(0, y_lim)
   } else if(GTfrom == "prob"){
-    if(is(onemap.obj, "outcross") | is(onemap.obj, "f2")){
+    if(inherits(onemap.obj, c("outcross", "f2"))){
       idx <- 7:10
     } else {
       idx <- 7:8

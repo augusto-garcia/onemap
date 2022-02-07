@@ -59,12 +59,12 @@
 ##'@export
 marker_type <- function(input.seq) {
   ## checking for correct objects
-  if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+  if(!inherits(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   
   ## printing marker type
   
   tot <- data.frame()
-  if(is(input.seq$data.name,"outcross") | is(input.seq$data.name,"f2")) {
+  if(inherits(input.seq$data.name,c("outcross","f2"))) {
     for(i in 1:length(input.seq$seq.num)){
       temp <- data.frame(Marker = input.seq$seq.num[i], 
                          Marker.name = colnames(input.seq$twopt$analysis[[1]])[input.seq$seq.num[i]], 

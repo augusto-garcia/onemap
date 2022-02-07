@@ -41,13 +41,13 @@ extract_depth <- function(vcfR.object=NULL,
   if(is.null(vcfR.object))
     stop("You must specify one vcfR object.")
   
-  if(!is(vcfR.object,"vcfR"))
+  if(!inherits(vcfR.object,"vcfR"))
     stop("You must specify one vcfR object.")
   
   if(is.null(onemap.object))
     stop("You must specify one onemap object.")
   
-  if(!is(onemap.object,"onemap"))
+  if(!inherits(onemap.object,"onemap"))
     stop("You must specify one onemap object.")
   
   # Infos                                                                                                        

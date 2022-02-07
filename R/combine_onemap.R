@@ -76,7 +76,7 @@ combine_onemap <- function(...) {
         stop("You must provide a list of OneMap objects as input.")
     }
     for (i in 1:n.objs) {
-        if(!is(onemap.objs[[i]], "onemap"))
+        if(!inherits(onemap.objs[[i]], "onemap"))
             stop("All objects must be of class 'onemap'.")
     }
     
@@ -96,7 +96,7 @@ combine_onemap <- function(...) {
     ## Check if all objects are of the same cross type
     crosstype <- class(onemap.objs[[1]])[2]
     for (i in 2:n.objs) {
-        if(!is(onemap.objs[[i]], crosstype))
+        if(!inherits(onemap.objs[[i]], crosstype))
             stop("All objects must be of the same cross type.")
     }
     
@@ -229,15 +229,15 @@ combine_onemap <- function(...) {
 #' @export
 split_onemap <- function(onemap.obj=NULL, mks=NULL){
     
-    if(!is(onemap.obj, c("onemap"))) stop("Input object must be of class onemap")
+    if(!inherits(onemap.obj, c("onemap"))) stop("Input object must be of class onemap")
 
-    if(is(mks, "character")){
+    if(inherits(mks, "character")){
         idx.mks <- which(colnames(onemap.obj$geno) %in% mks)
         rev.mks <- which(!colnames(onemap.obj$geno) %in% mks)
         if(any(!mks %in% colnames(onemap.obj$geno))) 
             stop("One or more of the selected markers do not exist in the onemap object")
             
-    } else if(is(mks, c("numeric"))){
+    } else if(inherits(mks, c("numeric"))){
         idx.mks <- mks
         if(any(mks > onemap.obj$n.mar)) 
             stop("One or more of the selected markers do not exist in the onemap object")

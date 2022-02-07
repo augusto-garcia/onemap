@@ -53,10 +53,10 @@
 ##'@export
 draw_map<-function(map.list, horizontal=FALSE, names=FALSE, grid=FALSE, cex.mrk=1, cex.grp=.75){
   ## checking for correct object
-  if(!(is(map.list,"list") | is(map.list,"sequence"))) stop(deparse(substitute(map.list))," is not an object of class 'list' or 'sequnece'")
+  if(!(inherits(map.list,c("list", "sequence")))) stop(deparse(substitute(map.list))," is not an object of class 'list' or 'sequnece'")
 
   ## if map.list is just a single chormosome, convert it  into a list
-  if(is(map.list,"sequence")) map.list<-list(map.list)
+  if(inherits(map.list,"sequence")) map.list<-list(map.list)
   j<-1
 
   ##converting to data.frame
@@ -64,7 +64,7 @@ draw_map<-function(map.list, horizontal=FALSE, names=FALSE, grid=FALSE, cex.mrk=
   pos<-NULL #to satisfy codetools
   marker<-NULL #to satisfy codetools
   for(i in length(map.list):1){
-    if(!is(map.list[[i]],"sequence")) stop("Object ", i , " in map.list is not an object of class 'sequnece'")
+    if(!inherits(map.list[[i]],"sequence")) stop("Object ", i , " in map.list is not an object of class 'sequnece'")
     if(is.null(map.list[[i]]$seq.like))  stop("Parameters are not estimated for object ", i, " in map.list")
     map<-cumsum(c(0,get(get(".map.fun", envir=.onemapEnv))(map.list[[i]]$seq.rf)))
     marnames<-colnames(map.list[[i]]$data.name$geno)[map.list[[i]]$seq.num]

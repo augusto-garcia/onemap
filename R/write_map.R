@@ -62,15 +62,15 @@
 ##'@export
 write_map<-function(map.list,file.out){
    # checking for correct object
-  if(!(is(map.list,"list") | is(map.list,"sequence"))) stop(deparse(substitute(map.list))," is not an object of class 'list' or 'sequnece'")
-  if(!is(file.out,"character")) stop(deparse(substitute(file.out))," is an invalid output file name")
+  if(!(inherits(map.list,"list") | inherits(map.list,"sequence"))) stop(deparse(substitute(map.list))," is not an object of class 'list' or 'sequnece'")
+  if(!inherits(file.out,"character")) stop(deparse(substitute(file.out))," is an invalid output file name")
 
   # if map.list is just a single chormosome, convert it  into a list
-  if(is(map.list,"sequence")) map.list<-list(map.list)
+  if(inherits(map.list,"sequence")) map.list<-list(map.list)
 
   write(x="",file=file.out)
   for(i in 1:length(map.list)){
-    if(!is(map.list[[i]],"sequence")) stop("Object ", i , " in map.list is not an object of class 'sequence'")
+    if(!inherits(map.list[[i]],"sequence")) stop("Object ", i , " in map.list is not an object of class 'sequence'")
     if(is.null(map.list[[i]]$seq.like))  stop("Parameters are not estimated for object ", i, " in map.list")
     map<-cumsum(c(0,get(get(".map.fun", envir=.onemapEnv))(map.list[[i]]$seq.rf)))
     marnames<-colnames(map.list[[i]]$data.name$geno)[map.list[[i]]$seq.num]
