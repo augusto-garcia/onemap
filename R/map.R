@@ -103,10 +103,10 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE,
                 genotypes_probs = NULL)
 {
   ## checking for correct object
-  if(!(is(input.seq, "sequence")))
+  if(!(inherits(input.seq, "sequence")))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   ## Checking phase_cores
-  if(is(input.seq$data.name, c("riself", "risib", "backcross")) & phase_cores != 1){
+  if(inherits(input.seq$data.name, c("riself", "risib", "backcross")) & phase_cores != 1){
     warning("For RILs and backcross populations, we do not need to estimate phase. Therefore, the parallelization is not possible with our approach.")
     phase_cores <- 1
   }
@@ -129,7 +129,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE,
   ##Checking for appropriate number of markers
   if(length(seq.num) < 2) stop("The sequence must have at least 2 markers")
   ##For F2, BC and rils
-  if(is(input.seq$data.name, c("backcross", "riself", "risib")))
+  if(inherits(input.seq$data.name, c("backcross", "riself", "risib")))
   {
     final.map<-est_map_hmm_bc(geno=t(input.seq$data.name$geno[,seq.num]),
                               error=input.seq$data.name$error[seq.num + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(seq.num)),],
@@ -137,7 +137,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE,
                               verbose=verbose,
                               tol=tol)
     
-    if(is(input.seq$data.name, c("riself", "risib")))
+    if(inherits(input.seq$data.name, c("riself", "risib")))
       final.map$rf<-adjust_rf_ril(final.map$rf,
                                   type=class(input.seq$data.name)[2],
                                   expand = FALSE)
@@ -186,7 +186,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE,
       stopCluster(cl)
       gc(verbose = F)
     }
-    if(!all(sapply(phases, function(x) is(x, "sequence")))){
+    if(!all(sapply(phases, function(x) inherits(x, "sequence")))){
       if (rm_unlinked) {
         warning(cat("The linkage between markers", 
                     seq.num[1], "and", seq.num[2], 
@@ -257,7 +257,7 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE,
           stopCluster(cl)
           gc(verbose = F)
         }
-        if(!all(sapply(phases, function(x) is(x, "sequence")))){
+        if(!all(sapply(phases, function(x) inherits(x, "sequence")))){
           if(rm_unlinked){
             warning(cat("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], 
                         "did not reached the OneMap default criteria. They are probably segregating independently. Marker", seq.num[mrk+1], "will be removed. 
@@ -376,7 +376,7 @@ map_save_ram <- function(input.seq,
     }
   }
   if(length(input.seq_ram$seq.num) < input.seq.tot$data.name$n.mar){
-    if(!is(return.map, "integer")){ # When rm_unlinked == F
+    if(!inherits(return.map, "integer")){ # When rm_unlinked == F
       return.map$seq.num <- input.seq.tot$seq.num
       return.map$data.name <- input.seq.tot$data.name
       return.map$twopt <- input.seq.tot$twopt
@@ -447,10 +447,10 @@ map_avoid_unlinked <- function(input.seq,
                                genotypes_probs = NULL){
   
   ## checking for correct object
-  if(!(is(input.seq, "sequence")))
+  if(!(inherits(input.seq, "sequence")))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   ## Checking phase_cores
-  if(is(input.seq$data.name, c("riself", "risib", "backcross")) & phase_cores != 1){
+  if(inherits(input.seq$data.name, c("riself", "risib", "backcross")) & phase_cores != 1){
     warning("For RILs and backcross populations, we do not need to estimate phase. Therefore, the parallelization is not possible with our approach.")
     phase_cores <- 1
   }
@@ -473,7 +473,7 @@ map_avoid_unlinked <- function(input.seq,
                          parallelization.type = parallelization.type,
                          max.gap = max.gap)
   
-  while(is(map_df, "integer")){
+  while(inherits(map_df, "integer")){
     seq_true <- make_seq(input.seq$twopt, map_df)
     map_df <- map_save_ram(input.seq = seq_true, 
                            rm_unlinked = T, 

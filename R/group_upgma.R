@@ -58,11 +58,11 @@ group_upgma <- function(input.seq, expected.groups = NULL,
                         inter = TRUE, comp.mat = FALSE)
 {
   ## checking for correct objects
-  if(!any(is(input.seq,"sequence")))
+  if(!any(inherits(input.seq,"sequence")))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   
   ## extracting data
-  if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2"))
+  if(inherits(input.seq$data.name, "outcross") | inherits(input.seq$data.name, "f2"))
   {
     ## making a list with necessary information
     n.mrk <- length(input.seq$seq.num)

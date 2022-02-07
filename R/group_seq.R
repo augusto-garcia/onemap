@@ -93,10 +93,10 @@ group_seq <- function(input.2pts, seqs= "CHROM",
                       min_mks = NULL){
   
   ## checking for correct object
-  if(!is(input.2pts,"rf_2pts")) stop(deparse(substitute(input.2pts)),
+  if(!inherits(input.2pts,"rf_2pts")) stop(deparse(substitute(input.2pts)),
                                      " is not an object of class 'rf_2pts'")
   
-  if(!is(seqs, "list")){
+  if(!inherits(seqs, "list")){
     if(seqs == "CHROM"){
       ## making CHROM sequences
       CHROM <- unique(input.2pts$CHROM)
@@ -110,10 +110,10 @@ group_seq <- function(input.2pts, seqs= "CHROM",
   } else{
     ## checking for correct object for seqs argument
     seqs.int <- seqs
-    if(!is(seqs.int,"list")) stop(deparse(substitute(seqs)),
+    if(!inherits(seqs.int,"list")) stop(deparse(substitute(seqs)),
                                   " is not an object of class 'list'")
     trueseqs <- vector()
-    for(i in 1:length(seqs.int)) trueseqs[i] <- is(seqs.int[[i]],"sequence")
+    for(i in 1:length(seqs.int)) trueseqs[i] <- inherits(seqs.int[[i]],"sequence")
     if(!all(trueseqs)) stop(" the objects inside the list ",
                             deparse(substitute(seqs)), " are not of class 'sequence'")
     if(is.null(names(seqs.int))) {names_seqs <- paste0("seq",1:length(seqs.int))
@@ -142,7 +142,7 @@ group_seq <- function(input.2pts, seqs= "CHROM",
   if(unlink.mks[1] == "all"){
   } else {
     ## checking for correct object for unlinked.mks argument
-    if (!is(unlink.mks,"sequence")) {
+    if (!inherits(unlink.mks,"sequence")) {
       stop(" the objects", deparse(substitute(unlink.mks)), " are not of class 'sequence'")
     } else {
       mk_rest <- mk_rest[match(unlink.mks$seq.num, mk_rest)]
@@ -275,7 +275,7 @@ group_seq <- function(input.2pts, seqs= "CHROM",
 print.group_seq <- function(x, detailed=TRUE,...) {
   
   ## checking for correct object
-  if(!is(x,"group_seq")) stop(deparse(substitute(x))," is not an object of class 'group_seq'")
+  if(!inherits(x,"group_seq")) stop(deparse(substitute(x))," is not an object of class 'group_seq'")
   
   cat("  This is an object of class 'group_seq'\n")
   

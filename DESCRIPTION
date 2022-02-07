@@ -1,6 +1,6 @@
 Package: onemap
 Title: Construction of Genetic Maps in Experimental Crosses
-Version: 2.8.1
+Version: 2.8.2
 Description: Analysis of molecular marker data from model (backcrosses,
     F2 and recombinant inbred lines) and non-model systems (i. e.
     outcrossing species). For the later, it allows statistical

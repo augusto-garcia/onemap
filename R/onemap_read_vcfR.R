@@ -558,12 +558,12 @@ onemap_read_vcfR <- function(vcf=NULL,
   # Removing parents
   if(is.null(f1)){
     GT_matrix <- apply(GT_matrix[,-c(P1,P2), drop=F],2,as.numeric)
-    if(!is(GT_matrix, "matrix")) GT_matrix <- t(as.matrix(GT_matrix)) # If there is only one marker
+    if(!inherits(GT_matrix, "matrix")) GT_matrix <- t(as.matrix(GT_matrix)) # If there is only one marker
     colnames(GT_matrix)  <-  INDS[-c(P1,P2)] 
   } else{
     F1 <- which(dimnames(vcfR.obj@gt)[[2]]==f1) - 1
     GT_matrix <- apply(GT_matrix[,-c(P1,P2,F1), drop=F],2,as.numeric)
-    if(!is(GT_matrix, "matrix")) GT_matrix <- t(as.matrix(GT_matrix))
+    if(!inherits(GT_matrix, "matrix")) GT_matrix <- t(as.matrix(GT_matrix))
     colnames(GT_matrix)  <-  INDS[-c(P1,P2,F1)] 
   }
   rownames(GT_matrix)  <- MKS
@@ -572,7 +572,7 @@ onemap_read_vcfR <- function(vcf=NULL,
                              c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"))
   
   onemap.obj <- structure(list(geno= t(GT_matrix),
-                               n.ind = if(!is(GT_matrix, "matrix")) length(GT_matrix) else dim(GT_matrix)[2],
+                               n.ind = if(!inherits(GT_matrix, "matrix")) length(GT_matrix) else dim(GT_matrix)[2],
                                n.mar = n.mk,
                                segr.type = mk.type,
                                segr.type.num = as.numeric(mk.type.num),
@@ -627,15 +627,15 @@ onemap_read_vcfR <- function(vcf=NULL,
 write_onemap_raw <- function(onemap.obj=NULL, 
                              file.name = NULL){
   
-  if(is(onemap.obj, "outcross")){
+  if(inherits(onemap.obj, "outcross")){
     cross <- "outcross"
-  } else if(is(onemap.obj, "f2")){
+  } else if(inherits(onemap.obj, "f2")){
     cross <- "f2 intercross"
-  } else if(is(onemap.obj, "backcross")){
+  } else if(inherits(onemap.obj, "backcross")){
     cross <- "f2 backcross"
-  } else if(is(onemap.obj, "riself")){
+  } else if(inherits(onemap.obj, "riself")){
     cross <- "ri self"
-  } else if(is(onemap.obj, "risib")){
+  } else if(inherits(onemap.obj, "risib")){
     cross <- "ri sib"
   }
   
@@ -654,7 +654,7 @@ write_onemap_raw <- function(onemap.obj=NULL,
   
   geno.mat <- onemap.obj$geno
   
-  if(is(onemap.obj, "outcross")){
+  if(inherits(onemap.obj, "outcross")){
     
     geno.mat[which(geno.mat == 0)] <- "-"
     
@@ -707,7 +707,7 @@ write_onemap_raw <- function(onemap.obj=NULL,
     geno.mat[,idx][which(geno.mat[,idx]== 1)] <- "a"
     geno.mat[,idx][which(geno.mat[,idx]== 2)] <- "o"
   }
-  if(is(onemap.obj, c("f2","backcross"))){
+  if(inherits(onemap.obj, c("f2","backcross"))){
     
     geno.mat[which(geno.mat == 0)] <- "-"
     
@@ -724,7 +724,7 @@ write_onemap_raw <- function(onemap.obj=NULL,
     geno.mat[,idx][which(geno.mat[,idx]== 2)] <- "a"
     geno.mat[,idx][which(geno.mat[,idx]== 1)] <- "c"
   }
-  if(is(onemap.obj, c("riself", "risib"))){
+  if(inherits(onemap.obj, c("riself", "risib"))){
     
     geno.mat[which(geno.mat == 0)] <- "-"
     geno.mat[which(geno.mat == 1)] <- "a"

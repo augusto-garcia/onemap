@@ -101,11 +101,11 @@ mds_onemap <- function(input.seq,
                        hmm=TRUE, parallelization.type = "PSOCK"){
   
   ## checking for correct object
-  if(!is(input.seq, "sequence"))
+  if(!inherits(input.seq, "sequence"))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   
   n_ind <- input.seq$data.name$n.ind
-  if(is(input.seq$data.name,c("outcross", "f2"))){
+  if(inherits(input.seq$data.name,c("outcross", "f2"))){
     mat<- get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1)
     # Include NA in D1D2 markers
     seg_type <- input.seq$data.name$segr.type.num[input.seq$seq.num]
@@ -147,7 +147,7 @@ mds_onemap <- function(input.seq,
   ord_mds <- match(as.character(mds_map$locimap[,2]), colnames(input.seq$data.name$geno)) 
   seq_mds <- make_seq(input.seq$twopt, ord_mds)
   if(hmm){
-    if(phase_cores == 1 | is(input.seq$data.name, c("backcross", "riself", "risib"))){
+    if(phase_cores == 1 | inherits(input.seq$data.name, c("backcross", "riself", "risib"))){
       mds_map <- map(seq_mds, rm_unlinked = rm_unlinked, parallelization.type= parallelization.type)
     } else{
       if(is.null(size) | is.null(overlap)){
