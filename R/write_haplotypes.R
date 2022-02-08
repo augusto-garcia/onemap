@@ -44,18 +44,18 @@ parents_haplotypes <- function(..., group_names=NULL){
   input <- list(...)
   if(length(input) == 0) stop("argument '...' missing, with no default")
   # Accept list of sequences or list of list of sequences
-  if(is(input[[1]], "sequence")) input.map <- input else input.map <- unlist(input, recursive = FALSE)
-  if(!all(sapply(input.map, function(x) is(x, "sequence")))) stop(paste("Input objects must be of 'sequence' class. \n"))
+  if(inherits(input[[1]], "sequence")) input.map <- input else input.map <- unlist(input, recursive = FALSE)
+  if(!all(sapply(input.map, function(x) inherits(x, "sequence")))) stop(paste("Input objects must be of 'sequence' class. \n"))
   if(is.null(group_names)) group_names <- paste("Group",seq(input.map), sep = " - ")
   
-  if(all(sapply(input, function(x) is(x, "sequence")))){
-    n <- length(sapply(input, function(x) is(x, "sequence")))
+  if(all(sapply(input, function(x) inherits(x, "sequence")))){
+    n <- length(sapply(input, function(x) inherits(x, "sequence")))
   } else n <- 1
   
   input_temp <- input
   out_dat <- data.frame()
   for(z in 1:n){
-    if(all(sapply(input_temp, function(x) is(x, "sequence")))) input <- input_temp[[z]]
+    if(all(sapply(input_temp, function(x) inherits(x, "sequence")))) input <- input_temp[[z]]
     marnames <- colnames(input$data.name$geno)[input$seq.num]
     if(length(input$seq.rf) == 1 && input$seq.rf == -1) {
       # no information available for the order
@@ -77,7 +77,7 @@ parents_haplotypes <- function(..., group_names=NULL){
       marnumbers <- input$seq.num
       distances <- c(0,cumsum(get(get(".map.fun", envir=.onemapEnv))(input$seq.rf)))
       ## whith diplotypes for class 'outcross'
-      if(is(input$data.name, c("outcross", "f2"))){
+      if(inherits(input$data.name, c("outcross", "f2"))){
         ## create diplotypes from segregation types and linkage phases
         link.phases <- apply(link.phases,1,function(x) paste(as.character(x),collapse="."))
         parents <- matrix("",length(input$seq.num),4)
@@ -91,7 +91,7 @@ parents_haplotypes <- function(..., group_names=NULL){
         out_dat <- rbind(out_dat, out_dat_temp)
       }
       ## whithout diplotypes for other classes
-      else if(is(input$data.name, c("backcross", "riself", "risib"))){
+      else if(inherits(input$data.name, c("backcross", "riself", "risib"))){
         warning("There is only a possible phase for this cross type\n")
       } else warning("invalid cross type")
     }
@@ -134,8 +134,8 @@ progeny_haplotypes <- function(...,
   input <- list(...)
   if(length(input) == 0) stop("argument '...' missing, with no default")
   # Accept list of sequences or list of list of sequences
-  if(is(input[[1]], "sequence")) input.map <- input else input.map <- unlist(input, recursive = FALSE)
-  if(!all(sapply(input.map, function(x) is(x, "sequence")))) stop(paste("Input objects must be of 'sequence' class. \n"))
+  if(inherits(input[[1]], "sequence")) input.map <- input else input.map <- unlist(input, recursive = FALSE)
+  if(!all(sapply(input.map, function(x) inherits(x, "sequence")))) stop(paste("Input objects must be of 'sequence' class. \n"))
   if(is.null(group_names)) group_names <- paste("Group",seq(input.map), sep = " - ")
   n.mar <- sapply(input.map, function(x) length(x$seq.num))
   n.ind <- sapply(input.map, function(x) ncol(x$probs))/n.mar
@@ -155,7 +155,7 @@ progeny_haplotypes <- function(...,
                                                          as.data.frame(t(input.map[[x]]$probs))))
   probs <- lapply(probs, function(x) split.data.frame(x, x$ind)[ind])
   
-  if(is(input.map[[1]]$data.name, "outcross") | is(input.map[[1]]$data.name, "f2")){
+  if(inherits(input.map[[1]]$data.name, "outcross") | inherits(input.map[[1]]$data.name, "f2")){
     phase <- list('1' = c(1,2,3,4),
                   '2' = c(2,1,4,3),
                   '3' = c(3,4,1,2),
@@ -181,7 +181,7 @@ progeny_haplotypes <- function(...,
     
     # When P1_H1 it means the allele in homolog 1 of the parent 1
     # when H1_P1 is the parent 1 allele in the progeny homolog 1
-    if(is(input.map[[1]]$data.name, "outcross")){
+    if(inherits(input.map[[1]]$data.name, "outcross")){
       probs <- probs %>%
         mutate(P1_H1 = V1 + V2,
                P1_H2 = V3 + V4,
@@ -212,15 +212,15 @@ progeny_haplotypes <- function(...,
       probs[,5:6] <- t(apply(probs[,5:6], 1, function(x) as.numeric(x == max(x))/sum(x == max(x))))
     }
     
-    if (is(input.map[[1]]$data.name, c("backcross")) | is(input.map[[1]]$data.name, c("riself", "risib"))){
-      if(is(input.map[[1]]$data.name, c("backcross"))){
+    if (inherits(input.map[[1]]$data.name, c("backcross")) | inherits(input.map[[1]]$data.name, c("riself", "risib"))){
+      if(inherits(input.map[[1]]$data.name, c("backcross"))){
         cross <- "backcross"
         probs <- probs %>% 
           mutate(H1_P1 = V1 + V2, # homozygote parent
                  H1_P2 = 0,
                  H2_P1 = V2, 
                  H2_P2 = V1) 
-      } else if (is(input.map[[1]]$data.name, c("riself", "risib"))){
+      } else if (inherits(input.map[[1]]$data.name, c("riself", "risib"))){
         cross <- "rils"
         probs <- probs %>%
           mutate(H1_P1 = V1,
@@ -288,7 +288,7 @@ plot.onemap_progeny_haplotypes <- function(x,
                                            show_markers = TRUE, 
                                            main = "Genotypes", ncol=4, ...){
   
-  if(is(x, "outcross")){
+  if(inherits(x, "outcross")){
     n <- c("H1" = "P1", "H2" = "P2")
     progeny.homologs <- names(n)[match(x$parents, n)]
     probs <- cbind(x, progeny.homologs)
@@ -304,7 +304,7 @@ plot.onemap_progeny_haplotypes <- function(x,
               # markers
               pos = c(pos[-nrow(.)], NA)))
   
-  if(is(x, "outcross")){
+  if(inherits(x, "outcross")){
     p <- ggplot(probs, aes(x = pos, col=allele, alpha = prob)) + ggtitle(main) 
   } else {
     p <- ggplot(probs, aes(x = pos, col=parents, alpha = prob)) + ggtitle(main) 
@@ -354,8 +354,8 @@ plot.onemap_progeny_haplotypes <- function(x,
 #' @import tidyr
 #'@export
 progeny_haplotypes_counts <- function(x){
-  if(!is(x, "onemap_progeny_haplotypes")) stop("Input need is not of class onemap_progeny_haplotyes")
-  if(!is(x, "most.likely")) stop("The most likely genotypes must receive maximum probability (1)")
+  if(!inherits(x, "onemap_progeny_haplotypes")) stop("Input need is not of class onemap_progeny_haplotyes")
+  if(!inherits(x, "most.likely")) stop("The most likely genotypes must receive maximum probability (1)")
   cross <- class(x)[2]
 
   # Some genotypes receives prob of 0.5, here we need to make a decision about them
@@ -369,7 +369,7 @@ progeny_haplotypes_counts <- function(x){
   x <- x[which(x$prob == 1),]
   x <- x[order(x$ind, x$grp, x$prob, x$parents,x$pos),]
   
-  if(is(x, "outcross")){
+  if(inherits(x, "outcross")){
     counts <- x %>% group_by(ind, grp, parents.homologs) %>%
       mutate(seq = sequence(rle(as.character(parents))$length) == 1) %>%
       summarise(counts = sum(seq) -1) %>% ungroup()
@@ -420,7 +420,7 @@ plot.onemap_progeny_haplotypes_counts <- function(x,
                                                   by_homolog = FALSE, 
                                                   n.graphics =NULL, 
                                                   ncol=NULL, ...){
-  if(!is(x, "onemap_progeny_haplotypes_counts")) stop("Input need is not of class onemap_progeny_haplotyes_counts")
+  if(!inherits(x, "onemap_progeny_haplotypes_counts")) stop("Input need is not of class onemap_progeny_haplotyes_counts")
 
   p <- list()
   n.ind <- length(unique(x$ind))

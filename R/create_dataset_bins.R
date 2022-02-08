@@ -59,10 +59,10 @@
 create_data_bins <- function(input.obj, bins)
 {
   ## checking for correct object
-  if(!is(input.obj,"onemap"))
+  if(!inherits(input.obj,"onemap"))
     stop(deparse(substitute(input.obj))," is not an object of class 'onemap'")
 
-  if(!is(bins, "onemap_bin"))
+  if(!inherits(bins, "onemap_bin"))
     stop(deparse(substitute(bins))," is not an object of class 'onemap_bin'")
 
   if (input.obj$n.mar<2) stop("there must be at least two markers to proceed with analysis")
@@ -113,9 +113,9 @@ create_data_bins <- function(input.obj, bins)
 #' @export
 add_redundants <- function(sequence, onemap.obj, bins){
   
-  if(!is(sequence, c("sequence"))) stop("Input object must be of class sequence")
-  if(!is(onemap.obj, c("onemap"))) stop("Input object must be of class onemap")
-  if(!is(bins, c("onemap_bin"))) stop("Input object must be of class onemap_bin")
+  if(!inherits(sequence, c("sequence"))) stop("Input object must be of class sequence")
+  if(!inherits(onemap.obj, c("onemap"))) stop("Input object must be of class onemap")
+  if(!inherits(bins, c("onemap_bin"))) stop("Input object must be of class onemap_bin")
   
   idx <- match(colnames(sequence$data.name$geno)[sequence$seq.num], names(bins[[1]]))
   sizes <- sapply(bins[[1]][idx], function(x) dim(x)[1])

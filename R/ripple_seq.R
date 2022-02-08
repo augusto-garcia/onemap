@@ -105,7 +105,7 @@
 ##'@export
 ripple_seq<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2, verbose=TRUE)
 {
-  if(is(input.seq$data.name, "outcross") || is(input.seq$data.name, "f2"))
+  if(inherits(input.seq$data.name, "outcross") || inherits(input.seq$data.name, "f2"))
     return(ripple_seq_outcross(input.seq=input.seq,
                                ws=ws,
                                LOD=LOD,
@@ -122,7 +122,7 @@ ripple_seq<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2, verbose=TRUE
 ## orders of subsets of markers (for outcrosses)
 ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2, verbose=TRUE) {
   ## checking for correct objects
-  if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+  if(!inherits(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   if(ws < 2) stop("ws must be greater than or equal to 2")
   if(ws > 5) warning("this operation may take a VERY long time\n\n")
   flush.console()
@@ -211,7 +211,7 @@ ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2, verbose=TRUE) {
     if(verbose) {
       cat("\n  Alternative orders:\n")
       for(j in which.LOD) {
-        if(is(input.seq$data.name,"outcross"))
+        if(inherits(input.seq$data.name,"outcross"))
           cat("  ",all.ord[j,1:(ws+1)],ifelse(len > (ws+1),"... : ",": "),LOD.print[j],"( linkage phases:",best.ord.phase[j,1:ws],ifelse(len > (ws+1),"... )\n",")\n"))
         else
           cat("  ",all.ord[j,1:(ws+1)],ifelse(len > (ws+1),"... : ",": "),LOD.print[j],"\n")
@@ -282,7 +282,7 @@ ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2, verbose=TRUE) {
         if(verbose){
           cat("\n  Alternative orders:\n")
           for(j in which.LOD) {
-            if(is(input.seq$data.name,"outcross"))
+            if(inherits(input.seq$data.name,"outcross"))
               cat(ifelse(p>2,"  ...","  "),all.ord[j,(p-1):(p+ws)],ifelse((p+ws)<len,"... : ",": "),LOD.print[j],"( linkage phases:",ifelse(p>2,"...","\b"),best.ord.phase[j,(p-1):(p+ws-1)],ifelse((p+ws)<len,"... )\n",")\n"))
             else
               cat(ifelse(p>2,"  ...","  "),all.ord[j,(p-1):(p+ws)],ifelse((p+ws)<len,"... : ",": "),LOD.print[j],"\n")
@@ -353,7 +353,7 @@ ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2, verbose=TRUE) {
       cat("\n  Alternative orders:\n")
       
       for(j in which.LOD) {
-        if(is(input.seq$data.name,"outcross"))
+        if(inherits(input.seq$data.name,"outcross"))
           cat(ifelse(len > (ws+1),"  ...","  "),all.ord[j,(len-ws):len],": ",LOD.print[j],"( linkage phases:",ifelse(len > (ws+1),"...","\b"),best.ord.phase[j,(len-ws):(len-1)],")\n")
         else
           cat(ifelse(len > (ws+1),"  ...","  "),all.ord[j,(len-ws):len],": ",LOD.print[j],"\n")
@@ -370,7 +370,7 @@ ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2, verbose=TRUE) {
 ripple_seq_inbred<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2, verbose=TRUE)
 {
   ## checking for correct objects
-  if(!is(input.seq,"sequence"))
+  if(!inherits(input.seq,"sequence"))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   if(ws < 2)
     stop("ws must be greater than or equal to 2")
@@ -409,8 +409,8 @@ ripple_seq_inbred<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2, verbo
                               rf.vec=rf.temp,
                               verbose=FALSE,
                               tol=tol)
-    if(is(input.seq$data.name, c("riself", "risib"))){
-      crosstype <- ifelse(is(input.seq$data.name, "riself"), "riself", "risib")
+    if(inherits(input.seq$data.name, c("riself", "risib"))){
+      crosstype <- ifelse(inherits(input.seq$data.name, "riself"), "riself", "risib")
       final.map$rf<-adjust_rf_ril(final.map$rf,
                                   type=crosstype,
                                   expand = FALSE)
@@ -463,8 +463,8 @@ ripple_seq_inbred<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2, verbo
                                   rf.vec=rf.temp,
                                   verbose=FALSE,
                                   tol=tol)
-        if(is(input.seq$data.name, c("riself", "risib"))){
-          crosstype <- ifelse(is(input.seq$data.name, "riself"), "riself", "risib")
+        if(inherits(input.seq$data.name, c("riself", "risib"))){
+          crosstype <- ifelse(inherits(input.seq$data.name, "riself"), "riself", "risib")
           final.map$rf<-adjust_rf_ril(final.map$rf,
                                       type=crosstype,
                                       expand = FALSE)
@@ -518,8 +518,8 @@ ripple_seq_inbred<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2, verbo
                               rf.vec=rf.temp,
                               verbose=FALSE,
                               tol=tol)
-    if(is(input.seq$data.name, c("riself", "risib"))){
-      crosstype <- ifelse(is(input.seq$data.name, "riself"), "riself", "risib")
+    if(inherits(input.seq$data.name, c("riself", "risib"))){
+      crosstype <- ifelse(inherits(input.seq$data.name, "riself"), "riself", "risib")
       final.map$rf<-adjust_rf_ril(final.map$rf,
                                   type=crosstype,
                                   expand = FALSE)

@@ -112,13 +112,13 @@ rf_graph_table <- function(input.seq,
                            display=TRUE){
   
   ## checking for correct objects
-  if(!any(is(input.seq,"sequence")))
+  if(!any(inherits(input.seq,"sequence")))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   if(!(mrk.axis=="names" | mrk.axis=="numbers" | mrk.axis=="none"))
     stop("This mrk.axis argument is not defined, choose 'names', 'numbers' or 'none'")
   
   ## extracting data
-  if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2"))
+  if(inherits(input.seq$data.name, c("outcross", "f2")))
   {
     ## making a list with necessary information
     n.mrk <- length(input.seq$seq.num)
@@ -162,7 +162,7 @@ rf_graph_table <- function(input.seq,
   
   # Be compatible with older versions
   # if(all(is.na(input.seq$data.name$segr.type.num))){
-  #   if(is(input.seq$data.name, "backcross")){
+  #   if(inherits(input.seq$data.name, "backcross")){
   #     segr.type.num <- rep(8, length(input.seq$data.name$segr.type))
   #   } else {
   #     segr.type.num <- rep(9, length(input.seq$data.name$segr.type))
@@ -172,7 +172,7 @@ rf_graph_table <- function(input.seq,
   # }
   
   ##Write NAs in two-point recombination fractions between markers of type D1 and D2
-  if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2")){
+  if(inherits(input.seq$data.name, c("outcross", "f2"))){
     types <- input.seq$data.name$segr.type.num[input.seq$seq.num]
     for(i in 1:length(types))
       for(j in 1:(length(types)-1))
@@ -196,7 +196,7 @@ rf_graph_table <- function(input.seq,
   mat.LOD[lower.tri(mat.LOD)] <- t(mat.LOD)[lower.tri(mat.LOD)]
   mat.rf[upper.tri(mat.rf)] <- t(mat.rf)[upper.tri(mat.LOD)]
   
-  if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2")){
+  if(inherits(input.seq$data.name, c("outcross", "f2"))){
     colnames(LOD$CC) <- rownames(LOD$CC) <- colnames(mat.rf)
     colnames(LOD$CR) <- rownames(LOD$CR) <- colnames(mat.rf)
     colnames(LOD$RC) <- rownames(LOD$RC) <- colnames(mat.rf)
@@ -247,7 +247,7 @@ rf_graph_table <- function(input.seq,
   ## ggplot() just depends on the 'x', 'y', and 'fill' aes arguments
   
   ## If outcross:
-  if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2")){
+  if(inherits(input.seq$data.name, c("outcross", "f2"))){
     if(graph.LOD!=TRUE){
       p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, x.missing = x.missing, y.missing = y.missing, fill = rf, LOD.CC=LOD.CC, LOD.CR=LOD.CR, LOD.RC=LOD.RC, LOD.RR=LOD.RR), data=df.graph) +
         geom_tile() +

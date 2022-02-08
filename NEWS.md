@@ -155,3 +155,7 @@
 * Add parallelization.type argument to user choose between PSOCK and FORK
 * vcfR as import
 * remove unlist of rf_2pts
+
+# onemap 2.8.2
+
+* Replacing is by inherits to fix issues in R dev versions

@@ -99,13 +99,13 @@ seriation<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
                     phase_cores = 1, hmm=TRUE, parallelization.type = "PSOCK", verbose = TRUE)
 {
   ## checking for correct object
-  if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is
+  if(!inherits(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is
     not an object of class 'sequence'")
   n.mrk <- length(input.seq$seq.num)
   
   ## create reconmbination fraction matrix
   
-  if(is(input.seq$twopt,"outcross") || is(input.seq$twopt,"f2"))
+  if(inherits(input.seq$twopt,"outcross") || inherits(input.seq$twopt,"f2"))
     r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
   else
     r<-get_mat_rf_in(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
@@ -131,7 +131,7 @@ seriation<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
   if(hmm){
     if(verbose) cat("\norder obtained using SERIATION algorithm:\n\n", input.seq$seq.num[complete], "\n\ncalculating multipoint map using tol = ", tol, ".\n\n")
     
-    if(phase_cores == 1 | is(input.seq$data.name, c("backcross", "riself", "risib"))){
+    if(phase_cores == 1 | inherits(input.seq$data.name, c("backcross", "riself", "risib"))){
       ser_map <- map(make_seq(input.seq$twopt,input.seq$seq.num[complete],
                               twopt=input.seq$twopt), 
                      tol=tol,

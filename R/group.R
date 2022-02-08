@@ -69,7 +69,7 @@
 group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
 {
     ## checking for correct object
-    if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+    if(!inherits(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
     ## determining thresholds
     if (is.null(LOD))
         LOD <- input.seq$twopt$LOD
@@ -135,7 +135,7 @@ group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
 ##' @export
 print.group <- function(x, detailed=TRUE,...) {
         ## checking for correct object
-        if(!is(x,"group")) stop(deparse(substitute(x))," is not an object of class 'group'")
+        if(!inherits(x,"group")) stop(deparse(substitute(x))," is not an object of class 'group'")
 
         cat("  This is an object of class 'group'\n")
         cat(paste("  It was generated from the object \"", x$input.name,

@@ -160,7 +160,7 @@ order_seq <- function(input.seq,
                       verbose = FALSE) {
   
   ## checking for correct objects
-  if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+  if(!inherits(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   if(n.init < 2) stop("'n.init' must be greater than or equal to 2")
   if(!is.logical(touchdown)) stop("'touchdown' must be logical")
   if(!touchdown && THRES <= 10E-10) stop("Threshold must be greater than 0 if 'touchdown' is FALSE")

@@ -65,19 +65,19 @@
 ##'@export
 rf_2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE, rm_mks = FALSE) {
   ## checking for correct object
-  if(!is(input.obj, c("onemap", "outcross", "f2", "backcross", "riself", "risib")))
+  if(!inherits(input.obj, c("onemap", "outcross", "f2", "backcross", "riself", "risib")))
     stop(deparse(substitute(input.obj))," is not an object of class 'onemap'.")
   if (input.obj$n.mar<2) stop("there must be at least two markers to proceed with analysis")
   ## creating variables (result storage and progress output)
-  if(is(input.obj,"outcross"))
+  if(inherits(input.obj,"outcross"))
     r<- est_rf_out(geno = input.obj$geno, seg_type = input.obj$segr.type.num, nind = input.obj$n.ind, verbose = verbose)
-  else if(is(input.obj, "f2"))
+  else if(inherits(input.obj, "f2"))
     r<-est_rf_out(geno = input.obj$geno, seg_type = input.obj$segr.type.num, nind = input.obj$n.ind, verbose = verbose)
-  else if(is(input.obj,"backcross"))
+  else if(inherits(input.obj,"backcross"))
     r<- est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=0, verbose = verbose)
-  else if(is(input.obj,"riself"))
+  else if(inherits(input.obj,"riself"))
     r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=1, verbose = verbose)
-  else if(is(input.obj, "risib"))
+  else if(inherits(input.obj, "risib"))
     r<-est_rf_bc(geno = input.obj$geno, nind = input.obj$n.ind, type=2, verbose = verbose)
   
   # The recombination matrix should not have NA or NaN
@@ -139,7 +139,7 @@ rf_2pts <- function(input.obj, LOD=3, max.rf=0.50, verbose = TRUE, rm_mks = FALS
 ##' @export
 print.rf_2pts <- function(x, mrk=NULL,...) {
   ## checking for correct object
-  if(!is(x, "rf_2pts"))
+  if(!inherits(x, "rf_2pts"))
     stop(deparse(substitute(x))," is not an object of class 'rf_2pts'")
   if (any(is.null(mrk))) {
     ## printing a brief summary
@@ -156,7 +156,7 @@ print.rf_2pts <- function(x, mrk=NULL,...) {
     ## checking if markers exist and converting character to numeric
     if(length(mrk)!=2)
       stop(deparse(substitute(mrk))," must be a pair of markers")
-    if(is(x, "backcross") || is(x, "risib") || is(x, "riself"))
+    if(inherits(x, "backcross") || inherits(x, "risib") || inherits(x, "riself"))
     {
       if (is.character(mrk[1]) && is.character(mrk[2])) {
         mrk1name<-mrk[1]
@@ -195,7 +195,7 @@ print.rf_2pts <- function(x, mrk=NULL,...) {
       names(output)<-c("rf","LOD")
       print(output)
     }
-    else if(is(x, "outcross") || is(x,"f2"))
+    else if(inherits(x, "outcross") || inherits(x,"f2"))
     {
       if (is.character(mrk[1]) && is.character(mrk[2])) {
         mrk1name<-mrk[1]
@@ -241,7 +241,7 @@ print.rf_2pts <- function(x, mrk=NULL,...) {
 ##get twopt information for a given pair of markers
 get_twopt_info<-function(twopt, small, big)
 {
-  if(is(twopt, "outcross"))
+  if(inherits(twopt, "outcross"))
     return(t(sapply(twopt$analysis, function(x,i,j) c(x[j,i], x[i,j]), i=small, j=big)))
   else
     return(matrix(c(twopt$analysis[big,small], twopt$analysis[small,big]), ncol=2))

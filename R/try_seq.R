@@ -110,7 +110,7 @@ try_seq<-function(input.seq,mrk,
                   pos= NULL,
                   verbose=FALSE)
 {
-  if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2"))
+  if(inherits(input.seq$data.name, "outcross") | inherits(input.seq$data.name, "f2"))
     return(try_seq_outcross(input.seq=input.seq,
                             mrk=mrk, tol=tol,
                             pos=pos, verbose=verbose))
@@ -125,7 +125,7 @@ try_seq<-function(input.seq,mrk,
 try_seq_inbred_f2 <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=TRUE)
 {
   # checking for correct objects
-  if(!is(input.seq,"sequence"))
+  if(!inherits(input.seq,"sequence"))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   if(input.seq$seq.rf[1] == -1 ||
      is.null(input.seq$seq.like))
@@ -208,7 +208,7 @@ try_seq_inbred_f2 <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=TRUE)
 try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=TRUE)
 {
   # checking for correct objects
-  if(!is(input.seq,"sequence"))
+  if(!inherits(input.seq,"sequence"))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   if(input.seq$seq.rf[1] == -1 ||
      is.null(input.seq$seq.like))
@@ -233,8 +233,8 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=TRUE)
                             rf.vec=rf.temp,
                             verbose=verbose,
                             tol=tol)
-  if(is(input.seq$data.name, "riself") ||
-     is(input.seq$data.name, "risib"))
+  if(inherits(input.seq$data.name, "riself") ||
+     inherits(input.seq$data.name, "risib"))
     final.map$rf<-adjust_rf_ril(final.map$rf,
                                 type=class(input.seq$data.name)[2],
                                 expand = FALSE)
@@ -260,8 +260,8 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=TRUE)
                               rf.vec=rf.temp,
                               verbose=verbose,
                               tol=tol)
-    if(is(input.seq$data.name, "riself") ||
-       is(input.seq$data.name, "risib"))
+    if(inherits(input.seq$data.name, "riself") ||
+       inherits(input.seq$data.name, "risib"))
       final.map$rf<-adjust_rf_ril(final.map$rf,
                                   type=class(input.seq$data.name)[2],
                                   expand = FALSE)
@@ -279,8 +279,8 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=TRUE)
                             rf.vec=rf.temp,
                             verbose=verbose,
                             tol=tol)
-  if(is(input.seq$data.name, "riself") ||
-     is(input.seq$data.name, "risib"))
+  if(inherits(input.seq$data.name, "riself") ||
+     inherits(input.seq$data.name, "risib"))
     final.map$rf<-adjust_rf_ril(final.map$rf,
                                 type=class(input.seq$data.name)[2],
                                 expand = FALSE)
@@ -307,7 +307,7 @@ try_seq_outcross<- function(input.seq,mrk,
                             verbose=TRUE)
 {
   ## checking for correct objects
-  if(!is(input.seq,"sequence"))
+  if(!inherits(input.seq,"sequence"))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   if(input.seq$seq.phases[1] == -1 ||
      input.seq$seq.rf[1] == -1 ||
@@ -350,7 +350,7 @@ try_seq_outcross<- function(input.seq,mrk,
     rm.ab<-rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=c(mrk,input.seq$seq.num))
     Ph.Init <- Ph.Init[rm.ab,]
     Rf.Init <- Rf.Init[rm.ab,]
-    if(is(Ph.Init, "numeric") || is(Ph.Init,"integer")){
+    if(inherits(Ph.Init, "numeric") || inherits(Ph.Init,"integer")){
       Ph.Init<-matrix(Ph.Init,nrow=1)
       Rf.Init<-matrix(Rf.Init,nrow=1)
     }
@@ -410,7 +410,7 @@ try_seq_outcross<- function(input.seq,mrk,
       rm.ab<- rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)]))
       Ph.Init <- Ph.Init[rm.ab,]
       Rf.Init <- Rf.Init[rm.ab,]
-      if(is(Ph.Init, "numeric") || is(Ph.Init,"integer")){
+      if(inherits(Ph.Init, "numeric") || inherits(Ph.Init,"integer")){
         Ph.Init<-matrix(Ph.Init,nrow=1)
         Rf.Init<-matrix(Rf.Init,nrow=1)
       }
@@ -457,7 +457,7 @@ try_seq_outcross<- function(input.seq,mrk,
     rm.ab<-rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=c(input.seq$seq.num,mrk))
     Ph.Init <- Ph.Init[rm.ab,]
     Rf.Init <- Rf.Init[rm.ab,]
-    if(is(Ph.Init, "numeric") || is(Ph.Init,"integer")){
+    if(inherits(Ph.Init, "numeric") || inherits(Ph.Init,"integer")){
       Ph.Init<-matrix(Ph.Init,nrow=1)
       Rf.Init<-matrix(Rf.Init,nrow=1)
     }
@@ -644,7 +644,7 @@ draw.try<-function(base.input, try.input, pos=NULL){
 #' @export
 try_seq_by_seq <- function(sequence, markers, cM.thr=10, lod.thr=-10, verbose=TRUE){
   
-  if(!is(sequence, c("sequence"))) stop("Input object must be of class sequence")
+  if(!inherits(sequence, c("sequence"))) stop("Input object must be of class sequence")
   
   seq_now <- sequence
   for(i in 1:length(markers)){

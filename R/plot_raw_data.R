@@ -77,7 +77,7 @@ globalVariables(c("marker", "geno"))
 ##' @export 
 plot.onemap <- function(x, all=TRUE, ...) {
     # Creating the data frame
-    if (is(x, "outcross")) {
+    if (inherits(x, "outcross")) {
         df.OM <- create_dataframe_for_plot_outcross(x)
         df.OM$geno <- as.numeric(as.character((df.OM$geno)))
 
@@ -178,17 +178,17 @@ plot.onemap <- function(x, all=TRUE, ...) {
         df.OM$geno <- factor(df.OM$geno)
     }
     # Defining the label for genotypes
-    if (is(x, "backcross")) {
+    if (inherits(x, "backcross")) {
         if (suppressWarnings(all(levels(df.OM$geno)==c("0","1","2"))))
             labels.OM <- c("-","AA","AB")
         else if (all(levels(df.OM$geno)==c("1","2")))
             labels.OM <- c("AA","AB")
-    } else if (is(x, "riself") || is(x, "risib")) {
+    } else if (inherits(x, "riself") || inherits(x, "risib")) {
         if (suppressWarnings(all(levels(df.OM$geno)==c("0","1","3"))))
             labels.OM <- c("-","AA","BB")
         else if (all(levels(df.OM$geno)==c("1","3")))
             labels.OM <- c("AA","BB")
-    } else if (is(x, "f2")) {
+    } else if (inherits(x, "f2")) {
         if (suppressWarnings(all(levels(df.OM$geno)==c("0","1","2","3","4","5"))))
             labels.OM <- c("-","AA","AB","BB","not BB","not AA")
         else if (suppressWarnings(all(levels(df.OM$geno)==c("1","2","3","4","5"))))
@@ -216,7 +216,7 @@ plot.onemap <- function(x, all=TRUE, ...) {
     g <- ggplot(data=df.OM, aes(x=ind, y=marker, fill=factor(geno)))
     g <- g + geom_tile()
     g <- g + xlab("Individual") + ylab("Marker")
-    if (is(x, "outcross")) {
+    if (inherits(x, "outcross")) {
       if(length(which(df.OM$geno=="-")) != 0){
         g <- g + scale_fill_manual(name="Genotypes",
                                    values = c("black",'#e31a1c','#1f78b4','#6a3d9a','#33a02c','#ff7f00',
@@ -236,10 +236,10 @@ plot.onemap <- function(x, all=TRUE, ...) {
                   strip.text.y = element_text(angle = 0))
     }
     else {
-        if (is(x, "backcross") || is(x, "riself") || is(x, "risib")) {
+        if (inherits(x, "backcross") || inherits(x, "riself") || inherits(x, "risib")) {
             g <- g + scale_fill_manual(name="Genotype", labels=labels.OM,
                                        values=c("#F21A00","#3B9AB2","#EBCC2A"))
-        } else if (is(x, "f2")) {
+        } else if (inherits(x, "f2")) {
             g <- g + scale_fill_manual(name="Genotype", labels=labels.OM,
                                        values=c("#000000", "#ECCBAE", "#046C9A", "#D69C4E", "#85D4E3", "#74A089"))
         }

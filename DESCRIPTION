@@ -1,6 +1,6 @@
 Package: onemap
 Title: Construction of Genetic Maps in Experimental Crosses
-Version: 2.8.0
+Version: 2.8.2
 Description: Analysis of molecular marker data from model (backcrosses,
     F2 and recombinant inbred lines) and non-model systems (i. e.
     outcrossing species). For the later, it allows statistical
@@ -8,7 +8,7 @@ Description: Analysis of molecular marker data from model (backcrosses,
     phases (genetic map construction) according to Wu et al. (2002)
     <doi:10.1006/tpbi.2002.1577>. All analysis are based on multipoint 
     approaches using hidden Markov models.
-Date: 2021-11-30
+Date: 2021-12-09
 Authors@R: c(person("Gabriel", 
                     "Margarido", 
                     role = "aut",

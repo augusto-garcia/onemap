@@ -40,10 +40,10 @@
 ##' 
 ##' @export
 suggest_lod <- function(x) {
-    if (is(x,c("sequence", "onemap"))) { # Keep onemap class just to be compatible with older versions
-        if(is(x, "onemap"))
+    if (inherits(x,c("sequence", "onemap"))) { # Keep onemap class just to be compatible with older versions
+        if(inherits(x, "onemap"))
             num.tests <- choose(x$n.mar, 2) #Number of pairwise tests
-        if(is(x, "sequence"))
+        if(inherits(x, "sequence"))
             num.tests <- choose(length(x$seq.num), 2)
         LOD <- 0.2172 * qchisq(1-0.05/num.tests, 1) #Corresponding LOD
         return(LOD)

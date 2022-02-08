@@ -110,9 +110,9 @@
 make_seq <-
   function(input.obj, arg = NULL, phase = NULL, data.name = NULL, twopt = NULL) {
     # checking for correct object
-    if(!(is(input.obj, c("onemap", "rf_2pts", "group", "compare", "try", "order", "group.upgma"))))
+    if(!(inherits(input.obj, c("onemap", "rf_2pts", "group", "compare", "try", "order", "group.upgma"))))
       stop(deparse(substitute(input.obj))," is not an object of class 'onemap', 'rf_2pts', 'group', 'group.upgma','compare', 'try' or 'order'")
-    if(is(input.obj, "onemap")){
+    if(inherits(input.obj, "onemap")){
       if (length(arg) == 1 && is.character(arg)) {
         seq.num <- which(input.obj$CHROM == arg)
         if (length(seq.num) == 0) {
@@ -134,7 +134,7 @@ make_seq <-
       seq.like <- NULL
       if(is.null(data.name)) data.name <- input.obj
       twopt <- NULL
-    } else if (is(input.obj, "rf_2pts")){
+    } else if (inherits(input.obj, "rf_2pts")){
       if (length(arg) == 1 && is.character(arg) && arg != "all") {
         seq.num <- which(input.obj$CHROM == arg)
         if (length(seq.num) == 0) {
@@ -156,14 +156,14 @@ make_seq <-
       seq.rf <- -1
       seq.like <- NULL
       if(is.null(twopt)) twopt <- input.obj
-    } else if (is(input.obj, "group") | is(input.obj, "group.upgma")){
+    } else if (inherits(input.obj, "group") | inherits(input.obj, "group.upgma")){
       if(length(arg) == 1 && is.numeric(arg) && arg <= input.obj$n.groups) seq.num <- input.obj$seq.num[which(input.obj$groups == arg)]
       else stop("for this object of class 'group' or 'group.upgma', \"arg\" must be an integer less than or equal to ",input.obj$n.groups)
       seq.phases <- -1
       seq.rf <- -1
       seq.like <- NULL
       twopt <- input.obj$twopt
-    } else if (is(input.obj, "compare")){
+    } else if (inherits(input.obj, "compare")){
       n.ord <- max(which(head(input.obj$best.ord.LOD,-1) != -Inf))
       unique.orders <- unique(input.obj$best.ord[1:n.ord,])
       if(is.null(arg)) seq.num <- unique.orders[1,] # NULL = 1 is the best order
@@ -175,7 +175,7 @@ make_seq <-
       seq.rf <- input.obj$best.ord.rf[chosen,]
       seq.like <- input.obj$best.ord.like[chosen]
       twopt <- input.obj$twopt
-    } else if (is(input.obj, "try")){
+    } else if (inherits(input.obj, "try")){
       if(length(arg) != 1 || !is.numeric(arg) || arg > length(input.obj$ord))
         stop("for this object of class 'try', \"arg\" must be an integer less than or equal to ",length(input.obj$ord))
       if (is.null(phase)) phase <- 1 # NULL = 1 is the best combination of phases
@@ -185,7 +185,7 @@ make_seq <-
       seq.like <- input.obj$ord[[arg]]$like[phase]
       twopt <- input.obj$twopt
       probs <- input.obj$probs[[arg]][[phase]]
-    } else if (is(input.obj, "order")){
+    } else if (inherits(input.obj, "order")){
       arg <- match.arg(arg,c("safe","force"))
       if (arg == "safe") {
         ## order with safely mapped markers
@@ -209,11 +209,11 @@ make_seq <-
     ## check if any marker appears more than once in the sequence
     if(length(seq.num) != length(unique(seq.num))) stop("there are duplicated markers in the sequence")
     
-    if (!is(input.obj, "onemap")) {
+    if (!inherits(input.obj, "onemap")) {
       data.name <- input.obj$data.name
     }
     
-    if(is(input.obj, c("order", "try"))){
+    if(inherits(input.obj, c("order", "try"))){
       structure(list(seq.num=seq.num, seq.phases=seq.phases, seq.rf=seq.rf, seq.like=seq.like,
                      data.name=data.name, probs = probs, twopt=twopt), class = "sequence")
     } else {
@@ -264,7 +264,7 @@ print.sequence <- function(x,...) {
     marnumbers <- formatC(x$seq.num, format="d", width=longest.number)
     distances <- formatC(c(0,cumsum(get(get(".map.fun", envir=.onemapEnv))(x$seq.rf))),format="f",digits=2,width=7)
     ## whith diplotypes for class 'outcross'
-    if(is(x$data.name,c("outcross", "f2"))){
+    if(inherits(x$data.name,c("outcross", "f2"))){
       ## create diplotypes from segregation types and linkage phases
       link.phases <- apply(link.phases,1,function(x) paste(as.character(x),collapse="."))
       parents <- matrix("",length(x$seq.num),4)
@@ -279,7 +279,7 @@ print.sequence <- function(x,...) {
       cat(length(marnames),"markers            log-likelihood:",ifelse(is.null(x$seq.like),"NULL",x$seq.like),"\n\n")
     }
     ## whithout diplotypes for other classes
-    else if(is(x$data.name, c("backcross", "riself", "risib"))){
+    else if(inherits(x$data.name, c("backcross", "riself", "risib"))){
       cat("\nPrinting map:\n\n")
       cat("Markers",rep("",max(longest.number+longest.name-7,0)+10),"Position",rep("",10),"\n\n")
       for (i in 1:length(x$seq.num)) {

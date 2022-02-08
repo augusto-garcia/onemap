@@ -47,7 +47,7 @@ acum <- function(w) {
 ##' 
 #' @export
 seq_by_type <- function(sequence, mk_type){
-  if(!is(sequence, c("sequence"))) stop("Input object must be of class sequence")
+  if(!inherits(sequence, c("sequence"))) stop("Input object must be of class sequence")
   if(length(mk_type) > 1) pat <- paste0(mk_type, collapse = "|") else pat <- mk_type
   type <- sequence$seq.num[grep(pat, sequence$data.name$segr.type[sequence$seq.num])]
   new.seq <- make_seq(sequence$twopt, type)
@@ -72,7 +72,7 @@ split_2pts <- function(twopts.obj, mks){
   twopts.obj$n.mar <- length(mks)
   twopts.obj$CHROM <- twopts.obj$CHROM[mks]
   twopts.obj$POS <- twopts.obj$POS[mks]
-  if(is(twopts.obj$data.name, c("outcross","f2"))){
+  if(inherits(twopts.obj$data.name, c("outcross","f2"))){
     new.twopts <- rep(list(matrix(0,nrow = length(mks), ncol = length(mks))),4)
     for(j in 1:(length(mks)-1)) {
       for(i in (j+1):length(mks)) {
@@ -133,7 +133,7 @@ split_2pts <- function(twopts.obj, mks){
 #'
 #'@export
 remove_inds <- function(onemap.obj, rm.ind){
-  if(!is(onemap.obj, "onemap")) stop("Input must to be of onemap class \n")
+  if(!inherits(onemap.obj, "onemap")) stop("Input must to be of onemap class \n")
   if(!(length(which(rownames(onemap.obj$geno) %in% rm.ind)) >0)) stop("We could not find any of these individuals in the dataset \n")
   
   new.onemap.obj <- onemap.obj
@@ -172,7 +172,7 @@ remove_inds <- function(onemap.obj, rm.ind){
 #' 
 #' @export
 sort_by_pos <- function(onemap.obj){
-  if(!is(onemap.obj, "onemap")) stop("Input must to be of onemap class \n")
+  if(!inherits(onemap.obj, "onemap")) stop("Input must to be of onemap class \n")
   
   idx <- order(onemap.obj$CHROM, onemap.obj$POS)
   
@@ -266,7 +266,7 @@ empty_onemap_obj <- function(vcf, P1, P2, cross){
 #' @export
 rm_dupli_mks <- function(onemap.obj){
   
-  if(!is(onemap.obj, c("onemap"))) stop("Input object must be of class onemap")
+  if(!inherits(onemap.obj, c("onemap"))) stop("Input object must be of class onemap")
   
   MKS <- colnames(onemap.obj$geno)
   GT_matrix <- t(onemap.obj$geno)
@@ -280,7 +280,7 @@ rm_dupli_mks <- function(onemap.obj){
       temp_GT <- GT_matrix[MKS==dupli[w],]
       mis_count <- apply(temp_GT, 1, function(x) sum(x==0))
       discard <- temp_GT[-which.min(mis_count),]
-      if(is(discard, "matrix")){
+      if(inherits(discard, "matrix")){
         for(j in 1:dim(discard)[1]){
           idx <- which(apply(GT_matrix, 1, function(x) all(x == discard[j,])))
           idx <- idx[MKS[idx] == dupli[w]][1]
@@ -337,26 +337,26 @@ check_data <- function(x){
   test[4] <- !dim(x$error)[1] == prod(dim(x$geno))
   test[5] <- if(!is.null(x$CHROM)) length(x$CHROM) != x$n.mar else FALSE
   test[6] <- if(!is.null(x$POS)) length(x$POS) != x$n.mar else FALSE
-  test[7] <- if(is(x, "f2")) {
+  test[7] <- if(inherits(x, "f2")) {
     !all(unique(x$segr.type) %in% c("A.H.B", "D.B", "C.A"))
-  } else if(is(x, "outcross")){
+  } else if(inherits(x, "outcross")){
     !all(unique(x$segr.type) %in% c("A.1", "A.2", "A.3", "A.4", "B1.5", 
                                     "B2.6", "B3.7", "C.8", "D1.9", "D1.10", 
                                     "D1.11", "D1.12", "D1.13", "D2.14", 
                                     "D2.15", "D2.16", "D2.17", "D2.18"))
-  } else if(is(x, "backcross")){
+  } else if(inherits(x, "backcross")){
     !all(unique(x$segr.type) %in% c("A.H"))
-  } else if(is(x, "riself") | is(x, "risib")){
+  } else if(inherits(x, "riself") | inherits(x, "risib")){
     !all(unique(x$segr.type) %in% c("A.B"))
   }
   
-  test[8] <- if(is(x, "f2")) {
+  test[8] <- if(inherits(x, "f2")) {
     !all(unique(x$segr.type.num) %in% c(4,6,7))
-  } else if(is(x, "outcross")){
+  } else if(inherits(x, "outcross")){
     !all(unique(x$segr.type.num) %in% 1:7)
-  } else if(is(x, "backcross")){
+  } else if(inherits(x, "backcross")){
     !all(unique(x$segr.type.num) %in% 8)
-  } else if(is(x, "riself") | is(x, "risib")){
+  } else if(inherits(x, "riself") | inherits(x, "risib")){
     !all(unique(x$segr.type.num) %in% 9)
   }
   
@@ -390,12 +390,12 @@ check_twopts <- function(x){
   names(test) <- 1:4
   
   test[1] <- if(check_data(x$data.name) == 0) FALSE else TRUE
-  if(is(x$data.name, "outcross") | is(x$data.name, "f2")){
-    test[2] <- !is(x$analysis, "list")
+  if(inherits(x$data.name, "outcross") | inherits(x$data.name, "f2")){
+    test[2] <- !inherits(x$analysis, "list")
     test[3] <- all(dim(x$analysis[[1]]) != rep(x$data.name$n.mar,2))
     test[4] <- any(sapply(x$analysis, function(x) any(is.na(x))))
   } else {
-    test[2] <- !is(x$analysis, "matrix")
+    test[2] <- !inherits(x$analysis, "matrix")
     test[3] <- all(dim(x$analysis) != rep(x$data.name$n.mar,2))
     test[4] <- any(is.na(x$analysis))
   }
@@ -432,11 +432,11 @@ check_twopts <- function(x){
 #' @export
 filter_2pts_gaps <- function(input.seq, max.gap=10){
   
-  if(!is(input.seq, "sequence"))
+  if(!inherits(input.seq, "sequence"))
     stop("input.seq object must be of class sequence.")
   
   ## extracting data
-  if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2"))
+  if(inherits(input.seq$data.name, "outcross") | inherits(input.seq$data.name, "f2"))
   {
     ## making a list with necessary information
     n.mrk <- length(input.seq$seq.num)
