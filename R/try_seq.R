@@ -110,7 +110,7 @@ try_seq<-function(input.seq,mrk,
                   pos= NULL,
                   verbose=FALSE)
 {
-  if(inherits(input.seq$data.name, "outcross") | inherits(input.seq$data.name, "f2"))
+  if(inherits(input.seq$data.name, c("outcross","f2")))
     return(try_seq_outcross(input.seq=input.seq,
                             mrk=mrk, tol=tol,
                             pos=pos, verbose=verbose))
@@ -233,8 +233,7 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=TRUE)
                             rf.vec=rf.temp,
                             verbose=verbose,
                             tol=tol)
-  if(inherits(input.seq$data.name, "riself") ||
-     inherits(input.seq$data.name, "risib"))
+  if(inherits(input.seq$data.name, c("riself","risib")))
     final.map$rf<-adjust_rf_ril(final.map$rf,
                                 type=class(input.seq$data.name)[2],
                                 expand = FALSE)
@@ -260,8 +259,7 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=TRUE)
                               rf.vec=rf.temp,
                               verbose=verbose,
                               tol=tol)
-    if(inherits(input.seq$data.name, "riself") ||
-       inherits(input.seq$data.name, "risib"))
+    if(inherits(input.seq$data.name, c("riself", "risib")))
       final.map$rf<-adjust_rf_ril(final.map$rf,
                                   type=class(input.seq$data.name)[2],
                                   expand = FALSE)
@@ -279,8 +277,7 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=TRUE)
                             rf.vec=rf.temp,
                             verbose=verbose,
                             tol=tol)
-  if(inherits(input.seq$data.name, "riself") ||
-     inherits(input.seq$data.name, "risib"))
+  if(inherits(input.seq$data.name, c("riself", "risib")))
     final.map$rf<-adjust_rf_ril(final.map$rf,
                                 type=class(input.seq$data.name)[2],
                                 expand = FALSE)
@@ -350,7 +347,7 @@ try_seq_outcross<- function(input.seq,mrk,
     rm.ab<-rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=c(mrk,input.seq$seq.num))
     Ph.Init <- Ph.Init[rm.ab,]
     Rf.Init <- Rf.Init[rm.ab,]
-    if(inherits(Ph.Init, "numeric") || inherits(Ph.Init,"integer")){
+    if(is(Ph.Init, "numeric") || is(Ph.Init,"integer")){
       Ph.Init<-matrix(Ph.Init,nrow=1)
       Rf.Init<-matrix(Rf.Init,nrow=1)
     }
@@ -410,7 +407,7 @@ try_seq_outcross<- function(input.seq,mrk,
       rm.ab<- rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)]))
       Ph.Init <- Ph.Init[rm.ab,]
       Rf.Init <- Rf.Init[rm.ab,]
-      if(inherits(Ph.Init, "numeric") || inherits(Ph.Init,"integer")){
+      if(is(Ph.Init, "numeric") || is(Ph.Init,"integer")){
         Ph.Init<-matrix(Ph.Init,nrow=1)
         Rf.Init<-matrix(Rf.Init,nrow=1)
       }
@@ -457,7 +454,7 @@ try_seq_outcross<- function(input.seq,mrk,
     rm.ab<-rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=c(input.seq$seq.num,mrk))
     Ph.Init <- Ph.Init[rm.ab,]
     Rf.Init <- Rf.Init[rm.ab,]
-    if(inherits(Ph.Init, "numeric") || inherits(Ph.Init,"integer")){
+    if(is(Ph.Init, "numeric") || is(Ph.Init,"integer")){
       Ph.Init<-matrix(Ph.Init,nrow=1)
       Rf.Init<-matrix(Rf.Init,nrow=1)
     }

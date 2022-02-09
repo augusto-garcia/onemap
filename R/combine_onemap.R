@@ -230,21 +230,21 @@ combine_onemap <- function(...) {
 split_onemap <- function(onemap.obj=NULL, mks=NULL){
     
     if(!inherits(onemap.obj, c("onemap"))) stop("Input object must be of class onemap")
-
-    if(inherits(mks, "character")){
+    
+    if(is(mks, "character")){
         idx.mks <- which(colnames(onemap.obj$geno) %in% mks)
         rev.mks <- which(!colnames(onemap.obj$geno) %in% mks)
         if(any(!mks %in% colnames(onemap.obj$geno))) 
             stop("One or more of the selected markers do not exist in the onemap object")
             
-    } else if(inherits(mks, c("numeric"))){
+    } else if(is(mks, "numeric")){
         idx.mks <- mks
         if(any(mks > onemap.obj$n.mar)) 
             stop("One or more of the selected markers do not exist in the onemap object")
         
         idx.temp <- 1:onemap.obj$n.mar
         rev.mks <- idx.temp[-mks]
-    }
+    } 
     
     new.obj <- onemap.obj
     new.obj$geno <- onemap.obj$geno[,idx.mks]
