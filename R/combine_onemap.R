@@ -230,7 +230,7 @@ combine_onemap <- function(...) {
 split_onemap <- function(onemap.obj=NULL, mks=NULL){
     
     if(!inherits(onemap.obj, c("onemap"))) stop("Input object must be of class onemap")
-
+  
     if(is(mks, "character")){
         idx.mks <- which(colnames(onemap.obj$geno) %in% mks)
         rev.mks <- which(!colnames(onemap.obj$geno) %in% mks)
@@ -244,7 +244,7 @@ split_onemap <- function(onemap.obj=NULL, mks=NULL){
         
         idx.temp <- 1:onemap.obj$n.mar
         rev.mks <- idx.temp[-mks]
-    }
+    } 
     
     new.obj <- onemap.obj
     new.obj$geno <- onemap.obj$geno[,idx.mks]
