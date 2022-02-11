@@ -653,6 +653,7 @@ write_onemap_raw <- function(onemap.obj=NULL,
     ind.names <- paste0("ID", 1:onemap.obj$n.ind)
   
   geno.mat <- onemap.obj$geno
+  if(is.vector(geno.mat)) geno.mat <- matrix(geno.mat)
   
   if(inherits(onemap.obj, "outcross")){
     
