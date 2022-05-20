@@ -295,7 +295,7 @@ calc.pair.rf.lod<-function(fname,weightfn='lod',...){
   
   d<-dd
   b<-matrix(0,ncol=nloci,nrow=nloci)
-  temp<-dcast(name1~name2,data=d,value="rfreq",add.missing=TRUE,fill=0)
+  temp<-dcast(name1~name2,data=d,value.var="rfreq",add.missing=TRUE,fill=0)
   tt<-as.matrix(temp[,2:(nloci)])
   colnames(tt)<-names(temp)[2:nloci]
   rownames(tt)<-temp$name1
@@ -305,7 +305,7 @@ calc.pair.rf.lod<-function(fname,weightfn='lod',...){
   rownames(rfmat)<-c(rownames(tt),colnames(tt)[nloci-1])
   rm(temp,tt,b)
   b<-matrix(0,ncol=nloci,nrow=nloci)  
-  temp<-dcast(name1~name2,data=d,value="lodscore",add.missing=TRUE,fill=0)
+  temp<-dcast(name1~name2,data=d,value.var ="lodscore",add.missing=TRUE,fill=0)
   tt<-as.matrix(temp[,2:(nloci)])  
   colnames(tt)<-names(temp)[2:nloci]
   rownames(tt)<-temp$name1
