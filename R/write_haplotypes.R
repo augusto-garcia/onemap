@@ -362,6 +362,9 @@ progeny_haplotypes_counts <- function(x){
   # Here we keep the genotype of the marker before it
   doubt <- x[which(x$prob == 0.5),]
   if(dim(doubt)[1] > 0){
+    if(any(which(x$prob == 0.5)) == 1){
+      x[1, "prob"] <- x[2, "prob"]
+    }
     repl <- x[which(x$prob == 0.5)-1,"prob"]
     x[which(x$prob == 0.5),"prob"] <- repl
   }
