@@ -15,6 +15,10 @@
 #                                                                     #
 #######################################################################
 
+#' Perform gaussian sum
+#' 
+#' @param w vector of numbers
+#' 
 acum <- function(w) {
   if (w<0) stop("'w' should be equal to or higher than zero")
   
