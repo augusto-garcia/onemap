@@ -301,10 +301,11 @@ compare_inbred_bc<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
       if (verbose) cat("Order", i, ":", all.ord[i,], "\n")
       flush.console()
       seq.temp<-make_seq(input.seq$twopt, arg=all.ord[i,])
-      seq.temp$twopt<-input.seq$twopt
-      rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
-      final.map<-est_map_hmm_f2(geno=t(input.seq$data.name$geno[,all.ord[i,]]),
-                                error=input.seq$data.name$error[all.ord[i,] + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(all.ord[i,])),],
+      rf.temp<- get_vec_rf_in(seq.temp, acum=FALSE)
+      final.map<- est_map_hmm_bc(geno=t(input.seq$data.name$geno[,all.ord[i,]]),
+                                error=input.seq$data.name$error[all.ord[i,] + 
+                                                                  rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, 
+                                                                      each=length(all.ord[i,])),],
                                 rf.vec=rf.temp,
                                 verbose=FALSE,
                                 tol=tol)
