@@ -77,19 +77,23 @@ split_2pts <- function(twopts.obj, mks){
   twopts.obj$CHROM <- twopts.obj$CHROM[mks]
   twopts.obj$POS <- twopts.obj$POS[mks]
   if(inherits(twopts.obj$data.name, c("outcross","f2"))){
-    new.twopts <- rep(list(matrix(0,nrow = length(mks), ncol = length(mks))),4)
-    for(j in 1:(length(mks)-1)) {
-      for(i in (j+1):length(mks)) {
-        k<-sort(c(mks[i], mks[j]))
-        for(w in 1:4){
-          r.temp<-twopts.obj$analysis[[w]][k[2], k[1]]
-          new.twopts[[w]][i,j]<-r.temp
-          LOD.temp<-twopts.obj$analysis[[w]][k[1], k[2]]
-          new.twopts[[w]][j,i]<-LOD.temp
-          colnames(new.twopts[[w]]) <- rownames(new.twopts[[w]]) <- colnames(split.dat$geno)
+    new.twopts <- lapply(twopts.obj$analysis, function(x){
+      temp <- matrix(0,nrow = length(mks), ncol = length(mks))
+      k <- vector()
+      for(j in 1:(length(mks)-1)) {
+        for(i in (j+1):length(mks)) {
+          k <-rbind(k, sort(c(mks[i], mks[j])))
         }
       }
-    }
+      LOD.temp<-x[k[,c(1,2)]]
+      temp[lower.tri((temp))]<-LOD.temp
+      temp <- t(temp) 
+      r.temp<-x[k[,c(2,1)]]
+      temp[lower.tri(temp)]<-r.temp
+      
+      colnames(temp) <- rownames(temp) <- colnames(split.dat$geno)
+      return(temp)
+    })
     names(new.twopts) <- c("CC", "CR", "RC", "RR")
   } else {
     new.twopts <- matrix(0, nrow = length(mks), ncol = length(mks))
@@ -493,5 +497,51 @@ filter_2pts_gaps <- function(input.seq, max.gap=10){
   }
   
   new.seq <- make_seq(input.seq$twopt, input.seq$seq.num[-rm.seq])
+  return(new.seq)
+}
+
+
+##' Filter markers according with a two-points recombination fraction and LOD threshold. Adapted from MAPpoly.
+##'
+##' @param input.seq an object of class \code{onemap}.
+#' @param thresh.LOD.rf LOD score threshold for recombination fraction (default = 5)
+#' @param thresh.rf threshold for recombination fractions (default = 0.15)
+#' @param probs indicates the probability corresponding to the filtering quantiles. (default = c(0.05, 1))
+##'
+##' @return An object of class \code{sequence}, which is a list containing the
+##' following components: \item{seq.num}{a \code{vector} containing the
+##' (ordered) indices of markers in the sequence, according to the input file.}
+##' \item{seq.phases}{a \code{vector} with the linkage phases between markers
+##' in the sequence, in corresponding positions. \code{-1} means that there are
+##' no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
+##' recombination frequencies between markers in the sequence. \code{-1} means
+##' that there are no estimated recombination frequencies.}
+##' \item{seq.like}{log-likelihood of the corresponding linkage map.}
+##' \item{data.name}{object of class \code{onemap} with the raw
+##' data.} \item{twopt}{object of class \code{rf_2pts} with the
+##' 2-point analyses.}
+##'
+##' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
+##' @examples
+##'
+##'  data("vcf_example_out")
+##'  twopts <- rf_2pts(vcf_example_out)
+##'  seq1 <- make_seq(twopts, which(vcf_example_out$CHROM == "1"))
+##' filt_seq <- rf_snp_filter_onemap(seq1, 20, 0.5, c(0.5,1))
+##'
+##'@export
+rf_snp_filter_onemap <- function(input.seq, thresh.LOD.rf = 5, thresh.rf = 0.15, probs = c(0.05,1)){
+  if(inherits(input.seq$data.name, "outcross") | inherits(input.seq$data.name, "f2")){
+    rf.mat <- get_mat_rf_out(input.seq, LOD = T)
+  } else {
+    rf.mat <- get_mat_rf_in(input.seq, LOD = T)
+  }
+  rf.mat[lower.tri(rf.mat)][rf.mat[lower.tri(rf.mat)]  <= thresh.LOD.rf] <- NA
+  rf.mat[upper.tri(rf.mat)][rf.mat[upper.tri(rf.mat)]  >= thresh.rf] <- NA
+  x <- apply(rf.mat, 1, function(x) sum(!is.na(x)))
+  th <- quantile(x, probs = probs)
+  rem <- c(which(x < th[1]), which(x > th[2]))
+  ids <- names(which(x >= th[1] & x <= th[2]))
+  new.seq <- make_seq(input.seq$twopt, match(ids, colnames(input.seq$data.name$geno)))
   return(new.seq)
 }

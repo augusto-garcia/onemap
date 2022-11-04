@@ -78,23 +78,32 @@ test_that("ordering and HMM parallel", {
 
     # Testing with only one core
     LG.map <- map(make_seq(LG.mds$twopt, LG.mds$seq.num))
-    size <- cumsum(kosambi(LG.map$seq.rf))
-    eval(bquote(expect_equal(size[length(size)], .(right.size), tolerance = tol.size)))
+    size.map <- cumsum(kosambi(LG.map$seq.rf))
+    eval(bquote(expect_equal(size.map[length(size.map)], .(right.size), tolerance = tol.size)))
 
     LG.map.avoid <- map_avoid_unlinked(make_seq(LG.mds$twopt, LG.mds$seq.num))
-    size <- cumsum(kosambi(LG.map.avoid$seq.rf))
-    eval(bquote(expect_equal(size[length(size)], .(right.size), tolerance = tol.size)))
+    size.map.avoid <- cumsum(kosambi(LG.map.avoid$seq.rf))
+    eval(bquote(expect_equal(size.map.avoid[length(size.map.avoid)], .(right.size), tolerance = tol.size)))
+    
+    expect_equal(size.map[length(size.map)], size.map.avoid[length(size.map.avoid)])
 
     LG.map.save <- onemap:::map_save_ram(input.seq = make_seq(LG.mds$twopt, LG.mds$seq.num))
     size <- cumsum(kosambi(LG.map.save$seq.rf))
     eval(bquote(expect_equal(size[length(size)], .(right.size), tolerance = tol.size)))
 
+    expect_equal(size.map[length(size.map)], size[length(size)])
+    
     # Testing try_seq_by_seq
     new_seq <- try_seq_by_seq(LG.map.save, make_seq(LG.map.save$twopt, 28:31)$seq.num)
     eval(bquote(expect_equal(length(new_seq$seq.num), .(n.mar))))
   }
 
-  ordering_func("simu_example_out", 1:27, 100, 3, 10,27)
+  ordering_func(example_data = "simu_example_out", 
+                right.order = 1:27, 
+                right.size = 100, 
+                tol.order = 3, 
+                tol.size = 10,
+                n.mar = 27)
   ordering_func("simu_example_f2", 1:27, 100, 3, 10,27)
   ordering_func("simu_example_bc",1:27, 100, 3,10,27)
 })
