@@ -79,33 +79,32 @@ split_2pts <- function(twopts.obj, mks){
   if(inherits(twopts.obj$data.name, c("outcross","f2"))){
     new.twopts <- lapply(twopts.obj$analysis, function(x){
       temp <- matrix(0,nrow = length(mks), ncol = length(mks))
-      k <- vector()
-      for(j in 1:(length(mks)-1)) {
-        for(i in (j+1):length(mks)) {
-          k <-rbind(k, sort(c(mks[i], mks[j])))
-        }
-      }
+      k <- matrix(c(rep(mks[1:(length(mks))], each = length(mks)), 
+                    rep(mks[1:(length(mks))], length(mks))), ncol = 2)
+      k <- k[-which(k[,1] == k[,2]),]
+      k <- t(apply(k, 1, sort))
+      k <- k[-which(duplicated(k)),]
       LOD.temp<-x[k[,c(1,2)]]
       temp[lower.tri((temp))]<-LOD.temp
       temp <- t(temp) 
       r.temp<-x[k[,c(2,1)]]
       temp[lower.tri(temp)]<-r.temp
-      
       colnames(temp) <- rownames(temp) <- colnames(split.dat$geno)
       return(temp)
     })
     names(new.twopts) <- c("CC", "CR", "RC", "RR")
   } else {
-    new.twopts <- matrix(0, nrow = length(mks), ncol = length(mks))
-    for(i in 1:(length(mks)-1)) {
-      for(j in (i+1):length(mks)) {
-        k<-sort(c(mks[i], mks[j]))
-        r.temp<-twopts.obj$analysis[k[1], k[2]]
-        new.twopts[i,j]<-r.temp
-        LOD.temp<-twopts.obj$analysis[k[2], k[1]]
-        new.twopts[j,i]<-LOD.temp
-      }
-    }
+    new.twopts <- matrix(0,nrow = length(mks), ncol = length(mks))
+    k <- matrix(c(rep(mks[1:(length(mks))], each = length(mks)), 
+                  rep(mks[1:(length(mks))], length(mks))), ncol = 2)
+    k <- k[-which(k[,1] == k[,2]),]
+    k <- t(apply(k, 1, sort))
+    k <- k[-which(duplicated(k)),]
+    LOD.temp<- twopts.obj$analysis[k[,c(1,2)]]
+    new.twopts[lower.tri((new.twopts))] <- LOD.temp
+    new.twopts <- t(new.twopts) 
+    r.temp<- twopts.obj$analysis[k[,c(2,1)]]
+    new.twopts[lower.tri(new.twopts)] <- r.temp
     colnames(new.twopts) <- rownames(new.twopts) <- colnames(split.dat$geno)
   }
   twopts.obj$analysis <- new.twopts

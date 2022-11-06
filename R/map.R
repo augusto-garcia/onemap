@@ -315,6 +315,22 @@ map <- function(input.seq,tol=10E-5, verbose=FALSE,
                                  rf.vec=rf.init,
                                  verbose=FALSE,
                                  tol=tol)
+    idx <- 1
+    while(final.map$loglike == -Inf){
+      idx <- idx + 1
+      tol.up <- tol*(idx*10)
+      warning(paste0("HMM likelihood returned with this tolerance was -Inf. Tolerance used:", tol.up))
+      final.map <- est_map_hmm_out(geno=t(input.seq$data.name$geno[,seq.num]),
+                                   error = input.seq$data.name$error[seq.num + 
+                                                                       rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, 
+                                                                           each=length(seq.num)),],
+                                   type=input.seq$data.name$segr.type.num[seq.num],
+                                   phase=seq.phases,
+                                   rf.vec=rf.init,
+                                   verbose=FALSE,
+                                   tol=tol.up)
+      
+    }
     
     return(structure(list(seq.num=seq.num, seq.phases=seq.phases, seq.rf=final.map$rf,
                           seq.like=final.map$loglike, data.name=input.seq$data.name, 
