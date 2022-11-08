@@ -4,12 +4,19 @@
 \alias{filter_missing}
 \title{Filter markers according with a missing data threshold}
 \usage{
-filter_missing(onemap.obj = NULL, threshold = 0.25, verbose = TRUE)
+filter_missing(
+  onemap.obj = NULL,
+  threshold = 0.25,
+  by = "markers",
+  verbose = TRUE
+)
 }
 \arguments{
 \item{onemap.obj}{an object of class \code{onemap}.}
 
 \item{threshold}{a numeric from 0 to 1 to define the threshold of missing data allowed}
+
+\item{by}{character defining if `markers` or `individuals` should be filtered}
 
 \item{verbose}{A logical, if TRUE it output progress status
 information.}

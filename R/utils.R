@@ -544,3 +544,55 @@ rf_snp_filter_onemap <- function(input.seq, thresh.LOD.rf = 5, thresh.rf = 0.15,
   new.seq <- make_seq(input.seq$twopt, match(ids, colnames(input.seq$data.name$geno)))
   return(new.seq)
 }
+
+##'   Creates a new sequence by adding markers.
+##'
+##'   Creates a new sequence by adding markers from a predetermined
+##'   one. The markers are added in the end of the sequence.
+##'
+##' @param input.seq an object of class \code{sequence}.
+##'
+##' @param mrks a vector containing the markers to be added from the
+##'     \code{sequence}.
+##'
+##' @return An object of class \code{sequence}, which is a list
+##'     containing the following components:
+##'
+##' \item{seq.num}{a \code{vector} containing the (ordered) indices of
+##'     markers in the sequence, according to the input file.}
+##'
+##' \item{seq.phases}{a \code{vector} with the linkage phases between
+##'     markers in the sequence, in corresponding positions. \code{-1}
+##'     means that there are no defined linkage phases.}
+##'
+##' \item{seq.rf}{a \code{vector} with the recombination fractions
+##'     between markers in the sequence. \code{-1} means that there
+##'     are no estimated recombination fractions.}
+##'
+##' \item{seq.like}{log-likelihood of the corresponding linkage map.}
+##'     \item{data.name}{name of the object of class \code{onemap}
+##'     with the raw data.}
+##'
+##' \item{twopt}{name of the object of class \code{rf_2pts} with the
+##'     2-point analyses.}
+##'
+##'  @author Marcelo Mollinari, \email{mmollina@@usp.br}
+##'
+##' @seealso \code{\link[onemap]{drop_marker}}
+##'
+##' @examples
+##' data(onemap_example_out)
+##' twopt <- rf_2pts(onemap_example_out)
+##' all_mark <- make_seq(twopt,"all")
+##' groups <- group(all_mark)
+##' (LG1 <- make_seq(groups,1))
+##' (LG.aug<-add_marker(LG1, c(4,7)))
+##'
+##' @export
+add_marker<-function(input.seq, mrks)
+{
+  if (!inherits(input.seq,"sequence"))
+    stop(sQuote(deparse(substitute(input.seq))), " is not an object of class 'sequence'")
+  seq.num<-c(input.seq$seq.num,mrks)
+  return(make_seq(input.seq$twopt,seq.num, twopt=input.seq$twopt))
+}

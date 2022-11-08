@@ -19,6 +19,7 @@
 ##'
 ##' @param onemap.obj an object of class \code{onemap}.
 ##' @param threshold a numeric from 0 to 1 to define the threshold of missing data allowed
+##' @param by character defining if `markers` or `individuals` should be filtered
 ##' @param verbose A logical, if TRUE it output progress status
 ##' information.
 ##' 
@@ -47,22 +48,39 @@
 ##'   filt_obj <- filter_missing(onemap_example_out, threshold=0.25)
 ##'  
 ##'@export
-filter_missing <- function(onemap.obj=NULL, threshold= 0.25,  verbose = TRUE){
+filter_missing <- function(onemap.obj=NULL, threshold= 0.25, by = "markers", verbose = TRUE){
   if(!inherits(onemap.obj,"onemap")){
     stop("onemap.obj should be of class onemap\n")
   }
-  perc.mis <- apply(onemap.obj$geno, 2, function(x) sum(x == 0)/length(x))
-  idx <- which(!perc.mis > threshold)
   
-  new.onemap.obj <- onemap.obj
-  new.onemap.obj$geno <- onemap.obj$geno[,idx]
-  new.onemap.obj$n.mar <- length(idx)
-  new.onemap.obj$segr.type <- onemap.obj$segr.type[idx]
-  new.onemap.obj$segr.type.num <- onemap.obj$segr.type.num[idx]
-  new.onemap.obj$CHROM <- onemap.obj$CHROM[idx]
-  new.onemap.obj$POS <- onemap.obj$POS[idx]
-  new.onemap.obj$error <- onemap.obj$error[idx + rep(c(0:(onemap.obj$n.ind-1))*onemap.obj$n.mar, each=length(idx)),]
-  if(verbose) cat("Number of markers removed from the onemap object: ", length(which(perc.mis > threshold)), "\n")
+  if(by == "markers"){
+    perc.mis <- apply(onemap.obj$geno, 2, function(x) sum(x == 0)/length(x))
+    idx <- which(!perc.mis > threshold)
+    
+    new.onemap.obj <- onemap.obj
+    new.onemap.obj$geno <- onemap.obj$geno[,idx]
+    new.onemap.obj$n.mar <- length(idx)
+    new.onemap.obj$segr.type <- onemap.obj$segr.type[idx]
+    new.onemap.obj$segr.type.num <- onemap.obj$segr.type.num[idx]
+    new.onemap.obj$CHROM <- onemap.obj$CHROM[idx]
+    new.onemap.obj$POS <- onemap.obj$POS[idx]
+    new.onemap.obj$error <- onemap.obj$error[idx + rep(c(0:(onemap.obj$n.ind-1))*onemap.obj$n.mar, each=length(idx)),]
+    if(verbose) cat("Number of markers removed from the onemap object: ", length(which(perc.mis > threshold)), "\n")
+  } else if (by == "individuals"){
+    perc.mis <- apply(onemap.obj$geno, 1, function(x) sum(x == 0)/length(x))
+    idx <- which(!perc.mis > threshold)
+    
+    new.onemap.obj <- onemap.obj
+    new.onemap.obj$geno <- onemap.obj$geno[idx,]
+    new.onemap.obj$n.ind <- length(idx)
+    stay <- names(idx)
+    now <- sapply(strsplit(rownames(new.onemap.obj$error), "_"), "[[", 2)
+    idx <- which(now %in% stay)
+    new.onemap.obj$error <- onemap.obj$error[idx,]
+    if(verbose) cat("Number of indiduals removed from the onemap object: ", length(which(perc.mis > threshold)), "\n")
+  } else {
+    stop("Input for argument by is not defined. Please choose between `markers` or `individuals` options.")
+  }
   return(new.onemap.obj)
 }
 
