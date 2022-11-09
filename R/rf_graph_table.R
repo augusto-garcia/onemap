@@ -124,13 +124,15 @@ rf_graph_table <- function(input.seq,
     n.mrk <- length(input.seq$seq.num)
     LOD <- lapply(input.seq$twopt$analysis,
                   function(x, w){
-                    m<-matrix(0, length(w), length(w))
-                    for(i in 1:(length(w)-1)){
-                      for(j in (i+1):length(w)){
-                        z<-sort(c(w[i],w[j]))
-                        m[j,i]<-m[i,j]<-x[z[1], z[2]]
-                      }
-                    }
+                    m <- matrix(0,nrow = length(w), ncol = length(w))
+                    k <- matrix(c(rep(w[1:(length(w))], each = length(w)), 
+                                  rep(w[1:(length(w))], length(w))), ncol = 2)
+                    k <- k[-which(k[,1] == k[,2]),]
+                    k <- t(apply(k, 1, sort))
+                    k <- k[-which(duplicated(k)),]
+                    LOD.temp<- x[k[,c(1,2)]]
+                    m[lower.tri((m))] <- LOD.temp
+                    m[upper.tri(m)] <- t(m)[upper.tri(m)]
                     return(m)
                   }, input.seq$seq.num
     )
@@ -139,12 +141,15 @@ rf_graph_table <- function(input.seq,
     ## making a list with necessary information
     n.mrk <- length(input.seq$seq.num) 
     LOD<-matrix(0, length(input.seq$seq.num), length(input.seq$seq.num))
-    for(i in 1:(length(input.seq$seq.num)-1)){
-      for(j in (i+1):length(input.seq$seq.num)){
-        z<-sort(c(input.seq$seq.num[i],input.seq$seq.num[j]))
-        LOD[j,i]<-LOD[i,j]<-input.seq$twopt$analysis[z[1], z[2]]
-      }
-    }
+    k <- matrix(c(rep(input.seq$seq.num[1:(length(input.seq$seq.num))], each = length(input.seq$seq.num)), 
+                  rep(input.seq$seq.num[1:(length(input.seq$seq.num))], length(input.seq$seq.num))), ncol = 2)
+    k <- k[-which(k[,1] == k[,2]),]
+    k <- t(apply(k, 1, sort))
+    k <- k[-which(duplicated(k)),]
+    LOD.temp<- input.seq$twopt$analysis[k[,c(1,2)]]
+    LOD[lower.tri((LOD))] <- LOD.temp
+    LOD[upper.tri(LOD)] <- t(LOD)[upper.tri(LOD)]
+    
     mat<-t(get_mat_rf_in(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
   }
   
@@ -212,8 +217,6 @@ rf_graph_table <- function(input.seq,
                             melt(round(LOD$RR,2), value.name="RR")))
     
     colnames(df.graph)[5:8] <- paste0("LOD.",c("CC","CR","RC","RR"))
-    
-    
     
   }else{
     df.graph <- merge(melt(round(mat.rf,2), value.name="rf"),
