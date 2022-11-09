@@ -31,9 +31,11 @@ Within each bin, the pairwise recombination fraction between markers is zero.
 }
 \examples{
 \donttest{
-  data("onemap_example_f2")
-  (bins<-find_bins(onemap_example_f2, exact=FALSE))
+  data("vcf_example_out")
+  (bins<-find_bins(vcf_example_out, exact=FALSE))
 }
+
+
 }
 \seealso{
 \code{\link[onemap]{create_data_bins}}
