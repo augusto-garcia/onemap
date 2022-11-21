@@ -122,6 +122,8 @@ create_depths_profile <- function(onemap.obj = NULL,
   
   colnames(p.gt) <- c("mks", id.parents)
   p.gt <- gather(p.gt, "ind", "gt.onemap", -"mks")
+  if(all(is.na(match(parents$mks, p.gt$mks))))
+    parents$mks <- paste0(vcfR.object@fix[,1], "_", vcfR.object@fix[,2])[match(parents$mks, vcfR.object@fix[,3])]
   parents <- merge(parents, p.gt)
   
   # parents vcf genotypes
