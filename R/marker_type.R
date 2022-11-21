@@ -9,7 +9,6 @@
 # copyright (c) 2007-9, Gabriel R A Margarido                         #
 #                                                                     #
 # First version: 11/07/2007                                           #
-# Last update: 04/04/2016                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -35,40 +34,42 @@
 ##' \tab oo x ao \tab 1:1 }
 ##'
 ##' @param input.seq an object of class \code{sequence}.
-##' @return Nothing is returned. Segregation types of all markers in the
+##' @return data.frame with segregation types of all markers in the
 ##' sequence are displayed on the screen.
 ##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com}
 ##' @seealso \code{\link[onemap]{make_seq}}
 ##' @references Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002)
 ##' Simultaneous maximum likelihood estimation of linkage and linkage phases in
 ##' outcrossing species. \emph{Theoretical Population Biology} 61: 349-363.
-##' @keywords manip utilities
+##' @keywords utilities
 ##' @examples
+##' \donttest{
+##'  data(onemap_example_out)
+##'  twopts <- rf_2pts(onemap_example_out)
+##'  markers.ex <- make_seq(twopts,c(3,6,8,12,16,25))
+##'  marker_type(input.seq = markers.ex) # segregation type for some markers
 ##'
-##'   data(onemap_example_out)
-##'   twopts <- rf_2pts(onemap_example_out)
-##'   markers.ex <- make_seq(twopts,c(3,6,8,12,16,25))
-##'   marker_type(markers.ex) # segregation type for some markers
-##'
-##'   data(onemap_example_f2)
-##'   twopts <- rf_2pts(onemap_example_f2)
-##'   all_mrk<-make_seq(twopts, "all")
-##'   lgs<-group(all_mrk)
-##'   lg1<-make_seq(lgs,1)
-##'   marker_type(lg1) # segregation type for linkage group 1
-##'
+##'  data(onemap_example_f2)
+##'  twopts <- rf_2pts(onemap_example_f2)
+##'  all_mrk<-make_seq(twopts, "all")
+##'  lgs<-group(all_mrk)
+##'  lg1<-make_seq(lgs,1)
+##'  marker_type(lg1) # segregation type for linkage group 1
+##' }
 ##'@export
 marker_type <- function(input.seq) {
   ## checking for correct objects
-  if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+  if(!inherits(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   
   ## printing marker type
   
-  tot <- vector()
-  if(is(input.seq$data.name,"outcross")) {
+  tot <- data.frame()
+  if(inherits(input.seq$data.name,c("outcross","f2"))) {
     for(i in 1:length(input.seq$seq.num)){
-      temp <- paste("  Marker", input.seq$seq.num[i], "(", colnames(input.seq$twopt$analysis[[1]])[input.seq$seq.num[i]], ") is of type", input.seq$data.name$segr.type[input.seq$seq.num[i]], "\n")
-      tot <- c(tot, temp)
+      temp <- data.frame(Marker = input.seq$seq.num[i], 
+                         Marker.name = colnames(input.seq$twopt$analysis[[1]])[input.seq$seq.num[i]], 
+                         Type = input.seq$data.name$segr.type[input.seq$seq.num[i]])
+      tot <- rbind(tot, temp)
     }
   } else{
     for(i in 1:length(input.seq$seq.num)){
@@ -80,8 +81,8 @@ marker_type <- function(input.seq) {
       mrk.type[input.seq$data.name$segr.type[input.seq$seq.num]=="A.H"]<-"AA : AB (1:1)"
       mrk.type[input.seq$data.name$segr.type[input.seq$seq.num]=="A.B"]<-"AA : BB (1:1)"
       
-      temp <- paste("  Marker", input.seq$seq.num[i], "(", colnames(input.seq$twopt$analysis)[input.seq$seq.num[i]], ") -->", mrk.type[i], "\n")
-      tot <- c(tot, temp)
+      temp <- data.frame(Marker = input.seq$seq.num[i], Marker.name =  colnames(input.seq$twopt$analysis)[input.seq$seq.num[i]], Type = mrk.type[i])
+      tot <- rbind(tot, temp)
     }
   }
   return(tot)

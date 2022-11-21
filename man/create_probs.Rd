@@ -2,24 +2,71 @@
 % Please edit documentation in R/create_probs.R
 \name{create_probs}
 \alias{create_probs}
-\title{Converts probabilities to onemap format}
+\title{Build genotype probabilities matrix for hmm}
 \usage{
 create_probs(
-  onemap.obj = NULL,
+  input.obj = NULL,
   global_error = NULL,
   genotypes_errors = NULL,
   genotypes_probs = NULL
 )
 }
 \arguments{
-\item{onemap.obj}{define}
+\item{input.obj}{object of class onemap or onemap sequence}
 
-\item{global_error}{define}
+\item{global_error}{a integer specifing the global error value}
 
-\item{genotypes_errors}{define}
+\item{genotypes_errors}{a matrix with dimensions (number of individuals) x (number of markers) with genotypes errors values}
 
-\item{genotypes_probs}{define}
+\item{genotypes_probs}{a matrix with dimensions (number of individuals)*(number of markers) x possible genotypes 
+(i.e., a ab ba b) with four columns for f2 and outcrossing populations, and two for backcross and RILs).}
+}
+\value{
+An object of class \code{onemap}, i.e., a list with the following
+components: \item{geno}{a matrix with integers indicating the genotypes
+read for each marker. Each column contains data for a marker and each row
+represents an individual.} \item{n.ind}{number of individuals.}
+\item{n.mar}{number of markers.} \item{segr.type}{a vector with the
+segregation type of each marker, as \code{strings}.} \item{segr.type.num}{a
+vector with the segregation type of each marker, represented in a
+simplified manner as integers, i.e. 1 corresponds to markers of type
+\code{"A"}; 2 corresponds to markers of type \code{"B1.5"}; 3 corresponds
+to markers of type \code{"B2.6"}; 4 corresponds to markers of type
+\code{"B3.7"}; 5 corresponds to markers of type \code{"C.8"}; 6 corresponds
+to markers of type \code{"D1"} and 7 corresponds to markers of type
+\code{"D2"}. Markers for F2 intercrosses are coded as 1; all other crosses
+are left as \code{NA}.} \item{input}{the name of the input file.}
+\item{n.phe}{number of phenotypes.} \item{pheno}{a matrix with phenotypic
+values. Each column contains data for a trait and each row represents an
+individual.} \item{error}{matrix containing HMM emission probabilities}
 }
 \description{
-Converts probabilities to onemap format
+The genotypes probabilities can be calculated considering a global error (default method)
+or considering a genotype error probability for each genotype. Furthermore, user can provide 
+directly the genotype probability matrix.
+}
+\details{
+The genotype probability matrix has number of individuals x number of markers rows and
+four columns (or two if considering backcross or RILs populations), one for each possible genotype
+of the population. This format follows the one proposed by MAPpoly.
+
+The genotype probabilities come from SNP calling methods. If you do not have them, you can use a global
+error or a error value for each genotype. The OneMap until 2.1 version have only the global error option.
+}
+\examples{
+
+  data(onemap_example_out)
+  new.data <- create_probs(onemap_example_out, global_error = 10^-5)
+  
+}
+\references{
+Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
+(2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
+1.09-43
+}
+\seealso{
+\code{\link[onemap]{make_seq}}
+}
+\author{
+Cristiane Taniguti \email{chtaniguti@tamu.edu}
 }

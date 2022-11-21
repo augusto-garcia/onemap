@@ -4,12 +4,15 @@
 \alias{read_onemap}
 \title{Read data from all types of progenies supported by OneMap}
 \usage{
-read_onemap(inputfile = NULL, dir = NULL)
+read_onemap(inputfile = NULL, dir = NULL, verbose = TRUE)
 }
 \arguments{
 \item{inputfile}{the name of the input file which contains the data to be read.}
 
 \item{dir}{directory where the input file is located.}
+
+\item{verbose}{A logical, if TRUE it output progress status
+information.}
 }
 \value{
 An object of class \code{onemap}, i.e., a list with the following
@@ -28,7 +31,7 @@ to markers of type \code{"D1"} and 7 corresponds to markers of type
 are left as \code{NA}.} \item{input}{the name of the input file.}
 \item{n.phe}{number of phenotypes.} \item{pheno}{a matrix with phenotypic
 values. Each column contains data for a trait and each row represents an
-individual.}
+individual.} \item{error}{matrix containing HMM emission probabilities}
 }
 \description{
 Imports data derived from outbred parents (full-sib family) or inbred
@@ -90,10 +93,10 @@ example data file to be read with this function. Further instructions can
 be found at the tutorial distributed along with this package.
 }
 \examples{
-
-  \dontrun{
-    outcr_data <- read_onemap(dir="work_directory", inputfile="data_file.txt")
-  }
+\donttest{
+ outcr_data <- read_onemap(inputfile= 
+ system.file("extdata/onemap_example_out.raw", package= "onemap"))
+}
 }
 \references{
 Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993)

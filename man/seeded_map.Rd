@@ -9,8 +9,9 @@ seeded_map(
   tol = 1e-04,
   phase_cores = 1,
   seeds,
-  verbose = F,
-  rm_unlinked = F
+  verbose = FALSE,
+  rm_unlinked = FALSE,
+  parallelization.type = "PSOCK"
 )
 }
 \arguments{
@@ -30,6 +31,9 @@ information.}
 
 \item{rm_unlinked}{When some pair of markers do not follow the linkage criteria, 
 if \code{TRUE} one of the markers is removed and map is performed again.}
+
+\item{parallelization.type}{one of the supported cluster types. This should 
+be either PSOCK (default) or FORK.}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the
@@ -58,13 +62,13 @@ recombination fraction is the same in both parents. Hidden Markov chain
 codes adapted from Broman et al. (2008) were used.
 }
 \examples{
-
+\donttest{
   data(onemap_example_out)
   twopt <- rf_2pts(onemap_example_out)
 
   markers <- make_seq(twopt,c(30,12,3,14,2))
   seeded_map(markers, seeds = c(4,2))
-
+}
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.

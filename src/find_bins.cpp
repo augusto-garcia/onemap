@@ -45,10 +45,9 @@
 using namespace std;
 using namespace Rcpp;
 
-RcppExport SEXP get_bins(SEXP geno_R, SEXP exact_R, SEXP barWidth_R)
+RcppExport SEXP get_bins(SEXP geno_R, SEXP exact_R)
 {
   int exact = Rcpp::as<int>(exact_R);
-  int barWidth = Rcpp::as<int>(barWidth_R);
   Rcpp::NumericMatrix geno = Rcpp::as<Rcpp::NumericMatrix>(geno_R);
   int n_mar = geno.ncol();
   int n_ind = geno.nrow();
@@ -56,7 +55,7 @@ RcppExport SEXP get_bins(SEXP geno_R, SEXP exact_R, SEXP barWidth_R)
   b_vec[0]=1;
   std::vector<int> b(n_mar);
   std::fill(b.begin(), b.end(), 1);
-  int flag, l;
+  int flag = 0, l;
   if(exact)
   {
     for(int i = 0; i < n_mar; i++)
@@ -119,12 +118,12 @@ RcppExport SEXP get_bins(SEXP geno_R, SEXP exact_R, SEXP barWidth_R)
   return(wrap(b));
 }
 
-/*Check if x is contaibed in v. If yes, it returns its position in v; returns -1 owtherwise*/
+/*Check if x is contained in v. If yes, it returns its position in v; returns -1 otherwise*/
 int check_occurrence(std::vector<int>& v, int x)
 {
-  for(int i = 0; i < v.size(); i++)
+  for(int i = 0; (unsigned)i < v.size(); i++)
     if(v[i]==x)
       return(i);
-    return(-1);
+        return(-1);
 }
 

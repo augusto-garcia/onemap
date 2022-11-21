@@ -11,4 +11,6 @@ onemap.Rproj
 *.bak
 *.Rproj
 Meta
-new_find_bins
+/doc/
+/Meta/
+/src/onemap.dll

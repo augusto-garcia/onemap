@@ -10,6 +10,12 @@ set_map_fun(type = c("kosambi", "haldane"))
 \item{type}{Indicates the function that should be used, which can be
 \code{"kosambi"} or \code{"haldane"}}
 }
+\value{
+No return value, called for side effects
+
+Kosambi, D. D. (1944) The estimation of map distance from recombination
+values. \emph{Annuaire of Eugenetics} 12: 172-175.
+}
 \description{
 Defines the function that should be used to display the genetic map through
 the analysis.
@@ -18,9 +24,6 @@ the analysis.
 Haldane, J. B. S. (1919) The combination of linkage values and
 the calculation of distance between the loci of linked factors.
 \emph{Journal of Genetics} 8: 299-309.
-
-Kosambi, D. D. (1944) The estimation of map distance from recombination
-values. \emph{Annuaire of Eugenetics} 12: 172-175.
 }
 \seealso{
 \code{\link[onemap]{kosambi}} and \code{\link[onemap]{haldane}}

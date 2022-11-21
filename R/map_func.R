@@ -9,13 +9,18 @@
 # copyright (c) 2007-9, Gabriel R A Margarido                         #
 #                                                                     #
 # First version: 11/07/2007                                           #
-# Last update: 11/07/2007                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
-##'@export
-haldane <-
-function(rcmb) {
+
+#' Apply Haldane mapping function
+#' 
+#' @param rcmb vector of recombination fraction values
+#' 
+#' @return vector with centimorgan values
+#' 
+#' @export
+haldane <- function(rcmb) {
   # rcmb must be a number between 0 and 0.5
   if (is.numeric(rcmb) & !any(is.nan(rcmb))) {
     if (all(rcmb >= 0) & all(rcmb <= 0.5)){
@@ -26,9 +31,14 @@ function(rcmb) {
             dQuote("numeric"),". Check if you don't have excess of missing data in your onemap object.")
 }
 
-##'@export
-kosambi <-
-function(rcmb) {
+#' Apply Kosambi mapping function
+#' 
+#' @param rcmb vector of recombination fraction values
+#' 
+#' @return vector with centimorgan values
+#' 
+#' @export
+kosambi <- function(rcmb) {
   # rcmb must be a number between 0 and 0.5
   if (is.numeric(rcmb) & !any(is.nan(rcmb))) {
     if (all(rcmb >= 0) && all(rcmb <= 0.5)){
@@ -49,18 +59,21 @@ function(rcmb) {
 ##'
 ##' @param type Indicates the function that should be used, which can be
 ##' \code{"kosambi"} or \code{"haldane"}
+##' 
 ##' @author Marcelo Mollinari, \email{mmollina@@usp.br}
 ##' @seealso \code{\link[onemap]{kosambi}} and \code{\link[onemap]{haldane}}
 ##' @references Haldane, J. B. S. (1919) The combination of linkage values and
 ##' the calculation of distance between the loci of linked factors.
 ##' \emph{Journal of Genetics} 8: 299-309.
+##' 
+##' @return No return value, called for side effects
 ##'
 ##' Kosambi, D. D. (1944) The estimation of map distance from recombination
 ##' values. \emph{Annuaire of Eugenetics} 12: 172-175.
 ##' @keywords arith
+##' 
 ##' @export
-set_map_fun<-
-  function(type=c("kosambi", "haldane")){
+set_map_fun<- function(type=c("kosambi", "haldane")){
     type<-match.arg(type,c("kosambi", "haldane"))
     if(type=="haldane") assign(".map.fun",  "haldane", envir = .onemapEnv)
     else assign(".map.fun",  "kosambi", envir = .onemapEnv)

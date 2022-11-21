@@ -10,7 +10,8 @@ group_seq(
   unlink.mks = "all",
   repeated = FALSE,
   LOD = NULL,
-  max.rf = NULL
+  max.rf = NULL,
+  min_mks = NULL
 )
 }
 \arguments{
@@ -34,6 +35,9 @@ they are removed of the output sequences.}
 
 \item{max.rf}{a real number (usually smaller than 0.5) used as
 maximum recombination fraction to declare linkage.}
+
+\item{min_mks}{integer defining the minimum number of markers that a provided 
+sequence (seqs or CHROM) should have to be considered a group.}
 }
 \value{
 Returns an object of class \code{group_seq}, which is a list
@@ -68,6 +72,7 @@ using \code{NULL}, the new values override the ones in object
 \code{input.2pts}.
 }
 \examples{
+\donttest{
 data(onemap_example_out) # load OneMap's fake dataset for a outcrossing population
 data(vcf_example_out) # load OneMap's fake dataset from a VCF file for a outcrossing population
 comb_example <- combine_onemap(onemap_example_out, vcf_example_out) # Combine datasets
@@ -82,11 +87,11 @@ seq3 <- make_seq(twopts, c(4,16,20,21,24,29))
 
 out_seqs <- group_seq(twopts, seqs=list(seq1,seq2,seq3))
 out_seqs
-
+}
 }
 \seealso{
 \code{\link[onemap]{make_seq}} and \code{\link[onemap]{group}}
 }
 \author{
-Cristiane Taniguti, \email{chtaniguti@usp.br}
+Cristiane Taniguti, \email{chtaniguti@tamu.edu}
 }

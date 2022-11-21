@@ -3,14 +3,12 @@
 ## Package: onemap                                                     ##
 ##                                                                     ##
 ## File: try_seq.R                                                     ##
-## Contains: try_seq, print.try, draw.try                              ##
+## Contains: try_seq, print.try, draw.try, try_seq_by_seq              ##
 ##                                                                     ##
-## Written by Marcelo Mollinari with minor changes by Cristiane        ##
-## Taniguti                                                            ##
+## Written by Marcelo Mollinari and Cristiane Taniguti                 ##
 ## copyright (c) 2009, Marcelo Mollinari                               ##
 ##                                                                     ##
 ## First version: 02/27/2009                                           ##
-## Last update: 08/09/2017                                             ##
 ## Description of the function was modified by augusto.garcia@usp.br   ##
 ## on 2015/07/25
 ## License: GNU General Public License version 2 (June, 1991) or later ##
@@ -92,7 +90,7 @@
 ##' @keywords utilities
 ##' @examples
 ##'
-##' \dontrun{
+##' \donttest{
 ##'   #outcrossing example
 ##'   data(onemap_example_out)
 ##'   twopt <- rf_2pts(onemap_example_out)
@@ -105,18 +103,6 @@
 ##'   print(extend.map,5) # best position
 ##'   print(extend.map,4) # second best position
 ##'
-##'   #F2 example
-##'   data(mapmaker_example_f2)
-##'   twopt <- rf_2pts(mapmaker_example_f2)
-##'   all_mark <- make_seq(twopt,"all")
-##'   groups <- group(all_mark)
-##'   LG3 <- make_seq(groups,3)
-##'   LG3.ord <- order_seq(LG3, subset.search = "twopt", twopt.alg = "rcd", touchdown=TRUE)
-##'   LG3.ord
-##'   safe.map<-make_seq(LG3.ord,"safe")
-##'   extend.map <- try_seq(safe.map,64)
-##'   extend.map
-##'   (new.map<-make_seq(extend.map,14)) # best position
 ##' }
 ##'@export
 try_seq<-function(input.seq,mrk,
@@ -124,7 +110,7 @@ try_seq<-function(input.seq,mrk,
                   pos= NULL,
                   verbose=FALSE)
 {
-  if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2"))
+  if(inherits(input.seq$data.name, c("outcross","f2")))
     return(try_seq_outcross(input.seq=input.seq,
                             mrk=mrk, tol=tol,
                             pos=pos, verbose=verbose))
@@ -136,10 +122,10 @@ try_seq<-function(input.seq,mrk,
 
 ## Try to map a marker into every possible position between markers
 ## in a given map (for crosses derived from f2 inbred lines)
-try_seq_inbred_f2 <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
+try_seq_inbred_f2 <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=TRUE)
 {
   # checking for correct objects
-  if(!is(input.seq,"sequence"))
+  if(!inherits(input.seq,"sequence"))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   if(input.seq$seq.rf[1] == -1 ||
      is.null(input.seq$seq.like))
@@ -154,7 +140,6 @@ try_seq_inbred_f2 <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
   ## create first order
   try.ord <- c(mrk,input.seq$seq.num)
   if(verbose) cat("TRY", 1,": ", c(mrk,input.seq$seq.num),"\n")
-  else cat(format(mrk,width=num.max) , "-->", format(colnames(input.seq$data.name$geno)[mrk], width=mark.max), ": .")
   flush.console()
   seq.temp<-make_seq(input.seq$twopt, arg=try.ord)
   seq.temp$twopt<-input.seq$twopt
@@ -163,7 +148,7 @@ try_seq_inbred_f2 <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
   final.map<-est_map_hmm_f2(geno=t(input.seq$data.name$geno[,try.ord]),
                             error=input.seq$data.name$error[try.ord + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(try.ord)),],
                             rf.vec=rf.temp,
-                            verbose=FALSE,
+                            verbose=verbose,
                             tol=tol)
   ord.rf[1,] <- final.map$rf
   ord.like[1] <- final.map$loglike
@@ -178,7 +163,6 @@ try_seq_inbred_f2 <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
                        input.seq$seq.num[(i+1):length(input.seq$seq.num)]))
     if(verbose)
       cat("TRY", i+1, ": ", try.ord[i+1,], "\n")
-    else cat(".")
     flush.console()
     seq.temp<-make_seq(input.seq$twopt, arg=try.ord[i+1,])
     seq.temp$twopt<-input.seq$twopt
@@ -187,7 +171,7 @@ try_seq_inbred_f2 <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
     final.map<-est_map_hmm_f2(geno=t(input.seq$data.name$geno[,try.ord[i+1,]]),
                               error=input.seq$data.name$error[try.ord[i+1,] + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(try.ord[i+1,])),],
                               rf.vec=rf.temp,
-                              verbose=FALSE,
+                              verbose=verbose,
                               tol=tol)
     ord.rf[i+1,] <- final.map$rf
     ord.like[i+1] <- final.map$loglike
@@ -196,13 +180,12 @@ try_seq_inbred_f2 <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
   ## create last order
   try.ord <- rbind(try.ord,c(input.seq$seq.num,mrk))
   if(verbose) cat("TRY",length(input.seq$seq.num)+1,": ", c(input.seq$seq.num,mrk) ,"\n")
-  else cat(".\n")
   flush.console()
   ## estimate parameters for all possible linkage phases for this order
   final.map<-est_map_hmm_f2(geno=t(input.seq$data.name$geno[,try.ord[length(input.seq$seq.num)+1,]]),
                             error=input.seq$data.name$error[try.ord[length(input.seq$seq.num)+1,] + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(try.ord[length(input.seq$seq.num)+1,])),],
                             rf.vec=rf.temp,
-                            verbose=FALSE,
+                            verbose=verbose,
                             tol=tol)
   ord.rf[length(input.seq$seq.num)+1,] <- final.map$rf
   ord.like[length(input.seq$seq.num)+1] <- final.map$loglike
@@ -222,10 +205,10 @@ try_seq_inbred_f2 <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
 
 ## Try to map a marker into every possible position between markers
 ## in a given map (for crosses derived from bc and rils inbred lines)
-try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
+try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=TRUE)
 {
   # checking for correct objects
-  if(!is(input.seq,"sequence"))
+  if(!inherits(input.seq,"sequence"))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   if(input.seq$seq.rf[1] == -1 ||
      is.null(input.seq$seq.like))
@@ -240,7 +223,6 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
   ## create first order
   try.ord <- c(mrk,input.seq$seq.num)
   if(verbose) cat("TRY", 1,": ", c(mrk,input.seq$seq.num),"\n")
-  else cat(format(mrk,width=num.max) , "-->", format(colnames(input.seq$data.name$geno)[mrk], width=mark.max), ": .")
   flush.console()
   seq.temp<-make_seq(input.seq$twopt, arg=try.ord)
   seq.temp$twopt<-input.seq$twopt
@@ -249,10 +231,9 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
   final.map<-est_map_hmm_bc(geno=t(input.seq$data.name$geno[,try.ord]),
                             error=input.seq$data.name$error[try.ord + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(try.ord)),],
                             rf.vec=rf.temp,
-                            verbose=FALSE,
+                            verbose=verbose,
                             tol=tol)
-  if(is(input.seq$data.name, "riself") ||
-     is(input.seq$data.name, "risib"))
+  if(inherits(input.seq$data.name, c("riself","risib")))
     final.map$rf<-adjust_rf_ril(final.map$rf,
                                 type=class(input.seq$data.name)[2],
                                 expand = FALSE)
@@ -267,9 +248,7 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
                      c(input.seq$seq.num[1:i],
                        mrk,
                        input.seq$seq.num[(i+1):length(input.seq$seq.num)]))
-    if(verbose)
-      cat("TRY", i+1, ": ", try.ord[i+1,], "\n")
-    else cat(".")
+    if(verbose) cat("TRY", i+1, ": ", try.ord[i+1,], "\n")
     flush.console()
     seq.temp<-make_seq(input.seq$twopt, arg=try.ord[i+1,])
     seq.temp$twopt<-input.seq$twopt
@@ -278,10 +257,9 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
     final.map<-est_map_hmm_bc(geno=t(input.seq$data.name$geno[,try.ord[i+1,]]),
                               error=input.seq$data.name$error[try.ord[i+1,] + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(try.ord[i+1,])),],
                               rf.vec=rf.temp,
-                              verbose=FALSE,
+                              verbose=verbose,
                               tol=tol)
-    if(is(input.seq$data.name, "riself") ||
-       is(input.seq$data.name, "risib"))
+    if(inherits(input.seq$data.name, c("riself", "risib")))
       final.map$rf<-adjust_rf_ril(final.map$rf,
                                   type=class(input.seq$data.name)[2],
                                   expand = FALSE)
@@ -292,16 +270,14 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
   ## create last order
   try.ord <- rbind(try.ord,c(input.seq$seq.num,mrk))
   if(verbose) cat("TRY",length(input.seq$seq.num)+1,": ", c(input.seq$seq.num,mrk) ,"\n")
-  else cat(".\n")
   flush.console()
   ## estimate parameters for all possible linkage phases for this order
   final.map<-est_map_hmm_bc(geno=t(input.seq$data.name$geno[,try.ord[length(input.seq$seq.num)+1,]]),
                             error=input.seq$data.name$error[try.ord[length(input.seq$seq.num)+1,] + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(try.ord[length(input.seq$seq.num)+1,])),],
                             rf.vec=rf.temp,
-                            verbose=FALSE,
+                            verbose=verbose,
                             tol=tol)
-  if(is(input.seq$data.name, "riself") ||
-     is(input.seq$data.name, "risib"))
+  if(inherits(input.seq$data.name, c("riself", "risib")))
     final.map$rf<-adjust_rf_ril(final.map$rf,
                                 type=class(input.seq$data.name)[2],
                                 expand = FALSE)
@@ -325,10 +301,10 @@ try_seq_inbred_bc <- function(input.seq,mrk,tol=10E-2,pos= NULL,verbose=FALSE)
 try_seq_outcross<- function(input.seq,mrk,
                             tol=10E-2,
                             pos= NULL,
-                            verbose=FALSE)
+                            verbose=TRUE)
 {
   ## checking for correct objects
-  if(!is(input.seq,"sequence"))
+  if(!inherits(input.seq,"sequence"))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   if(input.seq$seq.phases[1] == -1 ||
      input.seq$seq.rf[1] == -1 ||
@@ -364,7 +340,6 @@ try_seq_outcross<- function(input.seq,mrk,
   # create first order
   try.ord <- c(mrk,input.seq$seq.num)
   if(verbose) cat("TRY", 1,": ", c(mrk,input.seq$seq.num),"\n")
-  else cat(format(mrk,width=num.max) , "-->", format(colnames(input.seq$data.name$geno)[mrk], width=mark.max), ": .")
   flush.console()
   
   if(nrow(Ph.Init)>1){
@@ -384,7 +359,7 @@ try_seq_outcross<- function(input.seq,mrk,
                                  type=input.seq$data.name$segr.type.num[c(mrk,input.seq$seq.num)],
                                  phase=Ph.Init[j,],
                                  rf.vec=Rf.Init[j,],
-                                 verbose=FALSE,
+                                 verbose=verbose,
                                  tol=tol)
     ord[[1]]$rf[j,] <- final.map$rf
     ord[[1]]$phase[j,] <- Ph.Init[j,]
@@ -425,7 +400,6 @@ try_seq_outcross<- function(input.seq,mrk,
     # create intermediate orders
     try.ord <- rbind(try.ord,c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)]))
     if(verbose) cat("TRY", i+1,": ",c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)]) ,"\n")
-    else cat(".")
     flush.console()
     
     if(nrow(Ph.Init)>1){
@@ -445,7 +419,7 @@ try_seq_outcross<- function(input.seq,mrk,
                                    type=input.seq$data.name$segr.type.num[c(input.seq$seq.num[1:i], mrk, input.seq$seq.num[(i+1):length(input.seq$seq.num)])],
                                    phase=Ph.Init[j,],
                                    rf.vec=Rf.Init[j,],
-                                   verbose=FALSE,
+                                   verbose=verbose,
                                    tol=tol)
       ord[[i+1]]$rf[j,] <- final.map$rf
       ord[[i+1]]$phase[j,] <- Ph.Init[j,]
@@ -474,7 +448,6 @@ try_seq_outcross<- function(input.seq,mrk,
   # create last order
   try.ord <- rbind(try.ord,c(input.seq$seq.num,mrk))
   if(verbose) cat("TRY",length(input.seq$seq.num)+1,": ", c(input.seq$seq.num,mrk) ,"\n")
-  else cat(".\n")
   flush.console()
   if(nrow(Ph.Init)>1){
     ##Removing ambigous phases
@@ -493,7 +466,7 @@ try_seq_outcross<- function(input.seq,mrk,
                                  type=input.seq$data.name$segr.type.num[c(input.seq$seq.num,mrk)],
                                  phase=Ph.Init[j,],
                                  rf.vec=Rf.Init[j,],
-                                 verbose=FALSE,
+                                 verbose=verbose,
                                  tol=tol)
     ord[[length(input.seq$seq.num)+1]]$rf[j,] <- final.map$rf
     ord[[length(input.seq$seq.num)+1]]$phase[j,] <- Ph.Init[j,]
@@ -634,53 +607,57 @@ print.try <- function(x,j=NULL,...) {
 
 draw.try<-function(base.input, try.input, pos=NULL){
   .Defunct(msg = "Defunct since version 2.0.9")
-  layout(matrix(c(2,1,2,3),2,2), heights = c(1,2.5))
-  base.dist<-cumsum(c(0, kosambi(base.input$seq.rf)))
-  base.input.len<-length(base.dist)
-  try.dist<-c(-1, base.dist[-base.input.len]+kosambi(base.input$seq.rf)/2, base.dist[base.input.len]+1)
-  op<-par(mar=c(5,7,7,2), cex=.75)
-  plot(x=try.dist, try.input$LOD, typ="l", xlab="Frame", ylab="LOD", axes=FALSE)
-  abline(v=try.dist, lty=2, lwd=.5)
-  op<-par(mar=c(5,7,7,2), cex=.75, xpd=TRUE)
-  text(x=try.dist, y=rep(max(abs(try.input$LOD))/5,length(try.dist)), labels=1:length(try.dist), cex=.7)
-  text(x=try.dist[1]-(max(try.dist)/40), y=max(abs(try.input$LOD))/5 ,"Position",  adj=c(1,0.5))
-  text(x=try.dist[1]-(max(try.dist)/40), y=max(abs(try.input$LOD))/10 ,"Distance",  adj=c(1,0.05))
-  axis(2)
-  axis(3, at=round(base.dist,1), lwd.ticks = .5, cex.axis=.75, las=2)
-  par(op)
-  if(is.null(pos)){
-    op<-par(xpd=TRUE)
-    points(try.dist[which.max(try.input$LOD)],0, pch=17, col=2, cex=1.5)
-    new.map<-make_seq(try.input,which.max(try.input$LOD))
-    new.dist<-cumsum(c(0, kosambi(new.map$seq.rf)))
-    new.dist.len<-length(new.dist)
-    plot(x=new.dist, rep(1,new.dist.len), pch="|", xlab="New Genetic Map", ylab="", axes=FALSE, type="n", main=paste("Adding marker ",try.input$try.ord[1,1]," (", colnames(try.input$data.name$geno)[try.input$try.ord[1,1]],")", sep=""))
-    axis(1, at=round(new.dist,1), lwd.ticks = .75, cex.axis=.75, las=2)
-    text(new.dist, y=rep(1,length(new.dist)), labels=new.map$seq.num, cex=.7, srt=90)
-    points(new.dist[which.max(try.input$LOD)],1.5, col=2, cex=1.5, pch=25, bg = 2)
-    text(x=new.dist[1]-(max(new.dist)/40), y=1 ,"Markers",  adj=c(1,0.5))
-    text(x=new.dist[1]-(max(new.dist)/40), y=0 ,"Distance",  adj=c(1,0.2))
-    par(op)
-  }
-  else{
-    op<-par(xpd=TRUE, las=2)
-    points(try.dist[pos],0, pch=17, col=2, cex=1.5)
-    new.map<-make_seq(try.input,pos)
-    new.dist<-cumsum(c(0, kosambi(new.map$seq.rf)))
-    new.dist.len<-length(new.dist)
-    plot(x=new.dist, rep(1,new.dist.len), xlab="New Genetic Map", ylab="", axes=FALSE, type="n", main=paste("Adding marker ",try.input$try.ord[1,1]," (", colnames(try.input$data.name$geno)[try.input$try.ord[1,1]],")", sep=""))
-    axis(1, at=round(new.dist,1), lwd.ticks = .75, cex.axis=.75, las=2)
-    text(new.dist, y=rep(1,length(new.dist)), labels=new.map$seq.num, cex=.7, srt=90)
-    points(new.dist[pos], 1.5, col=2, cex=1.5, pch=25, bg = 2)
-    text(x=new.dist[1]-(max(new.dist)/40), y=1 ,"Markers",  adj=c(1,0.5))
-    text(x=new.dist[1]-(max(new.dist)/40), y=0 ,"Distance",  adj=c(1,0.2))
-    par(op)
-  }
-  rf_graph_table(input.seq=new.map,
-                 main ="",
-                 inter = FALSE,
-                 mrk.axis = "numbers")
-  title(main = "LOD (above diag.) and Recombination Fraction Matrix", cex.main=.9, line=15.4)
 }
 
-# end of file
+#' Run try_seq considering previous sequence
+#' 
+#' It uses try_seq function repeatedly trying to positioned each marker 
+#' in a vector of markers into a already ordered sequence.
+#' Each marker in the vector \code{"markers"} is kept in the sequence 
+#' if the difference of LOD and total group size of the models 
+#' with and without the marker are below the thresholds \code{"lod.thr"} and \code{"cM.thr"}. 
+#' 
+#' @param sequence object of class sequence with ordered markers
+#' @param markers vector of integers defining the marker numbers to be inserted in the \code{sequence}
+#' @param cM.thr number defining the threshold for total map size increase when inserting a single marker
+#' @param lod.thr the difference of LODs between model before and after inserting the marker need to have 
+#' value higher than the value defined in this argument 
+##' @param verbose A logical, if TRUE it output progress status
+##' information.
+#' 
+#' @return An object of class \code{sequence}, which is a list containing the
+##' following components: \item{seq.num}{a \code{vector} containing the
+##' (ordered) indices of markers in the sequence, according to the input file.}
+##' \item{seq.phases}{a \code{vector} with the linkage phases between markers
+##' in the sequence, in corresponding positions. \code{-1} means that there are
+##' no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
+##' recombination frequencies between markers in the sequence. \code{-1} means
+##' that there are no estimated recombination frequencies.}
+##' \item{seq.like}{log-likelihood of the corresponding linkage map.}
+##' \item{data.name}{name of the object of class \code{onemap} with the raw
+##' data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
+##' 2-point analyses.}
+#' 
+#' @export
+try_seq_by_seq <- function(sequence, markers, cM.thr=10, lod.thr=-10, verbose=TRUE){
+  
+  if(!inherits(sequence, c("sequence"))) stop("Input object must be of class sequence")
+  
+  seq_now <- sequence
+  for(i in 1:length(markers)){
+    try_edit <- try_seq(seq_now, markers[i])  
+    pos <- which(try_edit$LOD == 0)[1]
+    new_map <- make_seq(try_edit, pos)
+    size_new <- cumsum(kosambi(new_map$seq.rf))[length(new_map$seq.rf)]
+    size_old <- cumsum(kosambi(seq_now$seq.rf))[length(seq_now$seq.rf)]
+    lod_new <- new_map$seq.like
+    lod_old <- seq_now$seq.like
+    diff_size <- size_new - size_old
+    diff_lod <- lod_new - lod_old
+    if(diff_size < cM.thr & diff_lod > lod.thr){
+      seq_now <- new_map
+      if(verbose) cat("Marker", markers[i], "was included \n")
+    } 
+  }
+  return(seq_now)
+}

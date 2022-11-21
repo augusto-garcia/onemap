@@ -13,7 +13,7 @@ rf_graph_table(
   mrk.axis = "numbers",
   lab.xy = NULL,
   n.colors = 4,
-  display = T
+  display = TRUE
 )
 }
 \arguments{
@@ -39,6 +39,9 @@ marker numbers and "none" to display axis free of labels.}
 
 \item{display}{logical. If inter \code{TRUE} and display \code{TRUE} iteractive graphic is plotted in browser automatically when run the function}
 }
+\value{
+a ggplot graphic
+}
 \description{
 Plots a matrix of pairwise recombination fraction or
 LOD Scores using a color scale. Any value of the
@@ -63,7 +66,7 @@ data for that marker.
 }
 \examples{
 
-\dontrun{
+\donttest{
 ##outcross example
   data(onemap_example_out)
   twopt <- rf_2pts(onemap_example_out)
@@ -73,8 +76,6 @@ data for that marker.
   LG1.rcd <- rcd(LG1)
   rf_graph_table(LG1.rcd, inter=FALSE)
 
-  ##Now, using interactive plotly
-  rf_graph_table(LG1.rcd, inter=TRUE, html.file= "LG1.rcd.html")
 
   ##F2 example
   data(onemap_example_f2)
@@ -93,12 +94,6 @@ data for that marker.
     ##assign the map of the i-th group to the maps.list
     maps.list[[i]]<-make_seq(map.cur, "force")
   }
-  ##Plot LOD/recombination fraction matrices for each group
-  require(gridExtra)
-  plot1 <- rf_graph_table(maps.list[[1]], main="Group 1",inter=FALSE)
-  plot2 <- rf_graph_table(maps.list[[2]], main="Group 2",inter=FALSE)
-  plot3 <- rf_graph_table(maps.list[[3]], main="Group 3",inter=FALSE)
-  grid.arrange(plot1, plot2, plot3, nrow=3)
 }
 }
 \author{

@@ -10,7 +10,6 @@
 # copyright (c) 2001-10, Karl W Broman                                #
 #                                                                     #
 # First version: Feb 2001                                             #
-# Last update:   Oct 2010                                             #
 # License: GNU General Public License version 2 (June, 1991) or later # 
 #                                                                     #
 #######################################################################

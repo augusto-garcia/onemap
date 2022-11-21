@@ -7,9 +7,9 @@
 create_depths_profile(
   onemap.obj = NULL,
   vcfR.object = NULL,
+  vcf = NULL,
   parent1 = NULL,
   parent2 = NULL,
-  f1 = NULL,
   vcf.par = "AD",
   recovering = FALSE,
   mks = NULL,
@@ -18,19 +18,20 @@ create_depths_profile(
   alpha = 1,
   rds.file = "data.rds",
   y_lim = NULL,
-  x_lim = NULL
+  x_lim = NULL,
+  verbose = TRUE
 )
 }
 \arguments{
 \item{onemap.obj}{an object of class \code{onemap}.}
 
-\item{vcfR.object}{an object of class \code{vcfR}.}
+\item{vcfR.object}{object of class vcfR;}
+
+\item{vcf}{path to VCF file.}
 
 \item{parent1}{a character specifying the first parent ID}
 
 \item{parent2}{a character specifying the second parent ID}
-
-\item{f1}{if your cross type is f2, you must define the F1 individual}
 
 \item{vcf.par}{the vcf parameter that store the allele depth information.}
 
@@ -49,6 +50,8 @@ create_depths_profile(
 \item{y_lim}{set scale limit for y axis}
 
 \item{x_lim}{set scale limit for x axis}
+
+\item{verbose}{If \code{TRUE}, print tracing information.}
 }
 \value{
 an rds file and a ggplot graphic.
@@ -60,7 +63,7 @@ Create database and ggplot graphic of allele reads depths
 \code{\link[onemap]{onemap_read_vcfR}}
 }
 \author{
-Cristiane Taniguti, \email{chtaniguti@usp.br}
+Cristiane Taniguti, \email{chtaniguti@tamu.edu}
 }
 \keyword{alleles}
 \keyword{depth}

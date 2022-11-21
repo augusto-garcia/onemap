@@ -12,7 +12,6 @@
 ## copyright (c) 2015 Antonio Augusto Franco Garcia                    ##
 ##                                                                     ##
 ## First version: 2015/04/18                                           ##
-## Last update: 2017/11/08                                             ##
 ## License: GNU General Public License version 3 or later              ##
 ##                                                                     ##
 #######################################################################
@@ -33,19 +32,21 @@ globalVariables(c("Marker", "p.value"))
 ##'
 ##' @param x an object of class \code{onemap}, with data and additional information.
 ##' @param marker the marker which will be tested for its segregation.
+##' @param simulate.p.value a logical indicating whether to compute p-values by Monte Carlo simulation.
 ##'
 ##' @return a list with the H0 hypothesis being tested, the chi-square statistics,
 ##' the associated p-values, and the \% of individuals genotyped.
 ##'
-##' ##'@examples
+##' @examples
+##' 
 ##' data(onemap_example_bc) # Loads a fake backcross dataset installed with onemap
 ##' test_segregation_of_a_marker(onemap_example_bc,1)
 ##'
 ##' data(onemap_example_out) # Loads a fake outcross dataset installed with onemap
 ##' test_segregation_of_a_marker(onemap_example_out,1)
+##' 
 ##' @export
-test_segregation_of_a_marker <- function(x, marker) {
-  options(warn=-1) #Supress warnings from function chisq.test - when cell have < 5 elements
+test_segregation_of_a_marker <- function(x, marker, simulate.p.value=FALSE) {
   # Break if marker has any genotype information
   if(all(x$geno[,marker] ==0)) {
     warning(cat("Marker", marker, "do not have genotype information for any sample. We suggest to remove it from the dataset\n"))
@@ -62,58 +63,58 @@ test_segregation_of_a_marker <- function(x, marker) {
       if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
       if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
       if (is.element(3,x$geno[,marker])) c3 <- count[names(count)==3] else c3 <- 0
-      qui <- chisq.test(c(c1,c2,c3), p=p.b, correct = FALSE)
+      qui <- chisq.test(c(c1,c2,c3), p=p.b, correct = FALSE, simulate.p.value = simulate.p.value)
       H0 <- "1:2:1"
     }
     else if (grepl("C.A",x$segr.type[marker])) {
       if (is.element(2,x$geno[,marker])) c1 <- count[names(count)==2] else c1 <- 0
       if (is.element(1,x$geno[,marker])) c2 <- count[names(count)==1] else c2 <- 0
-      qui <- chisq.test(as.vector(c(c1,c2)), p=rev(p.c), correct = FALSE)
+      qui <- chisq.test(as.vector(c(c1,c2)), p=rev(p.c), correct = FALSE, simulate.p.value = simulate.p.value)
       H0 <- "3:1"
     }
     else if (grepl("D.B",x$segr.type[marker])) {
       if (is.element(2,x$geno[,marker])) c1 <- count[names(count)==2] else c1 <- 0
       if (is.element(1,x$geno[,marker])) c2 <- count[names(count)==1] else c2 <- 0
-      qui <- chisq.test(as.vector(c(c1,c2)), p=rev(p.c), correct = FALSE)
+      qui <- chisq.test(as.vector(c(c1,c2)), p=rev(p.c), correct = FALSE, simulate.p.value = simulate.p.value)
       H0 <- "3:1"
     }
     else if (grepl("A.H",x$segr.type[marker])) {
       if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
       if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
-      qui <- chisq.test(as.vector(c(c1,c2)), p=p.d, correct = FALSE)
+      qui <- chisq.test(as.vector(c(c1,c2)), p=p.d, correct = FALSE, simulate.p.value = simulate.p.value)
       H0 <- "1:1"
     }
     else if (grepl("A.B",x$segr.type[marker])) {
       if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
       if (is.element(3,x$geno[,marker])) c2 <- count[names(count)==3] else c2 <- 0
-      qui <- chisq.test(as.vector(c(c1,c2)), p=p.d, correct = FALSE)
+      qui <- chisq.test(as.vector(c(c1,c2)), p=p.d, correct = FALSE, simulate.p.value = simulate.p.value)
       H0 <- "1:1"
     }
-    else if (grepl("A",x$segr.type[marker]) & is(x,"outcross")) {
+    else if (grepl("A",x$segr.type[marker]) & inherits(x,"outcross")) {
       if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
       if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
       if (is.element(3,x$geno[,marker])) c3 <- count[names(count)==3] else c3 <- 0
       if (is.element(4,x$geno[,marker])) c4 <- count[names(count)==4] else c4 <- 0
-      qui <- chisq.test(as.vector(c(c1,c2,c3,c4)), p=p.a, correct = FALSE)
+      qui <- chisq.test(as.vector(c(c1,c2,c3,c4)), p=p.a, correct = FALSE, simulate.p.value = simulate.p.value)
       H0 <- "1:1:1:1"
     }
-    else if (grepl("B",x$segr.type[marker]) & is(x,"outcross")) {
+    else if (grepl("B",x$segr.type[marker]) & inherits(x,"outcross")) {
       if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
       if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
       if (is.element(3,x$geno[,marker])) c3 <- count[names(count)==3] else c3 <- 0
-      qui <- chisq.test(as.vector(c(c1,c2,c3)), p=p.b, correct = FALSE)
+      qui <- chisq.test(as.vector(c(c1,c2,c3)), p=p.b, correct = FALSE, simulate.p.value = simulate.p.value)
       H0 <- "1:2:1"
     }
-    else if (grepl("C",x$segr.type[marker]) & is(x,"outcross")) {
+    else if (grepl("C",x$segr.type[marker]) & inherits(x,"outcross")) {
       if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
       if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
-      qui <- chisq.test(as.vector(c(c1,c2)), p=p.c, correct = FALSE)
+      qui <- chisq.test(as.vector(c(c1,c2)), p=p.c, correct = FALSE, simulate.p.value = simulate.p.value)
       H0 <- "3:1"
     }
-    else if (grepl("D",x$segr.type[marker]) & is(x,"outcross")) {
+    else if (grepl("D",x$segr.type[marker]) & inherits(x,"outcross")) {
       if (is.element(1,x$geno[,marker])) c1 <- count[names(count)==1] else c1 <- 0
       if (is.element(2,x$geno[,marker])) c2 <- count[names(count)==2] else c2 <- 0
-      qui <- chisq.test(as.vector(c(c1,c2)), p=p.d, correct = FALSE)
+      qui <- chisq.test(as.vector(c(c1,c2)), p=p.d, correct = FALSE, simulate.p.value = simulate.p.value)
       H0 <- "1:1"
     }
     #impossible to test: dominant and co-dominant mixed in the same marker
@@ -142,23 +143,26 @@ test_segregation_of_a_marker <- function(x, marker) {
 ##' and then tests it.
 ##'
 ##' @param x an object of class \code{onemap}, with data and additional information.
-##'
+##' @param simulate.p.value a logical indicating whether to compute p-values by Monte Carlo simulation.
+##' 
 ##' @return an object of class onemap_segreg_test, which is a list with marker name,
 ##' H0 hypothesis being tested, the chi-square statistics, the associated p-values
 ##' and the \% of individuals genotyped. To see the object, it is necessary to print
 ##' it.
 ##'
 ##' @examples
-##' data(onemap_example_out) # Loads a fake outcross dataset installed with onemap
-##' Chi <- test_segregation(onemap_example_out) # Performs the chi-square test for all markers
-##' print(Chi) # Shows the results
-##'
+##' \donttest{
+##'  data(onemap_example_out) # Loads a fake outcross dataset installed with onemap
+##'  Chi <- test_segregation(onemap_example_out) # Performs the chi-square test for all markers
+##'  print(Chi) # Shows the results
+##' }
+##' 
 ##' @export
-test_segregation <- function(x) {
-    if (is(x,"onemap")) {
+test_segregation <- function(x, simulate.p.value = FALSE) {
+    if (inherits(x,"onemap")) {
         y <- list(Marker=dimnames(x$geno)[[2]],
                   Results.of.tests=sapply(1:x$n.mar, function(onemap.object, marker)
-                      test_segregation_of_a_marker(onemap.object, marker),
+                      test_segregation_of_a_marker(onemap.object, marker, simulate.p.value = simulate.p.value),
                       onemap.object=x))
                                         # sapply iterates from 1 to x$n.mar; x is fixed (onemap object with data)
         class(y) <- c("onemap_segreg_test")
@@ -181,10 +185,13 @@ test_segregation <- function(x) {
 ##' p-values, and % of individuals genotyped.
 ##'
 ##' @examples
-##' data(onemap_example_out) # Loads a fake outcross dataset installed with onemap
-##' Chi <- test_segregation(onemap_example_out) # Performs the chi-square test for all markers
-##' print(Chi) # Shows the results
-##'
+##' 
+##' \donttest{
+##'  data(onemap_example_out) # Loads a fake outcross dataset installed with onemap
+##'  Chi <- test_segregation(onemap_example_out) # Performs the chi-square test for all markers
+##'  print(Chi) # Shows the results
+##' }
+##' 
 ##' @method print onemap_segreg_test
 ##' @export
 print.onemap_segreg_test <- function(x,...) {
@@ -217,26 +224,19 @@ print.onemap_segreg_test <- function(x,...) {
 ##' @import ggplot2
 ##'
 ##' @examples
+##' \donttest{
+##'  data(onemap_example_bc) # load OneMap's fake dataset for a backcross population
+##'  BC.seg <- test_segregation(onemap_example_bc) # Applies chi-square tests
+##'  print(BC.seg) # Shows the results
+##'  plot(BC.seg) # Plot the graph, ordering the p-values
+##'  plot(BC.seg, order=FALSE) # Plot the graph showing the results keeping the order in the dataset
 ##'
-##' data(onemap_example_bc) # load OneMap's fake dataset for a backcross population
-##' BC.seg <- test_segregation(onemap_example_bc) # Applies chi-square tests
-##' print(BC.seg) # Shows the results
-##' plot(BC.seg) # Plot the graph, ordering the p-values
-##' plot(BC.seg, order=FALSE) # Plot the graph showing the results keeping the order in the dataset
-##' # You can store the graphic in an object, then save it.
-##' # For details, see the help of ggplot2's function ggsave()
-##' # g <- plot(BC.seg)
-##' # ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
-##'
-##' data(onemap_example_out) # load OneMap's fake dataset for an outcrossing population
-##' Out.seg <- test_segregation(onemap_example_out) # Applies chi-square tests
-##' print(Out.seg) # Shows the results
-##' plot(Out.seg) # Plot the graph, ordering the p-values
-##' plot(Out.seg, order=FALSE) # Plot the graph showing the results keeping the order in the dataset
-##' # You can store the graphic in an object, then save it.
-##' # For details, see the help of ggplot2's function ggsave()
-##' g <- plot(Out.seg)
-##' # ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
+##'  data(onemap_example_out) # load OneMap's fake dataset for an outcrossing population
+##'  Out.seg <- test_segregation(onemap_example_out) # Applies chi-square tests
+##'  print(Out.seg) # Shows the results
+##'  plot(Out.seg) # Plot the graph, ordering the p-values
+##'  plot(Out.seg, order=FALSE) # Plot the graph showing the results keeping the order in the dataset
+##' }
 ##' @method plot onemap_segreg_test
 ##' @export
 plot.onemap_segreg_test <- function(x, order=TRUE,...) {
@@ -279,14 +279,16 @@ plot.onemap_segreg_test <- function(x, order=TRUE,...) {
 ##' @return the alpha value for each test (numeric)
 ##'
 ##' @examples
-##' data(onemap_example_bc) # Loads a fake backcross dataset installed with onemap
-##' Chi <- test_segregation(onemap_example_bc) # Performs the chi-square test for all markers
-##' print(Chi) # Shows the results of the Chi-square tests
-##' Bonferroni_alpha (Chi) # Shows the individual alpha level to be used
-##'
+##' \donttest{
+##'  data(onemap_example_bc) # Loads a fake backcross dataset installed with onemap
+##'  Chi <- test_segregation(onemap_example_bc) # Performs the chi-square test for all markers
+##'  print(Chi) # Shows the results of the Chi-square tests
+##'  Bonferroni_alpha (Chi) # Shows the individual alpha level to be used
+##' }
+##' 
 ##' @export
 Bonferroni_alpha <- function(x, global.alpha=0.05) {
-    if (!is(x,"onemap_segreg_test")) stop("This is not an object of class onemap_segreg_test")
+    if (!inherits(x,"onemap_segreg_test")) stop("This is not an object of class onemap_segreg_test")
     alpha.Bonf <- global.alpha/length(x$Marker)
     return(alpha.Bonf)
 }
@@ -300,29 +302,31 @@ Bonferroni_alpha <- function(x, global.alpha=0.05) {
 ##' @param x an object of class onemap_segreg_test
 ##' @param distorted a TRUE/FALSE variable to show distorted or non-distorted markers
 ##' @param numbers a TRUE/FALSE variable to show the numbers or the names of the markers
-##' @param threshold a number between 0 and 1 to specify the threshold to be considered in the test. If NULL, it uses the threshold defined by bonferroni correction with alpha = 0.05 
+##' @param threshold a number between 0 and 1 to specify the threshold (alpha) to be considered in the test. 
+##' If NULL, it uses the threshold alpha = 0.05. Bonferroni correction is applied for multiple test correction. 
 ##'
 ##' @return a vector with marker names or numbers, according to the option for "distorted" and "numbers"
 ##'
 ##' @examples
-##' # Loads a fake backcross dataset installed with onemap
-##' data(onemap_example_bc)
-##' # Performs the chi-square test for all markers
-##' Chi <- test_segregation(onemap_example_bc)
-##' # To show non-distorted markers
-##' select_segreg(Chi)
-##' # To show markers with segregation distortion
-##' select_segreg(Chi, distorted=TRUE)
-##' # To show the numbers of the markers with segregation distortion
-##' select_segreg(Chi, distorted=TRUE, numbers=TRUE)
-##'
+##' \donttest{
+##'  # Loads a fake backcross dataset installed with onemap
+##'  data(onemap_example_out)
+##'  # Performs the chi-square test for all markers
+##'  Chi <- test_segregation(onemap_example_out)
+##'  # To show non-distorted markers
+##'  select_segreg(Chi)
+##'  # To show markers with segregation distortion
+##'  select_segreg(Chi, distorted=TRUE)
+##'  # To show the numbers of the markers with segregation distortion
+##'  select_segreg(Chi, distorted=TRUE, numbers=TRUE)
+##' }
 ##' @export
 select_segreg <- function(x, distorted=FALSE, numbers=FALSE, threshold = NULL) {
-    if (!is(x,"onemap_segreg_test")) stop("This is not an object of class onemap_segreg_test")
+    if (!inherits(x,"onemap_segreg_test")) stop("This is not an object of class onemap_segreg_test")
     Z <- data.frame(Marker=x$Marker,
                     p.value=unlist(x$Results.of.tests[3,]))
-    if(is.null(threshold)) thr <- Bonferroni_alpha(x)
-    else  thr <- threshold
+    if(is.null(threshold)) thr <- Bonferroni_alpha(x, global.alpha = 0.05)
+    else  thr <- Bonferroni_alpha(x, global.alpha = threshold)
     if (distorted==FALSE) Z <- subset(Z, p.value>=thr)
     else Z <- subset(Z, p.value<thr)
     if (numbers==TRUE) return(which(x$Marker %in% as.vector(Z[,1])))

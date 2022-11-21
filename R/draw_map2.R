@@ -14,8 +14,6 @@
 #                                                                     #
 #######################################################################
 
-
-
 ##' Draw a linkage map
 ##'
 ##' Provides a simple draw of a linkage map.
@@ -37,42 +35,43 @@
 ##' @param col.mark the color used for marker(s).
 ##' @param col.tag the color used for highlighted marker(s) and its/theirs label(s).
 ##' @param output the name of the output file. The file format can be specified by adding its extension. Available formats: 'bmp', 'jpeg', 'png', 'tiff', 'pdf' and 'eps' (default).
+##' @param verbose If \code{TRUE}, print tracing information.
+##' 
+##' @return ggplot graphic with genetic map draw
+##' 
 ##' @author Getulio Caixeta Ferreira, \email{getulio.caifer@@gmail.com}
 ##' @keywords rqtl
 ##' @examples
 ##'
-##' \dontrun{
-##'  data("onemap_example_out")
-##'  twopt <- rf_2pts(onemap_example_out)
-##'  lg<-group(make_seq(twopt, "all"))
-##'  seq1<-make_seq(order_seq(input.seq= make_seq(lg,1),twopt.alg = "rcd"), "force")
-##'  seq2<-make_seq(order_seq(input.seq= make_seq(lg,2),twopt.alg = "rcd"), "force")
-##'  seq3<-make_seq(order_seq(input.seq= make_seq(lg,3),twopt.alg = "rcd"), "force")
-##'  draw_map2(seq1,seq2,seq3,tag = c("M1","M2","M3","M4","M5"))
-##'  
-##'  data("onemap_example_f2")
-##'  twopt <- rf_2pts(onemap_example_f2)
-##'  lg<-group(make_seq(twopt, "all"))
-##'  seq<-list(
-##'  make_seq(order_seq(input.seq= make_seq(lg,1),twopt.alg = "rcd"), "force"),
-##'  make_seq(order_seq(input.seq= make_seq(lg,2),twopt.alg = "rcd"), "force"),
-##'  make_seq(order_seq(input.seq= make_seq(lg,3),twopt.alg = "rcd"), "force")
-##'  )
-##'  draw_map2(seq,tag = "all",group.names = c("Chr 1","Chr 2","Chr 3"),main="Linkage Map")
+##' \donttest{
+##' data("onemap_example_out")
+##' twopt <- rf_2pts(onemap_example_out)
+##' lg<-group(make_seq(twopt, "all"))
+##' seq1<-make_seq(order_seq(input.seq= make_seq(lg,1),twopt.alg = "rcd"), "force")
+##' seq2<-make_seq(order_seq(input.seq= make_seq(lg,2),twopt.alg = "rcd"), "force")
+##' seq3<-make_seq(order_seq(input.seq= make_seq(lg,3),twopt.alg = "rcd"), "force")
+##' draw_map2(seq1,seq2,seq3,tag = c("M1","M2","M3","M4","M5"),
+##' output = paste0(tempfile(), ".png"))
 ##'
 ##' }
 ##'@export
-draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL,group.names=NULL,centered=F,y.axis=TRUE,space=NULL,col.group=NULL,col.mark=NULL,col.tag=NULL,output=NULL){
+draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,
+                    main=NULL,group.names=NULL,centered=FALSE,y.axis=TRUE,
+                    space=NULL,col.group=NULL,col.mark=NULL,col.tag=NULL,output=NULL, verbose = TRUE){
   #check input
   input<-list(...)
   if(length(input)==0) stop("argument '...' missing, with no default")
   map.data<-list()
   for(i in seq(input)) map.data<-c(map.data, if(inherits(input[[i]], "list")) input[[i]] else input[i])
-  if(!all(sapply(map.data, function(x) (is(x, "sequence") || is(x,"data.frame"))))) stop(paste("\nObject '",seq(map.data)[!sapply(map.data, function(x)  (is(x, "sequence") || is(x,"data.frame")))],"' is not an object of class 'sequence' or 'data.frame",sep=""))
-
+  if(!all(sapply(map.data, function(x) (inherits(x, c("sequence","data.frame")))))) stop(paste("\nObject '",seq(map.data)[!sapply(map.data, function(x)  (inherits(x, c("sequence", "data.frame"))))],"' is not an object of class 'sequence' or 'data.frame",sep=""))
+  
+  # reset par after exit
+  oldpar <- par(no.readonly = TRUE)   
+  on.exit(par(oldpar))            
+  
   #sequence to data.frame
   for(i in seq_along(map.data)){
-    if(is(map.data[[i]], "sequence")){
+    if(inherits(map.data[[i]], "sequence")){
       if(is.character(map.data[[i]]$data.name)){
         if (!map.data[[i]]$data.name %in% ls(.GlobalEnv)) stop(paste("Object data missing:", map.data[[i]]$data.name))
         map.data[[i]]$data.name <- get(map.data[[i]]$data.name, envir = .GlobalEnv)
@@ -80,7 +79,7 @@ draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL,grou
       map.data[[i]] <- data.frame(marker=colnames(map.data[[i]]$data.name$geno)[map.data[[i]]$seq.num], pos=c(0,cumsum(kosambi(map.data[[i]]$seq.rf))), chr=i)
     } else {map.data[[i]] <- cbind(map.data[[i]], chr=i)}
   }
-
+  
   #check data.frame
   for(i in seq_along(map.data)){
     if(ncol(map.data[[i]]) != 3) stop(paste("\n", names(map.data)[i],"has incorrect number of columns."))
@@ -90,21 +89,21 @@ draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL,grou
     map.data[[i]]$marker <- as.character(map.data[[i]]$marker)
     map.data[[i]] <- map.data[[i]][order(map.data[[i]]$pos),]
   }
-
+  
   nchr<-length(map.data)
   max.pos<-ceiling(max(do.call("rbind",map.data)$pos)/10)*10
   for(i in seq_along(map.data))map.data[[i]]$coord<--map.data[[i]]$pos*100/max.pos
   
   if(is.null(main)) main<-""
   if(is.null(group.names)) group.names <- seq(map.data)
-  if(is.null(tag)) pos <- id <- F
-  if("all"%in%tag) tag<-unique(unlist(lapply(map.data,function(x) x$marker),use.names = F))
+  if(is.null(tag)) pos <- id <- FALSE
+  if("all"%in%tag) tag<-unique(unlist(lapply(map.data,function(x) x$marker),use.names = FALSE))
   if(is.null(space)) space<-1+pos+id
-  if(centered==T){
+  if(centered==TRUE){
     for(i in seq_along(map.data)){map.data[[i]]$coord<-map.data[[i]]$coord-(100+min(map.data[[i]]$coord))/2}
-    y.axis<-F
+    y.axis<-FALSE
   }
-  if(y.axis==T){
+  if(y.axis==TRUE){
     yl<-"Distance (cM)"
     mleft<-5
   } else {
@@ -114,31 +113,34 @@ draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL,grou
   if(is.null(col.group)) col.group<-"grey85"
   if(is.null(col.mark)) col.mark<-"#cc662f"
   if(is.null(col.tag)) col.tag<-"#003350"
-  if(is.null(output)) output<-"map"
-  
   
   # Split output
-  if(strsplit(output,"")[[1]][length(strsplit(output,"")[[1]])]=="/") output<-paste(output,"map",sep = "")
-  output<-strsplit(output,"/",T)[[1]]
-  if(length(output)>1){
-    output.dir<-paste(output[-length(output)],collapse = "/")
-    output<-output[length(output)]
-  } else output.dir<-"."
-  if(!dir.exists(output.dir)) stop("\nInvalid directory")
-  output<-strsplit(output,".",T)[[1]]
-  if(output[length(output)]%in%c("bmp","jpeg","png","tiff","pdf","eps")){
-    output.ext<-output[length(output)]
-    output<-paste(output[1:(length(output)-1)],collapse = ".")
-  } else{
-    output.ext<-"eps"
-    output<-paste(output[1:length(output)],collapse = ".")
+  if(is.null(output)){
+    output.dir <- tempdir()
+    output <- "map"
+    output.ext <- "eps"
+  } else {
+    output.dir <- dirname(output)
+    if(!dir.exists(output.dir)) stop("\nInvalid directory")
+    output <- basename(output)
   }
+  
+  if(length(grep("[.]", output)) > 0){
+    output.split <- unlist(strsplit(output, "[.]"))
+    output.ext <- output.split[length(output.split)]
+    output<-paste(output.split[1:(length(output.split)-1)],collapse = ".")
+  } else output.ext <- "eps" 
+  
+  if(!(output.ext %in% c("bmp","jpeg","png","tiff","pdf","eps"))){
+    output.ext<-"eps"
+  }
+  
   n<-0
   if(paste(output,output.ext,sep = ".")%in%list.files(output.dir)){
     repeat{
       n<-n+1
       output2<-paste(output,"(",n,")",sep = "")
-      if(paste(output2,output.ext,sep = ".")%in%list.files(output.dir)==F){
+      if(paste(output2,output.ext,sep = ".")%in%list.files(output.dir)==FALSE){
         output<-output2
         break
       }
@@ -146,24 +148,25 @@ draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL,grou
   }
   
   # Preparing plot area
+  file_path <- file.path(output.dir, paste(output, paste0(".",output.ext),sep=""))
   if(output.ext=="bmp"){
-    bmp(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15,width = nchr*(1+space)+(mleft+1)/2,res = 300,units = "cm")
+    bmp(file_path,height = 15,width = nchr*(1+space)+(mleft+1)/2,res = 300,units = "cm")
   } else  if(output.ext=="jpeg"){
-    jpeg(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15,width = nchr*(1+space)+(mleft+1)/2,res = 300,units = "cm")
+    jpeg(file_path,height = 15,width = nchr*(1+space)+(mleft+1)/2,res = 300,units = "cm")
   } else if(output.ext=="png"){
-    png(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15,width = nchr*(1+space)+(mleft+1)/2,res = 300,units = "cm")
+    png(file_path,height = 15,width = nchr*(1+space)+(mleft+1)/2,res = 300,units = "cm")
   } else if(output.ext=="tiff"){
-    tiff(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15,width = nchr*(1+space)+(mleft+1)/2,res = 300,units = "cm")
+    tiff(file_path,height = 15,width = nchr*(1+space)+(mleft+1)/2,res = 300,units = "cm")
   } else if(output.ext=="pdf"){
-    pdf(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15/2.54,width = (nchr*(1+space)+(mleft+1)/2)/2.54)
+    pdf(file_path,height = 15/2.54,width = (nchr*(1+space)+(mleft+1)/2)/2.54)
   } else if(output.ext=="eps"){
-    postscript(paste(output.dir,"/",output,".",output.ext,sep=""),height = 15/2.54,width = (nchr*(1+space)+(mleft+1)/2)/2.54,paper = "special",horizontal = F,onefile = F)
+    postscript(file_path,height = 15/2.54,width = (nchr*(1+space)+(mleft+1)/2)/2.54,paper = "special",horizontal = FALSE,onefile = FALSE)
   }
   
   par(mar=c(1,mleft,2,1))
-  plot(NA,NA,xlim=c(0,nchr*(1+space)),ylim = c(-100,5),type = "n",axes = F,ylab = yl,main=main)
+  plot(NA,NA,xlim=c(0,nchr*(1+space)),ylim = c(-100,5),type = "n",axes = FALSE,ylab = yl,main=main)
   text(seq((1+space)/2,(nchr-.5)*(1+space),1+space),5,group.names)
-  if(y.axis==T){
+  if(y.axis==TRUE){
     axis(2,at=seq(0,-100, -1000/max.pos),labels = seq(0,max.pos, 10), las = 2)
   }
   #Drawing Group(s)
@@ -190,14 +193,14 @@ draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL,grou
         } else{
           repeat{
             dif<-round(diff(tag.data[[i]]$coord2),2)
-            over.dif.min<-c(dif>dif.min,F)
-            if(T%in%over.dif.min){
+            over.dif.min<-c(dif>dif.min,FALSE)
+            if(TRUE%in%over.dif.min){
               tag.data[[i]]$coord2[c(over.dif.min)]<-tag.data[[i]]$coord2[c(over.dif.min)]+(-dif.min+dif[over.dif.min])/2
-              tag.data[[i]]$coord2[c(F,over.dif.min[-length(over.dif.min)])]<-tag.data[[i]]$coord2[c(F,over.dif.min[-length(over.dif.min)])]-(-dif.min+dif[over.dif.min])/2
+              tag.data[[i]]$coord2[c(FALSE,over.dif.min[-length(over.dif.min)])]<-tag.data[[i]]$coord2[c(FALSE,over.dif.min[-length(over.dif.min)])]-(-dif.min+dif[over.dif.min])/2
             } else break
           }
           repeat{
-            if(T%in%(tag.data[[i]]$coord2>0)){
+            if(TRUE%in%(tag.data[[i]]$coord2>0)){
               dif<-round(diff(tag.data[[i]]$coord2),2)
               over.dif.min<-(dif<dif.min)
               next.spot<-(1:length(over.dif.min))[over.dif.min][1]
@@ -205,10 +208,10 @@ draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL,grou
               } else if(is.na(next.spot)){tag.data[[i]]$coord2<-tag.data[[i]]$coord2-tag.data[[i]]$coord2[1]
               } else tag.data[[i]]$coord2[1:next.spot]<-tag.data[[i]]$coord2[1:next.spot]-min(c(tag.data[[i]]$coord2[1],dif.min-dif[next.spot]))
             }
-            if(T%in%(tag.data[[i]]$coord2>0)==F) break
+            if(TRUE%in%(tag.data[[i]]$coord2>0)==FALSE) break
           }
           repeat{
-            if(T%in%(tag.data[[i]]$coord2<(-100))){
+            if(TRUE%in%(tag.data[[i]]$coord2<(-100))){
               dif<-round(diff(tag.data[[i]]$coord2),2)
               over.dif.min<-(dif<dif.min)
               next.spot<-(1:length(over.dif.min))[over.dif.min][length((1:length(over.dif.min))[over.dif.min])]+1
@@ -216,7 +219,7 @@ draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL,grou
               } else if(is.na(next.spot)){tag.data[[i]]$coord2<-tag.data[[i]]$coord2-100-tag.data[[i]]$coord2[length(tag.data[[i]]$coord2)]
               } else tag.data[[i]]$coord2[length(tag.data[[i]]$coord2):next.spot]<-tag.data[[i]]$coord2[length(tag.data[[i]]$coord2):next.spot]+min(c(-100-tag.data[[i]]$coord2[length(tag.data[[i]]$coord2)],dif.min-dif[next.spot-1]))
             }
-            if(T%in%(tag.data[[i]]$coord2<(-100))==F) break
+            if(TRUE%in%(tag.data[[i]]$coord2<(-100))==FALSE) break
           }
         }
       }
@@ -224,13 +227,13 @@ draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL,grou
     tag.data<-do.call("rbind",tag.data)
     segments((tag.data$chr-.5)*(1+space)-.25,tag.data$coord,
              (tag.data$chr-.5)*(1+space)+.25,tag.data$coord,lwd = 2,col = col.tag)
-    if(id==T){
+    if(id==TRUE){
       segments((tag.data$chr-.5)*(1+space)+.275,tag.data$coord,
                (tag.data$chr-.5)*(1+space)+.5,tag.data$coord2,lwd = .5,col = col.tag)
       text((tag.data$chr-.5)*(1+space)+.4,tag.data$coord2,
            pos = 4,tag.data$marker,col = col.tag,cex = cex.label)
     }
-    if(pos==T){
+    if(pos==TRUE){
       segments((tag.data$chr-.5)*(1+space)-.275,tag.data$coord,
                (tag.data$chr-.5)*(1+space)-.5,tag.data$coord2,lwd = .5,col = col.tag)
       text((tag.data$chr-.5)*(1+space)-.4,tag.data$coord2,
@@ -238,7 +241,9 @@ draw_map2<-function(...,tag=NULL,id=TRUE,pos =TRUE,cex.label=NULL,main=NULL,grou
     }
   }
   dev.off()
-  cat("Completed\nOutput file: ")
-  if(output.dir==".") cat(getwd(),"/",output,".",output.ext,"\n",sep = "") else cat(output.dir,"/",output,".",output.ext,"\n",sep = "")
+  if(verbose) {
+    cat("Completed\nOutput file: ")
+    cat(file_path)
+  }
 }
 ##end of file

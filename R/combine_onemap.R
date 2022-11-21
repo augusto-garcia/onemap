@@ -9,7 +9,6 @@
 # copyright (c) 2016, Gabriel R A Margarido                           #
 #                                                                     #
 # First version: 01/11/2016                                           #
-# Last update: 01/11/2016                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -64,10 +63,11 @@
 ##' \emph{Theoretical Population Biology} 61: 349-363.
 ##' @keywords IO
 ##' @examples
-##'
-##'   \dontrun{
-##'     combined_data <- combine_onemap(onemap_data1, onemap_data2)
-##'   }
+##'     
+##'     data("onemap_example_out")
+##'     data("vcf_example_out")
+##'     combined_data <- combine_onemap(onemap_example_out, vcf_example_out)
+##'   
 ##'@export
 combine_onemap <- function(...) {
     onemap.objs <- list(...)
@@ -76,7 +76,7 @@ combine_onemap <- function(...) {
         stop("You must provide a list of OneMap objects as input.")
     }
     for (i in 1:n.objs) {
-        if(!is(onemap.objs[[i]], "onemap"))
+        if(!inherits(onemap.objs[[i]], "onemap"))
             stop("All objects must be of class 'onemap'.")
     }
     
@@ -96,7 +96,7 @@ combine_onemap <- function(...) {
     ## Check if all objects are of the same cross type
     crosstype <- class(onemap.objs[[1]])[2]
     for (i in 2:n.objs) {
-        if(!is(onemap.objs[[i]], crosstype))
+        if(!inherits(onemap.objs[[i]], crosstype))
             stop("All objects must be of the same cross type.")
     }
     
@@ -229,14 +229,22 @@ combine_onemap <- function(...) {
 #' @export
 split_onemap <- function(onemap.obj=NULL, mks=NULL){
     
+    if(!inherits(onemap.obj, c("onemap"))) stop("Input object must be of class onemap")
+  
     if(is(mks, "character")){
         idx.mks <- which(colnames(onemap.obj$geno) %in% mks)
         rev.mks <- which(!colnames(onemap.obj$geno) %in% mks)
-    } else if(is(mks, c("numeric"))){
+        if(any(!mks %in% colnames(onemap.obj$geno))) 
+            stop("One or more of the selected markers do not exist in the onemap object")
+            
+    } else if(is(mks, "numeric")){
         idx.mks <- mks
+        if(any(mks > onemap.obj$n.mar)) 
+            stop("One or more of the selected markers do not exist in the onemap object")
+        
         idx.temp <- 1:onemap.obj$n.mar
         rev.mks <- idx.temp[-mks]
-    }
+    } 
     
     new.obj <- onemap.obj
     new.obj$geno <- onemap.obj$geno[,idx.mks]

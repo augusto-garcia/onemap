@@ -45,6 +45,9 @@
 ##'     displayed.
 ##' @param tol tolerance for the C routine, i.e., the value used to
 ##'     evaluate convergence.
+##' @param verbose A logical, if TRUE it output progress status
+##' information.
+##' 
 ##' @return This function does not return any value; it just produces
 ##'     text output to suggest alternative orders.
 ##' @author Gabriel R A Margarido, \email{gramarga@@gmail.com} and
@@ -78,50 +81,50 @@
 ##' @keywords utilities
 ##' @examples
 ##'
-##' \dontrun{
-##'  #Outcross example
-##'   data(onemap_example_out)
-##'   twopt <- rf_2pts(onemap_example_out)
-##'   markers <- make_seq(twopt,c(27,16,20,4,19,21,23,9,24,29))
-##'   markers.map <- map(markers)
-##'   ripple_seq(markers.map)
+##' \donttest{
+##' #Outcross example
+##'  data(onemap_example_out)
+##'  twopt <- rf_2pts(onemap_example_out)
+##'  markers <- make_seq(twopt,c(27,16,20,4,19,21,23,9,24,29))
+##'  markers.map <- map(markers)
+##'  ripple_seq(markers.map)
 ##'
 ##' #F2 example
-##'  data(onemap_example_f2)
-##'  twopt <- rf_2pts(onemap_example_f2)
-##'  all_mark <- make_seq(twopt,"all")
-##'  groups <- group(all_mark)
-##'  LG3 <- make_seq(groups,3)
-##'  LG3.ord <- order_seq(LG3, subset.search = "twopt", twopt.alg = "rcd", touchdown=TRUE)
-##'  LG3.ord
-##'  make_seq(LG3.ord) # get safe sequence
-##'  ord.1<-make_seq(LG3.ord,"force") # get forced sequence
-##'  ripple_seq(ord.1, ws=5)
+##' data(onemap_example_f2)
+##' twopt <- rf_2pts(onemap_example_f2)
+##' all_mark <- make_seq(twopt,"all")
+##' groups <- group(all_mark)
+##' LG3 <- make_seq(groups,1)
+##' LG3.ord <- order_seq(LG3, subset.search = "twopt", twopt.alg = "rcd", touchdown=TRUE)
+##' LG3.ord
+##' make_seq(LG3.ord) # get safe sequence
+##' ord.1<-make_seq(LG3.ord,"force") # get forced sequence
+##' ripple_seq(ord.1, ws=5)
 ##' }
 ##'
 ##'@export
-ripple_seq<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2)
+ripple_seq<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2, verbose=TRUE)
 {
-  if(is(input.seq$data.name, "outcross") || is(input.seq$data.name, "f2"))
+  if(inherits(input.seq$data.name, "outcross") || inherits(input.seq$data.name, "f2"))
     return(ripple_seq_outcross(input.seq=input.seq,
                                ws=ws,
                                LOD=LOD,
-                               tol=tol))
+                               tol=tol, verbose=TRUE))
   else
     return(ripple_seq_inbred(input.seq=input.seq,
                              ws=ws,
                              ext.w=ext.w,
                              LOD=LOD,
-                             tol=tol))
+                             tol=tol, verbose=TRUE))
 }
 
 ## This function searches for alternative orders, by comparing all possible
 ## orders of subsets of markers (for outcrosses)
-ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2) {
+ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2, verbose=TRUE) {
   ## checking for correct objects
-  if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+  if(!inherits(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   if(ws < 2) stop("ws must be greater than or equal to 2")
-  if(ws > 5) cat("WARNING: this operation may take a VERY long time\n\n")
+  if(ws > 5) warning("this operation may take a VERY long time\n\n")
   flush.console()
   
   len <- length(input.seq$seq.num)
@@ -151,7 +154,7 @@ ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2) {
   list.init <- phases(input.seq)
   
   #### first position
-  cat(input.seq$seq.num[1:ws],"|",input.seq$seq.num[ws+1], "...", sep="-")
+  if(verbose) cat(input.seq$seq.num[1:ws],"|",input.seq$seq.num[ws+1], "...", sep="-")
   
   ## create all possible alternative orders for the first subset
   all.ord <- t(apply(perm_tot(head(input.seq$seq.num,ws)),1,function(x) c(x,tail(input.seq$seq.num,-ws))))
@@ -205,21 +208,23 @@ ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2) {
     ## display results
     which.LOD <- which(best.ord.LOD > -LOD)
     LOD.print <- format(best.ord.LOD,digits=2,nsmall=2)
-    cat("\n  Alternative orders:\n")
-    for(j in which.LOD) {
-      if(is(input.seq$data.name,"outcross"))
-        cat("  ",all.ord[j,1:(ws+1)],ifelse(len > (ws+1),"... : ",": "),LOD.print[j],"( linkage phases:",best.ord.phase[j,1:ws],ifelse(len > (ws+1),"... )\n",")\n"))
-      else
-        cat("  ",all.ord[j,1:(ws+1)],ifelse(len > (ws+1),"... : ",": "),LOD.print[j],"\n")
+    if(verbose) {
+      cat("\n  Alternative orders:\n")
+      for(j in which.LOD) {
+        if(inherits(input.seq$data.name,"outcross"))
+          cat("  ",all.ord[j,1:(ws+1)],ifelse(len > (ws+1),"... : ",": "),LOD.print[j],"( linkage phases:",best.ord.phase[j,1:ws],ifelse(len > (ws+1),"... )\n",")\n"))
+        else
+          cat("  ",all.ord[j,1:(ws+1)],ifelse(len > (ws+1),"... : ",": "),LOD.print[j],"\n")
+      }
+      cat("\n")
     }
-    cat("\n")
   }
-  else cat(" OK\n\n")
+  else if(verbose) cat(" OK\n\n")
   
   #### middle positions
   if (len > (ws+1)) {
     for (p in 2:(len-ws)) {
-      cat("...", input.seq$seq.num[p-1], "|", input.seq$seq.num[p:(p+ws-1)],"|", input.seq$seq.num[p+ws],"...", sep="-")
+      if(verbose) cat("...", input.seq$seq.num[p-1], "|", input.seq$seq.num[p:(p+ws-1)],"|", input.seq$seq.num[p+ws],"...", sep="-")
       
       ## create all possible alternative orders for the first subset
       all.ord <- t(apply(perm_tot(input.seq$seq.num[p:(p+ws-1)]),1,function(x) c(head(input.seq$seq.num,p-1),x,tail(input.seq$seq.num,-p-ws+1))))
@@ -274,21 +279,23 @@ ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2) {
         ## display results
         which.LOD <- which(best.ord.LOD > -LOD)
         LOD.print <- format(best.ord.LOD,digits=2,nsmall=2)
-        cat("\n  Alternative orders:\n")
-        for(j in which.LOD) {
-          if(is(input.seq$data.name,"outcross"))
-            cat(ifelse(p>2,"  ...","  "),all.ord[j,(p-1):(p+ws)],ifelse((p+ws)<len,"... : ",": "),LOD.print[j],"( linkage phases:",ifelse(p>2,"...","\b"),best.ord.phase[j,(p-1):(p+ws-1)],ifelse((p+ws)<len,"... )\n",")\n"))
-          else
-            cat(ifelse(p>2,"  ...","  "),all.ord[j,(p-1):(p+ws)],ifelse((p+ws)<len,"... : ",": "),LOD.print[j],"\n")
+        if(verbose){
+          cat("\n  Alternative orders:\n")
+          for(j in which.LOD) {
+            if(inherits(input.seq$data.name,"outcross"))
+              cat(ifelse(p>2,"  ...","  "),all.ord[j,(p-1):(p+ws)],ifelse((p+ws)<len,"... : ",": "),LOD.print[j],"( linkage phases:",ifelse(p>2,"...","\b"),best.ord.phase[j,(p-1):(p+ws-1)],ifelse((p+ws)<len,"... )\n",")\n"))
+            else
+              cat(ifelse(p>2,"  ...","  "),all.ord[j,(p-1):(p+ws)],ifelse((p+ws)<len,"... : ",": "),LOD.print[j],"\n")
+          }
+          cat("\n")
         }
-        cat("\n")
       }
-      else cat(" OK\n\n")
+      else if(verbose) cat(" OK\n\n")
     }
   }
   
   ###### last position
-  cat(input.seq$seq.num[len-ws], "|" , tail(input.seq$seq.num,ws), sep="-")
+  if(verbose) cat(input.seq$seq.num[len-ws], "|" , tail(input.seq$seq.num,ws), sep="-")
   ## create all possible alternative orders for the first subset
   all.ord <- t(apply(perm_tot(tail(input.seq$seq.num,ws)),1,function(x) c(head(input.seq$seq.num,-ws),x)))
   for(i in 1:nrow(all.ord)){
@@ -341,31 +348,34 @@ ripple_seq_outcross<-function(input.seq,ws=4,LOD=3,tol=10E-2) {
     ## display results
     which.LOD <- which(best.ord.LOD > -LOD)
     LOD.print <- format(best.ord.LOD,digits=2,nsmall=2)
-    cat("\n  Alternative orders:\n")
     
-    for(j in which.LOD) {
-      if(is(input.seq$data.name,"outcross"))
-        cat(ifelse(len > (ws+1),"  ...","  "),all.ord[j,(len-ws):len],": ",LOD.print[j],"( linkage phases:",ifelse(len > (ws+1),"...","\b"),best.ord.phase[j,(len-ws):(len-1)],")\n")
-      else
-        cat(ifelse(len > (ws+1),"  ...","  "),all.ord[j,(len-ws):len],": ",LOD.print[j],"\n")
+    if(verbose) {
+      cat("\n  Alternative orders:\n")
       
+      for(j in which.LOD) {
+        if(inherits(input.seq$data.name,"outcross"))
+          cat(ifelse(len > (ws+1),"  ...","  "),all.ord[j,(len-ws):len],": ",LOD.print[j],"( linkage phases:",ifelse(len > (ws+1),"...","\b"),best.ord.phase[j,(len-ws):(len-1)],")\n")
+        else
+          cat(ifelse(len > (ws+1),"  ...","  "),all.ord[j,(len-ws):len],": ",LOD.print[j],"\n")
+        
+      }
+      cat("\n")
     }
-    cat("\n")
   }
-  else cat(" OK\n\n")
+  else if(verbose) cat(" OK\n\n")
 }
 
 ## This function searches for alternative orders, by comparing all possible
 ## orders of subsets of markers (for crosses derived from inbred lines)
-ripple_seq_inbred<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2)
+ripple_seq_inbred<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2, verbose=TRUE)
 {
   ## checking for correct objects
-  if(!is(input.seq,"sequence"))
+  if(!inherits(input.seq,"sequence"))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   if(ws < 2)
     stop("ws must be greater than or equal to 2")
   if(ws > 5)
-    cat("WARNING: this operation may take a VERY long time\n\n")
+    warning("This operation may take a VERY long time\n\n")
   flush.console()
   len <- length(input.seq$seq.num)
   
@@ -379,7 +389,7 @@ ripple_seq_inbred<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2)
   best.ord.like <- best.ord.LOD <- rep(-Inf,tot)
   
   ## first position
-  cat(input.seq$seq.num[1:ws],"|",input.seq$seq.num[ws+1], "...", sep="-")
+  if(verbose) cat(input.seq$seq.num[1:ws],"|",input.seq$seq.num[ws+1], "...", sep="-")
   
   ## create all possible alternative orders for the first subset
   if(is.null(ext.w) || ext.w >= (length(input.seq$seq.num)-ws))
@@ -399,8 +409,8 @@ ripple_seq_inbred<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2)
                               rf.vec=rf.temp,
                               verbose=FALSE,
                               tol=tol)
-    if(is(input.seq$data.name, c("riself", "risib"))){
-      crosstype <- ifelse(is(input.seq$data.name, "riself"), "riself", "risib")
+    if(inherits(input.seq$data.name, c("riself", "risib"))){
+      crosstype <- ifelse(inherits(input.seq$data.name, "riself"), "riself", "risib")
       final.map$rf<-adjust_rf_ril(final.map$rf,
                                   type=crosstype,
                                   expand = FALSE)
@@ -420,17 +430,19 @@ ripple_seq_inbred<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2)
     ## display results
     which.LOD <- which(best.ord.LOD > -LOD)
     LOD.print <- format(best.ord.LOD,digits=2,nsmall=2)
-    cat("\n  Alternative orders:\n")
-    for(j in which.LOD)
-      cat("  ",all.ord[j,1:(ws)], ifelse(len > (ws+1),"... : ",": "), LOD.print[j],"\n")
-    cat("\n")
+    if(verbose){
+      cat("\n  Alternative orders:\n")
+      for(j in which.LOD)
+        cat("  ",all.ord[j,1:(ws)], ifelse(len > (ws+1),"... : ",": "), LOD.print[j],"\n")
+      cat("\n")
+    }
   }
   else
-    cat(" OK\n\n")
+    if(verbose) cat(" OK\n\n")
   ## middle positions
   if (len > (ws+1)) {
     for (p in 2:(len-ws)) {
-      cat("...", input.seq$seq.num[p-1], "|", input.seq$seq.num[p:(p+ws-1)],"|", input.seq$seq.num[p+ws],"...", sep="-")
+      if(verbose) cat("...", input.seq$seq.num[p-1], "|", input.seq$seq.num[p:(p+ws-1)],"|", input.seq$seq.num[p+ws],"...", sep="-")
       ## create all possible alternative orders for the first subset
       if(is.null(ext.w) || ext.w >= (length(input.seq$seq.num)-ws))
         all.ord <- t(apply(perm_tot(input.seq$seq.num[p:(p+ws-1)]),1,function(x) c(head(input.seq$seq.num,p-1),x,tail(input.seq$seq.num,-p-ws+1))))
@@ -451,8 +463,8 @@ ripple_seq_inbred<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2)
                                   rf.vec=rf.temp,
                                   verbose=FALSE,
                                   tol=tol)
-        if(is(input.seq$data.name, c("riself", "risib"))){
-          crosstype <- ifelse(is(input.seq$data.name, "riself"), "riself", "risib")
+        if(inherits(input.seq$data.name, c("riself", "risib"))){
+          crosstype <- ifelse(inherits(input.seq$data.name, "riself"), "riself", "risib")
           final.map$rf<-adjust_rf_ril(final.map$rf,
                                       type=crosstype,
                                       expand = FALSE)
@@ -473,20 +485,22 @@ ripple_seq_inbred<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2)
         ## display results
         which.LOD <- which(best.ord.LOD > -LOD)
         LOD.print <- format(best.ord.LOD, digits=2, nsmall=2)
-        cat("\n  Alternative orders:\n")
-        for(j in which.LOD)
-        {
-          fin<-which(names(all.ord[j,])=="M")
-          fin
-          cat(ifelse(p>2,"  ...","  "),all.ord[j,(fin-ws+1):fin],ifelse((p+ws)<len,"... : ",": "),LOD.print[j],"\n")
+        if(verbose) {
+          cat("\n  Alternative orders:\n")
+          for(j in which.LOD)
+          {
+            fin<-which(names(all.ord[j,])=="M")
+            fin
+            cat(ifelse(p>2,"  ...","  "),all.ord[j,(fin-ws+1):fin],ifelse((p+ws)<len,"... : ",": "),LOD.print[j],"\n")
+          }
+          cat("\n")
         }
-        cat("\n")
       }
-      else cat(" OK\n\n")
+      else if(verbose) cat(" OK\n\n")
     }
   }
   ## last position
-  cat(input.seq$seq.num[len-ws], "|" , tail(input.seq$seq.num,ws), sep="-")
+  if(verbose) cat(input.seq$seq.num[len-ws], "|" , tail(input.seq$seq.num,ws), sep="-")
   ## create all possible alternative orders for the first subset
   if(is.null(ext.w) || ext.w >= (length(input.seq$seq.num)-ws))
     all.ord <- t(apply(perm_tot(tail(input.seq$seq.num,ws)),1,function(x) c(head(input.seq$seq.num,-ws),x)))
@@ -504,8 +518,8 @@ ripple_seq_inbred<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2)
                               rf.vec=rf.temp,
                               verbose=FALSE,
                               tol=tol)
-    if(is(input.seq$data.name, c("riself", "risib"))){
-      crosstype <- ifelse(is(input.seq$data.name, "riself"), "riself", "risib")
+    if(inherits(input.seq$data.name, c("riself", "risib"))){
+      crosstype <- ifelse(inherits(input.seq$data.name, "riself"), "riself", "risib")
       final.map$rf<-adjust_rf_ril(final.map$rf,
                                   type=crosstype,
                                   expand = FALSE)
@@ -525,13 +539,15 @@ ripple_seq_inbred<-function(input.seq, ws=4, ext.w=NULL, LOD=3, tol=10E-2)
     ## display results
     which.LOD <- which(best.ord.LOD > -LOD)
     LOD.print <- format(best.ord.LOD,digits=2,nsmall=2)
-    cat("\n  Alternative orders:\n")
-    for(j in which.LOD)
-      cat("  ",all.ord[j,(ncol(all.ord)-ws+1):ncol(all.ord)],ifelse(len > (ws+1),"... : ",": "),LOD.print[j],"\n")
-    cat("\n")
+    if(verbose) {
+      cat("\n  Alternative orders:\n")
+      for(j in which.LOD)
+        cat("  ",all.ord[j,(ncol(all.ord)-ws+1):ncol(all.ord)],ifelse(len > (ws+1),"... : ",": "),LOD.print[j],"\n")
+      cat("\n")
+    }
   }
   else
-    cat(" OK\n\n")
+    if(verbose) cat(" OK\n\n")
 }
 
 # end of file

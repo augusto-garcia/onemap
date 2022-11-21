@@ -47,10 +47,11 @@ datasets have the same number of individuals, and it is assumed that they
 are arranged in the same order in every dataset.
 }
 \examples{
-
-  \dontrun{
-    combined_data <- combine_onemap(onemap_data1, onemap_data2)
-  }
+    
+    data("onemap_example_out")
+    data("vcf_example_out")
+    combined_data <- combine_onemap(onemap_example_out, vcf_example_out)
+  
 }
 \references{
 Lincoln, S. E., Daly, M. J. and Lander, E. S. (1993)

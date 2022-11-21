@@ -4,10 +4,12 @@
 \alias{test_segregation}
 \title{test_segregation}
 \usage{
-test_segregation(x)
+test_segregation(x, simulate.p.value = FALSE)
 }
 \arguments{
 \item{x}{an object of class \code{onemap}, with data and additional information.}
+
+\item{simulate.p.value}{a logical indicating whether to compute p-values by Monte Carlo simulation.}
 }
 \value{
 an object of class onemap_segreg_test, which is a list with marker name,
@@ -26,8 +28,10 @@ First, it identifies the correct segregation pattern and corresponding H0 hypoth
 and then tests it.
 }
 \examples{
-data(onemap_example_out) # Loads a fake outcross dataset installed with onemap
-Chi <- test_segregation(onemap_example_out) # Performs the chi-square test for all markers
-print(Chi) # Shows the results
+\donttest{
+ data(onemap_example_out) # Loads a fake outcross dataset installed with onemap
+ Chi <- test_segregation(onemap_example_out) # Performs the chi-square test for all markers
+ print(Chi) # Shows the results
+}
 
 }

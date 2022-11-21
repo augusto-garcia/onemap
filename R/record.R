@@ -9,14 +9,11 @@
 ## copyright (c) 2007-9, Marcelo Mollinari                             ##
 ##                                                                     ##
 ## First version: 11/29/2009                                           ##
-## Last update: 12/2015                                                ##
 ## The detailed description of the algorithm was removed by Augusto    ##
 ## Garcia, on 2015/07/25, since it was not compiling in new R versions ##
 ## License: GNU General Public License version 2 (June, 1991) or later ##
 ##                                                                     ##
 #######################################################################
-
-
 
 ##' Recombination Counting and Ordering
 ##'
@@ -43,10 +40,16 @@
 ##' @param overlap The desired overlap between batches
 ##' @param phase_cores The number of parallel processes to use when estimating
 ##' the phase of a marker. (Should be no more than 4)
+##' @param parallelization.type one of the supported cluster types. This should 
+#' be either PSOCK (default) or FORK.
 ##' @param tol tolerance for the C routine, i.e., the value used to evaluate
 ##' convergence.
 #' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
 #' if \code{TRUE} one of the markers is removed and record is performed again.
+#' @param hmm logical defining if the HMM must be applied to estimate multipoint
+#' genetic distances
+#' @param verbose A logical, if TRUE it output progress status information.
+#' 
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}
@@ -59,6 +62,7 @@
 ##' \item{data.name}{name of the object of class \code{onemap} with the raw
 ##' data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
 ##' 2-point analyses.}
+##' 
 ##' @author Marcelo Mollinari, \email{mmollina@@usp.br}
 ##' @seealso \code{\link[onemap]{make_seq}} and \code{\link[onemap]{map}}
 ##' @references Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia,
@@ -71,14 +75,14 @@
 ##' @keywords utilities
 ##' @examples
 ##'
-##' \dontrun{
+##' \donttest{
 ##'   ##outcross example
 ##'   data(onemap_example_out)
 ##'   twopt <- rf_2pts(onemap_example_out)
 ##'   all_mark <- make_seq(twopt,"all")
 ##'   groups <- group(all_mark)
 ##'   LG1 <- make_seq(groups,1)
-##'   LG1.rec <- record(LG1)
+##'   LG1.rec <- record(LG1, hmm = FALSE)
 ##'
 ##'   ##F2 example
 ##'   data(onemap_example_f2)
@@ -86,7 +90,7 @@
 ##'   all_mark <- make_seq(twopt,"all")
 ##'   groups <- group(all_mark)
 ##'   LG1 <- make_seq(groups,1)
-##'   LG1.rec <- record(LG1)
+##'   LG1.rec <- record(LG1, hmm = FALSE)
 ##'   LG1.rec
 ##' }
 ##'@export
@@ -94,15 +98,15 @@ record<-function(input.seq, times=10, LOD=0, max.rf=0.5, tol=10E-5,
                  rm_unlinked = TRUE,
                  size = NULL, 
                  overlap = NULL, 
-                 phase_cores = 1){
+                 phase_cores = 1, hmm = TRUE, parallelization.type = "PSOCK", verbose= TRUE){
   ## checking for correct object
-  if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is
+  if(!inherits(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is
     not an object of class 'sequence'")
   n.mrk <- length(input.seq$seq.num)
   
   ## create reconmbination fraction matrix
   
-  if(is(input.seq$twopt,"outcross") || is(input.seq$twopt,"f2"))
+  if(inherits(input.seq$twopt,c("outcross", "f2")))
     r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
   else
     r<-get_mat_rf_in(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
@@ -200,44 +204,51 @@ record<-function(input.seq, times=10, LOD=0, max.rf=0.5, tol=10E-5,
       }
       if(COUNT(X,result.new) > COUNT(X,result)){
         result.new<-result
-        ##print(COUNT(X,result.new))
       }
     }
   }
-  ## end of RECORD algorithm
-  cat("\norder obtained using RECORD algorithm:\n\n", input.seq$seq.num[avoid_reverse(result.new)], "\n\ncalculating multipoint map using tol", tol, ".\n\n")
   
-  if(phase_cores == 1){
-    record_map <- map(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(result.new)],
-                               twopt=input.seq$twopt), 
-                      tol=tol,
-                      rm_unlinked = rm_unlinked)
+  if(hmm){
+    ## end of RECORD algorithm
+    if(verbose) cat("\norder obtained using RECORD algorithm:\n\n", input.seq$seq.num[avoid_reverse(result.new)], "\n\ncalculating multipoint map using tol", tol, ".\n\n")
     
-  } else{
-    if(is.null(size) | is.null(overlap)){
-      stop("If you want to parallelize the HMM in multiple cores (phase_cores != 1) 
+    if(phase_cores == 1 | inherits(input.seq$data.name, c("backcross", "riself", "risib"))){
+      record_map <- map(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(result.new)],
+                                 twopt=input.seq$twopt), 
+                        tol=tol,
+                        rm_unlinked = rm_unlinked, parallelization.type = parallelization.type)
+      
+    } else{
+      if(is.null(size) | is.null(overlap)){
+        stop("If you want to parallelize the HMM in multiple cores (phase_cores != 1) 
              you must also define `size` and `overlap` arguments.")
-    } else {
-      record_map <- map_overlapping_batches(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(result.new)],
-                                                     twopt=input.seq$twopt), 
-                                            tol=tol,
-                                            size = size, overlap = overlap, 
-                                            phase_cores = phase_cores,
-                                            rm_unlinked = rm_unlinked)
+      } else {
+        record_map <- map_overlapping_batches(make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(result.new)],
+                                                       twopt=input.seq$twopt), 
+                                              tol=tol,
+                                              size = size, overlap = overlap, 
+                                              phase_cores = phase_cores,
+                                              rm_unlinked = rm_unlinked, parallelization.type = parallelization.type)
+      }
     }
+    
+    if(!is.list(record_map)) {
+      new.seq <- make_seq(input.seq$twopt, record_map)
+      record_map <- record(input.seq = new.seq, 
+                           LOD=LOD, 
+                           max.rf=max.rf, tol=tol, 
+                           rm_unlinked= rm_unlinked,
+                           size = size, 
+                           overlap = overlap, 
+                           phase_cores = phase_cores,
+                           parallelization.type = parallelization.type)
+    }
+    return(record_map)
+  } else {
+    record.seq <- make_seq(input.seq$twopt,input.seq$seq.num[avoid_reverse(result.new)],
+                           twopt=input.seq$twopt)
+    return(record.seq)
   }
-  
-  if(!is.list(record_map)) {
-    new.seq <- make_seq(input.seq$twopt, record_map)
-    record_map <- record(input.seq = new.seq, 
-                         LOD=LOD, 
-                         max.rf=max.rf, tol=tol, 
-                         rm_unlinked= rm_unlinked,
-                         size = size, 
-                         overlap = overlap, 
-                         phase_cores = phase_cores)
-  }
-  return(record_map)
 }
 
 ##end of file

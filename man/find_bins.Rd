@@ -4,7 +4,7 @@
 \alias{find_bins}
 \title{Allocate markers into bins}
 \usage{
-find_bins(input.obj, exact = TRUE, ch = NULL)
+find_bins(input.obj, exact = TRUE)
 }
 \arguments{
 \item{input.obj}{an object of class \code{onemap}.}
@@ -14,10 +14,6 @@ the exact same information into bins, including missing data; if
 \code{FALSE}, missing data are not considered when allocating markers.
 In the latter case, the marker with the lowest amount of missing data is
 taken as the representative marker on that bin.}
-
-\item{ch}{not used in this OneMap version. Chromosome for which the
-analysis should be performed. If \code{NULL} the analisys is performed
-for all chromosomes.}
 }
 \value{
 An object of class \code{onemap_bin}, which is a list containing the
@@ -34,10 +30,12 @@ Function to allocate markers with redundant information into bins.
 Within each bin, the pairwise recombination fraction between markers is zero.
 }
 \examples{
- \dontrun{
-  load(url("https://github.com/mmollina/data/raw/master/fake_big_data_f2.RData"))
-  fake.big.data.f2
-  (bins<-find_bins(fake.big.data.f2, exact=FALSE))}
+\donttest{
+  data("vcf_example_out")
+  (bins<-find_bins(vcf_example_out, exact=FALSE))
+}
+
+
 }
 \seealso{
 \code{\link[onemap]{create_data_bins}}

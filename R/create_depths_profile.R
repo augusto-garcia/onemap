@@ -19,10 +19,10 @@ globalVariables(c("gt.onemap", "gt.vcf"))
 #'
 #'
 #' @param onemap.obj an object of class \code{onemap}.
-#' @param vcfR.object an object of class \code{vcfR}.
+#' @param vcf path to VCF file.
+#' @param vcfR.object object of class vcfR;
 #' @param parent1 a character specifying the first parent ID
 #' @param parent2 a character specifying the second parent ID
-#' @param f1 if your cross type is f2, you must define the F1 individual
 #' @param vcf.par the vcf parameter that store the allele depth information. 
 #' @param recovering logical. If TRUE, all markers in vcf are considere, if FALSE only those in onemap.obj
 #' @param mks a vector of characters specifying the markers names to be considered or NULL to consider all markers
@@ -32,19 +32,26 @@ globalVariables(c("gt.onemap", "gt.vcf"))
 #' @param rds.file rds file name to store the data frame with values used to build the graphic
 #' @param x_lim set scale limit for x axis
 #' @param y_lim set scale limit for y axis
+#' @param verbose If \code{TRUE}, print tracing information.
 #' 
 #' @return an rds file and a ggplot graphic.
-#' @author Cristiane Taniguti, \email{chtaniguti@@usp.br}
+#' 
+#' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
+#' 
 #' @seealso \code{\link[onemap]{onemap_read_vcfR}}
+#' 
 #' @keywords depth alleles 
-#'   
+#'
+#'
 #'@import tidyr ggplot2
+#'@importFrom vcfR read.vcfR extract.gt masplit
+#'
 #'@export
 create_depths_profile <- function(onemap.obj = NULL, 
-                                  vcfR.object = NULL, 
+                                  vcfR.object = NULL,
+                                  vcf = NULL, 
                                   parent1 = NULL,
                                   parent2 = NULL,
-                                  f1 = NULL,
                                   vcf.par = "AD",
                                   recovering=FALSE,
                                   mks = NULL,
@@ -53,21 +60,25 @@ create_depths_profile <- function(onemap.obj = NULL,
                                   alpha=1,
                                   rds.file = "data.rds",
                                   y_lim = NULL,
-                                  x_lim = NULL){
+                                  x_lim = NULL, verbose=TRUE){
   
-  # Checks
-  if(is(onemap.obj, c("f2 intercross", "f2 backcross")) & is.null(f1)) 
-    stop("You must define f1 argument for this cross type \n")
+  if (is.null(vcf) & is.null(vcfR.object)) {
+    stop("You must specify one vcf file.")
+  }
+  
+  if(is.null(vcfR.object)){
+    vcfR.object <- read.vcfR(vcf, verbose = F)
+  } else vcfR.object <- vcfR.object
   
   # Exclude multiallelic markers
-  if(is(onemap.obj, "outcross")){
+  if(inherits(onemap.obj, "outcross")){
     idx.mks <- colnames(onemap.obj$geno)[which(!(onemap.obj$segr.type %in% c("B3.7", "D1.10", "D2.15")))]
     if(length(idx.mks) > 0){
       idx.mks <- colnames(onemap.obj$geno)[which((onemap.obj$segr.type %in% c("B3.7", "D1.10", "D2.15")))]
       warning("Only biallelic codominant markers are supported. The multiallelic markers present in onemap object will not be plotted.\n") 
       onemap.obj <- split_onemap(onemap.obj, mks= idx.mks)
     }
-  } else if(is(onemap.obj,"f2")){
+  } else if(inherits(onemap.obj,"f2")){
     idx.mks <- colnames(onemap.obj$geno)[which(!(onemap.obj$segr.type %in% c("A.H.B")))]
     if(length(idx.mks) > 0){
       idx.mks <- colnames(onemap.obj$geno)[which((onemap.obj$segr.type %in% c("A.H.B")))]
@@ -78,19 +89,18 @@ create_depths_profile <- function(onemap.obj = NULL,
   
   if(is.null(parent1) | is.null(parent2)) stop("Parents ID must be defined.")
   
-  # do the checks
-  depths <- extract_depth(vcfR.object = vcfR.object, onemap.object = onemap.obj, vcf.par, parent1, parent2, f1= f1,recovering = recovering)
+  depths <- extract_depth(vcfR.object = vcfR.object, onemap.object = onemap.obj, vcf.par, parent1, parent2,recovering = recovering)
   
   # parents onemap genotypes
   ## Only for biallelic codominant markers
   p1 <- p2 <- vector()
-  if(is(onemap.obj, "outcross")){
-    # parents depth
-    alt <- depths$palt %>% data.frame(mks=depths$mks) %>% gather("ind", "alt", -"mks")
-    ref <- depths$pref %>% data.frame(mks=depths$mks) %>% gather("ind", "ref", -"mks")
-    parents <- merge(alt,ref)
-    parents$mks <- gsub("[|]", ".", parents$mks)
-    
+  # parents depth
+  alt <- depths$palt %>% cbind(mks=depths$mks) %>% as.data.frame %>% gather("ind", "alt", -"mks")
+  ref <- depths$pref %>% cbind(mks=depths$mks) %>% as.data.frame %>% gather("ind", "ref", -"mks")
+  parents <- merge(alt,ref)
+  parents$mks <- gsub("[|]", ".", parents$mks)
+  
+  if(inherits(onemap.obj, "outcross")){
     p1[which(onemap.obj$segr.type == "D1.10")] <- 2
     p1[which(onemap.obj$segr.type == "D2.15")] <- 1
     p1[which(onemap.obj$segr.type == "B3.7")] <- 2
@@ -98,61 +108,46 @@ create_depths_profile <- function(onemap.obj = NULL,
     p2[which(onemap.obj$segr.type == "D1.10")] <- 1
     p2[which(onemap.obj$segr.type == "D2.15")] <- 2
     p2[which(onemap.obj$segr.type == "B3.7")] <- 2
-    id.parents <- c(parent1, parent2)
-    p.gt <- data.frame(mks=colnames(onemap.obj$geno), p1, p2)
-  } else if(is(onemap.obj,"f2")){
-    # parents depth
-    alt <- depths$palt %>% data.frame(mks=depths$mks)
-    alt <- cbind(alt, f1)
-    colnames(alt) <- c("alt", "mks", "ind")
-    ref <- depths$pref %>% data.frame(mks=depths$mks)
-    ref <- cbind(ref, f1)
-    colnames(ref) <- c("ref", "mks", "ind")
-    parents <- merge(alt,ref)
-    p1 <- 2
-    id.parents <- f1
-    p.gt <- data.frame(mks=colnames(onemap.obj$geno), p1)
-  } else {
-    alt <- depths$palt %>% data.frame(mks=depths$mks) %>% gather("ind", "alt", -"mks")
-    ref <- depths$pref %>% data.frame(mks=depths$mks) %>% gather("ind", "ref", -"mks")
-    parents <- merge(alt,ref)
     
-    if(is(onemap.obj,c("riself", "risib"))){
-      p1 <- 1
-      p2 <- 3
-    } else{
-      p1 <- 1
-      p2 <- 2
-    }
-    
-    id.parents <- c(parent1, parent2)
-    p.gt <- data.frame(mks=colnames(onemap.obj$geno), p1, p2)
+  } else  if(inherits(onemap.obj,c("riself", "risib", "f2"))){
+    p1 <- 1
+    p2 <- 3
+  } else{
+    p1 <- 1
+    p2 <- 2
   }
+  
+  id.parents <- c(parent1, parent2)
+  p.gt <- data.frame(mks=colnames(onemap.obj$geno), p1, p2)
   
   colnames(p.gt) <- c("mks", id.parents)
   p.gt <- gather(p.gt, "ind", "gt.onemap", -"mks")
+  if(all(is.na(match(parents$mks, p.gt$mks))))
+    parents$mks <- paste0(vcfR.object@fix[,1], "_", vcfR.object@fix[,2])[match(parents$mks, vcfR.object@fix[,3])]
   parents <- merge(parents, p.gt)
   
   # parents vcf genotypes
   idx.parents <- which(colnames(vcfR.object@gt[,-1]) %in% id.parents)
-  gts <- vcfR.object@gt[,-1] %>% strsplit(":") %>% sapply("[",1) %>% matrix(ncol = dim(vcfR.object@gt)[2] -1)
+  gts <- extract.gt(vcfR.object)
   
   MKS <- vcfR.object@fix[,3]
   if (any(MKS == "." | is.na(MKS))) MKS <- paste0(vcfR.object@fix[,1], "_",vcfR.object@fix[,2])
   
   p.gt <- data.frame(mks = MKS, gts[,idx.parents], stringsAsFactors = F)
-  colnames(p.gt) <- c("mks", id.parents)
+  colnames(p.gt) <- c("mks", colnames(gts)[idx.parents])
   p.gt <- gather(p.gt, "ind", "gt.vcf", -"mks")
+  if(all(is.na(match(parents$mks, p.gt$mks))))
+    parents$mks <- vcfR.object@fix[,3][match(parents$mks, paste0(vcfR.object@fix[,1], "_", vcfR.object@fix[,2]))]
   parents <- merge(parents, p.gt)
   
-  if(is(onemap.obj, "outcross") | is(onemap.obj, "f2")){
+  if(inherits(onemap.obj, c("outcross", "f2"))){
     parents <- data.frame(parents, A=NA, AB=NA, BA=NA, B=NA)
   } else {
     parents <- data.frame(parents, A=NA, AB=NA)
   }
   # progeny depth
-  alt <- depths$oalt %>% data.frame(mks=depths$mks) %>% gather("ind", "alt", -"mks")
-  ref <- depths$oref %>% data.frame(mks=depths$mks) %>% gather("ind", "ref", -"mks")
+  alt <- depths$oalt %>% cbind(mks=depths$mks) %>% as.data.frame %>% gather("ind", "alt", -"mks")
+  ref <- depths$oref %>% cbind(mks=depths$mks) %>% as.data.frame %>% gather("ind", "ref", -"mks")
   progeny <- merge(alt,ref)
   
   # progeny onemap genotypes
@@ -161,7 +156,7 @@ create_depths_profile <- function(onemap.obj = NULL,
   temp <- match(paste0(gt$mks, "_", gt$ind), rownames(onemap.obj$error))
   gt <- data.frame(gt, onemap.obj$error[temp,])
   
-  if(is(onemap.obj, "outcross") | is(onemap.obj, "f2")){
+  if(inherits(onemap.obj, c("outcross", "f2"))){
     colnames(gt) <- c("ind", "mks", "gt.onemap", "A", "AB", "BA", "B")
   } else {
     colnames(gt) <- c("ind", "mks", "gt.onemap", "A", "AB")
@@ -170,9 +165,10 @@ create_depths_profile <- function(onemap.obj = NULL,
   
   # progeny vcf genotypes
   pro.gt <- data.frame(mks = MKS, gts[, -idx.parents], stringsAsFactors = F)
-  colnames(pro.gt) <- c("mks", colnames(vcfR.object@gt)[-1][-idx.parents])
+  colnames(pro.gt) <- c("mks", colnames(gts)[-idx.parents])
   pro.gt <- gather(pro.gt, "ind", "gt.vcf", -"mks")
   progeny <- merge(progeny, pro.gt)
+  
   data <- rbind(parents, progeny)
   
   # Add marker type
@@ -183,6 +179,8 @@ create_depths_profile <- function(onemap.obj = NULL,
   data$gt.onemap.alt.ref[which(data$gt.onemap == 2)] <- "heterozygous"
   
   # Search the ref and alt alleles using parents
+  data$alt <- as.numeric(data$alt)
+  data$ref <- as.numeric(data$ref)
   
   # D2.15 = aa x ab
   idx <- data$gt.onemap == 1 & (data$mk.type == "D2.15")
@@ -211,7 +209,7 @@ create_depths_profile <- function(onemap.obj = NULL,
   }
   
   # B3.7 - can not take the alleles from parents, here we make by individual
-  idx <- data$gt.onemap %in% c(1,3) & (data$mk.type == "B3.7")
+  idx <- data$gt.onemap %in% c(1,3) & (data$mk.type == "B3.7" | data$mk.type == "A.H.B")
   data$gt.onemap.alt.ref[idx & data$alt > data$ref] <- "homozygous-alt"
   data$gt.onemap.alt.ref[idx & data$alt < data$ref] <- "homozygous-ref"
   data$gt.onemap.alt.ref[idx & data$alt == data$ref] <- "homozygous-alt == ref" # If counts are the same we can not recover the information
@@ -234,6 +232,11 @@ create_depths_profile <- function(onemap.obj = NULL,
   data$gt.onemap.alt.ref <- as.factor(data$gt.onemap.alt.ref)
   data$gt.vcf.alt.ref <- as.factor(data$gt.vcf.alt.ref)
   
+  # Remove multiallelic vcf
+  rm.mks <- grep("[2-9]", data$gt.vcf)
+  if(length(rm.mks) > 0)
+    data <- data[-rm.mks,]
+  
   if(class(mks) == "character"){
     data <- data[which(data$mks %in% mks),]
   }
@@ -241,6 +244,9 @@ create_depths_profile <- function(onemap.obj = NULL,
   if(class(inds) == "character"){
     data <- data[which(data$ind %in% inds),]
   }
+  
+  data$ref <- as.numeric(data$ref)
+  data$alt <- as.numeric(data$alt)
   
   if(is.null(y_lim))
     y_lim <- max(data$ref) 
@@ -264,7 +270,7 @@ create_depths_profile <- function(onemap.obj = NULL,
       xlim(0, x_lim) +
       ylim(0, y_lim)
   } else if(GTfrom == "prob"){
-    if(is(onemap.obj, "outcross") | is(onemap.obj, "f2")){
+    if(inherits(onemap.obj, c("outcross", "f2"))){
       idx <- 7:10
     } else {
       idx <- 7:8
@@ -288,12 +294,13 @@ create_depths_profile <- function(onemap.obj = NULL,
   
   saveRDS(data, file = rds.file)
   
-  cat("Summary of reference counts: \n")
-  print(summary(data$ref[-which(data$ref == 0)]))
-  
-  cat("Summary of alternative counts: \n")
-  print(summary(data$alt[-which(data$alt == 0)]))
-  
+  if(verbose){
+    cat("Summary of reference counts: \n")
+    print(summary(data$ref[-which(data$ref == 0)]))
+    
+    cat("Summary of alternative counts: \n")
+    print(summary(data$alt[-which(data$alt == 0)]))
+  }
   return(p)
   
 }

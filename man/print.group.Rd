@@ -7,7 +7,7 @@
 \method{print}{group}(x, detailed = TRUE, ...)
 }
 \arguments{
-\item{x}{an object of class onemap_segreg_test}
+\item{x}{an object of class group}
 
 \item{detailed}{logical. If \code{TRUE} the markers in each
 linkage group are printed.}

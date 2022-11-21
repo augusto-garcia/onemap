@@ -33,17 +33,15 @@ Although we prefer and recommend the Linux version, in this tutorial
 it is assumed that the user is running Windows. Users of R under Linux
 or Mac OS should have no difficulty following this tutorial.
 
-We would like to recommend that new users, instead of using plain R,
+We would like to recommend those new users, instead of using plain R,
 use it through the fantastic software
-[RStudio](https://www.rstudio.com/). With this package, there is no
-noticeable difference between operating systems.
+[RStudio](https://www.rstudio.com/). With this package, there is no noticeable difference between operating systems.
 
 As advertised on the website, _RStudio is an integrated development
-environment (IDE) for R. It includes a console, syntax-highlighting
-editor that supports direct code execution, as well as tools for
-plotting, history, debugging and workspace management_. In other
+environment (IDE) for R. It includes a console, syntax-highlighting editor that supports direct code execution, as well as tools for
+plotting, history, debugging, and workspace management_. In other
 words, it offers a number of facilities for your convenience that will
-make your life easier, specially if you have never used R before.
+make your life easier, especially if you have never used R before.
 
 So, go ahead and download and install R and RStudio. The window on the
 left is where you type the R commands you want.
@@ -53,7 +51,7 @@ left is where you type the R commands you want.
 In the left window, you can see a _greater than_ sign (``>''), which
 means that R is waiting for a command. We call this a _prompt_. 
 
-Let us start with a simple example adding two numbers. Type `2 + 3` at the
+Let us start with a simple example of adding two numbers. Type `2 + 3` at the
 prompt then type the _Enter_ key. You will see the result directly on
 the screen.
 
@@ -69,14 +67,13 @@ x <- 2 + 3
 ```
 
 The result of the calculation was stored into the variable _x_. You
-can access this result typing _x_ at the prompt:
+can access this result by typing _x_ at the prompt:
 
 ```{r }
 x
 ```
 
-You can also use the variable _x_ into other calculations. For
-example:
+You can also use the variable _x_ in other calculations. For example:
 
 ```{r } 
 x + 4
@@ -111,7 +108,7 @@ It is possible to calculate the natural logarithm of a set of numbers
 by defining a vector and using it as the first argument of the
 function _log_. To do so we use the function _c()_, that _combines_ a
 set of values into a vector. Thus, to calculate the logarithm of the
-numbers 6.7, 3.2, 5.4, 8.1, 4.9, 9.7 and 2.5, one can use:
+numbers 6.7, 3.2, 5.4, 8.1, 4.9, 9.7, and 2.5, one can use:
 
 ```{r }
 y <- c(6.7, 3.2, 5.4, 8.1, 4.9, 9.7, 2.5)
@@ -123,7 +120,7 @@ _log()_.
 
 # Getting help
 
-Every R function has a help page which can be accessed using a
+Every R function has a help page that can be accessed using a
 question mark before the name of the function. For example, to get
 help on function _log_, you would type:
 
@@ -133,11 +130,11 @@ help on function _log_, you would type:
 
 This command will open a help page in the default web browser of your
 system. The help page contains some important information about the
-function such its syntax, its arguments and some usage examples.
+function such as its syntax, its arguments, and some usage examples.
 
 There are many other ways of getting help, of course. For example, from RStudio,
 click _Help_ on the menu. For doing searches on the internet, it is
-better to first go to [http://rseek.org/](http://rseek.org/), since R
+better to first go to [https://rseek.org/](https://rseek.org/), since R
 is a very common letter to include in searches.  
 
 # Packages
@@ -153,8 +150,7 @@ example data files that have been bundled together (Adler, 2010).
 For example, let us assume that you need to convert a set of
 recombination fractions into centimorgan distance using the Kosambi
 mapping function. One possible way to do this is by using basic R
-to write a function to calculate the distances. Another way is use the
-_OneMap_ package. To install it you can type:
+to write a function to calculate the distances. Another way is to use the _OneMap_ package. To install it you can type:
 
 ```{r, eval=FALSE}
 setRepositories(ind = 1:2)
@@ -162,7 +158,7 @@ install.packages("onemap")
 ``` 
 
 You also can use the console menus on RStudio. On the bottom window to
-the right, select **Packages**, then **Install** and finally select
+the right, select **Packages**, then **Install**, and finally select
 _OneMap_ (select CRAN as your repository). Yes, it is that easy!
 
 Returning to the console, you need to load _OneMap_ by typing:
@@ -206,8 +202,8 @@ question mark in the same way as done before:
 
 # Importing and exporting data
 
-So far, we entered the variables in R by typing them directly into the
-console. However, in real situations we usually **read these values
+So far, we have entered the variables in R by typing them directly into the
+console. However, in real situations, we usually **read these values
 from a file** or a data bank (including files on the internet). 
 
 To learn this procedure, copy and paste the following table into a
@@ -274,7 +270,7 @@ summary(dat$y)
 ``` 
 
 The function _summary_ provides some descriptive statistics about the
-variables in the dataset. If you want to export these information to a
+variables in the dataset. If you want to export this information to a
 file you can use the function _write.table_:
 
 ```{r, eval=FALSE}
@@ -335,13 +331,13 @@ summary(ft_mod)
 ``` 
 
 In this case, function _summary_ recognizes _ft\_mod_ as an object of
-class _lm_ and applies a method which shows information about the
+class _lm_ and applies a method that shows information about the
 fitted model, such as the distribution of the residuals, regression
 coefficients, t-tests, and the coefficient of determination ($R^2$),
 etc.
 
 Thus, it is possible to use the same function on different classes of
-object to obtain different results. This concept is very important in
+objects to obtain different results. This concept is very important in
 _OneMap_ and you must remember it to use the package. For example, in
 other vignettes, we will show that depending on the class of the
 dataset, which can be _outcross_, _f2_, _backcross_,
@@ -368,8 +364,7 @@ A different thing is to save your **R Session**, with all objects you
 created so far (called _R Workspace_). This is not the same, because
 once you load the workspace, you will have all the objects already
 loaded, not requiring you to do everything again, i. e, running your
-script. This will help you to save a lot of time, since some of the
-analysis required to build linkage maps are time demanding.
+script. This will help you to save a lot of time since some of the analyses required to build linkage maps are time demanding.
 
 To do so, click _Session_, then _Save Workspace As_ and choose a
 directory and name. In your next session, open RStudio and then go to
@@ -397,8 +392,6 @@ No Starch Press, Inc., 404 pages.
 Adler, J. R. 2009. R in a Nutshell. A Desktop Quick Reference.
 O'Reilly Media.
 
-A tutorial by two OneMap authors: [Introduction to
-R](http://augusto-garcia.github.io/R-Introduction/)
 
 
 

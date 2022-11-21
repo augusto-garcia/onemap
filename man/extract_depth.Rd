@@ -7,11 +7,10 @@
 extract_depth(
   vcfR.object = NULL,
   onemap.object = NULL,
-  vcf.par = c("GQ", "AD", "DPR"),
+  vcf.par = c("GQ", "AD", "DPR, PL", "GL"),
   parent1 = "P1",
   parent2 = "P2",
   f1 = "F1",
-  mean_phred = 20,
   recovering = FALSE
 )
 }
@@ -20,15 +19,15 @@ extract_depth(
 
 \item{onemap.object}{onemap object output from read_onemap, read_mapmaker or onemap_read_vcf function}
 
-\item{vcf.par}{vcf format field that contain alelle counts informations, usually AD and DPR}
+\item{vcf.par}{vcf format field that contain alelle counts informations, the implemented are: AD, DPR, GQ, PL, GL. 
+AD and DPR return a list with allele depth information. GQ returns a matrix with error probability for each genotype. 
+PL return a data.frame with genotypes probabilities for every genotype.}
 
 \item{parent1}{parent 1 identification in vcfR object}
 
 \item{parent2}{parent 2 identification in vcfR objetc}
 
 \item{f1}{if your cross type is f2, you must define the F1 individual}
-
-\item{mean_phred}{genotyping error rate to be considered when estimate genotypes by binomial approach}
 
 \item{recovering}{TRUE/FALSE, if TRUE avaliate all markers from vcf file, if FALSE avaliate only markers in onemap object}
 }
@@ -40,14 +39,15 @@ total alelle counts.}\item{oalt}{a \code{matrix} with progeny
 alternative alelle counts.}\item{oref}{a \code{matrix} with progeny 
 reference alelle counts.}\item{osize}{a \code{matrix} with progeny 
 total alelle counts.}\item{n.mks}{total number of markers.} 
+
 \item{n.ind}{total number of individuals in progeny.} \item{inds}{progeny individuals identification.}
 \item{mks}{markers identification.} \item{onemap.object}{same onemap.object inputed}
 }
 \description{
 Uses vcfR package and onemap object to generates list of vectors with
 reference alelle count and total counts for each marker and genotypes 
-included in onemap object
+included in onemap object (only available for biallelic sites)
 }
 \author{
-Cristiane Taniguti, \email{chtaniguti@usp.br}
+Cristiane Taniguti, \email{chtaniguti@tamu.edu}
 }

@@ -26,10 +26,9 @@ Suggest an optimal batch size value for use in
 }
 \examples{
 
-\dontrun{
   LG <- structure(list(seq.num = seq(1,800)), class = "sequence")
   batchsize <- pick_batch_sizes(LG, 50, 19)
-}
+
 }
 \seealso{
 \code{\link[onemap]{map_overlapping_batches}}

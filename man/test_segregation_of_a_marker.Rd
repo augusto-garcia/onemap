@@ -4,23 +4,18 @@
 \alias{test_segregation_of_a_marker}
 \title{test_segregation_of_a_marker}
 \usage{
-test_segregation_of_a_marker(x, marker)
+test_segregation_of_a_marker(x, marker, simulate.p.value = FALSE)
 }
 \arguments{
 \item{x}{an object of class \code{onemap}, with data and additional information.}
 
 \item{marker}{the marker which will be tested for its segregation.}
+
+\item{simulate.p.value}{a logical indicating whether to compute p-values by Monte Carlo simulation.}
 }
 \value{
 a list with the H0 hypothesis being tested, the chi-square statistics,
 the associated p-values, and the \% of individuals genotyped.
-
-##'@examples
-data(onemap_example_bc) # Loads a fake backcross dataset installed with onemap
-test_segregation_of_a_marker(onemap_example_bc,1)
-
-data(onemap_example_out) # Loads a fake outcross dataset installed with onemap
-test_segregation_of_a_marker(onemap_example_out,1)
 }
 \description{
 Applies the chi-square test to check if markers are following the
@@ -31,4 +26,13 @@ according to OneMap's notation. It does not use Yate's correction.
 First, the function selects the correct segregation pattern, then it
 defines the H0 hypothesis, and then tests it, together with percentage of
 missing data.
+}
+\examples{
+
+data(onemap_example_bc) # Loads a fake backcross dataset installed with onemap
+test_segregation_of_a_marker(onemap_example_bc,1)
+
+data(onemap_example_out) # Loads a fake outcross dataset installed with onemap
+test_segregation_of_a_marker(onemap_example_out,1)
+
 }

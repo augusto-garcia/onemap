@@ -41,12 +41,14 @@ Creates a new sequence by dropping markers from a predetermined
   one.
 }
 \examples{
+\donttest{
 data(onemap_example_out)
 twopt <- rf_2pts(onemap_example_out)
 all_mark <- make_seq(twopt,"all")
 groups <- group(all_mark)
 (LG1 <- make_seq(groups,1))
 (LG.aug<-drop_marker(LG1, c(10,14)))
+}
 
 }
 \seealso{

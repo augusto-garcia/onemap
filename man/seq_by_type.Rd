@@ -12,8 +12,26 @@ seq_by_type(sequence, mk_type)
 \item{mk_type}{vector of character with marker type to be selected}
 }
 \value{
-new sequence object with selected marker type
+New sequence object of class \code{sequence} with selected marker type, 
+which is a list containing the
+following components: \item{seq.num}{a \code{vector} containing the
+(ordered) indices of markers in the sequence, according to the input file.}
+\item{seq.phases}{a \code{vector} with the linkage phases between markers
+in the sequence, in corresponding positions. \code{-1} means that there are
+no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
+recombination frequencies between markers in the sequence. \code{-1} means
+that there are no estimated recombination frequencies.}
+\item{seq.like}{log-likelihood of the corresponding linkage map.}
+\item{data.name}{object of class \code{onemap} with the raw
+data.} \item{twopt}{object of class \code{rf_2pts} with the
+2-point analyses.}
 }
 \description{
 Extract marker number by name
+}
+\seealso{
+\code{\link[onemap]{make_seq}}
+}
+\author{
+Cristiane Taniguti, \email{chtaniguti@tamu.edu}
 }

@@ -9,7 +9,6 @@
 ## copyright (c) 2007-9, Gabriel R A Margarido and Marcelo Mollinari   ##
 ##                                                                     ##
 ## First version: 11/07/2007                                           ##
-## Last update: 21/06/2016                                             ##
 ## License: GNU General Public License version 2 (June, 1991) or later ##
 ##                                                                     ##
 #######################################################################
@@ -57,7 +56,7 @@
 ##'     Institute for Biomedical Research Technical Report}.
 ##' @keywords misc
 ##' @examples
-##'
+##' \donttest{
 ##'   data(onemap_example_out)
 ##'   twopts <- rf_2pts(onemap_example_out)
 ##'
@@ -65,11 +64,12 @@
 ##'   link_gr <- group(all.data)
 ##'   link_gr
 ##'   print(link_gr, details=FALSE) #omit the names of the markers
+##' }
 ##'@export
 group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
 {
     ## checking for correct object
-    if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+    if(!inherits(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
     ## determining thresholds
     if (is.null(LOD))
         LOD <- input.seq$twopt$LOD
@@ -110,7 +110,7 @@ group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
             i<-i+1
         }
     }
-    if(all(groups==0)) cat("\t No group found.\n")
+    if(all(groups==0)) warning("\t No group found.\n")
     ## results
     structure(list(data.name=input.seq$data.name, input.name=deparse(substitute(input.seq)),
                    twopt=input.seq$twopt, marnames=colnames(geno),
@@ -123,7 +123,7 @@ group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
 ##' It shows the linkage groups as well as the unlinked markers.
 ##'
 ##' @aliases print.group
-##' @param x an object of class onemap_segreg_test
+##' @param x an object of class group
 ##'
 ##' @param detailed logical. If \code{TRUE} the markers in each
 ##'     linkage group are printed.
@@ -133,10 +133,9 @@ group <- function(input.seq, LOD=NULL, max.rf=NULL, verbose=TRUE)
 ##' @keywords internal
 ##' @method print group
 ##' @export
-print.group <-
-    function(x, detailed=TRUE,...) {
+print.group <- function(x, detailed=TRUE,...) {
         ## checking for correct object
-        if(!is(x,"group")) stop(deparse(substitute(x))," is not an object of class 'group'")
+        if(!inherits(x,"group")) stop(deparse(substitute(x))," is not an object of class 'group'")
 
         cat("  This is an object of class 'group'\n")
         cat(paste("  It was generated from the object \"", x$input.name,

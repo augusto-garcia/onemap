@@ -13,7 +13,8 @@ select_segreg(x, distorted = FALSE, numbers = FALSE, threshold = NULL)
 
 \item{numbers}{a TRUE/FALSE variable to show the numbers or the names of the markers}
 
-\item{threshold}{a number between 0 and 1 to specify the threshold to be considered in the test. If NULL, it uses the threshold defined by bonferroni correction with alpha = 0.05}
+\item{threshold}{a number between 0 and 1 to specify the threshold (alpha) to be considered in the test. 
+If NULL, it uses the threshold alpha = 0.05. Bonferroni correction is applied for multiple test correction.}
 }
 \value{
 a vector with marker names or numbers, according to the option for "distorted" and "numbers"
@@ -23,15 +24,16 @@ A function to shows which marker have segregation distortion if Bonferroni's cor
 applied for the Chi-square tests of mendelian segregation.
 }
 \examples{
-# Loads a fake backcross dataset installed with onemap
-data(onemap_example_bc)
-# Performs the chi-square test for all markers
-Chi <- test_segregation(onemap_example_bc)
-# To show non-distorted markers
-select_segreg(Chi)
-# To show markers with segregation distortion
-select_segreg(Chi, distorted=TRUE)
-# To show the numbers of the markers with segregation distortion
-select_segreg(Chi, distorted=TRUE, numbers=TRUE)
-
+\donttest{
+ # Loads a fake backcross dataset installed with onemap
+ data(onemap_example_out)
+ # Performs the chi-square test for all markers
+ Chi <- test_segregation(onemap_example_out)
+ # To show non-distorted markers
+ select_segreg(Chi)
+ # To show markers with segregation distortion
+ select_segreg(Chi, distorted=TRUE)
+ # To show the numbers of the markers with segregation distortion
+ select_segreg(Chi, distorted=TRUE, numbers=TRUE)
+}
 }

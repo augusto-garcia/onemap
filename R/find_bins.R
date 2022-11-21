@@ -9,7 +9,6 @@
 # copyright (c) 2015, Marcelo Mollinari                               #
 #                                                                     #
 # First version: 08/27/2015                                           #
-# Last update: 01/14/2016                                             #
 # License: GNU General Public License version 3                       #
 #                                                                     #
 #######################################################################
@@ -26,9 +25,6 @@
 ##' \code{FALSE}, missing data are not considered when allocating markers.
 ##' In the latter case, the marker with the lowest amount of missing data is
 ##' taken as the representative marker on that bin.
-##' @param ch not used in this OneMap version. Chromosome for which the
-##' analysis should be performed. If \code{NULL} the analisys is performed
-##' for all chromosomes.
 ##' @return An object of class \code{onemap_bin}, which is a list containing the
 ##' following components: \item{bins}{a list containing the bins. Each element of
 ##' the list is a table whose lines indicate the name of the marker, the bin in
@@ -41,28 +37,57 @@
 ##' @seealso \code{\link[onemap]{create_data_bins}}
 ##' @keywords bins dimension reduction
 ##' @examples
-##'  \dontrun{
-##'   load(url("https://github.com/mmollina/data/raw/master/fake_big_data_f2.RData"))
-##'   fake.big.data.f2
-##'   (bins<-find_bins(fake.big.data.f2, exact=FALSE))}
+##' \donttest{
+##'   data("vcf_example_out")
+##'   (bins<-find_bins(vcf_example_out, exact=FALSE))
+##' }
+##' 
+##' 
+##' @import dplyr
+##' @import tidyr
+##' 
 ##'@export
-find_bins <- function(input.obj, exact=TRUE, ch=NULL)
+find_bins <- function(input.obj, exact=TRUE)
 {
-    ## checking for correct object
-    if(!is(input.obj,"onemap"))
-      stop(deparse(substitute(input.obj))," is not an object of class 'onemap'")
-
-    if (input.obj$n.mar<2) stop("there must be at least two markers to proceed with analysis")
-
+  ## checking for correct object
+  if(!inherits(input.obj,"onemap"))
+    stop(deparse(substitute(input.obj))," is not an object of class 'onemap'")
+  
+  if (input.obj$n.mar<2) stop("there must be at least two markers to proceed with analysis")
+  
+  if(exact==TRUE){
+    temp_geno <- as.data.frame(t(input.obj$geno))
+    temp <- temp_geno %>% group_by_all() %>% dplyr::mutate(label = cur_group_id())
+    
+    bin <- vector()
+    j <- 1
+    for(i in 1:length(temp$label)){
+      if(i == 1){
+        bin[i] <- 1
+      } else if(temp$label[i] != temp$label[i-1]) {
+        bin[i] <- j+1 
+        j <- j + 1
+      } else {
+        bin[i] <- j
+      }
+    }
+  } else {
     bin<-get_bins(input.obj$geno, exact)
-    mis<-apply(input.obj$geno,2, function(x) 100*sum(x==0)/length(x))
-    dtf<-data.frame(bin, mis)
-    w<-by(dtf, dtf$bin, function(x) x)
-    names(w)<-sapply(w, function(x) rownames(x)[which.min(x$mis)])
-    structure(list(bins=w,info=list(n.ind=input.obj$n.ind, n.mar=input.obj$n.mar, exact.search=exact)), class="onemap_bin")
+  }
+  mis<-apply(input.obj$geno,2, function(x) 100*sum(x==0)/length(x))
+  dtf<-data.frame(bin, mis)
+  w<-by(dtf, dtf$bin, function(x) x)
+  names(w)<-sapply(w, function(x) rownames(x)[which.min(x$mis)])
+  structure(list(bins=w,info=list(n.ind=input.obj$n.ind, n.mar=input.obj$n.mar, exact.search=exact)), class="onemap_bin")
 }
 
-##print method for object class 'onemap_bin'
+##' print method for object class 'onemap_bin'
+##' 
+##' @param x object of class \code{onemap_bin}
+##' @param ... currently ignored
+##' 
+##' @return No return value, called for side effects
+##' 
 ##' @export
 ##' @method print onemap_bin
 print.onemap_bin<-function (x, ...) {

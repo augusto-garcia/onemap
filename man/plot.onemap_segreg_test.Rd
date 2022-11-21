@@ -25,24 +25,17 @@ if Bonferroni's correction is considered, as well as the percentage of markers t
 will be discarded if this criterion is used.
 }
 \examples{
+\donttest{
+ data(onemap_example_bc) # load OneMap's fake dataset for a backcross population
+ BC.seg <- test_segregation(onemap_example_bc) # Applies chi-square tests
+ print(BC.seg) # Shows the results
+ plot(BC.seg) # Plot the graph, ordering the p-values
+ plot(BC.seg, order=FALSE) # Plot the graph showing the results keeping the order in the dataset
 
-data(onemap_example_bc) # load OneMap's fake dataset for a backcross population
-BC.seg <- test_segregation(onemap_example_bc) # Applies chi-square tests
-print(BC.seg) # Shows the results
-plot(BC.seg) # Plot the graph, ordering the p-values
-plot(BC.seg, order=FALSE) # Plot the graph showing the results keeping the order in the dataset
-# You can store the graphic in an object, then save it.
-# For details, see the help of ggplot2's function ggsave()
-# g <- plot(BC.seg)
-# ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
-
-data(onemap_example_out) # load OneMap's fake dataset for an outcrossing population
-Out.seg <- test_segregation(onemap_example_out) # Applies chi-square tests
-print(Out.seg) # Shows the results
-plot(Out.seg) # Plot the graph, ordering the p-values
-plot(Out.seg, order=FALSE) # Plot the graph showing the results keeping the order in the dataset
-# You can store the graphic in an object, then save it.
-# For details, see the help of ggplot2's function ggsave()
-g <- plot(Out.seg)
-# ggsave("SegregationTests.jpg", g, width=7, height=5, dpi=600)
+ data(onemap_example_out) # load OneMap's fake dataset for an outcrossing population
+ Out.seg <- test_segregation(onemap_example_out) # Applies chi-square tests
+ print(Out.seg) # Shows the results
+ plot(Out.seg) # Plot the graph, ordering the p-values
+ plot(Out.seg, order=FALSE) # Plot the graph showing the results keeping the order in the dataset
+}
 }

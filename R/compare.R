@@ -9,7 +9,6 @@
 ## copyright (c) 2009, Gabriel R A Margarido & Marcelo Mollinari       ##
 ##                                                                     ##
 ## First version: 02/27/2009                                           ##
-## Last update: 07/25/2015 (only documentation, by Augusto Garcia)     ##
 ## License: GNU General Public License version 2 (June, 1991) or later ##
 ##                                                                     #
 #######################################################################
@@ -83,7 +82,7 @@
 ##' @keywords utilities
 ##' @examples
 ##'
-##' \dontrun{
+##' \donttest{
 ##'   #outcrossing example
 ##'   data(onemap_example_out)
 ##'   twopt <- rf_2pts(onemap_example_out)
@@ -103,7 +102,7 @@
 ##'@export
 
 compare<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
-  if(is(input.seq$data.name, "outcross") || is(input.seq$data.name, "f2"))
+  if(inherits(input.seq$data.name, c("outcross", "f2")))
     return(compare_outcross(input.seq=input.seq,n.best=n.best,tol=tol,verbose=verbose))
   else 
     return(compare_inbred_bc(input.seq=input.seq,n.best=n.best,tol=tol,verbose=verbose))
@@ -114,13 +113,13 @@ compare<- function(input.seq,n.best=50,tol=10E-4,verbose=FALSE) {
 compare_outcross<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
 {
   ## checking for correct objects
-  if(!is(input.seq,"sequence"))
+  if(!inherits(input.seq,"sequence"))
     stop(sQuote(deparse(substitute(input.seq)))," is not an object of class 'sequence'")
   if(length(input.seq$seq.num) > 5)
-    cat("WARNING: this operation may take a VERY long time\n")
+    warning("This operation may take a VERY long time\n")
   flush.console()
   if(length(input.seq$seq.num) > 10) {
-    cat("\nIt is not wise trying to use 'compare' with more than 10 markers \n")
+    warning("It is not wise trying to use 'compare' with more than 10 markers")
     ANSWER <- readline("Are you sure you want to proceed? [y or n]\n")
     while(substr(ANSWER, 1, 1) != "n" & substr(ANSWER, 1, 1) != "y")
       ANSWER <- readline("\nPlease answer: 'y' or 'n' \n")
@@ -142,8 +141,8 @@ compare_outcross<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
     
     ## 'perm_pars' generates all n!/2 orders
     all.ord <- perm_pars(input.seq$seq.num)
-    cat("\nComparing",nrow(all.ord),"orders:     \n\n")
     if (verbose){
+      cat("\nComparing",nrow(all.ord),"orders:     \n\n")
       for(i in 1:nrow(all.ord)){
         ## print output for each order
         cat("Order", i, ":", all.ord[i,], "\n")
@@ -167,7 +166,7 @@ compare_outcross<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
           rm.ab<-rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=all.ord[i,])
           Ph.Init <- Ph.Init[rm.ab,]
           Rf.Init <- Rf.Init[rm.ab,]
-          if(is(Ph.Init,"integer")){
+          if(inherits(Ph.Init,"integer")){
             Ph.Init<-matrix(Ph.Init,nrow=1)
             Rf.Init<-matrix(Rf.Init,nrow=1)
           }
@@ -194,24 +193,12 @@ compare_outcross<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
           best.ord.like <- sort(best.ord.like, decreasing=TRUE)
         }
       }
-    }
-    else{
+    } else{
       count <- 0
       pb <- txtProgressBar(style=3)
       setTxtProgressBar(pb, 0)
       
-      ## nc<-NA
-      ## out.pr <- seq(from=1,to=nrow(all.ord), length.out=20)
-      cat("    ")
       for(i in 1:nrow(all.ord)){
-        ## print output for each order
-        ##    if (sum(i == round(out.pr))){
-        ##      cat(rep("\b",nchar(nc)+1),sep="")
-        ##      nc<-round(i*100/nrow(all.ord))
-        ##      cat(nc,"%", sep="")
-        ##      flush.console()
-        ##    }
-        ## get initial values for the HMM
         all.match <- match(all.ord[i,],input.seq$seq.num)
         for(j in 1:(length(input.seq$seq.num)-1)){
           if(all.match[j] > all.match[j+1]){
@@ -230,7 +217,7 @@ compare_outcross<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
           rm.ab<-rem_amb_ph(M=Ph.Init, w=input.seq, seq.num=all.ord[i,])
           Ph.Init <- Ph.Init[rm.ab,]
           Rf.Init <- Rf.Init[rm.ab,]
-          if(is(Ph.Init,"integer")){
+          if(inherits(Ph.Init,"integer")){
             Ph.Init<-matrix(Ph.Init,nrow=1)
             Rf.Init<-matrix(Rf.Init,nrow=1)
           }
@@ -261,7 +248,7 @@ compare_outcross<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
       }
       close(pb)
     }
-    cat("\n")
+
     best.ord.LOD <- round((best.ord.like-max(best.ord.like))/log(10),4)
     structure(list(best.ord = best.ord,
                    best.ord.rf = best.ord.rf,
@@ -279,13 +266,13 @@ compare_outcross<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
 compare_inbred_bc<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE) 
 {
   ## checking for correct objects
-  if(!is(input.seq,"sequence"))
+  if(!inherits(input.seq,"sequence"))
     stop(sQuote(deparse(substitute(input.seq)))," is not an object of class 'sequence'")
   if(length(input.seq$seq.num) > 5)
-    cat("WARNING: this operation may take a VERY long time\n")
+    warning("This operation may take a VERY long time\n")
   flush.console()
   if(length(input.seq$seq.num) > 10) {
-    cat("\nIt is not wise trying to use 'compare' with more than 10 markers \n")
+    warning("It is not wise trying to use 'compare' with more than 10 markers")
     ANSWER <- readline("Are you sure you want to proceed? [y or n]\n")
     while(substr(ANSWER, 1, 1) != "n" & substr(ANSWER, 1, 1) != "y")
       ANSWER <- readline("\nPlease answer: 'y' or 'n' \n")
@@ -301,13 +288,12 @@ compare_inbred_bc<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
     best.ord <- matrix(NA,(n.best+1),length(input.seq$seq.num))
     best.ord.rf <- matrix(NA,(n.best+1),length(input.seq$seq.num)-1)
     best.ord.like <- best.ord.LOD <- rep(-Inf,(n.best+1))
-    cat("\nComparing",nrow(all.ord),"orders:     \n\n")
-    if(!verbose)
-    {
+    if(verbose) {
+      cat("\nComparing",nrow(all.ord),"orders:     \n\n")
+    } else {
       count <- 0
       pb <- txtProgressBar(style=3)
       setTxtProgressBar(pb, 0)
-      cat("    ")
     }
     for(i in 1:nrow(all.ord))
     {
@@ -315,15 +301,15 @@ compare_inbred_bc<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
       if (verbose) cat("Order", i, ":", all.ord[i,], "\n")
       flush.console()
       seq.temp<-make_seq(input.seq$twopt, arg=all.ord[i,])
-      seq.temp$twopt<-input.seq$twopt
-      rf.temp<-get_vec_rf_in(seq.temp, acum=FALSE)
-      final.map<-est_map_hmm_f2(geno=t(input.seq$data.name$geno[,all.ord[i,]]),
-                                error=input.seq$data.name$error[all.ord[i,] + rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, each=length(all.ord[i,])),],
+      rf.temp<- get_vec_rf_in(seq.temp, acum=FALSE)
+      final.map<- est_map_hmm_bc(geno=t(input.seq$data.name$geno[,all.ord[i,]]),
+                                error=input.seq$data.name$error[all.ord[i,] + 
+                                                                  rep(c(0:(input.seq$data.name$n.ind-1))*input.seq$data.name$n.mar, 
+                                                                      each=length(all.ord[i,])),],
                                 rf.vec=rf.temp,
                                 verbose=FALSE,
                                 tol=tol)
-      if(is(input.seq$data.name, "riself") ||
-         is(input.seq$data.name, "risib"))
+      if(inherits(input.seq$data.name, c("riself", "risib")))
         final.map$rf<-adjust_rf_ril(final.map$rf,
                                     type=class(input.seq$data.name)[2],
                                     expand = FALSE)
@@ -342,8 +328,6 @@ compare_inbred_bc<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
       }
     }
     close(pb)
-    ## cat("\nFinished\n\n")
-    cat("\n")
     best.ord.LOD <- round((best.ord.like-max(best.ord.like))/log(10),4)
     structure(list(best.ord = best.ord,
                    best.ord.rf = best.ord.rf,
@@ -360,13 +344,13 @@ compare_inbred_bc<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
 compare_inbred_f2<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE) 
 {
   ## checking for correct objects
-  if(!is(input.seq,"sequence"))
+  if(!inherits(input.seq,"sequence"))
     stop(sQuote(deparse(substitute(input.seq)))," is not an object of class 'sequence'")
   if(length(input.seq$seq.num) > 5)
-    cat("WARNING: this operation may take a VERY long time\n")
+    warning("This operation may take a VERY long time\n")
   flush.console()
   if(length(input.seq$seq.num) > 10) {
-    cat("\nIt is not wise trying to use 'compare' with more than 10 markers \n")
+    warning("It is not wise trying to use 'compare' with more than 10 markers")
     ANSWER <- readline("Are you sure you want to proceed? [y or n]\n")
     while(substr(ANSWER, 1, 1) != "n" & substr(ANSWER, 1, 1) != "y")
       ANSWER <- readline("\nPlease answer: 'y' or 'n' \n")
@@ -382,13 +366,10 @@ compare_inbred_f2<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
     best.ord <- matrix(NA,(n.best+1),length(input.seq$seq.num))
     best.ord.rf <- matrix(NA,(n.best+1),length(input.seq$seq.num)-1)
     best.ord.like <- best.ord.LOD <- rep(-Inf,(n.best+1))
-    cat("\nComparing",nrow(all.ord),"orders:     \n\n")
-    if(!verbose)
-    {
+    if(!verbose){
       count <- 0
       pb <- txtProgressBar(style=3)
       setTxtProgressBar(pb, 0)
-      cat("    ")
     }
     for(i in 1:nrow(all.ord))
     {
@@ -417,8 +398,6 @@ compare_inbred_f2<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
       }
     }
     close(pb)
-    ## cat("\nFinished\n\n")
-    cat("\n")
     best.ord.LOD <- round((best.ord.like-max(best.ord.like))/log(10),4)
     structure(list(best.ord = best.ord,
                    best.ord.rf = best.ord.rf,
@@ -430,12 +409,18 @@ compare_inbred_f2<- function(input.seq, n.best=50, tol=10E-4, verbose=FALSE)
   }
 }
 
-## print method for object class 'compare'
+##' print method for object class 'compare'
+##' 
+##' @param x object of class compare
+##' @param ... currently ignored
+##' 
+##' @return compare object description
+##' 
 ##'@export
 ##'@method print compare
 print.compare <- function(x,...) {
   FLAG<-0
-  if(!(is(x$data.name, "outcross") | is(x$data.name, "f2"))) FLAG<-1
+  if(!(inherits(x$data.name, c("outcross","f2")))) FLAG<-1
   phases.char <- c("CC","CR","RC","RR")
   n.ord <- max(which(head(x$best.ord.LOD,-1) != -Inf))
   unique.orders <- unique(x$best.ord[1:n.ord,])

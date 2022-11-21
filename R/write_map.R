@@ -9,7 +9,6 @@
 # copyright (c) 2010, Marcelo Mollinari                               #
 #                                                                     #
 # First version: 10/10/2010                                           #
-# Last update: 11/30/2010                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -31,60 +30,47 @@
 ##' @references Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 ##' (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
 ##' 1.09-43
+##' 
+##' @return file with genetic map information
 ##'
 ##' Wang S., Basten, C. J. and Zeng Z.-B. (2010) Windows QTL Cartographer 2.5.
 ##' Department of Statistics, North Carolina State University, Raleigh, NC.
 ##' @keywords rqtl
 ##' @examples
-##'
-##' \dontrun{
+##' \donttest{
 ##' data(mapmaker_example_f2)
 ##' twopt<-rf_2pts(mapmaker_example_f2)
 ##' lg<-group(make_seq(twopt, "all"))
-##'
+##' 
 ##' ##"pre-allocate" an empty list of length lg$n.groups (3, in this case)
-##'   maps.list<-vector("list", lg$n.groups)
-##'
-##'   for(i in 1:lg$n.groups){
-##'     ##create linkage group i
-##'     LG.cur <- make_seq(lg,i)
-##'     ##ordering
-##'     map.cur<-order_seq(LG.cur, subset.search = "sample")
-##'     ##assign the map of the i-th group to the maps.list
-##'     maps.list[[i]]<-make_seq(map.cur, "force")
-##'   }
-##'
-##' ##write maps.list to "mapmaker_example_f2.map" file
-##' write_map(map.list, "mapmaker_example_f2.map")
-##'
-##' ##Using R/qtl
-##' ##you must install the package  'qtl'
-##' ##install.packages("qtl")
-##'
-##' require(qtl)
-##' file<-paste(system.file("example",package="onemap"),"mapmaker_example_f2.raw", sep="/")
-##' dat1 <- read.cross("mm", file=file, mapfile="mapmaker_example_f2.map")
-##' newmap <- est.map(dat1, tol=1e-6, map.function="kosambi")
-##'
-##' (logliks <- sapply(newmap, attr, "loglik"))
-##' plot.map(dat1, newmap)
-##'
-##' ##Using R/qtl to generate QTL Cartographer input files (.map and .cro)
-##' write.cross(dat1, format="qtlcart", filestem="mapmaker_example_f2")
-##'
+##' maps.list<-vector("list", lg$n.groups)
+##' 
+##' for(i in 1:lg$n.groups){
+##'   ##create linkage group i
+##'   LG.cur <- make_seq(lg,i)
+##'   ##ordering
+##'   map.cur<-order_seq(LG.cur, subset.search = "sample")
+##'   ##assign the map of the i-th group to the maps.list
+##'   maps.list[[i]]<-make_seq(map.cur, "force")
+##' 
+##'   ##write maps.list to ".map" file
+##'   write_map(maps.list, tempfile(fileext = ".map"))
+##' 
 ##' }
+##' }
+##' 
 ##'@export
 write_map<-function(map.list,file.out){
    # checking for correct object
-  if(!(is(map.list,"list") | is(map.list,"sequence"))) stop(deparse(substitute(map.list))," is not an object of class 'list' or 'sequnece'")
-  if(!is(file.out,"character")) stop(deparse(substitute(file.out))," is an invalid output file name")
+  if(!(inherits(map.list,"list") | inherits(map.list,"sequence"))) stop(deparse(substitute(map.list))," is not an object of class 'list' or 'sequnece'")
+  if(!inherits(file.out,"character")) stop(deparse(substitute(file.out))," is an invalid output file name")
 
   # if map.list is just a single chormosome, convert it  into a list
-  if(is(map.list,"sequence")) map.list<-list(map.list)
+  if(inherits(map.list,"sequence")) map.list<-list(map.list)
 
   write(x="",file=file.out)
   for(i in 1:length(map.list)){
-    if(!is(map.list[[i]],"sequence")) stop("Object ", i , " in map.list is not an object of class 'sequnece'")
+    if(!inherits(map.list[[i]],"sequence")) stop("Object ", i , " in map.list is not an object of class 'sequence'")
     if(is.null(map.list[[i]]$seq.like))  stop("Parameters are not estimated for object ", i, " in map.list")
     map<-cumsum(c(0,get(get(".map.fun", envir=.onemapEnv))(map.list[[i]]$seq.rf)))
     marnames<-colnames(map.list[[i]]$data.name$geno)[map.list[[i]]$seq.num]

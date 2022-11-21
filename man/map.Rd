@@ -9,7 +9,11 @@ map(
   tol = 1e-04,
   verbose = FALSE,
   rm_unlinked = FALSE,
-  phase_cores = 1
+  phase_cores = 1,
+  parallelization.type = "PSOCK",
+  global_error = NULL,
+  genotypes_errors = NULL,
+  genotypes_probs = NULL
 )
 }
 \arguments{
@@ -25,6 +29,17 @@ if \code{TRUE} one of the markers is removed and returns a vector with remaining
 marker numbers (useful for mds_onemap and map_avoid_unlinked functions).}
 
 \item{phase_cores}{number of computer cores to be used in analysis}
+
+\item{parallelization.type}{one of the supported cluster types. This should 
+be either PSOCK (default) or FORK.}
+
+\item{global_error}{single value to be considered as error probability in HMM emission function}
+
+\item{genotypes_errors}{matrix individuals x markers with error values for each marker}
+
+\item{genotypes_probs}{table containing the probability distribution for each combination of marker × individual. 
+Each line on this table represents the combination of one marker with one individual, and the respective probabilities.
+The table should contain four three columns (prob(AA), prob(AB) and prob(BB)) and individuals*markers rows.}
 }
 \value{
 An object of class \code{sequence}, which is a list containing the
@@ -55,7 +70,7 @@ same in both parents. Hidden Markov chain codes adapted from Broman et al.
 (2008) were used.
 }
 \examples{
-\dontrun{
+\donttest{
   data(onemap_example_out)
   twopt <- rf_2pts(onemap_example_out)
 

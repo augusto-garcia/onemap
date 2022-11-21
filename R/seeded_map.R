@@ -35,6 +35,8 @@
 ##' \emph{N} positions of the map
 ##' @param phase_cores The number of parallel processes to use when estimating
 ##' the phase of a marker. (Should be no more than 4)
+##' @param parallelization.type one of the supported cluster types. This should 
+#' be either PSOCK (default) or FORK.
 ##' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
 ##' if \code{TRUE} one of the markers is removed and map is performed again.
 ##' @return An object of class \code{sequence}, which is a list containing the
@@ -75,16 +77,16 @@
 ##' sex-specific differences. \emph{Genetical Research} 79: 85-96
 ##' @keywords utilities
 ##' @examples
-##'
+##' \donttest{
 ##'   data(onemap_example_out)
 ##'   twopt <- rf_2pts(onemap_example_out)
 ##'
 ##'   markers <- make_seq(twopt,c(30,12,3,14,2))
 ##'   seeded_map(markers, seeds = c(4,2))
-##'
+##' }
 ##' @export
 seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
-                       seeds, verbose = F, rm_unlinked=F)
+                       seeds, verbose = FALSE, rm_unlinked=FALSE, parallelization.type = "PSOCK")
 {
   ## checking for correct object
   if(!("sequence" %in% class(input.seq)))
@@ -96,12 +98,12 @@ seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
   seq.like<-input.seq$seq.like
   ##Checking for appropriate number of markers
   if(length(seq.num) < 2) stop("The sequence must have at least 2 markers")
-
+  
   seq.phase <- numeric(length(seq.num)-1)
   results <- list(rep(NA,4),rep(-Inf,4))
   #Add seeds as known phases
   seq.phase[1:length(seeds)] <- seeds
-
+  
   #Skip all seeds i the phase estimation
   for(mrk in (length(seeds)+1):(length(seq.num)-1)) {
     results <- list(rep(NA,4),rep(-Inf,4))
@@ -117,24 +119,35 @@ seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
     phase.init[[mrk]] <- list.init$phase.init[[1]]
     for(j in 1:(mrk-1)) phase.init[[j]] <- seq.phase[j]
     Ph.Init <- comb_ger(phase.init)
-    phases <- mclapply(1:nrow(Ph.Init),
-                       mc.cores = min(nrow(Ph.Init),phase_cores),
-                       mc.allow.recursive = TRUE,
-                       function(j) {
-                         ## call to 'map' function with predefined linkage phases
-                         map(make_seq(input.seq$twopt,
-                                      seq.num[1:(mrk+1)],
-                                      phase=Ph.Init[j,],
-                                      twopt=input.seq$twopt), tol=tol)
-                       })
-    gc(verbose = F)
-    if(!all(sapply(phases, function(x) is(x, "sequence")))) {
+    if(phase_cores == 1) {
+      phases <-  lapply(1:nrow(Ph.Init), function(j) {
+        map(make_seq(input.seq$twopt,
+                     seq.num[1:(mrk+1)],
+                     phase=Ph.Init[j,],
+                     twopt=input.seq$twopt), 
+            tol=tol, rm_unlinked = rm_unlinked)
+      })
+    } else {
+      cl <- makeCluster(phase_cores, type = parallelization.type)
+      phases <- parLapply(cl, 1:nrow(Ph.Init),
+                          function(j) {
+                            ## call to 'map' function with predefined linkage phases
+                            onemap::map(make_seq(input.seq$twopt,
+                                         seq.num[1:(mrk+1)],
+                                         phase=Ph.Init[j,],
+                                         twopt=input.seq$twopt), 
+                                tol=tol, rm_unlinked = rm_unlinked, 
+                                parallelization.type = parallelization.type)
+                          })
+      stopCluster(cl)
+      gc(verbose = FALSE)
+    }
+    if(!all(sapply(phases, function(x) inherits(x, "sequence")))) {
       if(rm_unlinked){
         warning(cat("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], 
                     "did not reached the OneMap default criteria. They are probably segregating independently. Marker", seq.num[mrk+1], "will be removed.
                     Use function map_avoid_unlinked to remove these markers automatically.\n"))
         return(seq.num[-(mrk+1)])
-        browser()
       } else{
         stop(paste("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], 
                    "did not reached the OneMap default criteria. They are probably segregating independently.
@@ -154,7 +167,6 @@ seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
                     "did not reached the OneMap default criteria. They are probably segregating independently. Marker", seq.num[mrk+1], "will be removed.
                     Use function map_avoid_unlinked to remove these markers automatically.\n"))
         return(seq.num[-(mrk+1)])
-        browser()
       } else{
         stop(paste("The linkage between markers", seq.num[mrk], "and", seq.num[mrk + 1], 
                    "did not reached the OneMap default criteria. They are probably segregating independently.
@@ -166,7 +178,7 @@ seeded_map <- function(input.seq, tol=10E-5, phase_cores = 1,
   }
   ## one last call to map function, with the final map
   map(make_seq(input.seq$twopt,seq.num,phase=seq.phase,
-               twopt=input.seq$twopt), rm_unlinked = rm_unlinked, tol=tol)
+               twopt=input.seq$twopt), rm_unlinked = rm_unlinked, tol=tol, parallelization.type = parallelization.type)
 }
 
 ## end of file

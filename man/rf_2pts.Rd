@@ -4,7 +4,7 @@
 \alias{rf_2pts}
 \title{Two-point analysis between genetic markers}
 \usage{
-rf_2pts(input.obj, LOD = 3, max.rf = 0.5, verbose = TRUE)
+rf_2pts(input.obj, LOD = 3, max.rf = 0.5, verbose = TRUE, rm_mks = FALSE)
 }
 \arguments{
 \item{input.obj}{an object of class \code{onemap}.}
@@ -16,6 +16,10 @@ to \code{0.50}).}
 
 \item{verbose}{logical. If \code{TRUE}, current progress is shown; if
 \code{FALSE}, no output is produced.}
+
+\item{rm_mks}{logical. If \code{TRUE} the algorithm will remove the markers for which it found numerical 
+problems to calculates the recombination fraction. The numerical problems can happens because of excess of 
+missing data or segregation deviation.}
 }
 \value{
 An object of class \code{rf_2pts}, which is a list containing the
@@ -38,13 +42,15 @@ The thresholds used for \code{LOD} and \code{max.rf} will be used in
 subsequent analyses, but can be overriden.
 }
 \examples{
-
+\donttest{
   data(onemap_example_out)
 
   twopts <- rf_2pts(onemap_example_out,LOD=3,max.rf=0.5) # perform two-point analyses
   twopts
 
   print(twopts,c("M1","M2")) # detailed results for markers 1 and 2
+}
+  
 }
 \references{
 Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002)

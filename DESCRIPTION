@@ -1,7 +1,6 @@
 Package: onemap
-Title: Construction of Genetic Maps in Experimental Crosses: Full-Sib,
-        RILs, F2 and Backcrosses
-Version: 2.2.0
+Title: Construction of Genetic Maps in Experimental Crosses
+Version: 2.8.2
 Description: Analysis of molecular marker data from model (backcrosses,
     F2 and recombinant inbred lines) and non-model systems (i. e.
     outcrossing species). For the later, it allows statistical
@@ -9,18 +8,45 @@ Description: Analysis of molecular marker data from model (backcrosses,
     phases (genetic map construction) according to Wu et al. (2002)
     <doi:10.1006/tpbi.2002.1577>. All analysis are based on multipoint 
     approaches using hidden Markov models.
-Date: 2020-02-14
-Authors@R: c(person("Gabriel", "Margarido", role = "aut", email =
-        "gramarga@usp.br"), person("Marcelo", "Mollinari", role =
-        "aut", email = "mmollina@usp.br"), person("Karl",
-        "Broman", role = "ctb", email = "kbroman@biostat.wisc.edu"),
-        person("Getulio", "Ferreira", role="ctb", email="getulio.caifer@usp.br"),
-        person("Rodrigo", "Amadeu", role = "ctb", email = "rodrigo.amadeu@usp.br"),
-        person("Cristiane", "Taniguti", role=c("ctb", "cre"), email="chtaniguti@usp.br"),
-        person("Augusto", "Garcia", role = c("aut", "ctb"), email =
-        "augusto.garcia@usp.br"))
-Author: Gabriel Margarido [aut], Marcelo Mollinari [aut], Karl
-        Broman [ctb], Getulio Ferreira [ctb], Rodrigo Amadeu [ctb], Cristiane Taniguti [ctb, cre], Augusto Garcia [aut, ctb]
+Date: 2022-02-10
+Authors@R: c(person("Gabriel", 
+                    "Margarido", 
+                    role = "aut",
+                    email = "gramarga@usp.br"), 
+             person("Marcelo", 
+                    "Mollinari", 
+                    role = "aut"), 
+             person("Cristiane", 
+                    "Taniguti", 
+                    role=c("ctb", "cre"), 
+                    email="chtaniguti@tamu.edu"),
+             person("Getulio", 
+                    "Ferreira", 
+                    role="ctb"),
+             person("Rodrigo", 
+                    "Amadeu", 
+                    role = "ctb"),
+             person("Karl",
+                    "Broman", 
+                    role = "ctb"),
+            person(given = "Katharine",
+                    family = "Preedy",
+                    role = c("ctb", "cph"),
+                    comment = "MDS ordering algorithm"),
+            person(given = "Bastian", 
+                    family = "Schiffthaler", 
+                    role = c("ctb","cph"),
+                    comment = "HMM parallelization"),        
+             person("Augusto", 
+                    "Garcia", 
+                    role = c("aut", "ctb"), 
+                    email = "augusto.garcia@usp.br"))
+Author: Gabriel Margarido [aut], Marcelo Mollinari [aut], 
+        Cristiane Taniguti [ctb, cre], Getulio Ferreira [ctb], 
+        Rodrigo Amadeu [ctb], Karl Broman [ctb], 
+        Katharine Preedy [ctb, cph] (MDS ordering algorithm), 
+        Bastian Schiffthaler [ctb, cph] (HMM parallelization),
+        Augusto Garcia [aut, ctb]
 LinkingTo: Rcpp (>= 0.10.5)
 Depends: R (>= 3.6.0)
 Imports: ggplot2 (>= 2.2.1), 
@@ -32,28 +58,32 @@ Imports: ggplot2 (>= 2.2.1),
         stats, 
         utils,
         grDevices,
-        MDSMap,
+        smacof,
+        princurve,
         parallel,
-        updog,
         dplyr,
         tidyr,
-        stringr,
         htmlwidgets,
         ggpubr,
-        RColorBrewer
-Suggests: qtl (>= 1.36-6), 
-          knitr (>= 1.10), 
-          rmarkdown, 
-          vcfR (>= 1.6.0),
+        RColorBrewer,
+        dendextend,
+        rebus,
+        vcfR (>= 1.6.0),
+        stringi
+Suggests: 
+    knitr (>= 1.10),
+    rmarkdown,
+    testthat,
+    stringr
 VignetteBuilder: knitr
 Encoding: UTF-8
 License: GPL-3
 URL: https://github.com/augusto-garcia/onemap
 BugReports: https://github.com/augusto-garcia/onemap/wiki
-Maintainer: Cristiane Taniguti <chtaniguti@usp.br>
+Maintainer: Cristiane Taniguti <chtaniguti@tamu.edu>
 Repository: CRAN
 Packaged: 2019-09-22 22:25:43 UTC; cris
 NeedsCompilation: yes
 Date/Publication: 2019-09-22 22:48:07 UTC
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 biocViews:

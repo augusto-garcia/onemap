@@ -13,7 +13,6 @@
 # for other cross types.                                              #
 #                                                                     #
 # First version: 02/27/2009                                           #
-# Last update: 22/06/2017                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################

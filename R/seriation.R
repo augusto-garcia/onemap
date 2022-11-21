@@ -9,7 +9,6 @@
 ## copyright (c) 2007-9, Gabriel R A Margarido                         ##
 ##                                                                     ##
 ## First version: 11/29/2009                                           ##
-## Last update: 12/2015                                                ##
 ## Description was update by Augusto Garcia on 2015/07/25              ##
 ## License: GNU General Public License version 2 (June, 1991) or later ##
 ##                                                                     ##
@@ -51,9 +50,14 @@
 ##' @param overlap The desired overlap between batches
 ##' @param phase_cores The number of parallel processes to use when estimating
 ##' the phase of a marker. (Should be no more than 4)
+##' @param parallelization.type one of the supported cluster types. This should 
+#' be either PSOCK (default) or FORK.
 #' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
 #' if \code{TRUE} one of the markers is removed and ug is performed again.
-
+#' @param hmm logical defining if the HMM must be applied to estimate multipoint
+#' genetic distances
+##' @param verbose A logical, if TRUE it output progress status
+##' information.
 ##' @return An object of class \code{sequence}, which is a list containing the
 ##' following components: \item{seq.num}{a \code{vector} containing the
 ##' (ordered) indices of markers in the sequence, according to the input file.}
@@ -78,39 +82,30 @@
 ##' @keywords utilities
 ##' @examples
 ##'
-##' \dontrun{
-##'   ##outcross example
-##'   data(onemap_example_out)
-##'   twopt <- rf_2pts(onemap_example_out)
-##'   all_mark <- make_seq(twopt,"all")
-##'   groups <- group(all_mark)
-##'   LG3 <- make_seq(groups,3)
-##'   LG3.ser <- seriation(LG3)
-##'
-##'   ##F2 example
-##'   data(onemap_example_f2)
-##'   twopt <- rf_2pts(onemap_example_f2)
-##'   all_mark <- make_seq(twopt,"all")
-##'   groups <- group(all_mark)
-##'   LG1 <- make_seq(groups,1)
-##'   LG1.ser <- seriation(LG1)
-##'   LG1.ser
+##' \donttest{
+#'   ##outcross example
+#'   data(onemap_example_out)
+#'   twopt <- rf_2pts(onemap_example_out)
+#'   all_mark <- make_seq(twopt,"all")
+#'   groups <- group(all_mark)
+#'   LG3 <- make_seq(groups,3)
+#'   LG3.ser <- seriation(LG3)
 ##' }
 ##'@export
 seriation<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5, 
                     rm_unlinked = TRUE,
                     size = NULL, 
                     overlap = NULL, 
-                    phase_cores = 1)
+                    phase_cores = 1, hmm=TRUE, parallelization.type = "PSOCK", verbose = TRUE)
 {
   ## checking for correct object
-  if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is
+  if(!inherits(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is
     not an object of class 'sequence'")
   n.mrk <- length(input.seq$seq.num)
   
   ## create reconmbination fraction matrix
   
-  if(is(input.seq$twopt,"outcross") || is(input.seq$twopt,"f2"))
+  if(inherits(input.seq$twopt,"outcross") || inherits(input.seq$twopt,"f2"))
     r<-get_mat_rf_out(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
   else
     r<-get_mat_rf_in(input.seq, LOD=FALSE, max.rf=max.rf, min.LOD=LOD)
@@ -133,36 +128,43 @@ seriation<-function(input.seq, LOD=0, max.rf=0.5, tol=10E-5,
   }
   
   ## end of SERIATION algorithm
-  cat("\norder obtained using SERIATION algorithm:\n\n", input.seq$seq.num[complete], "\n\ncalculating multipoint map using tol = ", tol, ".\n\n")
-  
-  if(phase_cores == 1){
-    ser_map <- map(make_seq(input.seq$twopt,input.seq$seq.num[complete],
-                            twopt=input.seq$twopt), 
-                   tol=tol,
-                   rm_unlinked = rm_unlinked)
-  } else{
-    if(is.null(size) | is.null(overlap)){
-      stop("If you want to parallelize the HMM in multiple cores (phase_cores != 1) 
+  if(hmm){
+    if(verbose) cat("\norder obtained using SERIATION algorithm:\n\n", input.seq$seq.num[complete], "\n\ncalculating multipoint map using tol = ", tol, ".\n\n")
+    
+    if(phase_cores == 1 | inherits(input.seq$data.name, c("backcross", "riself", "risib"))){
+      ser_map <- map(make_seq(input.seq$twopt,input.seq$seq.num[complete],
+                              twopt=input.seq$twopt), 
+                     tol=tol,
+                     rm_unlinked = rm_unlinked, parallelization.type= parallelization.type)
+    } else{
+      if(is.null(size) | is.null(overlap)){
+        stop("If you want to parallelize the HMM in multiple cores (phase_cores != 1) 
              you must also define `size` and `overlap` arguments.")
-    } else {
-      ser_map <- map_overlapping_batches(make_seq(input.seq$twopt,input.seq$seq.num[complete],
-                                                  twopt=input.seq$twopt), 
-                                         tol=tol,
-                                         size = size, overlap = overlap, 
-                                         phase_cores = phase_cores,
-                                         rm_unlinked = rm_unlinked)
+      } else {
+        ser_map <- map_overlapping_batches(make_seq(input.seq$twopt,input.seq$seq.num[complete],
+                                                    twopt=input.seq$twopt), 
+                                           tol=tol,
+                                           size = size, overlap = overlap, 
+                                           phase_cores = phase_cores,
+                                           rm_unlinked = rm_unlinked,
+                                           parallelization.type = parallelization.type)
+      }
     }
-  }
-  
-  if(!is.list(ser_map)) {
-    new.seq <- make_seq(input.seq$twopt, ser_map)
-    ser_map <- seriation(input.seq = new.seq, 
-                         LOD=LOD, 
-                         max.rf=max.rf, tol=tol, 
-                         rm_unlinked= rm_unlinked,
-                         size = size, 
-                         overlap = overlap, 
-                         phase_cores = phase_cores)
+    
+    if(!is.list(ser_map)) {
+      new.seq <- make_seq(input.seq$twopt, ser_map)
+      ser_map <- seriation(input.seq = new.seq, 
+                           LOD=LOD, 
+                           max.rf=max.rf, tol=tol, 
+                           rm_unlinked= rm_unlinked,
+                           size = size, 
+                           overlap = overlap, 
+                           phase_cores = phase_cores,
+                           parallelization.type = parallelization.type)
+    }
+  } else {
+    ser_map <- make_seq(input.seq$twopt,input.seq$seq.num[complete],
+                        twopt=input.seq$twopt)
   }
   return(ser_map)
 }

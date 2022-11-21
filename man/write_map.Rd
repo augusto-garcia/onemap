@@ -13,6 +13,12 @@ a list of maps.}
 
 \item{file.out}{output map file.}
 }
+\value{
+file with genetic map information
+
+Wang S., Basten, C. J. and Zeng Z.-B. (2010) Windows QTL Cartographer 2.5.
+Department of Statistics, North Carolina State University, Raleigh, NC.
+}
 \description{
 Write a genetic map to a file, base on a given map, or a list of maps. The
 output file can be used as an input to perform QTL mapping using the package
@@ -23,51 +29,33 @@ QTLCartographer program.
 This function is avaliable only for backcross, F2 and RILs.
 }
 \examples{
-
-\dontrun{
+\donttest{
 data(mapmaker_example_f2)
 twopt<-rf_2pts(mapmaker_example_f2)
 lg<-group(make_seq(twopt, "all"))
 
 ##"pre-allocate" an empty list of length lg$n.groups (3, in this case)
-  maps.list<-vector("list", lg$n.groups)
+maps.list<-vector("list", lg$n.groups)
 
-  for(i in 1:lg$n.groups){
-    ##create linkage group i
-    LG.cur <- make_seq(lg,i)
-    ##ordering
-    map.cur<-order_seq(LG.cur, subset.search = "sample")
-    ##assign the map of the i-th group to the maps.list
-    maps.list[[i]]<-make_seq(map.cur, "force")
-  }
+for(i in 1:lg$n.groups){
+  ##create linkage group i
+  LG.cur <- make_seq(lg,i)
+  ##ordering
+  map.cur<-order_seq(LG.cur, subset.search = "sample")
+  ##assign the map of the i-th group to the maps.list
+  maps.list[[i]]<-make_seq(map.cur, "force")
 
-##write maps.list to "mapmaker_example_f2.map" file
-write_map(map.list, "mapmaker_example_f2.map")
-
-##Using R/qtl
-##you must install the package  'qtl'
-##install.packages("qtl")
-
-require(qtl)
-file<-paste(system.file("example",package="onemap"),"mapmaker_example_f2.raw", sep="/")
-dat1 <- read.cross("mm", file=file, mapfile="mapmaker_example_f2.map")
-newmap <- est.map(dat1, tol=1e-6, map.function="kosambi")
-
-(logliks <- sapply(newmap, attr, "loglik"))
-plot.map(dat1, newmap)
-
-##Using R/qtl to generate QTL Cartographer input files (.map and .cro)
-write.cross(dat1, format="qtlcart", filestem="mapmaker_example_f2")
+  ##write maps.list to ".map" file
+  write_map(maps.list, tempfile(fileext = ".map"))
 
 }
+}
+
 }
 \references{
 Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B.
 (2008) \emph{qtl: Tools for analyzing QTL experiments} R package version
 1.09-43
-
-Wang S., Basten, C. J. and Zeng Z.-B. (2010) Windows QTL Cartographer 2.5.
-Department of Statistics, North Carolina State University, Raleigh, NC.
 }
 \author{
 Marcelo Mollinari, \email{mmollina@usp.br}

@@ -10,7 +10,7 @@ marker_type(input.seq)
 \item{input.seq}{an object of class \code{sequence}.}
 }
 \value{
-Nothing is returned. Segregation types of all markers in the
+data.frame with segregation types of all markers in the
 sequence are displayed on the screen.
 }
 \description{
@@ -32,19 +32,19 @@ ab x oo \tab 1:1 \cr D1.12 \tab bo x aa \tab 1:1 \cr D1.13 \tab ao x oo
 \tab oo x ao \tab 1:1 }
 }
 \examples{
+\donttest{
+ data(onemap_example_out)
+ twopts <- rf_2pts(onemap_example_out)
+ markers.ex <- make_seq(twopts,c(3,6,8,12,16,25))
+ marker_type(input.seq = markers.ex) # segregation type for some markers
 
-  data(onemap_example_out)
-  twopts <- rf_2pts(onemap_example_out)
-  markers.ex <- make_seq(twopts,c(3,6,8,12,16,25))
-  marker_type(markers.ex) # segregation type for some markers
-
-  data(onemap_example_f2)
-  twopts <- rf_2pts(onemap_example_f2)
-  all_mrk<-make_seq(twopts, "all")
-  lgs<-group(all_mrk)
-  lg1<-make_seq(lgs,1)
-  marker_type(lg1) # segregation type for linkage group 1
-
+ data(onemap_example_f2)
+ twopts <- rf_2pts(onemap_example_f2)
+ all_mrk<-make_seq(twopts, "all")
+ lgs<-group(all_mrk)
+ lg1<-make_seq(lgs,1)
+ marker_type(lg1) # segregation type for linkage group 1
+}
 }
 \references{
 Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002)
@@ -57,5 +57,4 @@ outcrossing species. \emph{Theoretical Population Biology} 61: 349-363.
 \author{
 Gabriel R A Margarido, \email{gramarga@gmail.com}
 }
-\keyword{manip}
 \keyword{utilities}

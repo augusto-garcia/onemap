@@ -9,7 +9,6 @@
 # copyright (c) 2009, Marcelo Mollinari                               #
 #                                                                     #
 # First version: 02/27/2009                                           #
-# Last update: 09/25/2009                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -20,7 +19,7 @@
 phases <- function(input.seq, LOD=0, max.rf=0.50)
 {
     ## checking for correct object
-    if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+    if(!inherits(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
     
     tot <- choose(length(input.seq$seq.num),2)
     ## initial values for the recombination fraction

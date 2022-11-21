@@ -65,11 +65,13 @@ globalVariables(c("LOD.CR", "LOD.RC", "LOD.RR"))
 ##' @param n.colors integer. Number of colors in the pallete.
 ##' @param display logical. If inter \code{TRUE} and display \code{TRUE} iteractive graphic is plotted in browser automatically when run the function
 ##' 
+##' @return a ggplot graphic
+##' 
 ##' @author Rodrigo Amadeu, \email{rramadeu@@gmail.com}
 ##' @keywords utilities
 ##' @examples
 ##'
-##'\dontrun{
+##'\donttest{
 ##' ##outcross example
 ##'   data(onemap_example_out)
 ##'   twopt <- rf_2pts(onemap_example_out)
@@ -79,8 +81,6 @@ globalVariables(c("LOD.CR", "LOD.RC", "LOD.RR"))
 ##'   LG1.rcd <- rcd(LG1)
 ##'   rf_graph_table(LG1.rcd, inter=FALSE)
 ##'
-##'   ##Now, using interactive plotly
-##'   rf_graph_table(LG1.rcd, inter=TRUE, html.file= "LG1.rcd.html")
 ##'
 ##'   ##F2 example
 ##'   data(onemap_example_f2)
@@ -99,15 +99,8 @@ globalVariables(c("LOD.CR", "LOD.RC", "LOD.RR"))
 ##'     ##assign the map of the i-th group to the maps.list
 ##'     maps.list[[i]]<-make_seq(map.cur, "force")
 ##'   }
-##'   ##Plot LOD/recombination fraction matrices for each group
-##'   require(gridExtra)
-##'   plot1 <- rf_graph_table(maps.list[[1]], main="Group 1",inter=FALSE)
-##'   plot2 <- rf_graph_table(maps.list[[2]], main="Group 2",inter=FALSE)
-##'   plot3 <- rf_graph_table(maps.list[[3]], main="Group 3",inter=FALSE)
-##'   grid.arrange(plot1, plot2, plot3, nrow=3)
 ##' }
 ##'@export
-
 rf_graph_table <- function(input.seq,
                            graph.LOD=FALSE,
                            main=NULL,
@@ -116,45 +109,49 @@ rf_graph_table <- function(input.seq,
                            mrk.axis="numbers",
                            lab.xy=NULL,
                            n.colors=4,
-                           display=T){
+                           display=TRUE){
   
   ## checking for correct objects
-  if(!any(is(input.seq,"sequence")))
+  if(!any(inherits(input.seq,"sequence")))
     stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   if(!(mrk.axis=="names" | mrk.axis=="numbers" | mrk.axis=="none"))
     stop("This mrk.axis argument is not defined, choose 'names', 'numbers' or 'none'")
   
   ## extracting data
-  if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2"))
+  if(inherits(input.seq$data.name, c("outcross", "f2")))
   {
-    #if(input.seq$seq.phases[1] == -1 || input.seq$seq.rf[1] == -1 || is.null(input.seq$seq.like))
-    # stop("You must estimate parameters before running 'rf_graph_table' ")
     ## making a list with necessary information
     n.mrk <- length(input.seq$seq.num)
-    LOD <- lapply(input.seq$twopt$analysis,
-                  function(x, w){
-                    m<-matrix(0, length(w), length(w))
-                    for(i in 1:(length(w)-1)){
-                      for(j in (i+1):length(w)){
-                        z<-sort(c(w[i],w[j]))
-                        m[j,i]<-m[i,j]<-x[z[1], z[2]]
-                      }
-                    }
-                    return(m)
-                  }, input.seq$seq.num
-    )
+    if(inter){
+      LOD <- lapply(input.seq$twopt$analysis,
+                    function(x, w){
+                      m <- matrix(0,nrow = length(w), ncol = length(w))
+                      k <- matrix(c(rep(w[1:(length(w))], each = length(w)), 
+                                    rep(w[1:(length(w))], length(w))), ncol = 2)
+                      k <- k[-which(k[,1] == k[,2]),]
+                      k <- t(apply(k, 1, sort))
+                      k <- k[-which(duplicated(k)),]
+                      LOD.temp<- x[k[,c(1,2)]]
+                      m[lower.tri((m))] <- LOD.temp
+                      m[upper.tri(m)] <- t(m)[upper.tri(m)]
+                      return(m)
+                    }, input.seq$seq.num
+      )
+    }
     mat<-t(get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
   } else {
-    #if(input.seq$seq.rf[1] == -1 || is.null(input.seq$seq.like))
-    #stop("You must estimate parameters before running 'rf_graph_table' ")
     ## making a list with necessary information
     n.mrk <- length(input.seq$seq.num) 
-    LOD<-matrix(0, length(input.seq$seq.num), length(input.seq$seq.num))
-    for(i in 1:(length(input.seq$seq.num)-1)){
-      for(j in (i+1):length(input.seq$seq.num)){
-        z<-sort(c(input.seq$seq.num[i],input.seq$seq.num[j]))
-        LOD[j,i]<-LOD[i,j]<-input.seq$twopt$analysis[z[1], z[2]]
-      }
+    if(inter){
+      LOD<-matrix(0, length(input.seq$seq.num), length(input.seq$seq.num))
+      k <- matrix(c(rep(input.seq$seq.num[1:(length(input.seq$seq.num))], each = length(input.seq$seq.num)), 
+                    rep(input.seq$seq.num[1:(length(input.seq$seq.num))], length(input.seq$seq.num))), ncol = 2)
+      k <- k[-which(k[,1] == k[,2]),]
+      k <- t(apply(k, 1, sort))
+      k <- k[-which(duplicated(k)),]
+      LOD.temp<- input.seq$twopt$analysis[k[,c(1,2)]]
+      LOD[lower.tri((LOD))] <- LOD.temp
+      LOD[upper.tri(LOD)] <- t(LOD)[upper.tri(LOD)]
     }
     mat<-t(get_mat_rf_in(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
   }
@@ -173,7 +170,7 @@ rf_graph_table <- function(input.seq,
   
   # Be compatible with older versions
   # if(all(is.na(input.seq$data.name$segr.type.num))){
-  #   if(is(input.seq$data.name, "backcross")){
+  #   if(inherits(input.seq$data.name, "backcross")){
   #     segr.type.num <- rep(8, length(input.seq$data.name$segr.type))
   #   } else {
   #     segr.type.num <- rep(9, length(input.seq$data.name$segr.type))
@@ -183,7 +180,7 @@ rf_graph_table <- function(input.seq,
   # }
   
   ##Write NAs in two-point recombination fractions between markers of type D1 and D2
-  if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2")){
+  if(inherits(input.seq$data.name, c("outcross", "f2"))){
     types <- input.seq$data.name$segr.type.num[input.seq$seq.num]
     for(i in 1:length(types))
       for(j in 1:(length(types)-1))
@@ -207,30 +204,32 @@ rf_graph_table <- function(input.seq,
   mat.LOD[lower.tri(mat.LOD)] <- t(mat.LOD)[lower.tri(mat.LOD)]
   mat.rf[upper.tri(mat.rf)] <- t(mat.rf)[upper.tri(mat.LOD)]
   
-  if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2")){
-    colnames(LOD$CC) <- rownames(LOD$CC) <- colnames(mat.rf)
-    colnames(LOD$CR) <- rownames(LOD$CR) <- colnames(mat.rf)
-    colnames(LOD$RC) <- rownames(LOD$RC) <- colnames(mat.rf)
-    colnames(LOD$RR) <- rownames(LOD$RR) <- colnames(mat.rf)
-    
-    ## Merging all the matrices into one df
-    df.graph <- Reduce(function(x, y) merge(x, y, all=TRUE),
-                       list(melt(round(mat.rf,2), value.name="rf"),
-                            melt(round(mat.LOD,2), value.name="LOD"),
-                            melt(round(LOD$CC,2), value.name="CC"),
-                            melt(round(LOD$CR,2), value.name="CR"),
-                            melt(round(LOD$RC,2), value.name="RC"),
-                            melt(round(LOD$RR,2), value.name="RR")))
-    
-    colnames(df.graph)[5:8] <- paste0("LOD.",c("CC","CR","RC","RR"))
-    
-    
-    
+  if(inherits(input.seq$data.name, c("outcross", "f2"))){
+    if(inter){
+      colnames(LOD$CC) <- rownames(LOD$CC) <- colnames(mat.rf)
+      colnames(LOD$CR) <- rownames(LOD$CR) <- colnames(mat.rf)
+      colnames(LOD$RC) <- rownames(LOD$RC) <- colnames(mat.rf)
+      colnames(LOD$RR) <- rownames(LOD$RR) <- colnames(mat.rf)
+      
+      ## Merging all the matrices into one df
+      df.graph <- Reduce(function(x, y) merge(x, y, all=TRUE),
+                         list(melt(round(mat.rf,2), value.name="rf"),
+                              melt(round(mat.LOD,2), value.name="LOD"),
+                              melt(round(LOD$CC,2), value.name="CC"),
+                              melt(round(LOD$CR,2), value.name="CR"),
+                              melt(round(LOD$RC,2), value.name="RC"),
+                              melt(round(LOD$RR,2), value.name="RR")))
+      
+      colnames(df.graph)[5:8] <- paste0("LOD.",c("CC","CR","RC","RR"))
+    } else {
+      df.graph <- Reduce(function(x, y) merge(x, y, all=TRUE),
+                         list(melt(round(mat.rf,2), value.name="rf"),
+                              melt(round(mat.LOD,2), value.name="LOD")))
+    }
   }else{
     df.graph <- merge(melt(round(mat.rf,2), value.name="rf"),
                       melt(round(mat.LOD,2), value.name="LOD"))
   }
-  
   
   colnames(df.graph)[c(1,2)] <- c("x", "y")
   
@@ -258,17 +257,31 @@ rf_graph_table <- function(input.seq,
   ## ggplot() just depends on the 'x', 'y', and 'fill' aes arguments
   
   ## If outcross:
-  if(is(input.seq$data.name, "outcross") | is(input.seq$data.name, "f2")){
+  if(inherits(input.seq$data.name, c("outcross", "f2"))){
     if(graph.LOD!=TRUE){
-      p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, x.missing = x.missing, y.missing = y.missing, fill = rf, LOD.CC=LOD.CC, LOD.CR=LOD.CR, LOD.RC=LOD.RC, LOD.RR=LOD.RR), data=df.graph) +
-        geom_tile() +
-        scale_fill_gradientn(colours = rainbow(n.colors), na.value = "white") +
-        theme(axis.text.x=element_text(angle=90, hjust=1))
+      if(inter){
+        p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, x.missing = x.missing, y.missing = y.missing, fill = rf, LOD.CC=LOD.CC, LOD.CR=LOD.CR, LOD.RC=LOD.RC, LOD.RR=LOD.RR), data=df.graph) +
+          geom_tile() +
+          scale_fill_gradientn(colours = rainbow(n.colors), na.value = "white") +
+          theme(axis.text.x=element_text(angle=90, hjust=1))
+      } else {
+        p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, x.missing = x.missing, y.missing = y.missing, fill = rf), data=df.graph) +
+          geom_tile() +
+          scale_fill_gradientn(colours = rainbow(n.colors), na.value = "white") +
+          theme(axis.text.x=element_text(angle=90, hjust=1))
+      }
     }else{
-      p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, x.missing = x.missing, y.missing = y.missing, rf=rf, fill = LOD, LOD.CC=LOD.CC, LOD.CR=LOD.CR, LOD.RC=LOD.RC, LOD.RR=LOD.RR), data=df.graph) +
-        geom_tile() +
-        scale_fill_gradientn(colours = rev(rainbow(n.colors)), na.value = "white") +
-        theme(axis.text.x=element_text(angle=90, hjust=1))
+      if(inter){
+        p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, x.missing = x.missing, y.missing = y.missing, rf=rf, fill = LOD, LOD.CC=LOD.CC, LOD.CR=LOD.CR, LOD.RC=LOD.RC, LOD.RR=LOD.RR), data=df.graph) +
+          geom_tile() +
+          scale_fill_gradientn(colours = rev(rainbow(n.colors)), na.value = "white") +
+          theme(axis.text.x=element_text(angle=90, hjust=1))
+      } else {
+        p <- ggplot(aes(x, y, x.type = x.type, y.type = y.type, x.missing = x.missing, y.missing = y.missing, rf=rf, fill = LOD), data=df.graph) +
+          geom_tile() +
+          scale_fill_gradientn(colours = rev(rainbow(n.colors)), na.value = "white") +
+          theme(axis.text.x=element_text(angle=90, hjust=1))
+      }
     }
     
     ## If inbred:

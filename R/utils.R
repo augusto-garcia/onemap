@@ -11,11 +11,14 @@
 # copyright (c) 2007-9, Gabriel R A Margarido                         #
 #                                                                     #
 # First version: 11/07/2007                                           #
-# Last update: 02/27/2009                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
 
+#' Perform gaussian sum
+#' 
+#' @param w vector of numbers
+#' 
 acum <- function(w) {
   if (w<0) stop("'w' should be equal to or higher than zero")
   
@@ -29,149 +32,117 @@ acum <- function(w) {
 #' @param sequence object of class or sequence
 #' @param mk_type vector of character with marker type to be selected
 #' 
-#' @return new sequence object with selected marker type
-#' @export
+##' @return New sequence object of class \code{sequence} with selected marker type, 
+##' which is a list containing the
+##' following components: \item{seq.num}{a \code{vector} containing the
+##' (ordered) indices of markers in the sequence, according to the input file.}
+##' \item{seq.phases}{a \code{vector} with the linkage phases between markers
+##' in the sequence, in corresponding positions. \code{-1} means that there are
+##' no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
+##' recombination frequencies between markers in the sequence. \code{-1} means
+##' that there are no estimated recombination frequencies.}
+##' \item{seq.like}{log-likelihood of the corresponding linkage map.}
+##' \item{data.name}{object of class \code{onemap} with the raw
+##' data.} \item{twopt}{object of class \code{rf_2pts} with the
+##' 2-point analyses.}
 #' 
+##' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
+##' @seealso \code{\link[onemap]{make_seq}}
+##' 
+#' @export
 seq_by_type <- function(sequence, mk_type){
-  if(!is(sequence, c("sequence"))) stop("Input object must be of class sequence")
+  if(!inherits(sequence, c("sequence"))) stop("Input object must be of class sequence")
   if(length(mk_type) > 1) pat <- paste0(mk_type, collapse = "|") else pat <- mk_type
   type <- sequence$seq.num[grep(pat, sequence$data.name$segr.type[sequence$seq.num])]
   new.seq <- make_seq(sequence$twopt, type)
   return(new.seq)
 }
 
-#' Repeat HMM if map find unlinked maker
-#'
-#' @param input.seq object of class sequence
-#' @param size The center size around which an optimum is to be searched
-#' @param overlap The desired overlap between batches
-#' @param phase_cores The number of parallel processes to use when estimating
-#' the phase of a marker. (Should be no more than 4)
-#' @param tol tolerance for the C routine, i.e., the value used to evaluate
-#' convergence.
+#' Split rf_2pts object by markers
 #' 
+#' @param twopts.obj object of class rf_2pts
+#' @param mks markers names (vector of characters) or number (vector of integers) to be removed and added to a new rf_2pts object
+#' 
+##' @return An object of class \code{rf_2pts} with only the selected markers, which is a list containing the
+##' following components:  \item{n.mar}{total number of markers.} \item{LOD}{minimum LOD Score to declare
+##' linkage.} \item{max.rf}{maximum recombination fraction to declare linkage.}
+#' 
+##' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
+##' 
 #' @export
-map_avoid_unlinked <- function(input.seq, 
-                               size = NULL, 
-                               overlap = NULL,
-                               phase_cores = 1, 
-                               tol = 1e-05){
-  #TODO: error checks...
-  map_df <- map_save_ram(input.seq, rm_unlinked = T, 
-                                  size = size, 
-                                  overlap = overlap, 
-                                  tol=tol, 
-                                  phase_cores = phase_cores)
-  
-  while(is(map_df, "integer")){
-    seq_true <- make_seq(input.seq$twopt, map_df)
-    map_df <- map_save_ram(input.seq = seq_true, 
-                           rm_unlinked = T, 
-                           tol=tol, 
-                           size = size, 
-                           overlap = overlap, 
-                           phase_cores = phase_cores)
-  }
-  return(map_df)
-}
-
-# Split 2pts object by mks
 split_2pts <- function(twopts.obj, mks){
   split.dat <- split_onemap(onemap.obj = twopts.obj$data.name, mks)
   twopts.obj$data.name <- split.dat
   twopts.obj$n.mar <- length(mks)
   twopts.obj$CHROM <- twopts.obj$CHROM[mks]
   twopts.obj$POS <- twopts.obj$POS[mks]
-  if(is(twopts.obj$data.name, c("outcross","f2"))){
-    new.twopts <- rep(list(matrix(0,nrow = length(mks), ncol = length(mks))),4)
-    for(j in 1:(length(mks)-1)) {
-      for(i in (j+1):length(mks)) {
-        k<-sort(c(mks[i], mks[j]))
-        for(w in 1:4){
-          r.temp<-twopts.obj$analysis[[w]][k[2], k[1]]
-          new.twopts[[w]][i,j]<-r.temp
-          LOD.temp<-twopts.obj$analysis[[w]][k[1], k[2]]
-          new.twopts[[w]][j,i]<-LOD.temp
-          colnames(new.twopts[[w]]) <- rownames(new.twopts[[w]]) <- colnames(split.dat$geno)
-        }
-      }
-    }
+  if(inherits(twopts.obj$data.name, c("outcross","f2"))){
+    new.twopts <- lapply(twopts.obj$analysis, function(x){
+      temp <- matrix(0,nrow = length(mks), ncol = length(mks))
+      k <- matrix(c(rep(mks[1:(length(mks))], each = length(mks)), 
+                    rep(mks[1:(length(mks))], length(mks))), ncol = 2)
+      k <- k[-which(k[,1] == k[,2]),]
+      k <- t(apply(k, 1, sort))
+      k <- k[-which(duplicated(k)),]
+      LOD.temp<-x[k[,c(1,2)]]
+      temp[lower.tri((temp))]<-LOD.temp
+      temp <- t(temp) 
+      r.temp<-x[k[,c(2,1)]]
+      temp[lower.tri(temp)]<-r.temp
+      colnames(temp) <- rownames(temp) <- colnames(split.dat$geno)
+      return(temp)
+    })
     names(new.twopts) <- c("CC", "CR", "RC", "RR")
   } else {
-    new.twopts <- matrix(0, nrow = length(mks), ncol = length(mks))
-    for(i in 1:(length(mks)-1)) {
-      for(j in (i+1):length(mks)) {
-        k<-sort(c(mks[i], mks[j]))
-        r.temp<-twopts.obj$analysis[k[2], k[1]]
-        new.twopts[i,j]<-r.temp
-        LOD.temp<-twopts.obj$analysis[k[1], k[2]]
-        new.twopts[j,i]<-LOD.temp
-      }
-    }
+    new.twopts <- matrix(0,nrow = length(mks), ncol = length(mks))
+    k <- matrix(c(rep(mks[1:(length(mks))], each = length(mks)), 
+                  rep(mks[1:(length(mks))], length(mks))), ncol = 2)
+    k <- k[-which(k[,1] == k[,2]),]
+    k <- t(apply(k, 1, sort))
+    k <- k[-which(duplicated(k)),]
+    LOD.temp<- twopts.obj$analysis[k[,c(1,2)]]
+    new.twopts[lower.tri((new.twopts))] <- LOD.temp
+    new.twopts <- t(new.twopts) 
+    r.temp<- twopts.obj$analysis[k[,c(2,1)]]
+    new.twopts[lower.tri(new.twopts)] <- r.temp
     colnames(new.twopts) <- rownames(new.twopts) <- colnames(split.dat$geno)
   }
   twopts.obj$analysis <- new.twopts
   return(twopts.obj)
 }
 
-# perform map with backgroups onemap object and twopts only with sequence markers information
-# it save space in ram memory - very useful if dealing with many markers in total dataset
-map_save_ram <- function(input.seq,
-                         tol=10E-5, 
-                         verbose=FALSE, 
-                         rm_unlinked=FALSE, 
-                         phase_cores = 1, 
-                         size = NULL, 
-                         overlap = NULL){
-  
-  input.seq.tot <- input.seq
-  input.seq_ram <- input.seq
-  if(length(input.seq$seq.num) < input.seq.tot$data.name$n.mar){
-    split.twopts <- split_2pts(twopts.obj = input.seq$twopt, mks = input.seq$seq.num) 
-    input.seq_ram <- make_seq(split.twopts, "all")
-  }
-  if(phase_cores == 1){
-    return.map <- map(input.seq_ram, tol = tol, 
-                      verbose = verbose, 
-                      rm_unlinked = rm_unlinked, 
-                      phase_cores = phase_cores)
-  } else {
-    if(is.null(size) | is.null(overlap)){
-      stop("If you want to parallelize the HMM in multiple cores (phase_cores != 1) 
-             you should also define `size` and `overlap` arguments. See ?map_avoid_unlinked and ?pick_batch_sizes")
-    } else {
-      return.map <- map_overlapping_batches(input.seq = input.seq_ram,
-                                            size = size, overlap = overlap, 
-                                            phase_cores = phase_cores, 
-                                            tol=tol, rm_unlinked = rm_unlinked)
-    }
-  }
-  if(length(input.seq_ram$seq.num) < input.seq.tot$data.name$n.mar){
-    if(!is(return.map, "integer")){ # When rm_unlinked == F
-      return.map$seq.num <- input.seq.tot$seq.num
-      return.map$data.name <- input.seq.tot$data.name
-      return.map$twopt <- input.seq.tot$twopt
-    } else {
-      remain <- colnames(input.seq_ram$data.name$geno)[return.map]
-      old <- colnames(input.seq.tot$data.name$geno)[input.seq.tot$seq.num]
-      return.map <- input.seq.tot$seq.num[old %in% remain] 
-    }
-  }
-  return(return.map)
-}
 
-
-#'Remove inviduals from the onemap object
+#'Remove individuals from the onemap object
 #'
 #'@param onemap.obj object of class onemap
 #'@param rm.ind vector of charaters with individuals names
 #'
+##' @return An object of class \code{onemap} without the selected individuals, 
+##' i.e., a list with the following
+##' components: \item{geno}{a matrix with integers indicating the genotypes
+##' read for each marker. Each column contains data for a marker and each row
+##' represents an individual.} \item{n.ind}{number of individuals.}
+##' \item{n.mar}{number of markers.} \item{segr.type}{a vector with the
+##' segregation type of each marker, as \code{strings}.} \item{segr.type.num}{a
+##' vector with the segregation type of each marker, represented in a
+##' simplified manner as integers, i.e. 1 corresponds to markers of type
+##' \code{"A"}; 2 corresponds to markers of type \code{"B1.5"}; 3 corresponds
+##' to markers of type \code{"B2.6"}; 4 corresponds to markers of type
+##' \code{"B3.7"}; 5 corresponds to markers of type \code{"C.8"}; 6 corresponds
+##' to markers of type \code{"D1"} and 7 corresponds to markers of type
+##' \code{"D2"}. Markers for F2 intercrosses are coded as 1; all other crosses
+##' are left as \code{NA}.} \item{input}{the name of the input file.}
+##' \item{n.phe}{number of phenotypes.} \item{pheno}{a matrix with phenotypic
+##' values. Each column contains data for a trait and each row represents an
+##' individual.}
+#'
+##' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
+#'
 #'@export
 remove_inds <- function(onemap.obj, rm.ind){
-  if(!is(onemap.obj, "onemap")) stop("Input must to be of onemap class \n")
+  if(!inherits(onemap.obj, "onemap")) stop("Input must to be of onemap class \n")
   if(!(length(which(rownames(onemap.obj$geno) %in% rm.ind)) >0)) stop("We could not find any of these individuals in the dataset \n")
   
-  rm.ind <- c("II_3_08", "II_1_37", "I_4_62", "I_4_28", "I_4_21", "I_3_72", "I_3_70")
   new.onemap.obj <- onemap.obj
   new.onemap.obj$geno <- onemap.obj$geno[-which(rownames(onemap.obj$geno) %in% rm.ind),]
   new.onemap.obj$n.ind <- onemap.obj$n.ind - length(rm.ind)
@@ -186,8 +157,29 @@ remove_inds <- function(onemap.obj, rm.ind){
 #' 
 #' @param onemap.obj object of class onemap
 #' 
+##' @return An object of class \code{onemap}, i.e., a list with the following
+##' components: \item{geno}{a matrix with integers indicating the genotypes
+##' read for each marker. Each column contains data for a marker and each row
+##' represents an individual.} \item{n.ind}{number of individuals.}
+##' \item{n.mar}{number of markers.} \item{segr.type}{a vector with the
+##' segregation type of each marker, as \code{strings}.} \item{segr.type.num}{a
+##' vector with the segregation type of each marker, represented in a
+##' simplified manner as integers, i.e. 1 corresponds to markers of type
+##' \code{"A"}; 2 corresponds to markers of type \code{"B1.5"}; 3 corresponds
+##' to markers of type \code{"B2.6"}; 4 corresponds to markers of type
+##' \code{"B3.7"}; 5 corresponds to markers of type \code{"C.8"}; 6 corresponds
+##' to markers of type \code{"D1"} and 7 corresponds to markers of type
+##' \code{"D2"}. Markers for F2 intercrosses are coded as 1; all other crosses
+##' are left as \code{NA}.} \item{input}{the name of the input file.}
+##' \item{n.phe}{number of phenotypes.} \item{pheno}{a matrix with phenotypic
+##' values. Each column contains data for a trait and each row represents an
+##' individual.}
+#' 
+##' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
+#' 
 #' @export
 sort_by_pos <- function(onemap.obj){
+  if(!inherits(onemap.obj, "onemap")) stop("Input must to be of onemap class \n")
   
   idx <- order(onemap.obj$CHROM, onemap.obj$POS)
   
@@ -201,7 +193,37 @@ sort_by_pos <- function(onemap.obj){
   return(new.obj)
 }
 
-# Produce empty object to avoid code break
+#' Produce empty object to avoid code break. Function for internal purpose.
+#'  
+#' @param vcf object of class vcfR
+#' @param P1 character with parent 1 ID
+#' @param P2 character with parent 2 ID
+#' @param cross type of cross. Must be one of: \code{"outcross"} for full-sibs;
+#' \code{"f2 intercross"} for an F2 intercross progeny; \code{"f2 backcross"};
+#' \code{"ri self"} for recombinant inbred lines by self-mating; or
+#' \code{"ri sib"} for recombinant inbred lines by sib-mating.
+#' 
+##' @return An empty object of class \code{onemap}, i.e., a list with the following
+##' components: \item{geno}{a matrix with integers indicating the genotypes
+##' read for each marker. Each column contains data for a marker and each row
+##' represents an individual.} \item{n.ind}{number of individuals.}
+##' \item{n.mar}{number of markers.} \item{segr.type}{a vector with the
+##' segregation type of each marker, as \code{strings}.} \item{segr.type.num}{a
+##' vector with the segregation type of each marker, represented in a
+##' simplified manner as integers, i.e. 1 corresponds to markers of type
+##' \code{"A"}; 2 corresponds to markers of type \code{"B1.5"}; 3 corresponds
+##' to markers of type \code{"B2.6"}; 4 corresponds to markers of type
+##' \code{"B3.7"}; 5 corresponds to markers of type \code{"C.8"}; 6 corresponds
+##' to markers of type \code{"D1"} and 7 corresponds to markers of type
+##' \code{"D2"}. Markers for F2 intercrosses are coded as 1; all other crosses
+##' are left as \code{NA}.} \item{input}{the name of the input file.}
+##' \item{n.phe}{number of phenotypes.} \item{pheno}{a matrix with phenotypic
+##' values. Each column contains data for a trait and each row represents an
+##' individual.}
+#' 
+##' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
+##' 
+#' @export
 empty_onemap_obj <- function(vcf, P1, P2, cross){
   legacy_crosses <- setNames(c("outcross", "f2", "backcross", "riself", "risib"), 
                              c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"))
@@ -223,56 +245,36 @@ empty_onemap_obj <- function(vcf, P1, P2, cross){
   return(onemap.obj)
 }
 
-
-try_seq_by_seq <- function(sequence, markers, cM.thr= 10, lod.thr=-10){
-  
-  seq_now <- sequence
-  for(i in 1:length(markers)){
-    try_edit <- try_seq(seq_now, markers[i])  
-    pos <- which(try_edit$LOD == 0)[1]
-    new_map <- make_seq(try_edit, pos)
-    size_new <- cumsum(kosambi(new_map$seq.rf))[length(new_map$seq.rf)]
-    size_old <- cumsum(kosambi(seq_now$seq.rf))[length(seq_now$seq.rf)]
-    lod_new <- new_map$seq.like
-    lod_old <- seq_now$seq.like
-    diff_size <- size_new - size_old
-    diff_lod <- lod_new - lod_old
-    if(diff_size < cM.thr & diff_lod > lod.thr){
-      seq_now <- new_map
-      cat("Marker", markers[i], "was included \n")
-    } 
-  }
-  return(seq_now)
-}
-
-add_redundants <- function(sequence, onemap.obj, bins){
-  
-  idx <- match(colnames(sequence$data.name$geno)[sequence$seq.num], names(bins[[1]]))
-  
-  sizes <- sapply(bins[[1]][idx], function(x) dim(x)[1])
-  
-  mks <- sapply(bins[[1]][idx], rownames)
-  mks <- do.call(c, mks)
-  mks.num <- match(mks, colnames(onemap.obj$geno))
-  
-  new.seq.rf <- as.list(cumsum(c(0,sequence$seq.rf)))
-  
-  for(i in 1:length(new.seq.rf)){
-    new.seq.rf[[i]] <- rep(new.seq.rf[[i]], each = sizes[i])
-  }
-  
-  new.seq.rf <- do.call(c, new.seq.rf)
-  new.seq.rf <- diff(new.seq.rf)
-  new_sequence <- sequence
-  new_sequence$seq.num <- mks.num
-  new_sequence$seq.rf <- new.seq.rf
-  new_sequence$data.name <- onemap.obj
-  new_sequence$probs <- "with redundants"
-  return(new_sequence)  
-}
-
-# Removing duplicated markers, kept the one with less missing data
+#' Remove duplicated markers keeping the one with less missing data
+#'  
+#' @param onemap.obj object of class \code{onemap}
+#'  
+##' @return An empty object of class \code{onemap}, i.e., a list with the following
+##' components: \item{geno}{a matrix with integers indicating the genotypes
+##' read for each marker. Each column contains data for a marker and each row
+##' represents an individual.} \item{n.ind}{number of individuals.}
+##' \item{n.mar}{number of markers.} \item{segr.type}{a vector with the
+##' segregation type of each marker, as \code{strings}.} \item{segr.type.num}{a
+##' vector with the segregation type of each marker, represented in a
+##' simplified manner as integers, i.e. 1 corresponds to markers of type
+##' \code{"A"}; 2 corresponds to markers of type \code{"B1.5"}; 3 corresponds
+##' to markers of type \code{"B2.6"}; 4 corresponds to markers of type
+##' \code{"B3.7"}; 5 corresponds to markers of type \code{"C.8"}; 6 corresponds
+##' to markers of type \code{"D1"} and 7 corresponds to markers of type
+##' \code{"D2"}. Markers for F2 intercrosses are coded as 1; all other crosses
+##' are left as \code{NA}.} \item{input}{the name of the input file.}
+##' \item{n.phe}{number of phenotypes.} \item{pheno}{a matrix with phenotypic
+##' values. Each column contains data for a trait and each row represents an
+##' individual.}
+#' 
+##' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
+##' 
+#'  
+#' @export
 rm_dupli_mks <- function(onemap.obj){
+  
+  if(!inherits(onemap.obj, c("onemap"))) stop("Input object must be of class onemap")
+  
   MKS <- colnames(onemap.obj$geno)
   GT_matrix <- t(onemap.obj$geno)
   n.mk <- length(MKS)
@@ -285,7 +287,7 @@ rm_dupli_mks <- function(onemap.obj){
       temp_GT <- GT_matrix[MKS==dupli[w],]
       mis_count <- apply(temp_GT, 1, function(x) sum(x==0))
       discard <- temp_GT[-which.min(mis_count),]
-      if(is(discard, "matrix")){
+      if(inherits(discard, "matrix")){
         for(j in 1:dim(discard)[1]){
           idx <- which(apply(GT_matrix, 1, function(x) all(x == discard[j,])))
           idx <- idx[MKS[idx] == dupli[w]][1]
@@ -313,4 +315,284 @@ rm_dupli_mks <- function(onemap.obj){
   return(onemap.obj)
 }
 
+#' Onemap object sanity check 
+#' 
+#' Based on MAPpoly check_data_sanity function by Marcelo Mollinari
+#' 
+#' @param x an object of class \code{onemap}
+#' 
+#' @return if consistent, returns 0. If not consistent, returns a 
+#'         vector with a number of tests, where \code{TRUE} indicates
+#'         a failed test.
+#'         
+#' @examples 
+#' 
+#' data(onemap_example_bc)
+#' check_data(onemap_example_bc)
+#' 
+#' 
+#' @author Cristiane Taniguti, \email{chtaniguti@tamu.edu}
+#' 
+#' @export
+check_data <- function(x){
+  test <- logical(24L)
+  names(test) <- 1:24
+  
+  test[1] <- any(is.na(x$geno))    
+  test[2] <- any(is.na(x$error))
+  test[3] <- !all(dim(x$geno) == c(x$n.ind, x$n.mar))
+  test[4] <- !dim(x$error)[1] == prod(dim(x$geno))
+  test[5] <- if(!is.null(x$CHROM)) length(x$CHROM) != x$n.mar else FALSE
+  test[6] <- if(!is.null(x$POS)) length(x$POS) != x$n.mar else FALSE
+  test[7] <- if(inherits(x, "f2")) {
+    !all(unique(x$segr.type) %in% c("A.H.B", "D.B", "C.A"))
+  } else if(inherits(x, "outcross")){
+    !all(unique(x$segr.type) %in% c("A.1", "A.2", "A.3", "A.4", "B1.5", 
+                                    "B2.6", "B3.7", "C.8", "D1.9", "D1.10", 
+                                    "D1.11", "D1.12", "D1.13", "D2.14", 
+                                    "D2.15", "D2.16", "D2.17", "D2.18"))
+  } else if(inherits(x, "backcross")){
+    !all(unique(x$segr.type) %in% c("A.H"))
+  } else if(inherits(x, "riself") | inherits(x, "risib")){
+    !all(unique(x$segr.type) %in% c("A.B"))
+  }
+  
+  test[8] <- if(inherits(x, "f2")) {
+    !all(unique(x$segr.type.num) %in% c(4,6,7))
+  } else if(inherits(x, "outcross")){
+    !all(unique(x$segr.type.num) %in% 1:7)
+  } else if(inherits(x, "backcross")){
+    !all(unique(x$segr.type.num) %in% 8)
+  } else if(inherits(x, "riself") | inherits(x, "risib")){
+    !all(unique(x$segr.type.num) %in% 9)
+  }
+  
+  if(any(test))
+    return(test)
+  else 
+    return(0)
+}
 
+#' Twopts object sanity check 
+#' 
+#' Based on MAPpoly check_data_sanity function by Marcelo Mollinari
+#' 
+#' @param x an object of class \code{onemap}
+#' 
+#' @return if consistent, returns 0. If not consistent, returns a 
+#'         vector with a number of tests, where \code{TRUE} indicates
+#'         a failed test.
+#'         
+#' @examples 
+#' 
+#' data(onemap_example_bc)
+#' twopts <- rf_2pts(onemap_example_bc)
+#' check_twopts(twopts)
+#' 
+#' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
+#' 
+#' @export
+check_twopts <- function(x){
+  test <- logical(4L)
+  names(test) <- 1:4
+  
+  test[1] <- if(check_data(x$data.name) == 0) FALSE else TRUE
+  if(inherits(x$data.name, "outcross") | inherits(x$data.name, "f2")){
+    test[2] <- !inherits(x$analysis, "list")
+    test[3] <- all(dim(x$analysis[[1]]) != rep(x$data.name$n.mar,2))
+    test[4] <- any(sapply(x$analysis, function(x) any(is.na(x))))
+  } else {
+    test[2] <- !inherits(x$analysis, "matrix")
+    test[3] <- all(dim(x$analysis) != rep(x$data.name$n.mar,2))
+    test[4] <- any(is.na(x$analysis))
+  }
+  
+  if(any(test))
+    return(test)
+  else 
+    return(0)
+}
+
+
+#' Filter markers based on 2pts distance
+#' 
+#' @param input.seq object of class sequence with ordered markers
+#' 
+#' @param max.gap maximum gap measured in kosambi centimorgans allowed between adjacent markers. 
+#' Markers that presents the defined distance between both adjacent neighbors will be removed.
+#' 
+##' @return New sequence object of class \code{sequence}, which is a list containing the
+##' following components: \item{seq.num}{a \code{vector} containing the
+##' (ordered) indices of markers in the sequence, according to the input file.}
+##' \item{seq.phases}{a \code{vector} with the linkage phases between markers
+##' in the sequence, in corresponding positions. \code{-1} means that there are
+##' no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
+##' recombination frequencies between markers in the sequence. \code{-1} means
+##' that there are no estimated recombination frequencies.}
+##' \item{seq.like}{log-likelihood of the corresponding linkage map.}
+##' \item{data.name}{object of class \code{onemap} with the raw
+##' data.} \item{twopt}{object of class \code{rf_2pts} with the
+##' 2-point analyses.}
+#' 
+#' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
+#' 
+#' @export
+filter_2pts_gaps <- function(input.seq, max.gap=10){
+  
+  if(!inherits(input.seq, "sequence"))
+    stop("input.seq object must be of class sequence.")
+  
+  ## extracting data
+  if(inherits(input.seq$data.name, "outcross") | inherits(input.seq$data.name, "f2"))
+  {
+    ## making a list with necessary information
+    n.mrk <- length(input.seq$seq.num)
+    LOD <- lapply(input.seq$twopt$analysis,
+                  function(x, w){
+                    m<-matrix(0, length(w), length(w))
+                    for(i in 1:(length(w)-1)){
+                      for(j in (i+1):length(w)){
+                        z<-sort(c(w[i],w[j]))
+                        m[j,i]<-m[i,j]<-x[z[1], z[2]]
+                      }
+                    }
+                    return(m)
+                  }, input.seq$seq.num
+    )
+    mat<-t(get_mat_rf_out(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
+  } else {
+    ## making a list with necessary information
+    n.mrk <- length(input.seq$seq.num) 
+    LOD<-matrix(0, length(input.seq$seq.num), length(input.seq$seq.num))
+    for(i in 1:(length(input.seq$seq.num)-1)){
+      for(j in (i+1):length(input.seq$seq.num)){
+        z<-sort(c(input.seq$seq.num[i],input.seq$seq.num[j]))
+        LOD[j,i]<-LOD[i,j]<-input.seq$twopt$analysis[z[1], z[2]]
+      }
+    }
+    mat<-t(get_mat_rf_in(input.seq, LOD=TRUE,  max.rf = 0.501, min.LOD = -0.1))
+  }
+  
+  dist.LOD <- dist.rf <- vector()
+  for(i in 1:dim(mat)[1]-1){
+    dist.LOD <- c(dist.LOD, mat[i, i+1])
+    dist.rf <- c(dist.rf, round(kosambi(mat[i+1, i]),2))
+  }
+  
+  idx <- which(dist.rf > max.gap)
+  rm.seq <- vector()
+  for(i in 1:length(idx)){
+    if(idx[i] == 1){
+      rm.seq <- c(rm.seq, 1)
+    } else if(idx[i] == length(dist.rf) -1){
+      rm.seq <- c(rm.seq, idx[i] + 1)
+      if(idx[i-1] == idx[i] -1)
+        rm.seq <- c(rm.seq, idx[i])
+    } else if(i-1 != 0){
+      if(idx[i-1] == idx[i] -1) {
+        rm.seq <- c(rm.seq, idx[i])
+      }
+    }
+  }
+  
+  new.seq <- make_seq(input.seq$twopt, input.seq$seq.num[-rm.seq])
+  return(new.seq)
+}
+
+
+##' Filter markers according with a two-points recombination fraction and LOD threshold. Adapted from MAPpoly.
+##'
+##' @param input.seq an object of class \code{onemap}.
+#' @param thresh.LOD.rf LOD score threshold for recombination fraction (default = 5)
+#' @param thresh.rf threshold for recombination fractions (default = 0.15)
+#' @param probs indicates the probability corresponding to the filtering quantiles. (default = c(0.05, 1))
+##'
+##' @return An object of class \code{sequence}, which is a list containing the
+##' following components: \item{seq.num}{a \code{vector} containing the
+##' (ordered) indices of markers in the sequence, according to the input file.}
+##' \item{seq.phases}{a \code{vector} with the linkage phases between markers
+##' in the sequence, in corresponding positions. \code{-1} means that there are
+##' no defined linkage phases.} \item{seq.rf}{a \code{vector} with the
+##' recombination frequencies between markers in the sequence. \code{-1} means
+##' that there are no estimated recombination frequencies.}
+##' \item{seq.like}{log-likelihood of the corresponding linkage map.}
+##' \item{data.name}{object of class \code{onemap} with the raw
+##' data.} \item{twopt}{object of class \code{rf_2pts} with the
+##' 2-point analyses.}
+##'
+##' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
+##' @examples
+##'
+##'  data("vcf_example_out")
+##'  twopts <- rf_2pts(vcf_example_out)
+##'  seq1 <- make_seq(twopts, which(vcf_example_out$CHROM == "1"))
+##' filt_seq <- rf_snp_filter_onemap(seq1, 20, 0.5, c(0.5,1))
+##'
+##'@export
+rf_snp_filter_onemap <- function(input.seq, thresh.LOD.rf = 5, thresh.rf = 0.15, probs = c(0.05,1)){
+  if(inherits(input.seq$data.name, "outcross") | inherits(input.seq$data.name, "f2")){
+    rf.mat <- get_mat_rf_out(input.seq, LOD = T)
+  } else {
+    rf.mat <- get_mat_rf_in(input.seq, LOD = T)
+  }
+  rf.mat[lower.tri(rf.mat)][rf.mat[lower.tri(rf.mat)]  <= thresh.LOD.rf] <- NA
+  rf.mat[upper.tri(rf.mat)][rf.mat[upper.tri(rf.mat)]  >= thresh.rf] <- NA
+  x <- apply(rf.mat, 1, function(x) sum(!is.na(x)))
+  th <- quantile(x, probs = probs)
+  rem <- c(which(x < th[1]), which(x > th[2]))
+  ids <- names(which(x >= th[1] & x <= th[2]))
+  new.seq <- make_seq(input.seq$twopt, match(ids, colnames(input.seq$data.name$geno)))
+  return(new.seq)
+}
+
+##'   Creates a new sequence by adding markers.
+##'
+##'   Creates a new sequence by adding markers from a predetermined
+##'   one. The markers are added in the end of the sequence.
+##'
+##' @param input.seq an object of class \code{sequence}.
+##'
+##' @param mrks a vector containing the markers to be added from the
+##'     \code{sequence}.
+##'
+##' @return An object of class \code{sequence}, which is a list
+##'     containing the following components:
+##'
+##' \item{seq.num}{a \code{vector} containing the (ordered) indices of
+##'     markers in the sequence, according to the input file.}
+##'
+##' \item{seq.phases}{a \code{vector} with the linkage phases between
+##'     markers in the sequence, in corresponding positions. \code{-1}
+##'     means that there are no defined linkage phases.}
+##'
+##' \item{seq.rf}{a \code{vector} with the recombination fractions
+##'     between markers in the sequence. \code{-1} means that there
+##'     are no estimated recombination fractions.}
+##'
+##' \item{seq.like}{log-likelihood of the corresponding linkage map.}
+##'     \item{data.name}{name of the object of class \code{onemap}
+##'     with the raw data.}
+##'
+##' \item{twopt}{name of the object of class \code{rf_2pts} with the
+##'     2-point analyses.}
+##'
+##'  @author Marcelo Mollinari, \email{mmollina@@usp.br}
+##'
+##' @seealso \code{\link[onemap]{drop_marker}}
+##'
+##' @examples
+##' data(onemap_example_out)
+##' twopt <- rf_2pts(onemap_example_out)
+##' all_mark <- make_seq(twopt,"all")
+##' groups <- group(all_mark)
+##' (LG1 <- make_seq(groups,1))
+##' (LG.aug<-add_marker(LG1, c(4,7)))
+##'
+##' @export
+add_marker<-function(input.seq, mrks)
+{
+  if (!inherits(input.seq,"sequence"))
+    stop(sQuote(deparse(substitute(input.seq))), " is not an object of class 'sequence'")
+  seq.num<-c(input.seq$seq.num,mrks)
+  return(make_seq(input.seq$twopt,seq.num, twopt=input.seq$twopt))
+}

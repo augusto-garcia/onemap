@@ -9,14 +9,12 @@
 # copyright (c) 2009, Gabriel R A Margarido                           #
 #                                                                     #
 # First version: 02/27/2009                                           #
-# Last update: 02/27/2009                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
 
 # Function to create diplotypes based on segregation type and linkage phase
-return_geno <-
-function(segr.type, link.phases) {
+return_geno <- function(segr.type, link.phases) {
   switch(EXPR=segr.type,
          'A.1' = {
            switch(EXPR=link.phases,

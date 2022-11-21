@@ -8,12 +8,11 @@
 # Written Marcelo Mollinari                                           #
 #                                                                     #
 # First version: 02/27/2009                                           #
-# Last update: 02/27/2009                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
 
-#N! combination
+# N! combination
 perm_tot <- function(v){
   n <- length(v)
   result <- v 
@@ -32,7 +31,7 @@ perm_tot <- function(v){
   return(result) 
 }
 
-#N!/2 combination
+# N!/2 combination
 perm_pars <- function(v){
   n <- length(v)
   result <- v 

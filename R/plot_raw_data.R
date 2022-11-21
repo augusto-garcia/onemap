@@ -12,7 +12,6 @@
 ## copyright (c) 2015 Antonio Augusto Franco Garcia                    ##
 ##                                                                     ##
 ## First version: 2015/03/31                                           ##
-## Last update: 2017/12/18                                             ##
 ## License: GNU General Public License version 3 or later              ##
 ##                                                                     ##
 #########################################################################
@@ -49,7 +48,7 @@ globalVariables(c("marker", "geno"))
 ##'
 ##' @examples
 ##' 
-##' \dontrun{
+##' \donttest{
 ##' # library(ggplot2)
 ##' data(onemap_example_bc) # Loads a fake backcross dataset installed with onemap
 ##' plot(onemap_example_bc) # This will show you the graph
@@ -57,7 +56,6 @@ globalVariables(c("marker", "geno"))
 ##' # You can store the graphic in an object, then save it with a number of properties
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' g <- plot(onemap_example_bc)
-##' # ggsave("MyRawData_bc.jpg", g, width=7, height=4, dpi=600)
 ##'
 ##' data(onemap_example_f2) # Loads a fake backcross dataset installed with onemap
 ##' plot(onemap_example_f2) # This will show you the graph
@@ -65,7 +63,6 @@ globalVariables(c("marker", "geno"))
 ##' # You can store the graphic in an object, then save it with a number of properties
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' g <- plot(onemap_example_f2)
-##' # ggsave("MyRawData_f2.jpg", g, width=7, height=4, dpi=600)
 ##'
 ##' data(onemap_example_out) # Loads a fake full-sib dataset installed with onemap
 ##' plot(onemap_example_out) # This will show you the graph for all markers
@@ -74,14 +71,13 @@ globalVariables(c("marker", "geno"))
 ##' # You can store the graphic in an object, then save it.
 ##' # For details, see the help of ggplot2's function ggsave()
 ##' g <- plot(onemap_example_out, all=FALSE)
-##' # ggsave("MyRawData_out.jpg", g, width=9, height=4, dpi=600)
 ##'}
 ##'
 ##'@method plot onemap
 ##' @export 
 plot.onemap <- function(x, all=TRUE, ...) {
     # Creating the data frame
-    if (is(x, "outcross")) {
+    if (inherits(x, "outcross")) {
         df.OM <- create_dataframe_for_plot_outcross(x)
         df.OM$geno <- as.numeric(as.character((df.OM$geno)))
 
@@ -182,17 +178,17 @@ plot.onemap <- function(x, all=TRUE, ...) {
         df.OM$geno <- factor(df.OM$geno)
     }
     # Defining the label for genotypes
-    if (is(x, "backcross")) {
+    if (inherits(x, "backcross")) {
         if (suppressWarnings(all(levels(df.OM$geno)==c("0","1","2"))))
             labels.OM <- c("-","AA","AB")
         else if (all(levels(df.OM$geno)==c("1","2")))
             labels.OM <- c("AA","AB")
-    } else if (is(x, "riself") || is(x, "risib")) {
+    } else if (inherits(x, "riself") || inherits(x, "risib")) {
         if (suppressWarnings(all(levels(df.OM$geno)==c("0","1","3"))))
             labels.OM <- c("-","AA","BB")
         else if (all(levels(df.OM$geno)==c("1","3")))
             labels.OM <- c("AA","BB")
-    } else if (is(x, "f2")) {
+    } else if (inherits(x, "f2")) {
         if (suppressWarnings(all(levels(df.OM$geno)==c("0","1","2","3","4","5"))))
             labels.OM <- c("-","AA","AB","BB","not BB","not AA")
         else if (suppressWarnings(all(levels(df.OM$geno)==c("1","2","3","4","5"))))
@@ -220,7 +216,7 @@ plot.onemap <- function(x, all=TRUE, ...) {
     g <- ggplot(data=df.OM, aes(x=ind, y=marker, fill=factor(geno)))
     g <- g + geom_tile()
     g <- g + xlab("Individual") + ylab("Marker")
-    if (is(x, "outcross")) {
+    if (inherits(x, "outcross")) {
       if(length(which(df.OM$geno=="-")) != 0){
         g <- g + scale_fill_manual(name="Genotypes",
                                    values = c("black",'#e31a1c','#1f78b4','#6a3d9a','#33a02c','#ff7f00',
@@ -240,10 +236,10 @@ plot.onemap <- function(x, all=TRUE, ...) {
                   strip.text.y = element_text(angle = 0))
     }
     else {
-        if (is(x, "backcross") || is(x, "riself") || is(x, "risib")) {
+        if (inherits(x, "backcross") || inherits(x, "riself") || inherits(x, "risib")) {
             g <- g + scale_fill_manual(name="Genotype", labels=labels.OM,
                                        values=c("#F21A00","#3B9AB2","#EBCC2A"))
-        } else if (is(x, "f2")) {
+        } else if (inherits(x, "f2")) {
             g <- g + scale_fill_manual(name="Genotype", labels=labels.OM,
                                        values=c("#000000", "#ECCBAE", "#046C9A", "#D69C4E", "#85D4E3", "#74A089"))
         }
@@ -368,6 +364,7 @@ create_dataframe_for_plot_outcross <- function(x) {
 ##' @importFrom reshape2 melt
 ##'
 ##' @examples
+##' \donttest{
 ##' data(onemap_example_out) #Outcrossing data
 ##' plot_by_segreg_type(onemap_example_out)
 ##' plot_by_segreg_type(onemap_example_out, subcateg=FALSE)
@@ -377,12 +374,7 @@ create_dataframe_for_plot_outcross <- function(x) {
 ##'
 ##' data(mapmaker_example_f2)
 ##' plot_by_segreg_type(mapmaker_example_f2)
-##'
-##' # You can store the graphic in an object, then save it.
-##' # For details, see the help of ggplot2's function ggsave()
-##' # data(onemap_example_out) #Outcrossing data
-##' # g <- plot_by_segreg_type(onemap_example_out)
-##' # ggsave("SegregationTypes.jpg", g, width=7, height=4, dpi=600)
+##' }
 ##'
 ##'@export
 plot_by_segreg_type <- function(x, subcateg=TRUE) {

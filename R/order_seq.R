@@ -10,7 +10,6 @@
 # copyright (c) 2009, Gabriel R A Margarido & Marcelo Mollinari       #
 #                                                                     #
 # First version: 02/27/2009                                           #
-# Last update: 08/09/2017                                             #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -86,6 +85,9 @@
 ##' @param rm_unlinked When some pair of markers do not follow the linkage criteria, 
 ##' if \code{TRUE} one of the markers is removed and returns a vector with remaining 
 ##' marker numbers (useful for mds_onemap and map_avoid_unlinked functions).
+##' @param verbose A logical, if TRUE its output progress status
+##' information.
+##' 
 ##' @return An object of class \code{order}, which is a list containing the
 ##' following components: \item{ord}{an object of class \code{sequence}
 ##' containing the "safe" order.} \item{mrk.unpos}{a \code{vector} with
@@ -97,6 +99,7 @@
 ##' \item{data.name}{name of the object of class \code{onemap} with the raw
 ##' data.} \item{twopt}{name of the object of class \code{rf_2pts} with the
 ##' 2-point analyses.}
+##' 
 ##' @author Gabriel R A Margarido, \email{gramarga@@usp.br} and Marcelo
 ##' Mollinari, \email{mmollina@@gmail.com}
 ##' @seealso \code{\link[onemap]{make_seq}}, \code{\link[onemap]{compare}} and
@@ -130,7 +133,7 @@
 ##' @keywords utilities
 ##' @examples
 ##'
-##' \dontrun{
+##' \donttest{
 ##'   #outcross example
 ##'   data(onemap_example_out)
 ##'   twopt <- rf_2pts(onemap_example_out)
@@ -142,24 +145,6 @@
 ##'   make_seq(LG2.ord) # get safe sequence
 ##'   make_seq(LG2.ord,"force") # get forced sequence
 ##'
-##'   #F2 example
-##'   data(onemap_example_f2)
-##'   twopt <- rf_2pts(onemap_example_f2)
-##'   all_mark <- make_seq(twopt,"all")
-##'   groups <- group(all_mark)
-##'   LG3 <- make_seq(groups,3)
-##'   LG3.ord <- order_seq(LG3, subset.search = "twopt", twopt.alg = "rcd", touchdown=TRUE)
-##'   LG3.ord
-##'   make_seq(LG3.ord) # get safe sequence
-##'   ord.1<-make_seq(LG3.ord,"force") # get forced sequence
-##'
-##'   LG3.ord.s <- order_seq(LG3, subset.search = "sample", touchdown=TRUE)
-##'   LG3.ord.s
-##'   make_seq(LG3.ord) # get safe sequence
-##'   ord.2<-make_seq(LG3.ord,"force") # get forced sequence
-##'
-##'   rbind(ord.1$seq.num, ord.2$seq.num) # probably, the same order for
-##'   this dataset
 ##' }
 ##'@export
 order_seq <- function(input.seq, 
@@ -171,10 +156,11 @@ order_seq <- function(input.seq,
                       THRES=3, 
                       touchdown=FALSE, 
                       tol=10E-2, 
-                      rm_unlinked = FALSE) {
+                      rm_unlinked = FALSE, 
+                      verbose = FALSE) {
   
   ## checking for correct objects
-  if(!is(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+  if(!inherits(input.seq,"sequence")) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
   if(n.init < 2) stop("'n.init' must be greater than or equal to 2")
   if(!is.logical(touchdown)) stop("'touchdown' must be logical")
   if(!touchdown && THRES <= 10E-10) stop("Threshold must be greater than 0 if 'touchdown' is FALSE")
@@ -182,14 +168,12 @@ order_seq <- function(input.seq,
   
   if(length(input.seq$seq.num) <= n.init) {
     ## in this case, only the 'compare' function is used
-    cat("   Length of sequence ",deparse(substitute(input.seq))," is less than n.init \n   Returning the best order using compare function:\n")
+    if(verbose) cat("   Length of sequence ",deparse(substitute(input.seq))," is less than n.init \n   Returning the best order using compare function:\n")
     ifelse(length(input.seq$seq.num) == 2, seq.ord <- map(input.seq,tol=10E-5, rm_unlinked = rm_unlinked), seq.ord <- make_seq(compare(input.seq=input.seq,tol=10E-5),1))
     seq.ord<-map(seq.ord, tol=10E-5, rm_unlinked = rm_unlinked)
     structure(list(ord=seq.ord, mrk.unpos=NULL, LOD.unpos=NULL, THRES=THRES,
                    ord.all=seq.ord, data.name=input.seq$data.name, probs = seq.ord$probs, twopt=input.seq$twopt), class = "order")
-  }
-  else
-  {
+  } else  {
     ## here, the complete algorithm will be applied
     cross.type <- class(input.seq$data.name)[2]
     if(cross.type == "f2") FLAG <- "f2"
@@ -202,7 +186,7 @@ order_seq <- function(input.seq,
     if(FLAG == "bc"){
       subset.search <- match.arg(subset.search)
       if(subset.search == "twopt"){
-        cat("\nCross type: ", cross.type, "\nChoosing initial subset using 'two-point' approach\n")
+        if(verbose) cat("\nCross type: ", cross.type, "\nChoosing initial subset using 'two-point' approach\n")
         twopt.alg <- match.arg(twopt.alg)
         tpt.type <- switch(EXPR=twopt.alg,
                            'rec'={
@@ -233,7 +217,7 @@ order_seq <- function(input.seq,
         else stop("Invalid cross type\n")
       }
       else if(subset.search=="sample"){
-        cat("\nCross type: ", cross.type, "\nChoosing initial subset using the 'sample' approach\n")
+        if(verbose) cat("\nCross type: ", cross.type, "\nChoosing initial subset using the 'sample' approach\n")
         LOD.test <- i <- 0
         while(abs(LOD.test) < abs(subset.THRES) && i < subset.n.try){
           smp.seq <- make_seq(input.seq$twopt, sample(input.seq$seq.num, size=n.init), twopt=input.seq$twopt)
@@ -257,7 +241,7 @@ order_seq <- function(input.seq,
       ## else stop("Invalid subset search\n")
     }
     else if(FLAG == "outcross" || FLAG == "f2") {
-      cat(paste("\nCross type:", FLAG, "\nUsing segregation types of the markers to choose initial subset\n"))
+      if(verbose) cat(paste("\nCross type:", FLAG, "\nUsing segregation types of the markers to choose initial subset\n"))
       segregation.types <- input.seq$data.name$segr.type.num[input.seq$seq.num]
       if(sum(segregation.types == 7) > sum(segregation.types == 6)) segregation.types[segregation.types == 6] <- 8 ## if there are more markers of type D2 than D1, try to map those first
       seq.work <- order(segregation.types)
@@ -269,9 +253,9 @@ order_seq <- function(input.seq,
     
     ## 'try' to map remaining markers
     input.seq2 <- make_seq(seq.ord,1)
-    cat ("\n\nRunning try algorithm\n")
+    if(verbose) cat ("\n\nRunning try algorithm\n")
     for (i in (n.init+1):length(input.seq$seq.num)){
-      seq.ord <- try_seq(input.seq2,input.seq$seq.num[seq.work[i]],tol=tol)
+      seq.ord <- try_seq(input.seq2,input.seq$seq.num[seq.work[i]],tol=tol, verbose = verbose)
       if(all(seq.ord$LOD[-which(seq.ord$LOD==max(seq.ord$LOD))[1]] < -THRES))
         input.seq2 <- make_seq(seq.ord,which.max(seq.ord$LOD))
     }
@@ -279,31 +263,34 @@ order_seq <- function(input.seq,
     ## markers that do not meet the threshold remain unpositioned
     mrk.unpos <- input.seq$seq.num[which(is.na(match(input.seq$seq.num, input.seq2$seq.num)))]
     LOD.unpos <- NULL
-    cat("\nLOD threshold =",THRES,"\n\nPositioned markers:", input.seq2$seq.num, "\n\n")
-    cat("Markers not placed on the map:", mrk.unpos, "\n")
-    
+    if(verbose) {
+      cat("\nLOD threshold =",THRES,"\n\nPositioned markers:", input.seq2$seq.num, "\n\n")
+      cat("Markers not placed on the map:", mrk.unpos, "\n")
+    }
     if(touchdown && length(mrk.unpos) > 0) {
       ## here, a second round of the 'try' algorithm is performed, if requested
-      cat("\n\n\nTrying to map remaining markers with LOD threshold ",THRES-1,"\n")
+      if(verbose) cat("\n\n\nTrying to map remaining markers with LOD threshold ",THRES-1,"\n")
       for (i in mrk.unpos) {
-        seq.ord <- try_seq(input.seq2,i,tol=tol)
+        seq.ord <- try_seq(input.seq2,i,tol=tol, verbose = verbose)
         if(all(seq.ord$LOD[-which(seq.ord$LOD==max(seq.ord$LOD))[1]] < (-THRES+1)))
           input.seq2 <- make_seq(seq.ord,which.max(seq.ord$LOD))
       }
       
       ## markers that do not meet this second threshold still remain unpositioned
       mrk.unpos <- input.seq$seq.num[which(is.na(match(input.seq$seq.num, input.seq2$seq.num)))]
-      cat("\nLOD threshold =",THRES-1,"\n\nPositioned markers:", input.seq2$seq.num, "\n\n")
-      cat("Markers not placed on the map:", mrk.unpos, "\n")
+      if(verbose){
+        cat("\nLOD threshold =",THRES-1,"\n\nPositioned markers:", input.seq2$seq.num, "\n\n")
+        cat("Markers not placed on the map:", mrk.unpos, "\n")
+      }
     }
     
     if(length(mrk.unpos) > 0) {
       ## LOD-Scores are calculated for each position, for each unmapped marker, if any
       LOD.unpos <- matrix(NA,length(mrk.unpos),(length(input.seq2$seq.num)+1))
       j <- 1
-      cat("\n\nCalculating LOD-Scores\n")
+      if(verbose) cat("\n\nCalculating LOD-Scores\n")
       for (i in mrk.unpos){
-        LOD.unpos[j,] <- try_seq(input.seq=input.seq2,mrk=i,tol=tol)$LOD
+        LOD.unpos[j,] <- try_seq(input.seq=input.seq2,mrk=i,tol=tol, verbose = verbose)$LOD
         j <- j+1
       }
     }
@@ -312,17 +299,17 @@ order_seq <- function(input.seq,
     ## to end the algorithm, possibly remaining markers are 'forced' into the map
     input.seq3 <- input.seq2
     if(!is.null(mrk.unpos)) {
-      cat("\n\nPlacing remaining marker(s) at most likely position\n")
+      if(verbose) cat("\n\nPlacing remaining marker(s) at most likely position\n")
       
       ## these markers are added from the least to the most doubtful
       which.order <- order(apply(LOD.unpos,1,function(x) max(x[-which(x==0)[1]])))
       
       for (i in mrk.unpos[which.order]) {
-        seq.ord <- try_seq(input.seq3,i,tol)
+        seq.ord <- try_seq(input.seq3,i,tol, verbose = verbose)
         input.seq3 <- make_seq(seq.ord,which(seq.ord$LOD==0)[sample(sum(seq.ord$LOD==0))[1]])
       }
     }
-    cat("\nEstimating final genetic map using tol = 10E-5.\n\n")
+    if(verbose) cat("\nEstimating final genetic map using tol = 10E-5.\n\n")
     input.seq2<-map(input.seq2, tol=10E-5, rm_unlinked=rm_unlinked)
     input.seq3<-map(input.seq3, tol=10E-5, rm_unlinked=rm_unlinked)
     structure(list(ord=input.seq2, mrk.unpos=mrk.unpos, LOD.unpos=LOD.unpos, THRES=THRES,
@@ -331,7 +318,15 @@ order_seq <- function(input.seq,
   }
 }
 
+##'Print order_seq object
+##'
+##'@param x object of class order_seq
+##'@param ... currently ignored
+##'
+##'@return printed information about order_seq object
 ##'@export
+##'
+##'
 ##'@method print order
 print.order <- function(x,...) {
   cat("\nBest sequence found.")
@@ -389,17 +384,5 @@ print.order <- function(x,...) {
 
 draw_order<-function(map.input){
   .Defunct(msg = "Defunct since version 2.0.9")
-  layout(matrix(c(1,2),2,1), heights = c(.8,2.5))
-  op<-par(mar=c(6,5,4,2), cex=.75, xpd=TRUE)
-  new.dist<-cumsum(c(0, kosambi(map.input$seq.rf)))
-  new.dist.len<-length(new.dist)
-  plot(x=new.dist, rep(1,new.dist.len), xlab="", ylab="", axes=FALSE, type="n", main="Final Genetic Map")
-  text(new.dist, y=rep(1,length(new.dist)), labels=map.input$seq.num, cex=.7)
-  axis(1, at=round(new.dist,1), lwd.ticks = .75, cex.axis=.7, las=2)
-  text(x=new.dist[1]-(max(new.dist)/40), y=1 ,"Markers",  adj=c(1,0.5))
-  text(x=new.dist[1]-(max(new.dist)/40), y=0 ,"Distance",  adj=c(1,0.2))
-  par(op)
-  rf_graph_table(map.input, inter=FALSE, main="")
-  title(main = "LOD (above diag.) and Recombination Fraction Matrix", cex.main=.9, line=15.4)
 }
 ## end of file
