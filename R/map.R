@@ -481,24 +481,24 @@ map_avoid_unlinked <- function(input.seq,
     input.seq <- create_probs(input.seq, global_error = 10^(-5))
   } 
   
-  map_df <- map_overlapping_batches(input.seq, rm_unlinked = T, 
-                                    size = size, 
-                                    overlap = overlap, 
-                                    tol=tol, 
-                                    phase_cores = phase_cores,
-                                    parallelization.type = parallelization.type,
-                                    max.gap = max.gap)
+  map_df <- map_save_ram(input.seq, rm_unlinked = T, 
+                         size = size, 
+                         overlap = overlap, 
+                         tol=tol, 
+                         phase_cores = phase_cores,
+                         parallelization.type = parallelization.type,
+                         max.gap = max.gap)
   
   while(inherits(map_df, "integer")){
     seq_true <- make_seq(input.seq$twopt, map_df)
-    map_df <- map_overlapping_batches(input.seq = seq_true, 
-                                      rm_unlinked = T, 
-                                      tol=tol, 
-                                      size = size, 
-                                      overlap = overlap, 
-                                      phase_cores = phase_cores,
-                                      parallelization.type = parallelization.type,
-                                      max.gap = max.gap)
+    map_df <- map_save_ram(input.seq = seq_true, 
+                           rm_unlinked = T, 
+                           tol=tol, 
+                           size = size, 
+                           overlap = overlap, 
+                           phase_cores = phase_cores,
+                           parallelization.type = parallelization.type,
+                           max.gap = max.gap)
   }
   return(map_df)
 }
