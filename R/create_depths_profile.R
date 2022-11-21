@@ -136,6 +136,8 @@ create_depths_profile <- function(onemap.obj = NULL,
   p.gt <- data.frame(mks = MKS, gts[,idx.parents], stringsAsFactors = F)
   colnames(p.gt) <- c("mks", colnames(gts)[idx.parents])
   p.gt <- gather(p.gt, "ind", "gt.vcf", -"mks")
+  if(all(is.na(match(parents$mks, p.gt$mks))))
+    parents$mks <- vcfR.object@fix[,3][match(parents$mks, paste0(vcfR.object@fix[,1], "_", vcfR.object@fix[,2]))]
   parents <- merge(parents, p.gt)
   
   if(inherits(onemap.obj, c("outcross", "f2"))){
