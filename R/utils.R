@@ -596,3 +596,31 @@ add_marker<-function(input.seq, mrks)
   seq.num<-c(input.seq$seq.num,mrks)
   return(make_seq(input.seq$twopt,seq.num, twopt=input.seq$twopt))
 }
+
+
+##' Keep in the onemap and twopts object only markers in the sequences
+##' 
+##' @param list.sequences a list of objects 'sequence'
+##' 
+##' @return a list of objects 'sequences' with internal onemap and twopts objects reduced
+##' 
+##' @author Cristiane Taniguti
+##' 
+##' @export
+keep_only_selected_mks <- function(list.sequences= NULL){
+  if(!inherits(list.sequences, "list")) stop("Object is not a list")
+  if(!all(sapply(list.sequences, function(x) inherits(x, "sequence")))) stop("One or more of the list components is/are not of class sequence")
+  mk.numbers <- sapply(list.sequences, function(x) x$seq.num)
+  mk.names <- sapply(list.sequences, function(x) colnames(x$data.name$geno)[x$seq.num])
+  mk.numbers <- unlist(mk.numbers)
+  
+  new_onemap <- split_onemap(list.sequences[[1]]$data.name, unique(mk.numbers))
+  new_twopts <- rf_2pts(new_onemap)
+  
+  new_seqs <- list()
+  for(i in 1:length(mk.names)){
+    new_seqs[[i]] <- make_seq(new_twopts, match(mk.names[[i]], colnames(new_twopts$data.name$geno)))
+  }
+  return(new_seqs)
+}
+
