@@ -35,7 +35,7 @@ draw_map2(
 
 \item{main}{an overall title for the plot. Default is \code{NULL}.}
 
-\item{group.names}{name(s) to identfy the group(s). If \code{NULL} (default), the name(s) of the sequence(s) will be used.}
+\item{group.names}{name(s) to identify the group(s). If \code{NULL} (default), the name(s) of the sequence(s) will be used.}
 
 \item{centered}{logical. If \code{TRUE}, the group(s) will be aligned in the center. If \code{FALSE} (default), the group(s) will be aligned at the top.}
 

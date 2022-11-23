@@ -14,7 +14,7 @@ create_probs(
 \arguments{
 \item{input.obj}{object of class onemap or onemap sequence}
 
-\item{global_error}{a integer specifing the global error value}
+\item{global_error}{a integer specifying the global error value}
 
 \item{genotypes_errors}{a matrix with dimensions (number of individuals) x (number of markers) with genotypes errors values}
 

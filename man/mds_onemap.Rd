@@ -2,7 +2,7 @@
 % Please edit documentation in R/mds_onemap.R
 \name{mds_onemap}
 \alias{mds_onemap}
-\title{OneMap interface with MDSMap package with possibilitie of multipoint distances estimation}
+\title{OneMap interface with MDSMap package with option for multipoint distances estimation}
 \usage{
 mds_onemap(
   input.seq,

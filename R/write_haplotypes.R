@@ -254,7 +254,7 @@ progeny_haplotypes <- function(...,
 ##' specially if the genetic map have low resolution. 
 ##' 
 ##' @param x object of class onemap_progeny_haplotypes
-##' @param col Color of parentes' homologous.
+##' @param col Color of parents' homologous.
 ##' @param position "split" or "stack"; if "split" (default) the alleles' are plotted separately. if "stack" the parents' alleles are plotted together.
 ##' @param show_markers logical; if  \code{TRUE}, the markers (default) are plotted.
 ##' @param main An overall title for the plot; default is \code{NULL}.

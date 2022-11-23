@@ -35,7 +35,7 @@ create_depths_profile(
 
 \item{vcf.par}{the vcf parameter that store the allele depth information.}
 
-\item{recovering}{logical. If TRUE, all markers in vcf are considere, if FALSE only those in onemap.obj}
+\item{recovering}{logical. If TRUE, all markers in vcf are consider, if FALSE only those in onemap.obj}
 
 \item{mks}{a vector of characters specifying the markers names to be considered or NULL to consider all markers}
 

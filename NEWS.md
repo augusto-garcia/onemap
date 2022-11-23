@@ -2,7 +2,7 @@
 
 * Organizing the files in directories to allow installation from github 
 * Moving functions descriptions for roxygen style
-* Solving conflit of version 2.0.4 with 2.0.5 (the one in CRAN)
+* Solving conflict of version 2.0.4 with 2.0.5 (the one in CRAN)
 * Replacing old vignettes in pdf with new ones using RMarkdown
 * Adding functions to plot raw data
 * Adding functions to draw graphics showing marker categories
@@ -159,3 +159,4 @@
 # onemap 2.8.2
 
 * Replacing is by inherits to fix issues in R dev versions
+

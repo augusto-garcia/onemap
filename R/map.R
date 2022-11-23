@@ -369,7 +369,8 @@ map_save_ram <- function(input.seq,
   input.seq.tot <- input.seq
   input.seq_ram <- input.seq
   if(length(input.seq$seq.num) < input.seq.tot$data.name$n.mar){
-    split.twopts <- split_2pts(twopts.obj = input.seq$twopt, mks = input.seq$seq.num) 
+    temp_obj <- split_onemap(input.seq$data.name, input.seq$seq.num)
+    split.twopts <- rf_2pts(temp_obj, verbose = FALSE) 
     input.seq_ram <- make_seq(split.twopts, "all")
   }
   if(phase_cores == 1){

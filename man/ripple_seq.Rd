@@ -17,7 +17,7 @@ predefined order.}
 \item{ext.w}{an integer specifying how many markers should be
 considered in the vicinity of the permuted window. If
 \code{ext.w=NULL} all markers in the sequence are
-considered. In this veriosn, it is used only in backcross,
+considered. In this version, it is used only in backcross,
 \eqn{F_2}{F_2} or RIL crosses.}
 
 \item{LOD}{threshold for the LOD-Score, so that alternative orders

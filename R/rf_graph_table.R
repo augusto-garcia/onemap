@@ -58,12 +58,12 @@ globalVariables(c("LOD.CR", "LOD.RC", "LOD.RR"))
 ##' @param main character. The title of the plot.
 ##' @param inter logical. If \code{TRUE}, an interactive HTML graphic is plotted.
 ##' Otherwise, a default graphic device is used.
-##' @param html.file character naming the html file with iterative graphic.
+##' @param html.file character naming the html file with interative graphic.
 ##' @param mrk.axis character, "names" to display marker names in the axis, "numbers" to display
 ##' marker numbers and "none" to display axis free of labels.
 ##' @param lab.xy character vector with length 2, first component is the label of x axis and second of the y axis.
 ##' @param n.colors integer. Number of colors in the pallete.
-##' @param display logical. If inter \code{TRUE} and display \code{TRUE} iteractive graphic is plotted in browser automatically when run the function
+##' @param display logical. If inter \code{TRUE} and display \code{TRUE} interactive graphic is plotted in browser automatically when run the function
 ##' 
 ##' @return a ggplot graphic
 ##' 
@@ -323,7 +323,7 @@ rf_graph_table <- function(input.seq,
   ## Interactive    
   if(inter){
     if(is.null(html.file)){
-      stop("For iteractive mode you must define a name for the outputted html file in 'html.file' argument.")
+      stop("For interactive mode you must define a name for the outputted html file in 'html.file' argument.")
     }else{
       p <- ggplotly(p)
       

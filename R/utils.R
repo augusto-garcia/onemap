@@ -115,7 +115,7 @@ split_2pts <- function(twopts.obj, mks){
 #'Remove individuals from the onemap object
 #'
 #'@param onemap.obj object of class onemap
-#'@param rm.ind vector of charaters with individuals names
+#'@param rm.ind vector of characters with individuals names
 #'
 ##' @return An object of class \code{onemap} without the selected individuals, 
 ##' i.e., a list with the following

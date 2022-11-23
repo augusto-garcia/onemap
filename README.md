@@ -104,3 +104,6 @@ that will guide you through other chapters.
 
 4. [How to build a linkage map for outcrossing populations](https://statgen-esalq.github.io/tutorials/onemap/Outcrossing_Populations.html)
 
+
+
+

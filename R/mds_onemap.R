@@ -14,7 +14,7 @@
 #######################################################################
 
 
-#' OneMap interface with MDSMap package with possibilitie of multipoint distances estimation
+#' OneMap interface with MDSMap package with option for multipoint distances estimation
 #'
 #' For a given sequence of markers, apply mds method described in Preedy and Hackett (2016)
 #' using MDSMap package to ordering markers and estimates the genetic distances with OneMap

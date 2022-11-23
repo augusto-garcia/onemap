@@ -17,7 +17,7 @@
 \arguments{
 \item{x}{object of class onemap_progeny_haplotypes}
 
-\item{col}{Color of parentes' homologous.}
+\item{col}{Color of parents' homologous.}
 
 \item{position}{"split" or "stack"; if "split" (default) the alleles' are plotted separately. if "stack" the parents' alleles are plotted together.}
 
