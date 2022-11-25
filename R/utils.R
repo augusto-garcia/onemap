@@ -495,7 +495,8 @@ filter_2pts_gaps <- function(input.seq, max.gap=10){
     }
   }
   
-  new.seq <- make_seq(input.seq$twopt, input.seq$seq.num[-rm.seq])
+  if(length(rm.seq) > 0) new.seq <- make_seq(input.seq$twopt, input.seq$seq.num[-rm.seq]) else new.seq <- input.seq
+  
   return(new.seq)
 }
 
@@ -615,7 +616,7 @@ keep_only_selected_mks <- function(list.sequences= NULL){
   mk.numbers <- unlist(mk.numbers)
   
   new_onemap <- split_onemap(list.sequences[[1]]$data.name, unique(mk.numbers))
-  new_twopts <- rf_2pts(new_onemap)
+  new_twopts <- rf_2pts(new_onemap, verbose = FALSE)
   
   new_seqs <- list()
   for(i in 1:length(mk.names)){
