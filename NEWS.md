@@ -170,5 +170,5 @@ Taniguti, C. H., Taniguti, L. M., Amadeu, R. R., Mollinari, M., Da, G., Pereira,
 * Optimization of find_bins and map_avoid_unlinked
 * New function to save RAM memory after filters: keep_only_selected_mks
 * Review spell_check
-* Avoid -Inf likelihood result increasing the tolerance value
+* Avoid -Inf likelihood result by increasing the tolerance value
 * Fix bug in mds_onemap
