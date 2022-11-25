@@ -104,7 +104,7 @@ that will guide you through other chapters.
 
 4. [How to build a linkage map for outcrossing populations](https://statgen-esalq.github.io/tutorials/onemap/Outcrossing_Populations.html)
 
-5. [A guide to build high-density linkage maps](https://cristianetaniguti.github.io/Tutorials/onemap/High_density_maps.html)
+5. [A guide to build high-density linkage maps](https://cristianetaniguti.github.io/Tutorials/onemap/Quick_HighDens/High_density_maps.html)
 
 # How to cite
 
