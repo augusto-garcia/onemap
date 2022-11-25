@@ -28,7 +28,7 @@ displays the recombination fraction heatmap.}
 \item{inter}{logical. If \code{TRUE}, an interactive HTML graphic is plotted.
 Otherwise, a default graphic device is used.}
 
-\item{html.file}{character naming the html file with iterative graphic.}
+\item{html.file}{character naming the html file with interative graphic.}
 
 \item{mrk.axis}{character, "names" to display marker names in the axis, "numbers" to display
 marker numbers and "none" to display axis free of labels.}
@@ -37,7 +37,7 @@ marker numbers and "none" to display axis free of labels.}
 
 \item{n.colors}{integer. Number of colors in the pallete.}
 
-\item{display}{logical. If inter \code{TRUE} and display \code{TRUE} iteractive graphic is plotted in browser automatically when run the function}
+\item{display}{logical. If inter \code{TRUE} and display \code{TRUE} interactive graphic is plotted in browser automatically when run the function}
 }
 \value{
 a ggplot graphic

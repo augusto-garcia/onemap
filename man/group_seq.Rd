@@ -27,7 +27,7 @@ parameter. Using the string "all", all remaining markers of
 the \code{rf_2pts} object will be tested.}
 
 \item{repeated}{logical. If \code{TRUE}, markers grouped in more than
-one of the sequences are keeped in the output sequences. If \code{FALSE},
+one of the sequences are kept in the output sequences. If \code{FALSE},
 they are removed of the output sequences.}
 
 \item{LOD}{a (positive) real number used as minimum LOD score

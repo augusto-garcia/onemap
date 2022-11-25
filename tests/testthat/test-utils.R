@@ -2,7 +2,7 @@ context("Utils functions")
 
 
 test_that("Combine and split datasets", {
-  check_combine <- function(data1, data2, n.ind, n.mks){
+  check_combine <- function(data1, data2, n.ind, n.mks, n_mk.end){
     
     eval(bquote(data(.(data1))))
     eval(bquote(data(.(data2))))
@@ -30,12 +30,39 @@ test_that("Combine and split datasets", {
     
     eval(bquote(expect_equal(out_2pts$n.mar, get(.(data2))$n.mar)))
     
+    seq1 <- make_seq(out_2pts, c(1:14))
+    seq2 <- make_seq(out_2pts, c(14:23))
+    list.sequences <- list(seq1, seq2)
+
+    new.seqs <- keep_only_selected_mks(list.sequences)
+    n_mk <- dim(new.seqs[[1]]$twopt$data.name$geno)[2]
+    
+    eval(bquote(expect_equal(n_mk, .(n_mk.end))))
   }
   
-  check_combine("onemap_example_out", "vcf_example_out", 100, 54)
-  check_combine("onemap_example_f2", "vcf_example_f2", 200, 91)
-  check_combine("onemap_example_bc", "vcf_example_bc", 150, 92)
-  check_combine("onemap_example_riself", "vcf_example_riself", 100, 93)
+  check_combine(data1 = "onemap_example_out", 
+                data2 = "vcf_example_out", 
+                n.ind = 100, 
+                n.mks = 54,
+                n_mk.end = 23)
+  
+  check_combine(data1 = "onemap_example_f2", 
+                data2 = "vcf_example_f2",
+                n.ind =  200, 
+                n.mks = 91, 
+                n_mk.end = 23)
+  
+  check_combine(data1 = "onemap_example_bc", 
+                data2 = "vcf_example_bc", 
+                n.ind = 150, 
+                n.mks = 92, 
+                n_mk.end = 23)
+  
+  check_combine(data1 = "onemap_example_riself", 
+                data2 = "vcf_example_riself", 
+                n.ind = 100, 
+                n.mks = 93, 
+                n_mk.end = 23)
 })
 
 

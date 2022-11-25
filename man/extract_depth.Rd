@@ -19,33 +19,33 @@ extract_depth(
 
 \item{onemap.object}{onemap object output from read_onemap, read_mapmaker or onemap_read_vcf function}
 
-\item{vcf.par}{vcf format field that contain alelle counts informations, the implemented are: AD, DPR, GQ, PL, GL. 
+\item{vcf.par}{vcf format field that contain allele counts informations, the implemented are: AD, DPR, GQ, PL, GL. 
 AD and DPR return a list with allele depth information. GQ returns a matrix with error probability for each genotype. 
 PL return a data.frame with genotypes probabilities for every genotype.}
 
 \item{parent1}{parent 1 identification in vcfR object}
 
-\item{parent2}{parent 2 identification in vcfR objetc}
+\item{parent2}{parent 2 identification in vcfR object}
 
 \item{f1}{if your cross type is f2, you must define the F1 individual}
 
-\item{recovering}{TRUE/FALSE, if TRUE avaliate all markers from vcf file, if FALSE avaliate only markers in onemap object}
+\item{recovering}{TRUE/FALSE, if TRUE evaluate all markers from vcf file, if FALSE evaluate only markers in onemap object}
 }
 \value{
 list containing the following components: \item{palt}{a \code{matrix} with parent 1 and 2 
-alternative alelle counts.} \item{pref}{a \code{matrix} with parent 1 and 2 
-reference alelle counts.} \item{psize}{a \code{matrix} with parent 1 and 2 
-total alelle counts.}\item{oalt}{a \code{matrix} with progeny 
-alternative alelle counts.}\item{oref}{a \code{matrix} with progeny 
-reference alelle counts.}\item{osize}{a \code{matrix} with progeny 
-total alelle counts.}\item{n.mks}{total number of markers.} 
+alternative allele counts.} \item{pref}{a \code{matrix} with parent 1 and 2 
+reference allele counts.} \item{psize}{a \code{matrix} with parent 1 and 2 
+total allele counts.}\item{oalt}{a \code{matrix} with progeny 
+alternative allele counts.}\item{oref}{a \code{matrix} with progeny 
+reference allele counts.}\item{osize}{a \code{matrix} with progeny 
+total allele counts.}\item{n.mks}{total number of markers.} 
 
 \item{n.ind}{total number of individuals in progeny.} \item{inds}{progeny individuals identification.}
-\item{mks}{markers identification.} \item{onemap.object}{same onemap.object inputed}
+\item{mks}{markers identification.} \item{onemap.object}{same onemap.object inputted}
 }
 \description{
 Uses vcfR package and onemap object to generates list of vectors with
-reference alelle count and total counts for each marker and genotypes 
+reference allele count and total counts for each marker and genotypes 
 included in onemap object (only available for biallelic sites)
 }
 \author{

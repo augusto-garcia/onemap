@@ -2,7 +2,7 @@
 
 * Organizing the files in directories to allow installation from github 
 * Moving functions descriptions for roxygen style
-* Solving conflit of version 2.0.4 with 2.0.5 (the one in CRAN)
+* Solving conflict of version 2.0.4 with 2.0.5 (the one in CRAN)
 * Replacing old vignettes in pdf with new ones using RMarkdown
 * Adding functions to plot raw data
 * Adding functions to draw graphics showing marker categories
@@ -159,3 +159,16 @@
 # onemap 2.8.2
 
 * Replacing is by inherits to fix issues in R dev versions
+
+# onemap 3.0.0
+
+* New preprint including OneMap updates: 
+
+Taniguti, C. H., Taniguti, L. M., Amadeu, R. R., Mollinari, M., Da, G., Pereira, S., Riera-Lizarazu, O., Lau, J., Byrne, D., de Siqueira Gesteira, G., De, T., Oliveira, P., Ferreira, G. C., &; Franco Garcia, A. A.  Developing best practices for genotyping-by-sequencing analysis using linkage maps as benchmarks. BioRxiv. https://doi.org/10.1101/2022.11.24.517847
+
+* Functions to filter markers based on two-points estimations: filter_2pts_gaps and rf_snp_filter_onemap
+* Optimization of find_bins and map_avoid_unlinked
+* New function to save RAM memory after filters: keep_only_selected_mks
+* Review spell_check
+* Avoid -Inf likelihood result by increasing the tolerance value
+* Fix bug in mds_onemap

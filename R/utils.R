@@ -115,7 +115,7 @@ split_2pts <- function(twopts.obj, mks){
 #'Remove individuals from the onemap object
 #'
 #'@param onemap.obj object of class onemap
-#'@param rm.ind vector of charaters with individuals names
+#'@param rm.ind vector of characters with individuals names
 #'
 ##' @return An object of class \code{onemap} without the selected individuals, 
 ##' i.e., a list with the following
@@ -495,7 +495,8 @@ filter_2pts_gaps <- function(input.seq, max.gap=10){
     }
   }
   
-  new.seq <- make_seq(input.seq$twopt, input.seq$seq.num[-rm.seq])
+  if(length(rm.seq) > 0) new.seq <- make_seq(input.seq$twopt, input.seq$seq.num[-rm.seq]) else new.seq <- input.seq
+  
   return(new.seq)
 }
 
@@ -596,3 +597,31 @@ add_marker<-function(input.seq, mrks)
   seq.num<-c(input.seq$seq.num,mrks)
   return(make_seq(input.seq$twopt,seq.num, twopt=input.seq$twopt))
 }
+
+
+##' Keep in the onemap and twopts object only markers in the sequences
+##' 
+##' @param list.sequences a list of objects 'sequence'
+##' 
+##' @return a list of objects 'sequences' with internal onemap and twopts objects reduced
+##' 
+##' @author Cristiane Taniguti
+##' 
+##' @export
+keep_only_selected_mks <- function(list.sequences= NULL){
+  if(!inherits(list.sequences, "list")) stop("Object is not a list")
+  if(!all(sapply(list.sequences, function(x) inherits(x, "sequence")))) stop("One or more of the list components is/are not of class sequence")
+  mk.numbers <- sapply(list.sequences, function(x) x$seq.num)
+  mk.names <- sapply(list.sequences, function(x) colnames(x$data.name$geno)[x$seq.num])
+  mk.numbers <- unlist(mk.numbers)
+  
+  new_onemap <- split_onemap(list.sequences[[1]]$data.name, unique(mk.numbers))
+  new_twopts <- rf_2pts(new_onemap, verbose = FALSE)
+  
+  new_seqs <- list()
+  for(i in 1:length(mk.names)){
+    new_seqs[[i]] <- make_seq(new_twopts, match(mk.names[[i]], colnames(new_twopts$data.name$geno)))
+  }
+  return(new_seqs)
+}
+

@@ -81,7 +81,7 @@ test_that("ordering and HMM parallel", {
     size.map <- cumsum(kosambi(LG.map$seq.rf))
     eval(bquote(expect_equal(size.map[length(size.map)], .(right.size), tolerance = tol.size)))
 
-    LG.map.avoid <- map_avoid_unlinked(make_seq(LG.mds$twopt, LG.mds$seq.num))
+    LG.map.avoid <- map_avoid_unlinked(input.seq = make_seq(LG.mds$twopt, LG.mds$seq.num))
     size.map.avoid <- cumsum(kosambi(LG.map.avoid$seq.rf))
     eval(bquote(expect_equal(size.map.avoid[length(size.map.avoid)], .(right.size), tolerance = tol.size)))
     

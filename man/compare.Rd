@@ -42,7 +42,7 @@ relatively few markers. If markers were genotyped in an outcross population,
 linkage phases need to be estimated and therefore more states need to be
 visited in the Markov chain; when segregation types are D1, D2 and C,
 computation can required a very long time (specially when markers linked in
-repulsion are involved), so we recomend to use this function up to 6 or 7 markers.
+repulsion are involved), so we recommend to use this function up to 6 or 7 markers.
 For inbred-based populations, up to 10 or 11 markers can be ordered with this function,
 since linkage phase are known.
 The multipoint likelihood is calculated according to Wu et al.

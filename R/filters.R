@@ -3,7 +3,7 @@
 ## Package: onemap                                                     ##
 ##                                                                     ##
 ## File: filters.R                                                     ##
-## Contains: filter_missing filter_by_prob                             ##
+## Contains: filter_missing filter_prob                             ##
 ##                                                                     ##
 ## Written by Cristiane Taniguti                                       ##
 ## copyright (c) 2007-9, Cristiane Taniguti                            ##

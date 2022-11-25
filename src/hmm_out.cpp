@@ -41,22 +41,6 @@
 using namespace Rcpp;
 using namespace std;
 
-//' Run HMM chains
-//' 
-//' @param geno_R genotypes
-//' @param error_R genotypes probabilities
-//' @param type_R marker types
-//' @param phase_R phase estimated by 2-pts
-//' @param rf_R recombination fraction
-//' @param verbose_R logical to display or not the procedure
-//' @param tol_R EM algorithm tolerance
-//' 
-//' @return a list containing the re-estimated vector of recombination
-//'      fractions and the logarithm of the likelihood
-//' 
-//' @export
-//' 
-// [[Rcpp::export]]
 RcppExport SEXP est_hmm_out(SEXP geno_R, SEXP error_R, SEXP type_R, SEXP phase_R, SEXP rf_R, SEXP verbose_R, SEXP tol_R){
   Rcpp::NumericMatrix geno = Rcpp::as<Rcpp::NumericMatrix>(geno_R);
   Rcpp::NumericMatrix error = Rcpp::as<Rcpp::NumericMatrix>(error_R);

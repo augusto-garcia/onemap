@@ -3,29 +3,29 @@ globalVariables(c("gt.onemap.alt.ref", "gt.vcf.alt.ref", "parents"))
 #' Extract allele counts of progeny and parents of vcf file
 #' 
 #' Uses vcfR package and onemap object to generates list of vectors with
-#' reference alelle count and total counts for each marker and genotypes 
+#' reference allele count and total counts for each marker and genotypes 
 #' included in onemap object (only available for biallelic sites)
 #' 
 #' @param vcfR.object object output from vcfR package
 #' @param onemap.object onemap object output from read_onemap, read_mapmaker or onemap_read_vcf function
-#' @param vcf.par vcf format field that contain alelle counts informations, the implemented are: AD, DPR, GQ, PL, GL. 
+#' @param vcf.par vcf format field that contain allele counts informations, the implemented are: AD, DPR, GQ, PL, GL. 
 #' AD and DPR return a list with allele depth information. GQ returns a matrix with error probability for each genotype. 
 #' PL return a data.frame with genotypes probabilities for every genotype. 
 #' @param parent1 parent 1 identification in vcfR object
-#' @param parent2 parent 2 identification in vcfR objetc
+#' @param parent2 parent 2 identification in vcfR object
 #' @param f1 if your cross type is f2, you must define the F1 individual
-#' @param recovering TRUE/FALSE, if TRUE avaliate all markers from vcf file, if FALSE avaliate only markers in onemap object
+#' @param recovering TRUE/FALSE, if TRUE evaluate all markers from vcf file, if FALSE evaluate only markers in onemap object
 #' 
 #' @return list containing the following components: \item{palt}{a \code{matrix} with parent 1 and 2 
-#' alternative alelle counts.} \item{pref}{a \code{matrix} with parent 1 and 2 
-#' reference alelle counts.} \item{psize}{a \code{matrix} with parent 1 and 2 
-#' total alelle counts.}\item{oalt}{a \code{matrix} with progeny 
-#' alternative alelle counts.}\item{oref}{a \code{matrix} with progeny 
-#' reference alelle counts.}\item{osize}{a \code{matrix} with progeny 
-#' total alelle counts.}\item{n.mks}{total number of markers.} 
+#' alternative allele counts.} \item{pref}{a \code{matrix} with parent 1 and 2 
+#' reference allele counts.} \item{psize}{a \code{matrix} with parent 1 and 2 
+#' total allele counts.}\item{oalt}{a \code{matrix} with progeny 
+#' alternative allele counts.}\item{oref}{a \code{matrix} with progeny 
+#' reference allele counts.}\item{osize}{a \code{matrix} with progeny 
+#' total allele counts.}\item{n.mks}{total number of markers.} 
 #' 
 #' \item{n.ind}{total number of individuals in progeny.} \item{inds}{progeny individuals identification.}
-#' \item{mks}{markers identification.} \item{onemap.object}{same onemap.object inputed}
+#' \item{mks}{markers identification.} \item{onemap.object}{same onemap.object inputted}
 #' 
 #' @import dplyr
 #' @importFrom vcfR extract.gt masplit

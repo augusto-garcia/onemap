@@ -28,7 +28,7 @@
 ##' error or a error value for each genotype. The OneMap until 2.1 version have only the global error option.
 ##' 
 ##' @param input.obj object of class onemap or onemap sequence
-##' @param global_error a integer specifing the global error value
+##' @param global_error a integer specifying the global error value
 ##' @param genotypes_errors a matrix with dimensions (number of individuals) x (number of markers) with genotypes errors values
 ##' @param genotypes_probs a matrix with dimensions (number of individuals)*(number of markers) x possible genotypes 
 ##' (i.e., a ab ba b) with four columns for f2 and outcrossing populations, and two for backcross and RILs).

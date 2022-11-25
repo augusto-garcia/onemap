@@ -24,7 +24,7 @@ globalVariables(c("gt.onemap", "gt.vcf"))
 #' @param parent1 a character specifying the first parent ID
 #' @param parent2 a character specifying the second parent ID
 #' @param vcf.par the vcf parameter that store the allele depth information. 
-#' @param recovering logical. If TRUE, all markers in vcf are considere, if FALSE only those in onemap.obj
+#' @param recovering logical. If TRUE, all markers in vcf are consider, if FALSE only those in onemap.obj
 #' @param mks a vector of characters specifying the markers names to be considered or NULL to consider all markers
 #' @param inds a vector of characters specifying the individual names to be considered or NULL to consider all individuals
 #' @param GTfrom the graphic should contain the genotypes from onemap.obj or from the vcf? Specify using "onemap", "vcf" or "prob".

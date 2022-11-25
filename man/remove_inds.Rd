@@ -9,7 +9,7 @@ remove_inds(onemap.obj, rm.ind)
 \arguments{
 \item{onemap.obj}{object of class onemap}
 
-\item{rm.ind}{vector of charaters with individuals names}
+\item{rm.ind}{vector of characters with individuals names}
 }
 \value{
 An object of class \code{onemap} without the selected individuals, 

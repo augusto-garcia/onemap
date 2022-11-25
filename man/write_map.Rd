@@ -26,7 +26,7 @@ R/qtl. It is also possible to create an output to be used with
 QTLCartographer program.
 }
 \details{
-This function is avaliable only for backcross, F2 and RILs.
+This function is available only for backcross, F2 and RILs.
 }
 \examples{
 \donttest{

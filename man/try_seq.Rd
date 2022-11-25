@@ -41,7 +41,7 @@ An object of class \code{try}, which is a list containing
 \description{
 For a given linkage map, tries do add an additional unpositioned
 marker.  This function estimates parameters for all possible maps
-including the new marker in all posible positions, while keeping
+including the new marker in all possible positions, while keeping
 the original linkage map unaltered.
 }
 \examples{
