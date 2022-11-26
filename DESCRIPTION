@@ -8,7 +8,6 @@ Description: Analysis of molecular marker data from model (backcrosses,
     phases (genetic map construction) according to Wu et al. (2002)
     <doi:10.1006/tpbi.2002.1577>. All analysis are based on multipoint 
     approaches using hidden Markov models.
-Date: 2022-02-10
 Authors@R: c(person("Gabriel", 
                     "Margarido", 
                     role = "aut",
