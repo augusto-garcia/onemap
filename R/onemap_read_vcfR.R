@@ -124,29 +124,29 @@ onemap_read_vcfR <- function(vcf=NULL,
   # Checking marker segregation according with parents
   P1 <- which(dimnames(vcfR.obj@gt)[[2]]==parent1) -1 
   P2 <- which(dimnames(vcfR.obj@gt)[[2]]==parent2) -1
+  if(length(P1)==0 | length(P2)==0) stop("One or both parents names could not be found in your data")
   
   MKS <- vcfR.obj@fix[,3]
   if (any(MKS == "." | is.na(MKS))) {
     MKS <- paste0(vcfR.obj@fix[,1],"_", vcfR.obj@fix[,2])
     # Add tag if is duplicated positions (split form of mnps)
-    z <- 1
-    for(i in 2:length(MKS)) {
-      if(MKS[i] == paste0(strsplit(MKS[i-1], "_")[[1]][1:2], collapse = "_")) {
-        z <- z + 1
-        MKS[i] <- paste0(MKS[i], "_",z)
-      } 
+    if(any(duplicated(MKS))){
+      z <- 1
+      for(i in 2:length(MKS)) {
+        if(MKS[i] == paste0(strsplit(MKS[i-1], "_")[[1]][1:2], collapse = "_")) {
+          z <- z + 1
+          MKS[i] <- paste0(MKS[i], "_",z)
+        } 
+      }
     }
   }
   
   # Geno matrix
   GT_matrix <- extract.gt(vcfR.obj)
   
-  if(length(P1)==0 | length(P2)==0) stop("One or both parents names could not be found in your data")
-  
   # This function do not consider phased genotypes
   GT_matrix[grep("[.]", GT_matrix)] <- "./."
   GT_matrix[is.na(GT_matrix)] <- "./."
-  GT_names <- names(table(GT_matrix))
   
   phased <- any(grepl("[|]", GT_names))
   if(phased)
@@ -157,7 +157,6 @@ onemap_read_vcfR <- function(vcf=NULL,
   max.alleles <- max(as.numeric(do.call(c, GT_names_up[-1])))
   
   if(phased){
-    
     if(length(grep("[.]", GT_names_up)) > 0){
       idx.mis <- grep("[.]", GT_names_up)
       GT_names_up[[idx.mis]] <- 0 # avoiding warning

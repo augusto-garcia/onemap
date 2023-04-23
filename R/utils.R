@@ -5,7 +5,7 @@
 # File: utils.R                                                       #
 # Contains: acum seq_by_type map_avoid_unlinked split_2pts            #
 # map_save_ram remove_inds sort_by_pos empty_onemap_obj               #
-# try_seq_by_seq add_redundants rm_dupli_mks                          #
+# try_seq_by_seq add_redundants rm_dupli_mks ord_by_geno              #
 #                                                                     #
 # Written by Gabriel Rodrigues Alves Margarido and Cristiane Taniguti #
 # copyright (c) 2007-9, Gabriel R A Margarido                         #
@@ -629,5 +629,23 @@ keep_only_selected_mks <- function(list.sequences= NULL){
     new_seqs[[i]] <- make_seq(new_twopts, match(mk.names[[i]], colnames(new_twopts$data.name$geno)))
   }
   return(new_seqs)
+}
+
+
+#' Order the markers in a sequence using the genomic position
+#' 
+#' @param input.seq object of class `sequence`
+#' 
+#' @return An object of class \code{sequence}
+#' 
+#' @author Cristiane Taniguti
+#' 
+#' @export
+ord_by_geno <- function(input.seq){
+  chrs <- input.seq$data.name$CHROM[input.seq$seq.num]
+  if(length(unique(chrs)) > 1) stop("Markers belong to more than one chromosome. It is only possible o order by genomic position markers belonging to same chromosome.")
+  ord.seq <- input.seq$seq.num[order(input.seq$data.name$POS[input.seq$seq.num])]
+  new.seq <- make_seq(twopts, ord.seq)
+  return(new.seq)
 }
 
