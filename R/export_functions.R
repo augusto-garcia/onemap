@@ -30,3 +30,44 @@ export_viewpoly <- function(seqs.list){
                  software = "onemap"),
             class = "viewmap")
 }
+
+#' Export genotype probabilities in MAPpoly format (input for QTLpoly)
+#' 
+#' @param input.map object of class `sequence`
+#' 
+#' @return object of class `mappoly.genoprob`
+#' 
+#' @export
+export_mappoly_genoprob <- function(input.map){
+  probs <- cbind(ind = rep(1:input.map$data.name$n.ind, each = length(input.map$seq.num)),
+                 marker = rep(colnames(input.map$data.name$geno)[input.map$seq.num], input.map$data.name$n.ind),
+                 pos = c(0,cumsum(kosambi(input.map$seq.rf))),
+                 as.data.frame(t(input.map$probs)))
+  
+  if(inherits(input.map$data.name, "outcross") | inherits(input.map$data.name, "f2")){
+    phase <- list('1' = c(1,2,3,4),
+                  '2' = c(2,1,4,3),
+                  '3' = c(3,4,1,2),
+                  "4" = c(4,3,2,1))
+    
+    seq.phase <- rep(c(1,input.map$seq.phases), input.map$data.name$n.ind)
+    
+    # Adjusting phases
+    for(i in 1:length(seq.phase))
+      probs[i,4:7] <- probs[i,phase[[seq.phase[i]]]+3]
+  }
+  
+  colnames(probs)[4:7] <- c("a:c", "a:d", "b:c", "b:d")
+  
+  genoprob <- array(unlist(t(probs[,4:7])), 
+                    dim = c(4, length(input.map$seq.num), input.map$data.name$n.ind),
+                    dimnames = list(c("a:c", "a:d", "b:c", "b:d"),
+                                    colnames(input.map$data.name$geno)[input.map$seq.num],
+                                    rownames(input.map$data.name$geno)))
+  
+  map <- cumsum(c(0,kosambi(input.map$seq.rf)))
+  names(map) <- colnames(input.map$data.name$geno)[input.map$seq.num]
+  structure(list(probs = genoprob,
+                 map = map), 
+            class = "mappoly.genoprob")
+}

@@ -642,9 +642,7 @@ keep_only_selected_mks <- function(list.sequences= NULL){
 #' 
 #' @export
 ord_by_geno <- function(input.seq){
-  chrs <- input.seq$data.name$CHROM[input.seq$seq.num]
-  if(length(unique(chrs)) > 1) stop("Markers belong to more than one chromosome. It is only possible o order by genomic position markers belonging to same chromosome.")
-  ord.seq <- input.seq$seq.num[order(input.seq$data.name$POS[input.seq$seq.num])]
+  ord.seq <- input.seq$seq.num[order(input.seq$data.name$CHROM[input.seq$seq.num],input.seq$data.name$POS[input.seq$seq.num])]
   new.seq <- make_seq(twopts, ord.seq)
   return(new.seq)
 }
