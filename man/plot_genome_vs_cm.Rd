@@ -9,7 +9,7 @@ plot_genome_vs_cm(map.list, mapping_function = "kosambi")
 \arguments{
 \item{map.list}{a map, i.e. an object of class \code{sequence} with a
 predefined order, linkage phases, recombination fraction and likelihood;
-also it could be a list of maps.}
+also it could be a list of maps. If you want to plot a single map sequence then run `plot_genome_vs_cm(list(map_of_chromosome))`}
 
 \item{mapping_function}{either "kosambi" or "haldane"}
 }
