@@ -17,7 +17,7 @@
 ##' Provides simple genetic to physical ggplot.
 ##' @param map.list a map, i.e. an object of class \code{sequence} with a
 ##' predefined order, linkage phases, recombination fraction and likelihood;
-##' also it could be a list of maps. If you want to plot a single map sequence then run `plot_genome_vs_cm(list(map_of_chromosome))`
+##' also it could be a list of maps.
 ##' 
 ##' @param mapping_function either "kosambi" or "haldane"
 ##' 
@@ -32,15 +32,10 @@
 
 plot_genome_vs_cm = function(map.list,mapping_function="kosambi"){
   
-  imf_h <- function(r) {
-    r[r >= 0.5] <- 0.5 - 1e-14
-    -50 * log(1 - 2 * r)
-  }
+  if(!(inherits(map.list,c("list", "sequence")))) stop(deparse(substitute(map.list))," is not an object of class 'list' or 'sequnece'")
   
-  imf_k <- function(r) {
-    r[r >= 0.5] <- 0.5 - 1e-14
-    50 * atanh(2 * r)
-  }
+  ## if map.list is just a single chormosome, convert it  into a list
+  if(inherits(map.list,"sequence")) map.list<-list(map.list)
   
   if(mapping_function=="kosambi"){
     number_chromomes = length(map.list)
@@ -49,7 +44,7 @@ plot_genome_vs_cm = function(map.list,mapping_function="kosambi"){
       data_for_plot = data.frame(Marker = map.list[[i]]$seq.num, 
                                  Chrom=map.list[[i]]$data.name$CHROM[map.list[[i]]$seq.num], 
                                  Position = map.list[[i]]$data.name$POS[map.list[[i]]$seq.num],
-                                 cM = cumsum(c(0,imf_k(map.list[[i]]$seq.rf))))
+                                 cM = cumsum(c(0,kosambi(map.list[[i]]$seq.rf))))
       plot[[i]]=ggplot(data_for_plot,mapping=aes(cM,Position))+geom_point()+ggtitle(paste0("LG ",i))
     }
     
@@ -64,7 +59,7 @@ plot_genome_vs_cm = function(map.list,mapping_function="kosambi"){
       data_for_plot = data.frame(Marker = map.list[[i]]$seq.num, 
                                  Chrom=map.list[[i]]$data.name$CHROM[map.list[[i]]$seq.num], 
                                  Position = map.list[[i]]$data.name$POS[map.list[[i]]$seq.num],
-                                 cM = cumsum(c(0,imf_h(map.list[[i]]$seq.rf))))
+                                 cM = cumsum(c(0,haldane(map.list[[i]]$seq.rf))))
       plot[[i]]=ggplot(data_for_plot,mapping=aes(cM,Position))+geom_point()+ggtitle(paste0("LG ",i))
     }
     
