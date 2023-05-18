@@ -3,7 +3,7 @@
 # Package: onemap                                                     #
 #                                                                     #
 # File: summary_maps.R                                                #
-# Contains: summary_maps                                              #
+# Contains: summary_maps_onemap                                       #
 #                                                                     #
 # Written by Jeekin Lau                                               #
 # copyright (c) 2023, Jeekin Lau                                      #
@@ -26,12 +26,12 @@
 ##' @author Jeekin Lau, \email{jeekinlau@@gmail.com}
 ##' 
 ##' 
-##' @export summary_maps
+##' @export summary_maps_onemap 
 ##' 
 ##' 
 ##' 
 ##' 
-summary_maps = function(map.list,mapping_function="kosambi"){
+summary_maps_onemap  = function(map.list,mapping_function="kosambi"){
   
   
   if(!(inherits(map.list,c("list", "sequence")))) stop(deparse(substitute(map.list))," is not an object of class 'list' or 'sequnece'")
