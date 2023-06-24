@@ -643,7 +643,7 @@ keep_only_selected_mks <- function(list.sequences= NULL){
 #' @export
 ord_by_geno <- function(input.seq){
   ord.seq <- input.seq$seq.num[order(input.seq$data.name$CHROM[input.seq$seq.num],input.seq$data.name$POS[input.seq$seq.num])]
-  new.seq <- make_seq(twopts, ord.seq)
+  new.seq <- make_seq(input.seq$data.name$twopts, ord.seq)
   return(new.seq)
 }
 
