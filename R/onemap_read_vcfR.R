@@ -82,7 +82,7 @@
 ##'@export                  
 onemap_read_vcfR <- function(vcf=NULL,
                              vcfR.object = NULL,
-                             cross = c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"),
+                             cross = NULL,
                              parent1 =NULL,
                              parent2 =NULL,
                              f1=NULL,
@@ -100,6 +100,8 @@ onemap_read_vcfR <- function(vcf=NULL,
   if(is.null(vcfR.object)){
     vcfR.obj <- read.vcfR(vcf, verbose = F)
   } else vcfR.obj <- vcfR.object
+  
+  if(is.null(cross)) stop("Define a cross type: outcross, f2 intercross, f2 backcross, ri self, ri sib")
   
   n.mk <- dim(vcfR.obj@gt)[1]
   n.ind <- dim(vcfR.obj@gt)[2]-1
@@ -148,11 +150,12 @@ onemap_read_vcfR <- function(vcf=NULL,
   GT_matrix[grep("[.]", GT_matrix)] <- "./."
   GT_matrix[is.na(GT_matrix)] <- "./."
   
+  GT_names <- names(table(GT_matrix))
+  
   phased <- any(grepl("[|]", GT_names))
   if(phased)
     GT_matrix <- gsub("[|]", "/", as.matrix(GT_matrix))
   
-  GT_names <- names(table(GT_matrix))
   GT_names_up <- strsplit(GT_names, "/")
   max.alleles <- max(as.numeric(do.call(c, GT_names_up[-1])))
   
