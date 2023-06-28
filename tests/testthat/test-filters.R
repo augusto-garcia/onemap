@@ -48,6 +48,12 @@ test_that("number of bins",{
   
   expect_equal(df$map_length[3], 159.7943, 0.1)
   
+  ord1 <- ord_by_geno(make_seq(twopts, "all"))
+  ord2 <- ord_by_geno(map2)
+  
+  expect_equal(ord1$seq.num, 1:23)
+  expect_equal(ord2$seq.num, 15:23)
+  
   map_red <- add_redundants(sequence = map1, 
                             onemap.obj = vcf_example_out, bins)
   
