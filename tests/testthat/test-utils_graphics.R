@@ -29,7 +29,7 @@ test_that("create depth profile", {
   test_depth_profile(df = system.file("extdata/vcf_example_out.vcf.gz", package = "onemap"),
                      cross = "outcross", parent1 = "P1", parent2 = "P2", 
                      n.genos.onemap = c(4,774,1077,401),
-                     n.genos = c(774,1077,401), 
+                     n.genos = c(774,1077,401),  
                      n.genos.alt.ref.onemap = c(1077,401,774,4),
                      n.genos.alt.ref = c(1077,401,774))
 })
