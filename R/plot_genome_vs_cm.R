@@ -37,6 +37,9 @@ plot_genome_vs_cm = function(map.list,mapping_function="kosambi", group.names=NU
   ## if map.list is just a single chormosome, convert it  into a list
   if(inherits(map.list,"sequence")) map.list<-list(map.list)
   
+  if(is.null(map.list[[1]]$data.name$POS) | is.null(map.list[[1]]$data.name$CHROM)) stop("Reference genome chromosome and position informaion is not available in the dataset.")
+  
+  
   number_chromomes = length(map.list)
   plot=list()
   for (i in 1:number_chromomes){
@@ -49,7 +52,7 @@ plot_genome_vs_cm = function(map.list,mapping_function="kosambi", group.names=NU
                                  cM=cumsum(c(0,haldane(map.list[[i]]$seq.rf)))
                                }})
     plot[[i]]=ggplot(data_for_plot,mapping=aes(cM,Position))+geom_point()+ ylab("Genomic position") +
-      {if(!is.null(group.names)) ggtitle(paste0("LG ",group.names[i]))} + theme_bw() 
+      {if(!is.null(group.names)) ggtitle(paste0(group.names[i]))} + theme_bw() 
   }
   
   a=ggarrange(plotlist=plot)

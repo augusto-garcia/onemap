@@ -42,6 +42,8 @@ test_that("number of bins",{
   lg1 <- make_seq(lgs,1)
   map1 <- map(lg1)
   
+  plot_genome_vs_cm(map.list = map1, group.names = "LG2")
+  
   map_red <- add_redundants(sequence = map1, 
                             onemap.obj = vcf_example_out, bins)
   
