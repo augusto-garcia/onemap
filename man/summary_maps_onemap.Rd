@@ -2,7 +2,7 @@
 % Please edit documentation in R/summary_maps.R
 \name{summary_maps_onemap}
 \alias{summary_maps_onemap}
-\title{Draws a physical vs cM map}
+\title{Create table with summary information about the linkage map}
 \usage{
 summary_maps_onemap(map.list, mapping_function = "kosambi")
 }
@@ -14,10 +14,10 @@ also it could be a list of maps.}
 \item{mapping_function}{either "kosambi" or "haldane"}
 }
 \value{
-dataframe with basic summary statistics
+data.frame with basic summary statistics
 }
 \description{
-Provides simple genetic to physical ggplot.
+Create table with summary information about the linkage map
 }
 \author{
 Jeekin Lau, \email{jeekinlau@gmail.com}
