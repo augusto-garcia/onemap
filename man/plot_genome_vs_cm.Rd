@@ -4,7 +4,7 @@
 \alias{plot_genome_vs_cm}
 \title{Draws a physical vs cM map}
 \usage{
-plot_genome_vs_cm(map.list, mapping_function = "kosambi")
+plot_genome_vs_cm(map.list, mapping_function = "kosambi", group.names = NULL)
 }
 \arguments{
 \item{map.list}{a map, i.e. an object of class \code{sequence} with a
@@ -12,6 +12,8 @@ predefined order, linkage phases, recombination fraction and likelihood;
 also it could be a list of maps.}
 
 \item{mapping_function}{either "kosambi" or "haldane"}
+
+\item{group.names}{vector with group name for each sequence object in the map.list}
 }
 \value{
 ggplot with cM on x-axis and physical position on y-axis
