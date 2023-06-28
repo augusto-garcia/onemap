@@ -103,7 +103,7 @@ test_that("reading files",{
                                          only_biallelic = F)))
     expect_equal(check_data(data), 0)
     eval(bquote(expect_equal(.(mk.types), as.numeric(table(data$segr.type)))))
-    segre <- test_segregation(data, simulate.p.value = T)
+    segre <- test_segregation(data)
     eval(bquote(expect_equal(length(select_segreg(segre, distorted = T)) == .(dist), TRUE)))
     eval(bquote(expect_equal(.(genos), as.numeric(table(data$geno)))))
   }
