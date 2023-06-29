@@ -6,11 +6,39 @@
 #' 
 #' @export
 export_viewpoly <- function(seqs.list){
-  ph.p1 <- ph.p2 <- maps <- list()
+  ph.p1 <- ph.p2 <- maps <- d.p1 <- d.p2 <- list()
   for(i in 1:length(seqs.list)){
+    
+    # only for biallelic markers
+    types <- seqs.list[[i]]$data.name$segr.type[seqs.list[[i]]$seq.num]
+    if(inherits(seqs.list[[i]]$data.name, "outcross")){
+      labs.p1 <- c("B3.7"=1, "D1.10" = 1, "D2.15" = 0)
+      labs.p2 <- c("B3.7"=1, "D1.10" = 0, "D2.15" = 1)
+      d.p1[[i]] <- labs.p1[match(types, names(labs.p1))]
+      d.p2[[i]] <- labs.p2[match(types, names(labs.p2))]
+    } else if(inherits(seqs.list[[i]]$data.name, "intercross")){
+      labs <- c("A.H.B" = 1)
+      d.p1[[i]] <- labs[match(types, names(labs))]
+      d.p2[[i]] <- labs[match(types, names(labs))]
+    } else if(inherits(seqs.list[[i]]$data.name, "backcross")){
+      labs <- c("A.H" = 1)
+      d.p1[[i]] <- labs[match(types, names(labs))]
+      labs <- c("A.H" = 0)
+      d.p2[[i]] <- labs[match(types, names(labs))]
+    } else if(inherits(seqs.list[[i]]$data.name, "ri")){
+      labs <- c("A.B" = 1)
+      d.p1[[i]] <- labs[match(types, names(labs))]
+      labs <- c("A.B" = 2)
+      d.p2[[i]] <- labs[match(types, names(labs))]
+    }
+    
     parents <- parents_haplotypes(seqs.list[[i]])
     ph.p1[[i]] <- parents[,c(5,6)]
     ph.p2[[i]] <- parents[,c(7,8)]
+    rownames(ph.p1[[i]]) <- rownames(ph.p2[[i]]) <- colnames(seqs.list[[i]]$data.name$geno)[seqs.list[[i]]$seq.num]
+    names(ph.p1[[i]]) <- c("a", "b")
+    names(ph.p2[[i]]) <- c("c", "d")
+    
     chr <- seqs.list[[i]]$data.name$CHROM[seqs.list[[i]]$seq.num]
     pos <- seqs.list[[i]]$data.name$POS[seqs.list[[i]]$seq.num]
     
@@ -22,11 +50,11 @@ export_viewpoly <- function(seqs.list){
                             ref = rep(NA, length(seqs.list[[i]]$seq.num)))  
   }
   
-  structure(list(d.p1 = NULL,
-                 d.p2 = NULL,
-                 ph.p1,
-                 ph.p2,
-                 maps,
+  structure(list(d.p1 = d.p1,
+                 d.p2 = d.p2,
+                 ph.p1 = ph.p1,
+                 ph.p2= ph.p2,
+                 maps = maps,
                  software = "onemap"),
             class = "viewmap")
 }
@@ -71,3 +99,7 @@ export_mappoly_genoprob <- function(input.map){
                  map = map), 
             class = "mappoly.genoprob")
 }
+
+
+
+
