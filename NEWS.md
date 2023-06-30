@@ -172,3 +172,12 @@ Taniguti, C. H., Taniguti, L. M., Amadeu, R. R., Mollinari, M., Da, G., Pereira,
 * Review spell_check
 * Avoid -Inf likelihood result by increasing the tolerance value
 * Fix bug in mds_onemap
+
+# onemap 3.0.1
+
+* New plot for cM x Mb relation (plot_genome_vs_cm)
+* New function to export to VIEWpoly (export_viewpoly)
+* New function to order markers by chromosome position (ord_by_geno)
+* New function to create map summary (summary_maps_onemap) - based on MAPpoly function 
+* New function to interactive edition of ordering (edit_order_onemap)
+* New function to export haplotype probabilities to QTLpoly (export_mappoly_genoprob)
