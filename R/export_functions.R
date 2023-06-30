@@ -6,6 +6,8 @@
 #' 
 #' @export
 export_viewpoly <- function(seqs.list){
+  if(!(inherits(seqs.list,c("list", "sequence")))) stop(deparse(substitute(seqs.list))," is not an object of class 'list' or 'sequence'")
+  
   ph.p1 <- ph.p2 <- maps <- d.p1 <- d.p2 <- list()
   for(i in 1:length(seqs.list)){
     
@@ -67,6 +69,8 @@ export_viewpoly <- function(seqs.list){
 #' 
 #' @export
 export_mappoly_genoprob <- function(input.map){
+  if(!(inherits(input.map,c("sequence")))) stop(deparse(substitute(seqs.list))," is not an object of class 'sequence'")
+  
   probs <- cbind(ind = rep(1:input.map$data.name$n.ind, each = length(input.map$seq.num)),
                  marker = rep(colnames(input.map$data.name$geno)[input.map$seq.num], input.map$data.name$n.ind),
                  pos = c(0,cumsum(kosambi(input.map$seq.rf))),
@@ -99,7 +103,3 @@ export_mappoly_genoprob <- function(input.map){
                  map = map), 
             class = "mappoly.genoprob")
 }
-
-
-
-
