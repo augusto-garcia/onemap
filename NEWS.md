@@ -183,3 +183,5 @@ Taniguti, C. H., Taniguti, L. M., Amadeu, R. R., Mollinari, M., Da, G., Pereira,
 * New function to export haplotype probabilities to QTLpoly (export_mappoly_genoprob)
 * Keep reference and alternative alleles information from imported VCF 
 * Return parents haplotypes using reference and alternative alleles codification when outcross or f2 cross type
+* Functions to export and import reduced size onemap R objects (save_onemap_sequences and load_onemap_sequences)
+* Add new author (Jeekin Lau :smile: )

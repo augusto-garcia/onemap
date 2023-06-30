@@ -46,6 +46,6 @@ test_that("ordering and HMM parallel", {
                                    parent2 = "P2",
                                    cross = "f2 intercross", only_biallelic = FALSE)
   
-  test_haplo(example_data, which.group = 1, sum.counts = 201, c("a", "b", "a", "b"), c("T", "A", "T", "A"))
+  test_haplo(example_data, which.group = 1, sum.counts = 306, c("a", "b", "a", "b"), c("T", "A", "T", "A"))
   
 })

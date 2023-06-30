@@ -36,7 +36,7 @@ plot_genome_vs_cm = function(map.list,mapping_function="kosambi", group.names=NU
   
   ## if map.list is just a single chormosome, convert it  into a list
   if(inherits(map.list,"sequence")) map.list<-list(map.list)
-  if(map.list[[1]]$seq.rf == -1) stop("The genetic distances were not estimated for this sequence yet")
+  if(map.list[[1]]$seq.rf[1] == -1) stop("The genetic distances were not estimated for this sequence yet")
   
   if(is.null(map.list[[1]]$data.name$POS) | is.null(map.list[[1]]$data.name$CHROM)) stop("Reference genome chromosome and position informaion is not available in the dataset.")
   

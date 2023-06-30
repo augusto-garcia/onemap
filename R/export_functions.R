@@ -103,3 +103,62 @@ export_mappoly_genoprob <- function(input.map){
                  map = map), 
             class = "mappoly.genoprob")
 }
+
+#' Save a list of onemap sequence objects
+#' 
+#' The onemap sequence object contains everything users need to reproduce the complete analysis:
+#' the input onemap object, the rf_2pts result, and the sequence genetic distance and marker order.
+#' Therefore, a list of sequences is the only object users need to save to be able to recover all analysis.
+#' But simple saving the list of sequences will save many redundant objects. This redundancy is only considered by R
+#' when saving the object. For example, one input object and the rf_2pts result will be saved for every sequence. 
+#' 
+#'@param sequences.list list of \code{sequence} objects
+#'
+#'@param filename name of the output file (Ex: my_beautiful_map.RData)
+#'
+#'@export 
+save_onemap_sequences <- function(sequences.list, filename){
+  if(!(inherits(sequences.list,c("list", "sequence")))) stop(deparse(substitute(sequences.list))," is not an object of class 'list' or 'sequence'")
+  
+  ## if sequences.list is just a single chormosome, convert it  into a list
+  if(inherits(sequences.list,"sequence")) sequences.list<-list(sequences.list)
+  
+  onemap.obj <- sequences.list[[1]]$data.name
+  twopts <- sequences.list[[1]]$twopt
+  
+  sequences.list[[1]]$data.name <- NULL
+  sequences.list[[1]]$twopt <- NULL
+  
+  for(i in 2:length(sequences.list)){
+    if(!all(onemap.obj$segr.type == sequences.list[[i]]$data.name$segr.type)) stop("Not all sequences come from the same onemap object.")
+    if(!all(twopts$n.mar == sequences.list[[i]]$twopt$n.mar)) stop("Not all sequences come from the same twopts object.")
+    sequences.list[[i]]$data.name <- NULL
+    sequences.list[[i]]$twopt <- NULL
+  }
+  
+  new.list<- list(onemap.obj =onemap.obj, twopts = twopts, sequences.list = sequences.list)
+  
+  save(new.list, file = filename)
+}
+
+#' Load list of sequences saved by save_onemap_sequences
+#' 
+#' @param filename name of the file to be loaded
+#'
+#'@export
+load_onemap_sequences <- function(filename){
+  temp <- load(filename)
+  map.list <- get(temp)
+  
+  if(is.null(names(map.list)) | !all(names(map.list) == c("onemap.obj", "twopts", "sequences.list"))) 
+    stop("This file was not saved with save_onemap_sequences.")
+  
+  sequences.list <- map.list$sequences.list
+  for(i in 1:length(sequences.list)){
+    sequences.list[[i]]$data.name <- map.list$onemap.obj
+    sequences.list[[i]]$twopt <- map.list$twopts
+  }
+  return(sequences.list)
+}
+
+

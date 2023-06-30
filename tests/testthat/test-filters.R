@@ -46,6 +46,15 @@ test_that("number of bins",{
   map1 <- map(lg1)
   map2 <- map(make_seq(lgs,4))
   
+  # Test save sequences
+  maps.list <- list(map1, map2)
+
+  save_onemap_sequences(sequences.list = maps.list, filename = "test.RData")
+  save(maps.list, file = "test2.RData")
+  
+  # Test load sequences
+  maps.list.load <- load_onemap_sequences(filename = "test.RData")
+  
   # Test plot_genome_vs_cm
   p <- plot_genome_vs_cm(map.list = map1, group.names = "LG2")
   
