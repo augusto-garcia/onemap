@@ -173,7 +173,7 @@ Taniguti, C. H., Taniguti, L. M., Amadeu, R. R., Mollinari, M., Da, G., Pereira,
 * Avoid -Inf likelihood result by increasing the tolerance value
 * Fix bug in mds_onemap
 
-# onemap 3.0.1
+# onemap 3.1.0
 
 * New plot for cM x Mb relation (plot_genome_vs_cm)
 * New function to export to VIEWpoly (export_viewpoly)
@@ -181,3 +181,5 @@ Taniguti, C. H., Taniguti, L. M., Amadeu, R. R., Mollinari, M., Da, G., Pereira,
 * New function to create map summary (summary_maps_onemap) - based on MAPpoly function 
 * New function to interactive edition of ordering (edit_order_onemap)
 * New function to export haplotype probabilities to QTLpoly (export_mappoly_genoprob)
+* Keep reference and alternative alleles information from imported VCF 
+* Return parents haplotypes using reference and alternative alleles codification when outcross or f2 cross type
