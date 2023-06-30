@@ -29,9 +29,6 @@ test_that("number of bins",{
   check_bins("vcf_example_bc", 25)
   check_bins("vcf_example_riself",25)
   
-  # Check add bins
-  
-  # Test add bins
   data("vcf_example_out")
   bins <- find_bins(vcf_example_out)
   
@@ -39,11 +36,20 @@ test_that("number of bins",{
   twopts <- rf_2pts(onemap_bins)
   
   lgs <- group(make_seq(twopts, "all"))
+  
   lg1 <- make_seq(lgs,1)
+  
+  # Test edit_order_onemap - interactive
+  # input.obj <- edit_order_onemap(input.seq = lg1)
+  # seq_edit <- make_seq(input.obj)
+  
   map1 <- map(lg1)
   map2 <- map(make_seq(lgs,4))
   
+  # Test plot_genome_vs_cm
   p <- plot_genome_vs_cm(map.list = map1, group.names = "LG2")
+  
+  # Test summary_maps_onemap
   df <- summary_maps_onemap(map.list = list(map1, map2))
   
   expect_equal(df$map_length[3], 159.7943, 0.1)
@@ -54,6 +60,7 @@ test_that("number of bins",{
   expect_equal(ord1$seq.num, 1:23)
   expect_equal(ord2$seq.num, 15:23)
   
+  # Test add_redundants
   map_red <- add_redundants(sequence = map1, 
                             onemap.obj = vcf_example_out, bins)
   
