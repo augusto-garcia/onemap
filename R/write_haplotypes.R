@@ -24,6 +24,8 @@ globalVariables(c("V1", "V2", "V3", "V4",
 #'
 #' @param ... objects of class sequence
 #' @param group_names vector of characters defining the group names
+#' @param map.function "kosambi" or "haldane" according to which was used to build the map
+#' @param ref_alt_alleles TRUE to return parents haplotypes as reference and alternative ref_alt_alleles codification
 #'
 #' @return data.frame with group ID (group), marker number (mk.number) 
 #' and names (mk.names), position in centimorgan (dist) and parents haplotypes 
@@ -40,19 +42,19 @@ globalVariables(c("V1", "V2", "V3", "V4",
 #' @author Getulio Caixeta Ferreira, \email{getulio.caifer@@gmail.com}
 #' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
 #' @export
-parents_haplotypes <- function(..., group_names=NULL){
-  input <- list(...)
-  if(length(input) == 0) stop("argument '...' missing, with no default")
+parents_haplotypes <- function(..., group_names=NULL, map.function = "kosambi", ref_alt_alleles = FALSE){
+  input_raw <- list(...)
+  if(length(input_raw) == 0) stop("argument '...' missing, with no default")
   # Accept list of sequences or list of list of sequences
-  if(inherits(input[[1]], "sequence")) input.map <- input else input.map <- unlist(input, recursive = FALSE)
+  if(inherits(input_raw[[1]], "sequence")) input.map <- input_raw else input.map <- unlist(input_raw, recursive = FALSE)
   if(!all(sapply(input.map, function(x) inherits(x, "sequence")))) stop(paste("Input objects must be of 'sequence' class. \n"))
   if(is.null(group_names)) group_names <- paste("Group",seq(input.map), sep = " - ")
   
-  if(all(sapply(input, function(x) inherits(x, "sequence")))){
-    n <- length(sapply(input, function(x) inherits(x, "sequence")))
+  if(all(sapply(input_raw, function(x) inherits(x, "sequence")))){
+    n <- length(sapply(input_raw, function(x) inherits(x, "sequence")))
   } else n <- 1
   
-  input_temp <- input
+  input_temp <- input_raw
   out_dat <- data.frame()
   for(z in 1:n){
     if(all(sapply(input_temp, function(x) inherits(x, "sequence")))) input <- input_temp[[z]]
@@ -75,14 +77,18 @@ parents_haplotypes <- function(..., group_names=NULL){
       
       ## display results
       marnumbers <- input$seq.num
-      distances <- c(0,cumsum(get(get(".map.fun", envir=.onemapEnv))(input$seq.rf)))
+      distances <- if(map.function == "kosambi") c(0,cumsum(kosambi(input$seq.rf))) else if(map.function == "haldane") c(0,cumsum(haldane(input$seq.rf)))
       ## whith diplotypes for class 'outcross'
       if(inherits(input$data.name, c("outcross", "f2"))){
         ## create diplotypes from segregation types and linkage phases
         link.phases <- apply(link.phases,1,function(x) paste(as.character(x),collapse="."))
         parents <- matrix("",length(input$seq.num),4)
         for (i in 1:length(input$seq.num))
-          parents[i,] <- return_geno(input$data.name$segr.type[input$seq.num[i]],link.phases[i])
+          if(!is.null(input$data.name$ref_alt_alleles) & ref_alt_alleles){
+            # Changing by reference and alternative alleles
+            parents[i,] <- return_geno_ref_alt(link.phases = link.phases[i],
+                                        ref_alt = input$data.name$ref_alt_alleles[input$seq.num[i],])
+          } else parents[i,] <- return_geno(segr.type = input$data.name$segr.type[input$seq.num[i]], link.phases = link.phases[i])
         out_dat_temp <- data.frame(group= group_names[z], mk.number = marnumbers, mk.names = marnames, dist = as.numeric(distances), 
                                    P1_1 = parents[,1],
                                    P1_2 = parents[,2],
@@ -96,6 +102,7 @@ parents_haplotypes <- function(..., group_names=NULL){
       } else warning("invalid cross type")
     }
   }
+  
   return(out_dat)
 }
 
@@ -427,7 +434,7 @@ plot.onemap_progeny_haplotypes_counts <- function(x,
                                                   n.graphics =NULL, 
                                                   ncol=NULL, ...){
   if(!inherits(x, "onemap_progeny_haplotypes_counts")) stop("Input need is not of class onemap_progeny_haplotyes_counts")
-
+  
   p <- list()
   n.ind <- length(unique(x$ind))
   nb.cols <- n.ind

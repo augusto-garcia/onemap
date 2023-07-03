@@ -62,8 +62,9 @@ filter_missing <- function(onemap.obj=NULL, threshold= 0.25, by = "markers", ver
     new.onemap.obj$n.mar <- length(idx)
     new.onemap.obj$segr.type <- onemap.obj$segr.type[idx]
     new.onemap.obj$segr.type.num <- onemap.obj$segr.type.num[idx]
-    new.onemap.obj$CHROM <- onemap.obj$CHROM[idx]
-    new.onemap.obj$POS <- onemap.obj$POS[idx]
+    if(!is.null(onemap.obj$CHROM)) new.onemap.obj$CHROM <- onemap.obj$CHROM[idx]
+    if(!is.null(onemap.obj$POS)) new.onemap.obj$POS <- onemap.obj$POS[idx]
+    if(!is.null(onemap.obj$ref_alt_alleles)) new.onemap.obj$ref_alt_alleles <- onemap.obj$ref_alt_alleles[idx,]
     new.onemap.obj$error <- onemap.obj$error[idx + rep(c(0:(onemap.obj$n.ind-1))*onemap.obj$n.mar, each=length(idx)),]
     if(verbose) cat("Number of markers removed from the onemap object: ", length(which(perc.mis > threshold)), "\n")
   } else if (by == "individuals"){

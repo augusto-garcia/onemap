@@ -112,7 +112,7 @@ Margarido, G. R. A., Souza, A. P., &38; Garcia, A. A. F. (2007). OneMap: softwar
 
 * If you are using OneMap versions > 2.0, please cite also:
 
-Taniguti, C. H., Taniguti, L. M., Amadeu, R. R., Mollinari, M., Da, G., Pereira, S., Riera-Lizarazu, O., Lau, J., Byrne, D., de Siqueira Gesteira, G., De, T., Oliveira, P., Ferreira, G. C., &; Franco Garcia, A. A.  Developing best practices for genotyping-by-sequencing analysis using linkage maps as benchmarks. BioRxiv. https://doi.org/10.1101/2022.11.24.517847
+[Taniguti, C. H.; Taniguti, L. M.; Amadeu, R. R.; Lau, J.; de Siqueira Gesteira, G.; Oliveira, T. de P.; Ferreira, G. C.; Pereira, G. da S.;  Byrne, D.;  Mollinari, M.; Riera-Lizarazu, O.; Garcia, A. A. F. Developing best practices for genotyping-by-sequencing analysis using linkage maps as benchmarks. BioRxiv. https://doi.org/10.1101/2022.11.24.517847](https://www.biorxiv.org/content/10.1101/2022.11.24.517847v3)
 
 * If you used the HMM parallelization, please cite [BatchMap](https://github.com/bschiffthaler/BatchMap) paper too:
 
