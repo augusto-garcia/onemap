@@ -1,5 +1,7 @@
 context("Filters function")
 
+library(vcfR)
+
 test_that("number of distorted markers",{
   check_dist <- function(example_data, table.h0){
     eval(bquote(data(.(example_data))))
@@ -77,16 +79,19 @@ test_that("number of bins",{
 })
 
 test_that("number of missing data",{
-  check_missing <- function(example_data, n.mar){
+  check_missing <- function(example_data, n.mar,n.ind){
     eval(bquote(data(.(example_data))))
     onemap_mis <- eval(bquote(filter_missing(get(.(example_data)), 0.5)))
     eval(bquote(expect_equal(check_data(onemap_mis), 0)))
     eval(bquote(expect_equal(onemap_mis$n.mar, .(n.mar))))
+    onemap_mis <- eval(bquote(filter_missing(get(.(example_data)), 0.5, by = "individuals")))
+    eval(bquote(expect_equal(check_data(onemap_mis), 0)))
+    eval(bquote(expect_equal(onemap_mis$n.ind, .(n.ind))))
   }
-  check_missing("vcf_example_f2", 25)
-  check_missing("onemap_example_riself", 64)
-  check_missing("onemap_example_out", 30)
-  check_missing("onemap_example_bc", 67)
+  check_missing(example_data = "vcf_example_f2", n.mar = 25, n.ind = 191)
+  check_missing("onemap_example_riself", 64, 100)
+  check_missing("onemap_example_out", 30, 100)
+  check_missing("onemap_example_bc", 67,150)
 })
 
 test_that("number of repeated ID markers",{
@@ -103,3 +108,31 @@ test_that("number of repeated ID markers",{
   check_dupli("onemap_example_bc", 67)
   
 })
+
+test_that("filter probs",{
+  onemap.obj <- onemap_read_vcfR(system.file("extdata/vcf_example_out.vcf.gz", package = "onemap"),
+                                 parent1 = "P1", parent2 = "P2", cross = "outcross")
+  vcfR.object <- read.vcfR(system.file("extdata/vcf_example_out.vcf.gz", package = "onemap"))
+  gq <- extract_depth(vcfR.object = vcfR.object,
+                      onemap.object = onemap.obj,
+                      vcf.par = "GQ", 
+                      parent1 = "P1", 
+                      parent2 = "P2")
+  onemap.prob <- create_probs(onemap.obj, genotypes_errors = gq)
+  onemap.filt <- filter_prob(onemap.prob, threshold = 0.999999999)
+  onemap.mis <- filter_missing(onemap.filt, threshold = 0.10)
+  expect_equal(onemap.mis$n.mar, 22)
+  
+  pl <- extract_depth(vcfR.object = vcfR.object,
+                      onemap.object = onemap.obj,
+                      vcf.par = "PL", 
+                      parent1 = "P1", 
+                      parent2 = "P2")
+  
+  onemap.prob <- create_probs(onemap.obj, genotypes_probs = pl)
+  onemap.filt <- filter_prob(onemap.prob, threshold = 0.9)
+  onemap.mis <- filter_missing(onemap.filt, threshold = 0.10)
+  expect_equal(onemap.mis$n.mar, 22)
+  
+})
+
