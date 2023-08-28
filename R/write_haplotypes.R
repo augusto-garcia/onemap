@@ -372,7 +372,9 @@ progeny_haplotypes_counts <- function(x){
     if(any(which(x$prob == 0.5)) == 1){
       x[1, "prob"] <- x[2, "prob"]
     }
-    repl <- x[which(x$prob == 0.5)-1,"prob"]
+    idx <- which(x$prob == 0.5)-1
+    if(idx[1] == 0) idx[1] <- 1
+    repl <- x[idx,"prob"]
     x[which(x$prob == 0.5),"prob"] <- repl
   }
   
