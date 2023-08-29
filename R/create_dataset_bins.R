@@ -131,7 +131,7 @@ add_redundants <- function(sequence, onemap.obj, bins){
   
   for(i in 1:length(new.seq.rf)){
     new.seq.rf[[i]] <- rep(new.seq.rf[[i]], each = sizes[i])
-    new.phases[[i]] <- rep(new.phases[[i]], each = sizes[i])
+    if(inherits(onemap.obj, c("f2", "outcross", "backcross")))  new.phases[[i]] <- rep(new.phases[[i]], each = sizes[i])
   }
   
   new.seq.rf <- do.call(c, new.seq.rf)
