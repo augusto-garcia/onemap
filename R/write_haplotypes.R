@@ -142,6 +142,7 @@ progeny_haplotypes <- function(...,
   if(length(input) == 0) stop("argument '...' missing, with no default")
   # Accept list of sequences or list of list of sequences
   if(inherits(input[[1]], "sequence")) input.map <- input else input.map <- unlist(input, recursive = FALSE)
+  if(all(input.map[[1]]$probs == "with redundants")) stop("Use the sequences before adding redundants.")
   if(!all(sapply(input.map, function(x) inherits(x, "sequence")))) stop(paste("Input objects must be of 'sequence' class. \n"))
   if(is.null(group_names)) group_names <- paste("Group",seq(input.map), sep = " - ")
   n.mar <- sapply(input.map, function(x) length(x$seq.num))
