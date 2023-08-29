@@ -15,8 +15,6 @@
 ##                                                                      #
 #########################################################################
 
-globalVariables(c("mkt.wrg"))
-
 ## Function to read data in MAPMAKER style from input file
 
 
@@ -265,8 +263,8 @@ read_mapmaker<-function (file=NULL, dir=NULL, verbose=TRUE)
         {
             if(any(is.na(match(na.omit(unique(geno[,i])), 1:5))))
             {
-                mkt.wrg.names <- paste(sQuote(colnames(geno)[mkt.wrg]), collapse = ", ")
-                msg <- sprintf(ngettext(length(mkt.wrg),
+                mkt.wrg.names <- paste(sQuote(colnames(geno)[i]), collapse = ", ")
+                msg <- sprintf(ngettext(length(mkt.wrg.names),
                                         "marker %s has invalid codification",
                                         "markers %s have invalid codification"), mkt.wrg.names)
                 stop(msg)

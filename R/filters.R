@@ -148,7 +148,7 @@ edit_order_onemap <- function(input.seq){
     stop(deparse(substitute(input.seq)), " is not an object of class 'sequence'")
   }
   
-  if(unique(input.seq$data.name$CHROM[input.seq$seq.num]) > 1) stop("There are markers from more than one chromosome in the sequence.")
+  if(length(unique(input.seq$data.name$CHROM[input.seq$seq.num])) > 1) stop("There are markers from more than one chromosome in the sequence.")
   
   get_weird <- data.frame(x = 1:length(input.seq$seq.num),
                           y = input.seq$data.name$POS[input.seq$seq.num])
@@ -169,6 +169,7 @@ edit_order_onemap <- function(input.seq){
           inverted <- c(inverted, as.vector(mks.to.remove))
           repl <- get_weird[rev(which(rownames(get_weird) %in% as.vector(mks.to.remove))),]
           get_weird[which(rownames(get_weird) %in% as.vector(mks.to.remove)),2] <- repl[,2]
+          rownames(get_weird)[which(rownames(get_weird) %in% as.vector(mks.to.remove))] <- rownames(repl)
         } else {
           removed <- c(removed, as.vector(mks.to.remove))
           get_weird <- get_weird[-which(rownames(get_weird) %in% mks.to.remove),]
