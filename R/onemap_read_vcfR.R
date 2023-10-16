@@ -156,6 +156,8 @@ onemap_read_vcfR <- function(vcf=NULL,
   if(phased)
     GT_matrix <- gsub("[|]", "/", as.matrix(GT_matrix))
   
+  GT_names <- names(table(GT_matrix))
+  
   GT_names_up <- strsplit(GT_names, "/")
   max.alleles <- max(as.numeric(do.call(c, GT_names_up[-1])))
   
@@ -171,10 +173,12 @@ onemap_read_vcfR <- function(vcf=NULL,
       GT_names_up[idx.mis] <- "./."
     
     only_diff <- which(GT_names_up != GT_names)
-    repl <- GT_names_up[only_diff]
-    sear <- GT_names[only_diff]
-    for(i in 1:length(sear)){
-      GT_matrix[which(GT_matrix == sear[i])] <- repl[i]
+    if(length(only_diff) > 0){
+      repl <- GT_names_up[only_diff]
+      sear <- GT_names[only_diff]
+      for(i in 1:length(sear)){
+        GT_matrix[which(GT_matrix == sear[i])] <- repl[i]
+      }
     }
   }
   
@@ -205,10 +209,16 @@ onemap_read_vcfR <- function(vcf=NULL,
     P2_1 <- sapply(strsplit(GT_matrix[,P2], "/"), "[", 1)
     P2_2 <- sapply(strsplit(GT_matrix[,P2], "/"), "[", 2)
     
-    P1_1_allele <- unlist(Map("[",alleles,as.numeric(P1_1) + 1))
-    P1_2_allele <- unlist(Map("[",alleles,as.numeric(P1_2) + 1))
-    P2_1_allele <- unlist(Map("[",alleles,as.numeric(P2_1) + 1))
-    P2_2_allele <- unlist(Map("[",alleles,as.numeric(P2_2) + 1))
+    # avoid warning
+    P1_1_t <- gsub("[.]", NA, P1_1)
+    P1_2_t <- gsub("[.]", NA, P1_2)
+    P2_1_t <- gsub("[.]", NA, P2_1)
+    P2_2_t <- gsub("[.]", NA, P2_2)
+    
+    P1_1_allele <- unlist(Map("[",alleles,as.numeric(P1_1_t) + 1))
+    P1_2_allele <- unlist(Map("[",alleles,as.numeric(P1_2_t) + 1))
+    P2_1_allele <- unlist(Map("[",alleles,as.numeric(P2_1_t) + 1))
+    P2_2_allele <- unlist(Map("[",alleles,as.numeric(P2_2_t) + 1))
     
     names(P1_1_allele) <- names(P1_2_allele) <- names(P2_1_allele) <- names(P2_2_allele) <- rownames(GT_matrix)
     
