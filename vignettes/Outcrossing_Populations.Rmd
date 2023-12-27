@@ -264,7 +264,7 @@ vcf_filtered <- filter_missing(vcf_example_out, threshold = 0.25)
 
 Any of our markers were filtered, because, in this example, we do not have much missing data.
 
-# Graphical view of genotypes and allele depths <span style="color:orange">(new!)</span>
+# Graphical view of genotypes and allele depths 
 
 Function `create_depth_profile` generates dispersion graphics with x and y-axis representing, respectively, the reference and alternative allele depths. The function is only available for biallelic markers in VCF files with allele counts information. Each dot represents a genotype for `mks` markers and `inds` individuals. If both arguments receive `NULL`, all markers and individuals are considered. Dots are colored according to the genotypes present in the onemap object (`GTfrom = onemap`) or VCF file (`GTfrom = vcf`). A rds file is generated with the data in the graphic (`rds.file`). The `alpha` argument controls the transparency of the color of each dot. Control this parameter is a good idea when having a large number of markers and individuals. The `x_lim` and `y_lim` control the axis scale limits; by default,  it uses the maximum value of the counts.
 
@@ -537,8 +537,6 @@ LGs <- group(mark_no_dist, LOD = LOD_sug, max.rf = 0.4)
 LGs
 ``` 
 
-<span style="color:orange">(new!)</span>
-
 The other function for grouping is called `group_upgma`. It is an adapted version of [MAPpoly](https://github.com/mmollina/MAPpoly) grouping function. 
 
 ```{r}
@@ -630,7 +628,7 @@ ERROR: The linkage between markers 1 and 2 did not reach the OneMap default crit
 ```
 You can automatically remove these markers setting argument `rm_unlinked = TRUE`. The marker will be removed, and the ordering algorithms will be restarted. Warning messages will inform which markers were removed. If you don't get warning messages, it means that any marker needed to be removed. This is our case in this example, but if you obtain an error or warning running your dataset, you already know what happened.
 
-**NOTE**: <span style="color:orange">(new!)</span> If your sequence has many markers (more than 60), we suggest to first use hmm=FALSE to check the ordering and after speed up `mds`, `seriation`, `rcd`, `record` and `ug` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#speed-up-analysis-with-parallelization-new) for more information.
+**NOTE**:  If your sequence has many markers (more than 60), we suggest to first use hmm=FALSE to check the ordering and after speed up `mds`, `seriation`, `rcd`, `record` and `ug` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#speed-up-analysis-with-parallelization-new) for more information.
 
 To order by comparing all possible orders (exhaustive search), the
 function `compare` can be used:
@@ -638,10 +636,6 @@ function `compare` can be used:
 ```{r, eval=TRUE,  results='hide', eval=FALSE}
 LG3_comp <- compare(LG3)
 ``` 
-
-```{r, echo=FALSE}
-data(LG3_comp)
-```
 
 **WARNING: This algorithm can take some time to run, depending on marker types in
 the linkage group. If you are working on a personal computer, without high capacity, we recommend using a maximum of ten markers. **
@@ -657,9 +651,11 @@ The first argument to the `compare` function is an object of class `sequence` (t
 
 To see the results of the previous step, type:
 
-```{r}
+```{r, eval=FALSE}
 LG3_comp
 ``` 
+
+*NOTE*: Check the [GitHub vignette version](https://statgen-esalq.github.io/tutorials/onemap/Outcrossing_Populations.html) to visualize the output.
 
 Remember that for outcrossing populations, one needs to estimate
 marker order and also linkage phases between markers for a given
@@ -681,15 +677,19 @@ Unless one has some biological information, it is a good idea to
 choose the order with the highest likelihood. The final map can then
 be obtained with the command.
 
-```{r}
+```{r, eval=FALSE}
 LG3_final <- make_seq(LG3_comp, 1, 1)
 ``` 
+
+```{r, echo=FALSE}
+LG3_final <- map(make_seq(twopts, c(43,22,7,18,8,13,44)))
+```
 
 The first argument is the object of class `compare`. The second argument indicates which order is chosen: 1 is for the order with the highest likelihood, 2 is for the second-best, and so on. The third argument indicates which combination of phases is chosen for a given order: 1 also means the combination with the highest likelihood among all combinations of phases (based on Nested LOD).
 
 For simplicity, these values are defaults, so typing
 
-```{r}
+```{r, eval=FALSE}
 LG3_final <- make_seq(LG3_comp)
 ``` 
 
@@ -784,7 +784,7 @@ most informative ones:
 LG2_init <- make_seq(twopts, c(4, 20, 24, 49,50,51, 52))
 ``` 
 
-Here there is a automatic way of obtain a new sequence only with markers selected by type: <span style="color:orange">(new!)</span>
+Here there is a automatic way of obtain a new sequence only with markers selected by type: 
 
 ```{r}
 LG2_init <- seq_by_type(sequence = LG2, mk_type = c("A", "B"))
@@ -1013,7 +1013,7 @@ library(stringr)
 (LG2_test_map <- onemap::map(LG2_test_seq))
 ```
 
-**NOTE**: <span style="color:orange">(new!)</span> If your sequence has many markers (more than 60), we suggest to speed up `map` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#speed-up-analysis-with-parallelization-new) for more information.
+**NOTE**:  If your sequence has many markers (more than 60), we suggest to speed up `map` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#speed-up-analysis-with-parallelization-new) for more information.
 
 Now, we have the map without markers `23` and `51`. 
 
@@ -1446,7 +1446,7 @@ any_seq <- make_seq(twopts, c(30, 12, 3, 14, 2))
 (any_seq_map <- map(any_seq))
 ``` 
 
-**NOTE**: <span style="color:orange">(new!)</span> If your sequence has many markers (more than 60), we suggest to speed up `map` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#speed-up-analysis-with-parallelization-new) for more information.
+**NOTE**:  If your sequence has many markers (more than 60), we suggest to speed up `map` using BatchMap parallelization approach. See section [`Speed up analysis with parallelization`](#speed-up-analysis-with-parallelization-new) for more information.
 
 **Warning**: If you find an error message like:
 
@@ -1464,7 +1464,7 @@ library(stringr)
 This is a subset of the first linkage group. When used this way, the `map` function searches for the best combination of phases between markers
 and prints the results.
 
-<span style="color:orange">(new!)</span>
+
 
 **Warning**: It is not our case in this example, but, sometimes, it can happen that some markers in your sequence don’t reach the `OneMap` linkage criteria when linkage are estimated by HMM multipoint approach using `map`, it will produce an error like this:
 
@@ -1506,7 +1506,7 @@ Removing markers 3, 4, 5, 12, and 30 from `any_seq`:
 After that, the map needs to be re-estimated.
 
 
-# Speed up analysis with parallelization <span style="color:orange">(new!)</span>
+# Speed up analysis with parallelization 
 
 
 **Warning**: Only available for outcrossing and f2 intercross populations.
@@ -1598,7 +1598,7 @@ rcd_map_par <- rcd(input.seq = seq_all,
                    overlap = 30)
 ```
 
-```{r, echo=FALSE, eval=FALSE}
+```{r, echo=TRUE, eval=FALSE}
 a <- rf_graph_table(rcd_map, mrk.axis = "none")
 b <- rf_graph_table(rcd_map_par, mrk.axis = "none")
 p <- ggarrange(a,b , common.legend = TRUE,
@@ -1634,7 +1634,7 @@ record_map_par <- record(input.seq = seq_all,
                          overlap = 30)
 ```
 
-```{r, echo=FALSE, eval=FALSE}
+```{r, echo=TRUE, eval=FALSE}
 a <- rf_graph_table(record_map, mrk.axis = "none")
 b <- rf_graph_table(record_map_par, mrk.axis = "none")
 p <- ggarrange(a,b , common.legend = TRUE,
@@ -1670,7 +1670,7 @@ ug_map_par <- ug(input.seq = seq_all,
                  overlap = 30)
 ```
 
-```{r, echo=FALSE, eval=FALSE}
+```{r, echo=TRUE, eval=FALSE}
 a <- rf_graph_table(ug_map, mrk.axis = "none")
 b <- rf_graph_table(ug_map_par, mrk.axis = "none")
 p <- ggarrange(a,b , common.legend = TRUE,
@@ -1708,7 +1708,7 @@ map_mds_par <- mds_onemap(input.seq = seq_all,
                           overlap = 30)
 ```
 
-```{r, echo=FALSE, eval=FALSE}
+```{r, echo=TRUE, eval=FALSE}
 a <- rf_graph_table(map_mds, mrk.axis = "none")
 b <- rf_graph_table(map_mds_par, mrk.axis = "none")
 p <- ggarrange(a,b , common.legend = TRUE,
@@ -1758,7 +1758,7 @@ batch_map_par <- map_avoid_unlinked(input.seq = seq_all,
                                     overlap = 30)
 ```
 
-```{r, echo=FALSE, eval=FALSE}
+```{r, echo=TRUE, eval=FALSE}
 a <- rf_graph_table(batch_map, mrk.axis = "none")
 b <- rf_graph_table(batch_map_par, mrk.axis = "none")
 p <- ggarrange(a,b , common.legend = TRUE,
@@ -1774,7 +1774,7 @@ ggsave(p, filename = "map.jpg")
 
 As you can see in the above maps, heuristic ordering algorithms do not return an optimal order result, mostly if you don't have many individuals in your population. Because of the erroneous order, generated map size is not close to the simulated size (100 cM) and their heatmaps don't present the expected color pattern. Two of them get close to the color pattern, they are the ug and the MDS method. They present the right global ordering but not local. If you have a reference genome, you can use its position information to rearrange the local order.
 
-# Export estimated parents haplotypes <span style="color:orange">(new!)</span>
+# Export estimated parents haplotypes 
 
 In the older version, users could only access the estimated linkage phase by observing the print in the console:
 
@@ -1800,11 +1800,9 @@ You can also obtain a data.frame with a list of sequences and personalize the gr
 parents_haplotypes(CHR2_final,CHR3_final, group_names=c("CHR2","CHR3"))
 ```
 
-
-# Export estimated progeny haplotypes <span style="color:orange">(new!)</span>
+# Export estimated progeny haplotypes 
 
 Function `progeny_haplotypes` generates a data.frame with progeny phased haplotypes estimated by `OneMap` HMM. For progeny, the HMM results in probabilities for each possible genotype, then the generated data.frame contains all possible genotypes. If `most_likely = TRUE`, the most likely genotype receives 1 and the rest 0 (if there are two most likely both receive 0.5), if `most_likely = FALSE` genotypes probabilities will be according to the HMM results. You can choose which individual to be evaluated in `ind`. The data.frame is composed by the information: individual (ind) and group (grp) ID, position in centimorgan (pos), progeny homologs (homologs), and from each parent the allele came (parents).
-
 
 ```{r}
 (progeny_haplot <- progeny_haplotypes(CHR2_final, most_likely = TRUE, ind = c(1,2), group_names = "CHR2_final"))
@@ -1815,6 +1813,53 @@ You can also have a view of progeny estimated haplotypes using `plot`. It shows 
 ```{r}
 plot(progeny_haplot, position = "stack")
 plot(progeny_haplot, position = "split")
+```
+
+# Export to [`VIEWpoly`](https://github.com/mmollina/viewpoly)
+
+`OneMap` output can now be visualized on [`VIEWpoly`](https://github.com/mmollina/viewpoly), an interactive app to display results from linkage analysis.
+
+```{r, eval=FALSE}
+viewpoly.obj <- export_viewpoly(seqs.list = list(CHR1_final,CHR2_final, CHR3_final))
+save(viewpoly.obj, file = "onemap_viewpoly_map.RData")
+```
+
+Check [`VIEWpoly` tutorial](https://cristianetaniguti.github.io/viewpoly_vignettes/VIEWpoly_tutorial.html) for further information on how to upload this data file to the app and how to visualized the generated graphics.
+
+# Export to [`QTLpoly`](https://github.com/gabrielgesteira/QTLpoly) 
+
+You can use your built map to map QTL using [`QTLpoly`](https://github.com/gabrielgesteira/QTLpoly):
+
+```{r, eval=FALSE}
+# Only one group
+genoprob <- export_mappoly_genoprob(CHR1_final)
+str(genoprob)
+
+# All groups
+groups_list <- list(CHR1_final,CHR2_final, CHR3_final)
+genoprobAll <- lapply(groups_list, export_mappoly_genoprob)
+
+
+# Read in QTLpoly (check its tutorial for further information about pheno4x object format)
+library(qtlpoly)
+data = read_data(ploidy = 2, geno.prob = genoprobAll, pheno = pheno4x, step = 1)
+
+```
+
+# Export to [`diaQTL`](https://github.com/Cristianetaniguti/diaQTL)
+
+You can use your built map to map QTL using [`diaQTL`](https://github.com/Cristianetaniguti/diaQTL):
+
+```{r, eval=FALSE}
+
+all_progeny_haplot <- progeny_haplotypes(list(CHR1_final, 
+                                              CHR2_final,
+                                              CHR3_final), 
+                                         most_likely = FALSE, 
+                                         ind = "all")
+
+library(diaQTL)
+convert_onemap(data = all_progeny_haplot, outstem = "example_") # It will generate the diaQTL input files example_diaQTL_geno.csv and example_diaQTL_ped.csv
 ```
 
 

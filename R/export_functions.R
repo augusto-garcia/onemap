@@ -14,12 +14,30 @@ export_viewpoly <- function(seqs.list){
     # only for biallelic markers
     types <- seqs.list[[i]]$data.name$segr.type[seqs.list[[i]]$seq.num]
     if(inherits(seqs.list[[i]]$data.name, "outcross")){
-      labs.p1 <- c("B3.7"=1, "D1.10" = 1, "D2.15" = 0)
-      labs.p2 <- c("B3.7"=1, "D1.10" = 0, "D2.15" = 1)
-      d.p1[[i]] <- labs.p1[match(types, names(labs.p1))]
-      d.p2[[i]] <- labs.p2[match(types, names(labs.p2))]
+      labs.out <- c("A.1" = 1,
+                    "A.2" = 2,
+                    "A.3" = 3,
+                    "A.4" = 4,
+                    "B1.5" = 5,
+                    "B1.6" = 6,
+                    "B3.7"=7,
+                    "C.8" = 8,
+                    "D1.9" = 9,
+                    "D1.10" = 10,
+                    "D1.11" = 11,
+                    "D1.12" = 12,
+                    "D1.13" = 13,
+                    "D2.14" = 14,
+                    "D2.15" = 15,
+                    "D2.16" = 16,
+                    "D2.17" = 17,
+                    "D2.18" = 18)
+      d.p1[[i]] <- labs.out[match(types, names(labs.out))]
+      d.p2[[i]] <- labs.out[match(types, names(labs.out))]
     } else if(inherits(seqs.list[[i]]$data.name, "intercross")){
-      labs <- c("A.H.B" = 1)
+      labs <- c("A.H.B" = 1,
+                "C.A" = 2,
+                "D.B" = 3)
       d.p1[[i]] <- labs[match(types, names(labs))]
       d.p2[[i]] <- labs[match(types, names(labs))]
     } else if(inherits(seqs.list[[i]]$data.name, "backcross")){
