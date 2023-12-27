@@ -55,27 +55,25 @@ find_bins <- function(input.obj, exact=TRUE)
   
   if (input.obj$n.mar<2) stop("there must be at least two markers to proceed with analysis")
   
-  if(exact==TRUE){
+  if(exact){
     temp_geno <- as.data.frame(t(input.obj$geno))
     temp <- temp_geno %>% group_by_all() %>% dplyr::mutate(label = cur_group_id())
-    
-    bin <- vector()
-    j <- 1
-    for(i in 1:length(temp$label)){
-      if(i == 1){
-        bin[i] <- 1
-      } else if(temp$label[i] != temp$label[i-1]) {
-        bin[i] <- j+1 
-        j <- j + 1
-      } else {
-        bin[i] <- j
-      }
-    }
+    bin <- temp$label
+    mis<-apply(input.obj$geno,2, function(x) 100*sum(x==0)/length(x))
+    dtf<-data.frame(bin, mis)
+    # Recover initial ordering
+    dtf_temp <- split.data.frame(dtf, dtf$bin)
+    dtf_temp <- dtf_temp[match(unique(bin), names(dtf_temp))]
+    for(i in 1:length(dtf_temp))
+      dtf_temp[[i]]$bin <- i
+    names(dtf_temp) <- NULL
+    dtf <- do.call(rbind, dtf_temp)
   } else {
     bin<-get_bins(input.obj$geno, exact)
+    mis<-apply(input.obj$geno,2, function(x) 100*sum(x==0)/length(x))
+    dtf<-data.frame(bin, mis)
   }
-  mis<-apply(input.obj$geno,2, function(x) 100*sum(x==0)/length(x))
-  dtf<-data.frame(bin, mis)
+
   w<-by(dtf, dtf$bin, function(x) x)
   names(w)<-sapply(w, function(x) rownames(x)[which.min(x$mis)])
   structure(list(bins=w,info=list(n.ind=input.obj$n.ind, n.mar=input.obj$n.mar, exact.search=exact)), class="onemap_bin")

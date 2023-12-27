@@ -5,7 +5,7 @@
 # File: utils.R                                                       #
 # Contains: acum seq_by_type map_avoid_unlinked split_2pts            #
 # map_save_ram remove_inds sort_by_pos empty_onemap_obj               #
-# try_seq_by_seq add_redundants rm_dupli_mks                          #
+# try_seq_by_seq add_redundants rm_dupli_mks ord_by_geno              #
 #                                                                     #
 # Written by Gabriel Rodrigues Alves Margarido and Cristiane Taniguti #
 # copyright (c) 2007-9, Gabriel R A Margarido                         #
@@ -112,45 +112,51 @@ split_2pts <- function(twopts.obj, mks){
 }
 
 
-#'Remove individuals from the onemap object
+#' Remove individuals from the onemap object
 #'
-#'@param onemap.obj object of class onemap
-#'@param rm.ind vector of characters with individuals names
+#' @param onemap.obj object of class onemap
+#' @param rm.ind vector of characters with individuals names
+#' @param list.seqs list of objects of class sequence
 #'
-##' @return An object of class \code{onemap} without the selected individuals, 
-##' i.e., a list with the following
-##' components: \item{geno}{a matrix with integers indicating the genotypes
-##' read for each marker. Each column contains data for a marker and each row
-##' represents an individual.} \item{n.ind}{number of individuals.}
-##' \item{n.mar}{number of markers.} \item{segr.type}{a vector with the
-##' segregation type of each marker, as \code{strings}.} \item{segr.type.num}{a
-##' vector with the segregation type of each marker, represented in a
-##' simplified manner as integers, i.e. 1 corresponds to markers of type
-##' \code{"A"}; 2 corresponds to markers of type \code{"B1.5"}; 3 corresponds
-##' to markers of type \code{"B2.6"}; 4 corresponds to markers of type
-##' \code{"B3.7"}; 5 corresponds to markers of type \code{"C.8"}; 6 corresponds
-##' to markers of type \code{"D1"} and 7 corresponds to markers of type
-##' \code{"D2"}. Markers for F2 intercrosses are coded as 1; all other crosses
-##' are left as \code{NA}.} \item{input}{the name of the input file.}
-##' \item{n.phe}{number of phenotypes.} \item{pheno}{a matrix with phenotypic
-##' values. Each column contains data for a trait and each row represents an
-##' individual.}
+#' @return An object of class \code{onemap} without the selected individuals
+#' if onemap object is used as input, or a list of objects of class \code{sequence}
+#' without the selected individuals if a list of sequences objects is use as input
 #'
-##' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
+#' @author Cristiane Taniguti, \email{chtaniguti@@tamu.edu}
 #'
 #'@export
-remove_inds <- function(onemap.obj, rm.ind){
-  if(!inherits(onemap.obj, "onemap")) stop("Input must to be of onemap class \n")
-  if(!(length(which(rownames(onemap.obj$geno) %in% rm.ind)) >0)) stop("We could not find any of these individuals in the dataset \n")
-  
-  new.onemap.obj <- onemap.obj
-  new.onemap.obj$geno <- onemap.obj$geno[-which(rownames(onemap.obj$geno) %in% rm.ind),]
-  new.onemap.obj$n.ind <- onemap.obj$n.ind - length(rm.ind)
-  for(i in 1:length(rm.ind)){
-    rm.idx <- grep(paste0("_",rm.ind[i],"$"), rownames(new.onemap.obj$error))
-    new.onemap.obj$error <- new.onemap.obj$error[-rm.idx,]
+remove_inds <- function(onemap.obj=NULL, rm.ind=NULL, list.seqs = NULL){
+  if(!is.null(onemap.obj)){
+    if(!inherits(onemap.obj, "onemap")) stop("Input must to be of onemap class \n")
+    if(!(length(which(rownames(onemap.obj$geno) %in% rm.ind)) >0)) stop("We could not find any of these individuals in the dataset \n")
+    
+    new.onemap.obj <- onemap.obj
+    new.onemap.obj$geno <- onemap.obj$geno[-which(rownames(onemap.obj$geno) %in% rm.ind),]
+    new.onemap.obj$n.ind <- onemap.obj$n.ind - length(rm.ind)
+    for(i in 1:length(rm.ind)){
+      rm.idx <- grep(paste0("_",rm.ind[i],"$"), rownames(new.onemap.obj$error))
+      new.onemap.obj$error <- new.onemap.obj$error[-rm.idx,]
+    }
+    return(new.onemap.obj)
+  } else if(!is.null(list.seqs)){
+    new.onemap.obj <- list.seqs[[1]]$data.name
+    if(!(length(which(rownames(new.onemap.obj$geno) %in% rm.ind)) >0)) stop("We could not find any of these individuals in the dataset \n")
+    
+    new.onemap.obj$geno <- new.onemap.obj$geno[-which(rownames(new.onemap.obj$geno) %in% rm.ind),]
+    new.onemap.obj$n.ind <- new.onemap.obj$n.ind - length(rm.ind)
+    for(i in 1:length(rm.ind)){
+      rm.idx <- grep(paste0("_",rm.ind[i],"$"), rownames(new.onemap.obj$error))
+      new.onemap.obj$error <- new.onemap.obj$error[-rm.idx,]
+    }
+    
+    new.list.seqs <- list.seqs
+    for(i in 1:length(list.seqs)){
+      new.list.seqs[[i]]$data.name <- new.onemap.obj
+    }
+    return(new.list.seqs)
+  } else {
+    stop("Please, indicate an onemap object or a list of sequences using onemap.obj and list.seqs arguments.")
   }
-  return(new.onemap.obj)
 }
 
 #' Sort markers in onemap object by their position in reference genome
@@ -623,5 +629,25 @@ keep_only_selected_mks <- function(list.sequences= NULL){
     new_seqs[[i]] <- make_seq(new_twopts, match(mk.names[[i]], colnames(new_twopts$data.name$geno)))
   }
   return(new_seqs)
+}
+
+
+#' Order the markers in a sequence using the genomic position
+#' 
+#' @param input.seq object of class `sequence`
+#' 
+#' @return An object of class \code{sequence}
+#' 
+#' @author Cristiane Taniguti
+#' 
+#' @export
+ord_by_geno <- function(input.seq){
+  
+  if(!(inherits(input.seq,c("sequence")))) stop(deparse(substitute(input.seq))," is not an object of class 'sequence'")
+  if(is.null(input.seq$data.name$CHROM) | is.null(input.seq$data.name$POS)) stop("Reference genome chromosome and position information are not available for this dataset.")
+  
+  ord.seq <- input.seq$seq.num[order(input.seq$data.name$CHROM[input.seq$seq.num],input.seq$data.name$POS[input.seq$seq.num])]
+  new.seq <- make_seq(input.seq$twopt, ord.seq)
+  return(new.seq)
 }
 

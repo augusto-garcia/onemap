@@ -1,6 +1,6 @@
 Package: onemap
 Title: Construction of Genetic Maps in Experimental Crosses
-Version: 3.0.0
+Version: 3.1.2
 Description: Analysis of molecular marker data from model (backcrosses,
     F2 and recombinant inbred lines) and non-model systems (i. e.
     outcrossing species). For the later, it allows statistical
@@ -8,7 +8,6 @@ Description: Analysis of molecular marker data from model (backcrosses,
     phases (genetic map construction) according to Wu et al. (2002)
     <doi:10.1006/tpbi.2002.1577>. All analysis are based on multipoint 
     approaches using hidden Markov models.
-Date: 2022-02-10
 Authors@R: c(person("Gabriel", 
                     "Margarido", 
                     role = "aut",
@@ -25,6 +24,9 @@ Authors@R: c(person("Gabriel",
                     role="ctb"),
              person("Rodrigo", 
                     "Amadeu", 
+                    role = "ctb"),
+             person("Jeekin", 
+                    "Lau", 
                     role = "ctb"),
              person("Karl",
                     "Broman", 
@@ -43,7 +45,7 @@ Authors@R: c(person("Gabriel",
                     email = "augusto.garcia@usp.br"))
 Author: Gabriel Margarido [aut], Marcelo Mollinari [aut], 
         Cristiane Taniguti [ctb, cre], Getulio Ferreira [ctb], 
-        Rodrigo Amadeu [ctb], Karl Broman [ctb], 
+        Rodrigo Amadeu [ctb], Jeekin Lau [ctb], Karl Broman [ctb], 
         Katharine Preedy [ctb, cph] (MDS ordering algorithm), 
         Bastian Schiffthaler [ctb, cph] (HMM parallelization),
         Augusto Garcia [aut, ctb]
@@ -84,5 +86,5 @@ Repository: CRAN
 Packaged: 2019-09-22 22:25:43 UTC; cris
 NeedsCompilation: yes
 Date/Publication: 2019-09-22 22:48:07 UTC
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 biocViews:

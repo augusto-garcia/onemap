@@ -237,11 +237,11 @@ create_depths_profile <- function(onemap.obj = NULL,
   if(length(rm.mks) > 0)
     data <- data[-rm.mks,]
   
-  if(class(mks) == "character"){
+  if(inherits(mks,"character")){
     data <- data[which(data$mks %in% mks),]
   }
   
-  if(class(inds) == "character"){
+  if(inherits(inds, "character")){
     data <- data[which(data$ind %in% inds),]
   }
   

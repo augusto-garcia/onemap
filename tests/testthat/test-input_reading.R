@@ -73,7 +73,7 @@ test_that("reading files",{
                       dim.geno =  c(100,68), 
                       table.geno = c(597, 3229,2974),
                       error1.4 = c(0.00001, rep(0.99999,3)))
-
+  
   data <- onemap_read_vcfR(vcf = system.file("extdata/vcf_example_bc.vcf.gz", package = "onemap"), 
                            cross = "f2 backcross", parent1 = "P1", parent2 = "P2", output_info_rds = "test.rds")
   expect_equal(check_data(data), 0)
@@ -97,22 +97,23 @@ test_that("reading files",{
                       error1.4 = c(rep(10^(-5),4)))
   
   # Test onemap_read_vcfR with simulated data
-  check_read_vcf <- function(df, cross, parent1, parent2, mk.types, genos){
+  check_read_vcf <- function(df, cross, parent1, parent2, mk.types, dist, genos){
     eval(bquote(data <- onemap_read_vcfR(vcf = .(df), cross = .(cross), 
                                          parent1 = .(parent1), parent2 = .(parent2), 
                                          only_biallelic = F)))
     expect_equal(check_data(data), 0)
     eval(bquote(expect_equal(.(mk.types), as.numeric(table(data$segr.type)))))
-    segre <- test_segregation(data, simulate.p.value = T)
-    expect_equal(length(select_segreg(segre, distorted = T)) == 0, TRUE)
+    segre <- test_segregation(data)
+    eval(bquote(expect_equal(length(select_segreg(segre, distorted = T)) == .(dist), TRUE)))
     eval(bquote(expect_equal(.(genos), as.numeric(table(data$geno)))))
   }
-
+  
   check_read_vcf(df= system.file("extdata/simu_cod_out.vcf.gz", package = "onemap"),
                  parent1 = "P1",
                  parent2 = "P2",
                  cross = "outcross",
                  mk.types = rep(8,7),
+                 dist = 0,
                  genos = c(4381, 4853, 1173, 793))
   
   
@@ -121,6 +122,7 @@ test_that("reading files",{
                  parent2 = "P1",
                  cross = "outcross",
                  mk.types = rep(8,7),
+                 dist = 0,
                  genos = c(4381, 4801 , 1225, 793))
   
   
@@ -129,6 +131,7 @@ test_that("reading files",{
                  parent2 = "P2",
                  cross = "f2 intercross",
                  mk.types = 54,
+                 dist = 0,
                  genos = c(2667, 5358, 2829))
   
   check_read_vcf(df= system.file("extdata/simu_cod_f2.vcf.gz", package = "onemap"),
@@ -136,7 +139,17 @@ test_that("reading files",{
                  parent2 = "P1",
                  cross = "f2 intercross",
                  mk.types = 54,
+                 dist = 0,
                  genos = c(2829, 5358, 2667))
+  
+  check_read_vcf(df = system.file("extdata/vcf_example_riself.vcf.gz", package = "onemap"),
+                 parent1 = "P2",
+                 parent2 = "P1",
+                 cross = "ri self",
+                 mk.types = 25,
+                 dist = 2,
+                 genos = c(87, 1121, 1092))
+  
 })
 
 test_that("writting files", {

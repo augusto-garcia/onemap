@@ -3,7 +3,7 @@
 ## Package: onemap                                                     ##
 ##                                                                     ##
 ## File: filters.R                                                     ##
-## Contains: filter_missing filter_prob                             ##
+## Contains: filter_missing filter_prob edit_order                     ##
 ##                                                                     ##
 ## Written by Cristiane Taniguti                                       ##
 ## copyright (c) 2007-9, Cristiane Taniguti                            ##
@@ -62,8 +62,9 @@ filter_missing <- function(onemap.obj=NULL, threshold= 0.25, by = "markers", ver
     new.onemap.obj$n.mar <- length(idx)
     new.onemap.obj$segr.type <- onemap.obj$segr.type[idx]
     new.onemap.obj$segr.type.num <- onemap.obj$segr.type.num[idx]
-    new.onemap.obj$CHROM <- onemap.obj$CHROM[idx]
-    new.onemap.obj$POS <- onemap.obj$POS[idx]
+    if(!is.null(onemap.obj$CHROM)) new.onemap.obj$CHROM <- onemap.obj$CHROM[idx]
+    if(!is.null(onemap.obj$POS)) new.onemap.obj$POS <- onemap.obj$POS[idx]
+    if(!is.null(onemap.obj$ref_alt_alleles)) new.onemap.obj$ref_alt_alleles <- onemap.obj$ref_alt_alleles[idx,]
     new.onemap.obj$error <- onemap.obj$error[idx + rep(c(0:(onemap.obj$n.ind-1))*onemap.obj$n.mar, each=length(idx)),]
     if(verbose) cat("Number of markers removed from the onemap object: ", length(which(perc.mis > threshold)), "\n")
   } else if (by == "individuals"){
@@ -131,3 +132,58 @@ filter_prob <- function(onemap.obj=NULL, threshold= 0.8, verbose=TRUE){
   
   return(onemap.obj)
 }
+
+
+#' Edit sequence ordered by reference genome positions 
+#' comparing to another set order
+#' 
+#' @param input.seq object of class sequence with alternative order (not genomic order)
+#' 
+#' @author Cristiane Taniguti, \email{chtaniguti@tamu.edu}
+#' 
+#' @export
+edit_order_onemap <- function(input.seq){
+  
+  if (!inherits(input.seq, "sequence")) {
+    stop(deparse(substitute(input.seq)), " is not an object of class 'sequence'")
+  }
+  
+  if(length(unique(input.seq$data.name$CHROM[input.seq$seq.num])) > 1) stop("There are markers from more than one chromosome in the sequence.")
+  
+  get_weird <- data.frame(x = 1:length(input.seq$seq.num),
+                          y = input.seq$data.name$POS[input.seq$seq.num])
+  
+  rownames(get_weird) <- colnames(input.seq$data.name$geno)[input.seq$seq.num]
+  get_weird <- get_weird[order(get_weird$y),]
+  plot(get_weird$x, get_weird$y, xlab="alternative order", ylab = "Genome position")
+  
+  inverted <- removed <- vector()
+  if(interactive()){
+    ANSWER <- "Y"
+    while(substr(ANSWER, 1, 1)  ==  "y" | substr(ANSWER, 1, 1)  ==  "yes" | substr(ANSWER, 1, 1)  ==  "Y" | ANSWER  == ""){
+      plot(get_weird$x, get_weird$y, xlab="sequence order", ylab = "Genome position")
+      mks.to.remove <- gatepoints::fhs(get_weird, mark = TRUE)
+      if(length(which(rownames(get_weird) %in% mks.to.remove)) > 0){
+        ANSWER2 <- readline("Enter 'invert/remove' to proceed with the edition: ")
+        if(ANSWER2 == "invert"){
+          inverted <- c(inverted, as.vector(mks.to.remove))
+          repl <- get_weird[rev(which(rownames(get_weird) %in% as.vector(mks.to.remove))),]
+          get_weird[which(rownames(get_weird) %in% as.vector(mks.to.remove)),2] <- repl[,2]
+          rownames(get_weird)[which(rownames(get_weird) %in% as.vector(mks.to.remove))] <- rownames(repl)
+        } else {
+          removed <- c(removed, as.vector(mks.to.remove))
+          get_weird <- get_weird[-which(rownames(get_weird) %in% mks.to.remove),]
+        }
+      }
+      ANSWER <- readline("Enter 'Y/n' to proceed with interactive edition or quit: ")
+    }
+    plot(get_weird$x, get_weird$y, xlab="sequence order", ylab = "Genome position")
+  }
+  
+  return(structure(list(edited_order = rownames(get_weird),
+                        removed = removed,
+                        inverted = inverted,
+                        data.name = input.seq$data.name,
+                        twopts = input.seq$twopt), class = "onemap.edit.order"))
+}
+

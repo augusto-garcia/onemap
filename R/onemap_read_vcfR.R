@@ -82,7 +82,7 @@
 ##'@export                  
 onemap_read_vcfR <- function(vcf=NULL,
                              vcfR.object = NULL,
-                             cross = c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"),
+                             cross = NULL,
                              parent1 =NULL,
                              parent2 =NULL,
                              f1=NULL,
@@ -100,6 +100,8 @@ onemap_read_vcfR <- function(vcf=NULL,
   if(is.null(vcfR.object)){
     vcfR.obj <- read.vcfR(vcf, verbose = F)
   } else vcfR.obj <- vcfR.object
+  
+  if(is.null(cross)) stop("Define a cross type: outcross, f2 intercross, f2 backcross, ri self, ri sib")
   
   n.mk <- dim(vcfR.obj@gt)[1]
   n.ind <- dim(vcfR.obj@gt)[2]-1
@@ -124,28 +126,30 @@ onemap_read_vcfR <- function(vcf=NULL,
   # Checking marker segregation according with parents
   P1 <- which(dimnames(vcfR.obj@gt)[[2]]==parent1) -1 
   P2 <- which(dimnames(vcfR.obj@gt)[[2]]==parent2) -1
+  if(length(P1)==0 | length(P2)==0) stop("One or both parents names could not be found in your data")
   
   MKS <- vcfR.obj@fix[,3]
   if (any(MKS == "." | is.na(MKS))) {
     MKS <- paste0(vcfR.obj@fix[,1],"_", vcfR.obj@fix[,2])
     # Add tag if is duplicated positions (split form of mnps)
-    z <- 1
-    for(i in 2:length(MKS)) {
-      if(MKS[i] == paste0(strsplit(MKS[i-1], "_")[[1]][1:2], collapse = "_")) {
-        z <- z + 1
-        MKS[i] <- paste0(MKS[i], "_",z)
-      } 
+    if(any(duplicated(MKS))){
+      z <- 1
+      for(i in 2:length(MKS)) {
+        if(MKS[i] == paste0(strsplit(MKS[i-1], "_")[[1]][1:2], collapse = "_")) {
+          z <- z + 1
+          MKS[i] <- paste0(MKS[i], "_",z)
+        } 
+      }
     }
   }
   
   # Geno matrix
   GT_matrix <- extract.gt(vcfR.obj)
   
-  if(length(P1)==0 | length(P2)==0) stop("One or both parents names could not be found in your data")
-  
   # This function do not consider phased genotypes
   GT_matrix[grep("[.]", GT_matrix)] <- "./."
   GT_matrix[is.na(GT_matrix)] <- "./."
+  
   GT_names <- names(table(GT_matrix))
   
   phased <- any(grepl("[|]", GT_names))
@@ -153,11 +157,11 @@ onemap_read_vcfR <- function(vcf=NULL,
     GT_matrix <- gsub("[|]", "/", as.matrix(GT_matrix))
   
   GT_names <- names(table(GT_matrix))
+  
   GT_names_up <- strsplit(GT_names, "/")
   max.alleles <- max(as.numeric(do.call(c, GT_names_up[-1])))
   
   if(phased){
-    
     if(length(grep("[.]", GT_names_up)) > 0){
       idx.mis <- grep("[.]", GT_names_up)
       GT_names_up[[idx.mis]] <- 0 # avoiding warning
@@ -169,10 +173,12 @@ onemap_read_vcfR <- function(vcf=NULL,
       GT_names_up[idx.mis] <- "./."
     
     only_diff <- which(GT_names_up != GT_names)
-    repl <- GT_names_up[only_diff]
-    sear <- GT_names[only_diff]
-    for(i in 1:length(sear)){
-      GT_matrix[which(GT_matrix == sear[i])] <- repl[i]
+    if(length(only_diff) > 0){
+      repl <- GT_names_up[only_diff]
+      sear <- GT_names[only_diff]
+      for(i in 1:length(sear)){
+        GT_matrix[which(GT_matrix == sear[i])] <- repl[i]
+      }
     }
   }
   
@@ -193,12 +199,28 @@ onemap_read_vcfR <- function(vcf=NULL,
   }
   n.mk <- nrow(GT_matrix)
   
+  alleles <- strsplit(ALT, ",")
+  for(i in 1:length(alleles)) alleles[[i]] <- c(REF[i],alleles[[i]])
+  
   mk.type <- mk.type.num <- rep(NA, n.mk)
   if (cross == "outcross"){
     P1_1 <- sapply(strsplit(GT_matrix[,P1], "/"), "[", 1)
     P1_2 <- sapply(strsplit(GT_matrix[,P1], "/"), "[", 2)
     P2_1 <- sapply(strsplit(GT_matrix[,P2], "/"), "[", 1)
     P2_2 <- sapply(strsplit(GT_matrix[,P2], "/"), "[", 2)
+    
+    # avoid warning
+    P1_1_t <- gsub("[.]", NA, P1_1)
+    P1_2_t <- gsub("[.]", NA, P1_2)
+    P2_1_t <- gsub("[.]", NA, P2_1)
+    P2_2_t <- gsub("[.]", NA, P2_2)
+    
+    P1_1_allele <- unlist(Map("[",alleles,as.numeric(P1_1_t) + 1))
+    P1_2_allele <- unlist(Map("[",alleles,as.numeric(P1_2_t) + 1))
+    P2_1_allele <- unlist(Map("[",alleles,as.numeric(P2_1_t) + 1))
+    P2_2_allele <- unlist(Map("[",alleles,as.numeric(P2_2_t) + 1))
+    
+    names(P1_1_allele) <- names(P1_2_allele) <- names(P2_1_allele) <- names(P2_2_allele) <- rownames(GT_matrix)
     
     # Marker types
     GT_parents <- cbind(P1_1, P1_2,P2_1, P2_2)
@@ -287,23 +309,23 @@ onemap_read_vcfR <- function(vcf=NULL,
     GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 4
     
     idx <- which(mk.type=="B3.7")
-    cat <- paste0(P1_1[idx], "/", P2_1[idx]) # 18
-    cat.rev <- paste0(P2_1[idx], "/", P1_1[idx]) # 18
+    cat <- paste0(P1_1[idx], "/", P2_1[idx]) 
+    cat.rev <- paste0(P2_1[idx], "/", P1_1[idx]) 
     GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 1
-    cat <- paste0(P1_1[idx], "/", P2_2[idx]) # 18
-    cat.rev <- paste0(P2_2[idx], "/", P1_1[idx]) # 18
+    cat <- paste0(P1_1[idx], "/", P2_2[idx]) 
+    cat.rev <- paste0(P2_2[idx], "/", P1_1[idx]) 
     GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 2
-    cat <- paste0(P1_2[idx], "/", P2_2[idx]) # 18
-    cat.rev <- paste0(P2_2[idx], "/", P1_2[idx]) # 18
+    cat <- paste0(P1_2[idx], "/", P2_2[idx]) 
+    cat.rev <- paste0(P2_2[idx], "/", P1_2[idx]) 
     GT_matrix[idx,][which(GT_matrix[idx,] == cat | GT_matrix[idx,] == cat.rev)] <- 3
     
     idx <- which(mk.type=="D1.10")
     idx.sub <- which(P1_1[idx] == P2_1[idx])
-    cat <- paste0(P1_1[idx][idx.sub], "/", P2_1[idx][idx.sub]) # 6
-    cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_1[idx][idx.sub]) # 6
+    cat <- paste0(P1_1[idx][idx.sub], "/", P2_1[idx][idx.sub])
+    cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_1[idx][idx.sub]) 
     GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 1
-    cat <- paste0(P1_2[idx][idx.sub], "/", P2_1[idx][idx.sub]) # 6
-    cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_2[idx][idx.sub]) # 6 
+    cat <- paste0(P1_2[idx][idx.sub], "/", P2_1[idx][idx.sub]) 
+    cat.rev <- paste0(P2_1[idx][idx.sub], "/", P1_2[idx][idx.sub]) 
     GT_matrix[idx[idx.sub],][which(GT_matrix[idx[idx.sub],] == cat | GT_matrix[idx[idx.sub],] == cat.rev)] <- 2
     
     idx.sub <- which(P1_2[idx] == P2_1[idx])
@@ -355,6 +377,16 @@ onemap_read_vcfR <- function(vcf=NULL,
     mk.type[which(GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "1/1")] <- "A.H.B.1"
     mk.type[which(GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "0/0")] <- "A.H.B.2"
     GT_parents <- GT_matrix[,c(P1,P2)]
+    
+    P1_1_allele <- GT_parents[,1]
+    P1_1_allele[which(GT_parents[,1] == "0/0")] <- REF[which(GT_parents[,1] == "0/0")]
+    P1_1_allele[which(GT_parents[,1] == "1/1")] <- ALT[which(GT_parents[,1] == "1/1")]
+    P2_1_allele <- P1_1_allele
+    
+    P2_2_allele <- GT_parents[,2]
+    P2_2_allele[which(GT_parents[,2] == "0/0")] <- REF[which(GT_parents[,2] == "0/0")]
+    P2_2_allele[which(GT_parents[,2] == "1/1")] <- ALT[which(GT_parents[,2] == "1/1")]
+    P1_2_allele <- P2_2_allele
     
     # Informs to user why markers are being removed
     idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./.")
@@ -418,6 +450,16 @@ onemap_read_vcfR <- function(vcf=NULL,
     mk.type[which(GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "0/0")] <- "A.H.2"
     GT_parents <- GT_matrix[,c(P1,P2)]
     
+    P1_1_allele <- GT_parents[,1]
+    P1_1_allele[which(GT_parents[,1] == "0/0")] <- REF[which(GT_parents[,1] == "0/0")]
+    P1_1_allele[which(GT_parents[,1] == "1/1")] <- ALT[which(GT_parents[,1] == "1/1")]
+    P2_1_allele <- P1_1_allele
+    
+    P2_2_allele <- GT_parents[,2]
+    P2_2_allele[which(GT_parents[,2] == "0/0")] <- REF[which(GT_parents[,2] == "0/0")]
+    P2_2_allele[which(GT_parents[,2] == "1/1")] <- ALT[which(GT_parents[,2] == "1/1")]
+    P1_2_allele <- P2_2_allele
+    
     # Informs to user why markers are being removed
     if(verbose) {
       idx <- which(GT_matrix[,P1] == "./." | GT_matrix[,P2] == "./.")
@@ -480,6 +522,17 @@ onemap_read_vcfR <- function(vcf=NULL,
     mk.type[which(GT_matrix[,P1] == "0/0" & GT_matrix[,P2] == "1/1")] <- "A.B.1"
     mk.type[which(GT_matrix[,P1] == "1/1" & GT_matrix[,P2] == "0/0")] <- "A.B.2"
     GT_parents <- GT_matrix[,c(P1,P2)]
+    
+    P1_1_allele <- GT_parents[,1]
+    P1_2_allele <- GT_parents[,1]
+    P1_1_allele[which(GT_parents[,1] == "0/0")] <- REF[which(GT_parents[,1] == "0/0")]
+    P1_1_allele[which(GT_parents[,1] == "1/1")] <- ALT[which(GT_parents[,1] == "1/1")]
+    P1_2_allele <- P1_1_allele
+    P2_1_allele <- GT_parents[,2]
+    P2_2_allele <- GT_parents[,2]
+    P2_1_allele[which(GT_parents[,2] == "0/0")] <- REF[which(GT_parents[,2] == "0/0")]
+    P2_1_allele[which(GT_parents[,2] == "1/1")] <- ALT[which(GT_parents[,2] == "1/1")]
+    P2_2_allele <- P2_1_allele
     
     # Informs to user why markers are being removed
     if(verbose) {
@@ -567,6 +620,11 @@ onemap_read_vcfR <- function(vcf=NULL,
   }
   rownames(GT_matrix)  <- MKS
   
+  ref_alt_alleles <- data.frame(P1_1_allele = P1_1_allele[match(MKS, names(P1_1_allele))], # smaller number in the VCF codification Ex: 0 if 0/1; 2 if 2/4
+                                P1_2_allele = P1_2_allele[match(MKS, names(P1_2_allele))], # larger number in the VCF codification Ex: 1 if 0/1; 4 if 2/4
+                                P2_1_allele = P2_1_allele[match(MKS, names(P2_1_allele))],
+                                P2_2_allele = P2_2_allele[match(MKS, names(P2_2_allele))])
+  
   legacy_crosses <- setNames(c("outcross", "f2", "backcross", "riself", "risib"), 
                              c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"))
   
@@ -579,6 +637,7 @@ onemap_read_vcfR <- function(vcf=NULL,
                                pheno = NULL,
                                CHROM = CHROM,
                                POS = POS,
+                               ref_alt_alleles = ref_alt_alleles,
                                input = "vcf"),
                           class=c("onemap",legacy_crosses[cross]))
   
