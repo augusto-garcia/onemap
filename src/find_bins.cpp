@@ -40,7 +40,6 @@
 #include <math.h>
 #include <Rmath.h>
 #include <Rcpp.h>
-#include <R_ext/PrtUtil.h>
 
 using namespace std;
 using namespace Rcpp;

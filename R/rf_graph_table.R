@@ -180,7 +180,7 @@ rf_graph_table <- function(input.seq,
   # }
   
   ##Write NAs in two-point recombination fractions between markers of type D1 and D2
-  if(inherits(input.seq$data.name, c("outcross", "f2"))){
+  if(inherits(input.seq$data.name, c("outcross"))){
     types <- input.seq$data.name$segr.type.num[input.seq$seq.num]
     for(i in 1:length(types))
       for(j in 1:(length(types)-1))

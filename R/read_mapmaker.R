@@ -15,8 +15,6 @@
 ##                                                                      #
 #########################################################################
 
-globalVariables(c("mkt.wrg"))
-
 ## Function to read data in MAPMAKER style from input file
 
 
@@ -265,8 +263,8 @@ read_mapmaker<-function (file=NULL, dir=NULL, verbose=TRUE)
         {
             if(any(is.na(match(na.omit(unique(geno[,i])), 1:5))))
             {
-                mkt.wrg.names <- paste(sQuote(colnames(geno)[mkt.wrg]), collapse = ", ")
-                msg <- sprintf(ngettext(length(mkt.wrg),
+                mkt.wrg.names <- paste(sQuote(colnames(geno)[i]), collapse = ", ")
+                msg <- sprintf(ngettext(length(mkt.wrg.names),
                                         "marker %s has invalid codification",
                                         "markers %s have invalid codification"), mkt.wrg.names)
                 stop(msg)
@@ -275,8 +273,8 @@ read_mapmaker<-function (file=NULL, dir=NULL, verbose=TRUE)
                 segr.type[i]<-"M.X"
         }
         segr.type.num[segr.type=="A.H.B"]<-4
-        segr.type.num[segr.type=="C.A"]<-7
-        segr.type.num[segr.type=="D.B"]<-6
+        segr.type.num[segr.type=="C.A"]<-5
+        segr.type.num[segr.type=="D.B"]<-5
         segr.type.num[segr.type=="M.X"]<-0
         # Adapting to change in f2 HMM == out HMM
         geno[, segr.type=="C.A"][which(geno[, segr.type=="C.A"] == 1)] <- 2 

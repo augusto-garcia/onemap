@@ -12,7 +12,7 @@ test_that("group function",{
   }
   
   check_group("onemap_example_out", c(15,8,5,2))
-  check_group("onemap_example_f2", 66)
+  check_group(example_data = "onemap_example_f2", c(27,16,23))
   check_group("onemap_example_bc", c(17,28,22))
   check_group("onemap_example_riself", c(2,14,33,13))
 })
@@ -30,7 +30,7 @@ test_that("group_seq function", {
   }
   
   check_group_seq("vcf_example_out", "onemap_example_out", 0, 0)
-  check_group_seq("vcf_example_f2", "onemap_example_f2", 0, 66)
+  check_group_seq("vcf_example_f2", "onemap_example_f2", 0, 0)
   check_group_seq("vcf_example_riself", "onemap_example_riself",3, 0)
   check_group_seq("vcf_example_bc", "onemap_example_bc",25, 22)
 })
@@ -47,6 +47,6 @@ test_that("group_upgma", {
 
   check_group_upgma("vcf_example_out", 2, c(11,13))
   check_group_upgma("vcf_example_f2", 3,  c(9,13,3))
-  check_group_upgma("vcf_example_riself", 2, c(13, 11))
+  check_group_upgma(example_data = "vcf_example_riself", 2, c(13, 11))
   check_group_upgma("vcf_example_bc", 2, c(18,7))
 })

@@ -77,7 +77,7 @@
 * mds_onemap function
 * Vignette update
 
-# onemap.2.1.2
+# onemap 2.1.2
 
 * Submitted to CRAN
 
@@ -172,3 +172,50 @@ Taniguti, C. H., Taniguti, L. M., Amadeu, R. R., Mollinari, M., Da, G., Pereira,
 * Review spell_check
 * Avoid -Inf likelihood result by increasing the tolerance value
 * Fix bug in mds_onemap
+
+# onemap 3.1.0
+
+* New plot for cM x Mb relation (plot_genome_vs_cm)
+* New function to export to VIEWpoly (export_viewpoly)
+* New function to order markers by chromosome position (ord_by_geno)
+* New function to create map summary (summary_maps_onemap) - based on MAPpoly function 
+* New function to interactive edition of ordering (edit_order_onemap)
+* New function to export haplotype probabilities to QTLpoly (export_mappoly_genoprob)
+* Keep reference and alternative alleles information from imported VCF 
+* Return parents haplotypes using reference and alternative alleles codification when outcross or f2 cross type
+* Functions to export and import reduced size onemap R objects (save_onemap_sequences and load_onemap_sequences)
+* Add new author (Jeekin Lau :smile: )
+
+# onemap 3.2.0
+
+* Announce about MAPpoly included in the README
+* Fix "subscript out of bounds" warning while running rf_2pts
+* Update vignettes
+* Update tests
+
+# onemap 3.2.1
+
+* Fix c++ error in clang-ASAN and gcc-ASAN systems
+
+# onemap 3.2.2
+
+* Update citation
+
+# onemap 3.2.4
+
+* This version better address package citation
+* Removes rebus dependency
+* Removes deprecated R_ext/PrtUtil.h usage
+* Change maintainer email
+* Update authors order
+* Removing statgen.ncsu.edu unavailable server from docs
+
+# onemap 3.2.5
+
+* Bugfix: map_avoid_unlinked for f2 backcross was searching for unexisting genotype
+* Bugfix: onemap_read_vcfR codification for A.2 markers
+
+# onemap 3.2.6
+
+* Adds a few bug fixes
+* Changes maintainer email address

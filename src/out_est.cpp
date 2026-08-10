@@ -42,7 +42,6 @@
 
 
 #include <Rcpp.h>
-#include <R_ext/PrtUtil.h>
 #include "utils.h"
 using namespace Rcpp;
 using namespace std;

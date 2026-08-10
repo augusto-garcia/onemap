@@ -35,7 +35,7 @@ or Mac OS should have no difficulty following this tutorial.
 
 We would like to recommend those new users, instead of using plain R,
 use it through the fantastic software
-[RStudio](https://www.rstudio.com/). With this package, there is no noticeable difference between operating systems.
+RStudio. With this package, there is no noticeable difference between operating systems.
 
 As advertised on the website, _RStudio is an integrated development
 environment (IDE) for R. It includes a console, syntax-highlighting editor that supports direct code execution, as well as tools for

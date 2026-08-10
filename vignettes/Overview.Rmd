@@ -93,26 +93,45 @@ We also wrote a chapter with information about _OneMap_ installation,
 as well as sections showing the usage of _OneMap_ to build linkage
 maps for outcrossing (non-inbred) populations, as well as F$_2$
 populations (which can also be applied to backcrosses and RILs).
-
 All sections may be read independently. So, you can just move to the
-part you are interested in. Good luck, and let us know if you have
-suggestions to improve the package!
+part you are interested in. 
+
+The software has been available on CRAN since 2007 ([OneMap on CRAN](https://cran.r-project.org/package=onemap)) and has undergone several updates, adding new features and optimization up to version 3.2.0 in 2024. Future updates will focus solely on maintaining accessibility and functionality. **New feature development and optimization efforts are now being directed toward the [MAPpoly](https://github.com/mmollina/MAPpoly) and [MAPpoly2](https://github.com/mmollina/mappoly2) packages**.  
+
+**MAPpoly** is a more robust package designed for constructing linkage maps in polyploid species. Its optimized algorithms also provide improved efficiency for diploid species compared to OneMap. Therefore, we recommend using MAPpoly instead of OneMap in the following scenarios for diploid species:  
+
+- When working with only biallelic markers (e.g., SNPs).  
+- For outcrossing full-sib (F1), F2, or backcross populations.  
+- For datasets with a large number of markers (>5,000).  
+- For multi-population datasets (e.g., progeny from multiple parents; see MAPpoly2).  
+
+However, **OneMap** remains the best choice if you have:  
+
+- Populations derived from recombinant inbred lines (RILs).  
+- Datasets with multiallelic or dominant markers.  
+
+For guidance on best practices in building linkage maps while accounting for genotyping errors, please refer to Taniguti et. al 2023.  
 
 # How to Cite
 
-Margarido G. R. A., Souza A. P., Garcia A. A. F., 2007. OneMap:
-software for genetic mapping in outcrossing species. _Hereditas_
-**144**: 78–79.
+Margarido, G. R. A., Souza, A. P., &38; Garcia, A. A. F. (2007). OneMap: software for genetic mapping in outcrossing species. Hereditas, 144(3), 78–79. https://doi.org/10.1111/j.2007.0018-0661.02000.x
+
+* If you are using OneMap versions > 2.0, please cite also:
+
+Taniguti, C. H.; Taniguti, L. M.; Amadeu, R. R.; Lau, J.; de Siqueira Gesteira, G.; Oliveira, T. de P.; Ferreira, G. C.; Pereira, G. da S.;  Byrne, D.;  Mollinari, M.; Riera-Lizarazu, O.; Garcia, A. A. F. Developing best practices for genotyping-by-sequencing analysis in the construction of linkage maps. 2023. GigaScience, 12, giad092. https://doi.org/10.1093/gigascience/giad092
+
+* If you used the HMM parallelization, please cite [BatchMap](https://github.com/bschiffthaler/BatchMap) paper too:
+
+Schiffthaler, B., Bernhardsson, C., Ingvarsson, P. K., &; Street, N. R. (2017). BatchMap: A parallel implementation of the OneMap R package for fast computation of F1 linkage maps in outcrossing species. PLoS ONE, 12(12), 1–12. https://doi.org/10.1371/journal.pone.0189256
 
 # References
 
-Broman K. W., Sen Ś., 2009. A Guide to QTL Mapping with R/qtl.
+Broman K. W., Sen S., 2009. A Guide to QTL Mapping with R/qtl.
 Springer, New York.
 
 Wang S., Basten, C. J. and Zeng Z.-B. Windows QTL Cartographer 2.5.
 Department of Statistics, North Carolina State University, Raleigh,
 NC, 2010.
-[http://statgen.ncsu.edu/qtlcart/WQTLCart.htm](http://statgen.ncsu.edu/qtlcart/WQTLCart.htm)
 
 Wu, R., Ma, C.X., Painter, I. and Zeng, Z.-B. 2002a. Simultaneous
 maximum likelihood estimation of linkage and linkage phases in

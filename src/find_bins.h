@@ -39,7 +39,6 @@
 #include <math.h>
 #include <Rmath.h>
 #include <Rcpp.h>
-#include <R_ext/PrtUtil.h>
 
 RcppExport SEXP get_bins(SEXP geno_R, SEXP exact_R);
 int check_occurrence(std::vector<int>& v, int x);

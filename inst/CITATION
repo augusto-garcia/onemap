@@ -1,13 +1,67 @@
-bibentry(bibtype    = "Article",
-         title      = "OneMap: software for genetic mapping in outcrossing species",
-          year      = "2007",
-          journal   = "Hereditas",
-          doi       = "10.1111/j.2007.0018-0661.02000.x",
-          author    = c(person(given  = "Gabriel Rodrigues Alves",
-                               family = "Margarido"),
-                        person(given  = "Anete Pereira",
-                               family = "de Souza"),
-                        person(given  = "Antonio Augusto Franco",
-                               family = "Garcia")
-                       )
+citHeader("When using OneMap, please choose and cite appropriately:")
+
+## 1. OneMap version <= 2.0
+bibentry(
+  bibtype = "Article",
+  title   = "OneMap: software for genetic mapping in outcrossing species",
+  author  = c(
+    person("G. R. A.", "Margarido"),
+    person("A. P.",           "Souza"),
+    person("A. A. F.",        "Garcia")
+  ),
+  journal = "Hereditas",
+  year    = "2007",
+  volume  = "144",
+  number  = "3",
+  pages   = "78–79",
+  doi     = "10.1111/j.2007.0018-0661.02000.x"
+)
+
+## 2. OneMap version ≥ 2.0
+bibentry(
+  bibtype = "Article",
+  title   = "Developing best practices for genotyping-by-sequencing analysis in the construction of linkage maps",
+  author  = c(
+    person("C. H.",              "Taniguti"),
+    person("L. M.",              "Taniguti"),
+    person("R. R.",              "Amadeu"),
+    person("J.",                 "Lau"),
+    person("G.",                 "de Siqueira Gesteira"),
+    person("T. de P.",           "Oliveira"),
+    person("G. C.",              "Ferreira"),
+    person("G. da S.",           "Pereira"),
+    person("D.",                 "Byrne"),
+    person("M.",                 "Mollinari"),
+    person("O.",                 "Riera-Lizarazu"),
+    person("A. A. F.",           "Garcia")
+  ),
+  journal = "GigaScience",
+  year    = "2023",
+  volume  = "12",
+  pages   = "giad092",
+  doi     = "10.1093/gigascience/giad092"
+)
+
+## 3. BatchMap (if using the HMM parallelization)
+bibentry(
+  bibtype = "Article",
+  title   = "BatchMap: A parallel implementation of the OneMap R package for fast computation of F1 linkage maps in outcrossing species",
+  author  = c(
+    person("B.",    "Schiffthaler"),
+    person("C.",    "Bernhardsson"),
+    person("P. K.", "Ingvarsson"),
+    person("N. R.", "Street")
+  ),
+  journal = "PLoS ONE",
+  year    = "2017",
+  volume  = "12",
+  number  = "12",
+  pages   = "1–12",
+  doi     = "10.1371/journal.pone.0189256"
+)
+
+citFooter(
+  "• If you used OneMap version < 2.0 cite Margarido et al. (2007).\n",
+  "• If you used OneMap version > 2.0 cite Taniguti et al. (2023).\n",
+  "• If you leveraged the HMM parallelization, please cite also Schiffthaler et al. (2017)."
 )

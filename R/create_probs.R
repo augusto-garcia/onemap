@@ -115,7 +115,7 @@ create_probs <- function(input.obj = NULL,
         stop("Not all individuals in onemap object have corresponding genotype errors in matrix")
       }
       
-      if(!all(rownames(input.obj$geno)%in%rownames(genotypes_errors))){
+      if(!all(rownames(genotypes_errors)%in%rownames(input.obj$geno))){
         stop("There are more individuals in errors matrix than in onemap object")
       }
       
@@ -294,39 +294,31 @@ create_probs <- function(input.obj = NULL,
       het.idx <- which(probs$value == 2)
       
       hom1.idx <- which(probs$value == 1)
-      # If it has only one marker the apply breaks
-      if(length(hom1.idx) > 1){
-        sub <- genotypes_probs[hom1.idx,-2]
-      } else {
-        sub <- t(as.matrix(genotypes_probs[hom1.idx,-2]))
-      }
       
-      hom1.idx.prob <- unique(apply(genotypes_probs[hom1.idx,],1, which.max))
-      prob.temp[hom1.idx,1] <- genotypes_probs[hom1.idx, hom1.idx.prob]
-      if(hom1.idx.prob == 3){
-        prob.temp[hom1.idx,3] <- genotypes_probs[hom1.idx, 1]
-        prob.temp[het.idx,3] <- genotypes_probs[het.idx,1]
-        prob.temp[het.idx,1] <- genotypes_probs[het.idx,3]
-      } else {
-        prob.temp[hom1.idx,3] <- genotypes_probs[hom1.idx, 3]
-        prob.temp[het.idx,1] <- genotypes_probs[het.idx,1]
-        prob.temp[het.idx,3] <- genotypes_probs[het.idx,3]
+      if(length(hom1.idx) > 0){
+        hom1.idx.prob <- as.numeric(which.max(table(apply(genotypes_probs[hom1.idx, , drop=FALSE], 1, which.max))))
+        prob.temp[hom1.idx,1] <- genotypes_probs[hom1.idx, hom1.idx.prob]
+        if(hom1.idx.prob == 3){
+          prob.temp[hom1.idx,3] <- genotypes_probs[hom1.idx, 1]
+          prob.temp[het.idx,3] <- genotypes_probs[het.idx,1]
+          prob.temp[het.idx,1] <- genotypes_probs[het.idx,3]
+        } else {
+          prob.temp[hom1.idx,3] <- genotypes_probs[hom1.idx, 3]
+          prob.temp[het.idx,1] <- genotypes_probs[het.idx,1]
+          prob.temp[het.idx,3] <- genotypes_probs[het.idx,3]
+        }
       }
       
       hom3.idx <- which(probs$value == 3)
-      # If it has only one marker the apply breaks
-      if(length(hom3.idx) > 1){
-        sub <- genotypes_probs[hom3.idx,-2]
-      } else {
-        sub <- t(as.matrix(genotypes_probs[hom3.idx,-2]))
-      }
       
-      hom3.idx.prob <- unique(apply(genotypes_probs[hom3.idx,],1, which.max))
-      prob.temp[hom3.idx,3] <- genotypes_probs[hom3.idx, hom3.idx.prob]
-      if(hom3.idx.prob == 3){
-        prob.temp[hom3.idx,1] <- genotypes_probs[hom3.idx, 1]
-      } else {
-        prob.temp[hom3.idx,1] <- genotypes_probs[hom3.idx, 3]
+      if(length(hom3.idx) > 0){
+        hom3.idx.prob <- as.numeric(which.max(table(apply(genotypes_probs[hom3.idx, , drop=FALSE], 1, which.max))))
+        prob.temp[hom3.idx,3] <- genotypes_probs[hom3.idx, hom3.idx.prob]
+        if(hom3.idx.prob == 3){
+          prob.temp[hom3.idx,1] <- genotypes_probs[hom3.idx, 1]
+        } else {
+          prob.temp[hom3.idx,1] <- genotypes_probs[hom3.idx, 3]
+        }
       }
       # if(crosstype == "f2"){
       #   prob <- matrix(NA, nrow=length(probs$value), ncol = 4)
@@ -340,11 +332,11 @@ create_probs <- function(input.obj = NULL,
         prob <- matrix(NA, nrow=length(probs$value), ncol = 2)
         
         idx <- which(probs$value == 1)
-        prob[idx,] <- cbind(prob.temp[idx,1], prob.temp[idx,2])
+        prob[idx,] <- matrix(c(prob.temp[idx,1], prob.temp[idx,2]), ncol=2)
         idx <- which(probs$value == 2)
-        prob[idx,] <- cbind(prob.temp[idx,1], prob.temp[idx,2])
+        prob[idx,] <- matrix(c(prob.temp[idx,1], prob.temp[idx,2]), ncol=2)
         idx <- which(probs$value == 3)
-        prob[idx,] <- cbind(prob.temp[idx,1], prob.temp[idx,3])
+        prob[idx,] <- matrix(c(prob.temp[idx,1], prob.temp[idx,3]), ncol=2)
         
         idx <- which(probs$value == 0)
         prob[idx,] <- 1

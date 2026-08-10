@@ -110,8 +110,8 @@
 make_seq <-
   function(input.obj, arg = NULL, phase = NULL, data.name = NULL, twopt = NULL) {
     # checking for correct object
-    if(!(inherits(input.obj, c("onemap", "rf_2pts", "group", "compare", "try", "order", "group.upgma"))))
-      stop(deparse(substitute(input.obj))," is not an object of class 'onemap', 'rf_2pts', 'group', 'group.upgma','compare', 'try' or 'order'")
+    if(!(inherits(input.obj, c("onemap", "rf_2pts", "group", "compare", "try", "order", "group.upgma", "onemap.edit.order"))))
+      stop(deparse(substitute(input.obj))," is not an object of class 'onemap', 'rf_2pts', 'group', 'group.upgma','compare', 'onemap.edit.order', 'try' or 'order'")
     if(inherits(input.obj, "onemap")){
       if (length(arg) == 1 && is.character(arg)) {
         seq.num <- which(input.obj$CHROM == arg)
@@ -204,6 +204,12 @@ make_seq <-
         probs <- input.obj$probs3
       }
       twopt <- input.obj$twopt
+    } else if(inherits(input.obj, "onemap.edit.order")){
+      seq.num <- match(input.obj$edited_order, colnames(input.obj$twopts$data.name$geno))
+      seq.phases <- -1
+      seq.rf <- -1
+      seq.like <- NULL
+      twopt <- input.obj$twopts
     }
     
     ## check if any marker appears more than once in the sequence

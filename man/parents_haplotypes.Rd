@@ -4,12 +4,21 @@
 \alias{parents_haplotypes}
 \title{Generates data.frame with parents estimated haplotypes}
 \usage{
-parents_haplotypes(..., group_names = NULL)
+parents_haplotypes(
+  ...,
+  group_names = NULL,
+  map.function = "kosambi",
+  ref_alt_alleles = FALSE
+)
 }
 \arguments{
 \item{...}{objects of class sequence}
 
 \item{group_names}{vector of characters defining the group names}
+
+\item{map.function}{"kosambi" or "haldane" according to which was used to build the map}
+
+\item{ref_alt_alleles}{TRUE to return parents haplotypes as reference and alternative ref_alt_alleles codification}
 }
 \value{
 data.frame with group ID (group), marker number (mk.number) 

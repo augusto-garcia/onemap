@@ -1,7 +1,7 @@
 context("Reading input files")
 
 test_that("reading files",{
-  expect_values_equal <- function(segr.type1.4, 
+  expect_values_equal <- function(data, segr.type1.4, 
                                   segr.type.num1.4, n.phe, pheno1.3, dim.geno, table.geno, error1.4){
     
     eval(bquote(expect_equal(data$segr.type[1:4], .(segr.type1.4))))
@@ -15,17 +15,19 @@ test_that("reading files",{
   
   data <- read_mapmaker(system.file("extdata/mapmaker_example_f2.raw", package = "onemap"))
   expect_equal(check_data(data), 0)
-  expect_values_equal(segr.type1.4 = c("A.H.B", "C.A", "D.B", "C.A"),
-                      segr.type.num1.4 = c(4,7,6,7),
+  expect_values_equal(data, 
+                      segr.type1.4 = c("A.H.B", "C.A", "D.B", "C.A"),
+                      segr.type.num1.4 = c(4,5,5,5),
                       n.phe = 1,
                       pheno1.3 = c(37.5892, 36.3664, 37.2230),
                       dim.geno = c(200,66), 
                       table.geno = c(1980, 5192,4338,1690),
-                      error1.4 = rep(0.99999,4))
+                      error1.4 = c(0.99999, rep(0.33333,3)))
   
   data <- read_mapmaker(system.file("extdata/mapmaker_example_bc.raw", package = "onemap"))
   expect_equal(check_data(data), 0)
-  expect_values_equal(segr.type1.4 = rep("A.H",4),
+  expect_values_equal(data,
+                      segr.type1.4 = rep("A.H",4),
                       segr.type.num1.4 = rep(8,4),
                       n.phe = 1,
                       pheno1.3 = c(40.7594, 39.5339, 37.9111),
@@ -35,17 +37,19 @@ test_that("reading files",{
   
   data <- read_onemap(system.file("extdata/onemap_example_f2.raw", package = "onemap"))
   expect_equal(check_data(data), 0)
-  expect_values_equal(segr.type1.4 = c("A.H.B", "C.A", "D.B", "C.A"),
-                      segr.type.num1.4 = c(4,7,6,7),
+  expect_values_equal(data,
+                      segr.type1.4 = c("A.H.B", "C.A", "D.B", "C.A"),
+                      segr.type.num1.4 = c(4,5,5,5),
                       n.phe = 1,
                       pheno1.3 = c(37.5892, 36.3664, 37.2230),
                       dim.geno = c(200,66), 
                       table.geno = c(1980, 5192,4338,1690),
-                      error1.4 = c(rep(0.99999,4)))
+                      error1.4 = c(0.99999,rep(0.33333,3)))
   
   data <- read_onemap(system.file("extdata/onemap_example_bc.raw", package = "onemap"))
   expect_equal(check_data(data), 0)
-  expect_values_equal(segr.type1.4 = rep("A.H",4),
+  expect_values_equal(data,
+                      segr.type1.4 = rep("A.H",4),
                       segr.type.num1.4 = rep(8,4),
                       n.phe = 1,
                       pheno1.3 = c(40.7594, 39.5339, 37.9111),
@@ -55,7 +59,8 @@ test_that("reading files",{
   
   data <- read_onemap(system.file("extdata/onemap_example_out.raw", package = "onemap"))
   expect_equal(check_data(data), 0)
-  expect_values_equal(segr.type1.4 = c("B3.7", "D2.18", "D1.13", "A.4"),
+  expect_values_equal(data,
+                      segr.type1.4 = c("B3.7", "D2.18", "D1.13", "A.4"),
                       segr.type.num1.4 = c(4,7,6,1),
                       n.phe = 3,
                       pheno1.3 =  c(43, 12, 20),
@@ -66,18 +71,20 @@ test_that("reading files",{
   
   data <- read_onemap(system.file("extdata/onemap_example_riself.raw", package = "onemap"))
   expect_equal(check_data(data), 0)
-  expect_values_equal(segr.type1.4 = rep("A.B",4),
+  expect_values_equal(data,
+                      segr.type1.4 = rep("A.B",4),
                       segr.type.num1.4 = rep(9,4),
                       n.phe = 0,
                       pheno1.3 = NULL,
                       dim.geno =  c(100,68), 
                       table.geno = c(597, 3229,2974),
                       error1.4 = c(0.00001, rep(0.99999,3)))
-
+  
   data <- onemap_read_vcfR(vcf = system.file("extdata/vcf_example_bc.vcf.gz", package = "onemap"), 
                            cross = "f2 backcross", parent1 = "P1", parent2 = "P2", output_info_rds = "test.rds")
   expect_equal(check_data(data), 0)
-  expect_values_equal(segr.type1.4 = rep("A.H",4),
+  expect_values_equal(data,
+                      segr.type1.4 = rep("A.H",4),
                       segr.type.num1.4 = rep(8,4),
                       n.phe = 0,
                       pheno1.3 = NULL,
@@ -88,7 +95,8 @@ test_that("reading files",{
   data <- onemap_read_vcfR(system.file("extdata/vcf_example_riself.vcf.gz", package = "onemap"), 
                            cross = "ri self", parent1 = "P1", parent2 = "P2")
   expect_equal(check_data(data), 0)
-  expect_values_equal(segr.type1.4 = rep("A.B",4),
+  expect_values_equal(data,
+                      segr.type1.4 = rep("A.B",4),
                       segr.type.num1.4 = rep(9,4),
                       n.phe = 0,
                       pheno1.3 = NULL,
@@ -97,23 +105,24 @@ test_that("reading files",{
                       error1.4 = c(rep(10^(-5),4)))
   
   # Test onemap_read_vcfR with simulated data
-  check_read_vcf <- function(df, cross, parent1, parent2, mk.types, genos){
+  check_read_vcf <- function(df, cross, parent1, parent2, mk.types, dist, genos){
     eval(bquote(data <- onemap_read_vcfR(vcf = .(df), cross = .(cross), 
                                          parent1 = .(parent1), parent2 = .(parent2), 
                                          only_biallelic = F)))
     expect_equal(check_data(data), 0)
     eval(bquote(expect_equal(.(mk.types), as.numeric(table(data$segr.type)))))
-    segre <- test_segregation(data, simulate.p.value = T)
-    expect_equal(length(select_segreg(segre, distorted = T)) == 0, TRUE)
+    segre <- test_segregation(data)
+    eval(bquote(expect_equal(length(select_segreg(segre, distorted = T)) == .(dist), TRUE)))
     eval(bquote(expect_equal(.(genos), as.numeric(table(data$geno)))))
   }
-
+  
   check_read_vcf(df= system.file("extdata/simu_cod_out.vcf.gz", package = "onemap"),
                  parent1 = "P1",
                  parent2 = "P2",
                  cross = "outcross",
                  mk.types = rep(8,7),
-                 genos = c(4381, 4853, 1173, 793))
+                 dist = 0,
+                 genos = c(4392, 4858, 1162, 788))
   
   
   check_read_vcf(df= system.file("extdata/simu_cod_out.vcf.gz", package = "onemap"),
@@ -121,7 +130,8 @@ test_that("reading files",{
                  parent2 = "P1",
                  cross = "outcross",
                  mk.types = rep(8,7),
-                 genos = c(4381, 4801 , 1225, 793))
+                 dist = 0,
+                 genos = c(4392, 4790 , 1230, 788))
   
   
   check_read_vcf(df= system.file("extdata/simu_cod_f2.vcf.gz", package = "onemap"),
@@ -129,6 +139,7 @@ test_that("reading files",{
                  parent2 = "P2",
                  cross = "f2 intercross",
                  mk.types = 54,
+                 dist = 0,
                  genos = c(2667, 5358, 2829))
   
   check_read_vcf(df= system.file("extdata/simu_cod_f2.vcf.gz", package = "onemap"),
@@ -136,7 +147,17 @@ test_that("reading files",{
                  parent2 = "P1",
                  cross = "f2 intercross",
                  mk.types = 54,
+                 dist = 0,
                  genos = c(2829, 5358, 2667))
+  
+  check_read_vcf(df = system.file("extdata/vcf_example_riself.vcf.gz", package = "onemap"),
+                 parent1 = "P2",
+                 parent2 = "P1",
+                 cross = "ri self",
+                 mk.types = 25,
+                 dist = 2,
+                 genos = c(87, 1121, 1092))
+  
 })
 
 test_that("writting files", {
@@ -171,12 +192,12 @@ test_that("writting files", {
   data <- read_onemap("test_f2.raw")
   expect_equal(check_data(data), 0)
   expect_values_equal(segr.type1.4 = c("A.H.B", "C.A", "D.B", "C.A"),
-                      segr.type.num1.4 = c(4,7,6,7),
+                      segr.type.num1.4 = c(4,5,5,5),
                       n.phe = 1,
                       pheno1.3 = c(37.5892, 36.3664, 37.2230),
                       dim.geno = c(200,66), 
                       table.geno = c(1980, 5192,4338,1690),
-                      error1.4 = c(rep(0.99999,4)))
+                      error1.4 = c(0.99999,rep(0.33333,3)))
   
   file.remove("test_f2.raw")
   

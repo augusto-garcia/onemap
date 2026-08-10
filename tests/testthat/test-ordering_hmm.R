@@ -30,8 +30,8 @@ test_that("ordering and HMM test", {
     size <- cumsum(kosambi(LG.mds$seq.rf))
     eval(bquote(expect_equal(size[length(size)], .(right.size),tolerance = tol.size)))
     LG.order <- order_seq(LG)
-    LG.order <- make_seq(LG.order, "force")
-    eval(bquote(expect_equal(LG.order$seq.num, .(right.order), tolerance = tol.order))) # mds makes local rearrangements
+    LG.order_force <- make_seq(LG.order, "force")
+    eval(bquote(expect_equal(LG.order_force$seq.num, .(right.order), tolerance = tol.order))) # mds makes local rearrangements
     size <- cumsum(kosambi(LG.mds$seq.rf))
     eval(bquote(expect_equal(size[length(size)], .(right.size),tolerance = tol.size)))
   }

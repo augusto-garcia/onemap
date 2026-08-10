@@ -7,7 +7,7 @@
 onemap_read_vcfR(
   vcf = NULL,
   vcfR.object = NULL,
-  cross = c("outcross", "f2 intercross", "f2 backcross", "ri self", "ri sib"),
+  cross = NULL,
   parent1 = NULL,
   parent2 = NULL,
   f1 = NULL,

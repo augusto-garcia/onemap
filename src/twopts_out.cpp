@@ -104,8 +104,25 @@ Rcpp::List est_rf_out(Rcpp::NumericVector geno,
       for(int j=a3; j  < n_mar; j++)
 	{
 	  ct1++;
-	  std::vector<int> k_sub(&geno[i*n_ind],&geno[i*n_ind+n_ind]);
-	  std::vector<int> k1_sub(&geno[j*n_ind],&geno[j*n_ind+n_ind]);
+    // Safe version using vectors with proper size
+    std::vector<int> k_sub(n_ind);
+    std::vector<int> k1_sub(n_ind);
+        
+    // Safe copying with bounds checking
+    for(int k = 0; k < n_ind; k++) {
+      if((i*n_ind + k) < geno.size() && (j*n_ind + k) < geno.size()) {
+        k_sub[k] = geno[i*n_ind + k];
+        k1_sub[k] = geno[j*n_ind + k];
+      } else {
+        Rcpp::stop("Index out of bounds in marker data access");
+      }
+    }
+        
+    // Add size verification
+    if(k_sub.size() != n_ind || k1_sub.size() != n_ind) {
+      Rcpp::stop("Inconsistent vector sizes in computation");
+    }
+    
 	  std::fill(n.begin(), n.end(), 0);
 	  std::fill(r.begin(), r.end(), 0);
 	  for(int k=0; k < n_ind; k++)
